@@ -1,1 +1,9 @@
-export default {};
+export * from './services.module';
+export * from './loader.service';
+export * from './meta.service';
+export * from './platform.service';
+export * from './preferences.service';
+export * from './scheme.service';
+export * from './splash-screen.service';
+export * from './user.service';
+export * from './notification/notification.service';

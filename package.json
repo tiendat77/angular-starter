@@ -43,6 +43,7 @@
     "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.9",
     "@types/jasmine": "~4.3.0",
+    "@types/lodash": "^4.14.191",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "chroma-js": "^2.4.2",

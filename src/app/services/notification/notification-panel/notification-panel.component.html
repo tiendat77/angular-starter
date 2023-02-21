@@ -1,0 +1,41 @@
+<div
+  class="relative rounded-lg text-white border-l-4 px-4 py-2 shadow"
+  [ngClass]="{
+    'text-gray-600 border-l-gray-600 bg-gray-100 dark:text-gray-50 dark:border-l-gray-50 dark:bg-gray-600': toastRef.data.type === 'basic',
+    'text-sky-600 border-l-sky-600 bg-sky-100 dark:text-sky-50 dark:border-l-sky-50 dark:bg-sky-600': toastRef.data.type === 'info',
+    'text-green-500 border-l-green-500 bg-green-100 dark:text-green-50 dark:border-l-green-50 dark:bg-green-500': toastRef.data.type === 'success',
+    'text-amber-500 border-l-amber-500 bg-amber-100 dark:text-amber-50 dark:border-l-amber-50 dark:bg-amber-500': toastRef.data.type === 'warning',
+    'text-red-600 border-l-red-600 bg-red-100 dark:text-red-50 dark:border-l-red-50 dark:bg-red-600': toastRef.data.type === 'error'
+  }">
+  <div class="flex flex-row items-center mr-7">
+    <!-- Icon -->
+    <div class="flex flex-col items-center justify-center mr-4">
+      <ng-container [ngSwitch]="toastRef.data.type">
+        <!-- <mat-icon *ngSwitchCase="'info'" class="icon-size-6" svgIcon="heroicons_solid:exclamation-circle"></mat-icon>
+        <mat-icon *ngSwitchCase="'success'" class="icon-size-6" svgIcon="heroicons_solid:check-circle"></mat-icon>
+        <mat-icon *ngSwitchCase="'warning'" class="icon-size-6" svgIcon="heroicons_solid:exclamation"></mat-icon>
+        <mat-icon *ngSwitchCase="'error'" class="icon-size-6" svgIcon="heroicons_solid:x-circle"></mat-icon>
+        <mat-icon *ngSwitchDefault class="icon-size-6" svgIcon="heroicons_solid:bell"></mat-icon> -->
+      </ng-container>
+    </div>
+
+    <!-- Content -->
+    <div class="flex flex-col flex-auto overflow-hidden">
+      <ng-container *ngIf="toastRef?.data?.title">
+        <div class="font-medium text-base tracking-wide mb-1">{{toastRef.data.title}}</div>
+      </ng-container>
+      <ng-container *ngIf="toastRef?.data?.message">
+        <div class="text-sm">{{toastRef.data.message}}</div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Close Button -->
+  <div class="absolute top-1 right-1 h-6 w-6 cursor-pointer">
+    <!-- <mat-icon
+      class="icon-size-5"
+      svgIcon="heroicons_solid:x"
+      (click)="close()"
+    ></mat-icon> -->
+  </div>
+</div>
