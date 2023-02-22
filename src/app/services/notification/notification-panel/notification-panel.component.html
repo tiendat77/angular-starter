@@ -1,5 +1,5 @@
 <div
-  class="relative rounded-lg text-white border-l-4 px-4 py-2 shadow"
+  class="relative rounded-lg border-l-4 px-4 py-2 shadow"
   [ngClass]="{
     'text-gray-600 border-l-gray-600 bg-gray-100 dark:text-gray-50 dark:border-l-gray-50 dark:bg-gray-600': toastRef.data.type === 'basic',
     'text-sky-600 border-l-sky-600 bg-sky-100 dark:text-sky-50 dark:border-l-sky-50 dark:bg-sky-600': toastRef.data.type === 'info',
@@ -11,11 +11,11 @@
     <!-- Icon -->
     <div class="flex flex-col items-center justify-center mr-4">
       <ng-container [ngSwitch]="toastRef.data.type">
-        <!-- <mat-icon *ngSwitchCase="'info'" class="icon-size-6" svgIcon="heroicons_solid:exclamation-circle"></mat-icon>
-        <mat-icon *ngSwitchCase="'success'" class="icon-size-6" svgIcon="heroicons_solid:check-circle"></mat-icon>
-        <mat-icon *ngSwitchCase="'warning'" class="icon-size-6" svgIcon="heroicons_solid:exclamation"></mat-icon>
-        <mat-icon *ngSwitchCase="'error'" class="icon-size-6" svgIcon="heroicons_solid:x-circle"></mat-icon>
-        <mat-icon *ngSwitchDefault class="icon-size-6" svgIcon="heroicons_solid:bell"></mat-icon> -->
+        <icon *ngSwitchCase="'info'" class="icon-size-6" name="heroicons_solid:exclamation-circle"></icon>
+        <icon *ngSwitchCase="'success'" class="icon-size-6" name="heroicons_solid:check-circle"></icon>
+        <icon *ngSwitchCase="'warning'" class="icon-size-6" name="heroicons_solid:exclamation"></icon>
+        <icon *ngSwitchCase="'error'" class="icon-size-6" name="heroicons_solid:x-circle"></icon>
+        <icon *ngSwitchDefault class="icon-size-6" name="heroicons_solid:bell"></icon>
       </ng-container>
     </div>
 
@@ -32,10 +32,6 @@
 
   <!-- Close Button -->
   <div class="absolute top-1 right-1 h-6 w-6 cursor-pointer">
-    <!-- <mat-icon
-      class="icon-size-5"
-      svgIcon="heroicons_solid:x"
-      (click)="close()"
-    ></mat-icon> -->
+    <icon class="icon-size-5" name="heroicons_solid:x" (click)="close()"></icon>
   </div>
 </div>

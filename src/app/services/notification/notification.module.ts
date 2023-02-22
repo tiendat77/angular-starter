@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IconsModule } from '@libs/icons';
 
 import { NotificationService } from './notification.service';
 import { NotificationPanelComponent } from './notification-panel/notification-panel.component';
@@ -10,6 +11,7 @@ import { NotificationPanelComponent } from './notification-panel/notification-pa
   ],
   imports: [
     CommonModule,
+    IconsModule,
   ],
   providers: [
     NotificationService

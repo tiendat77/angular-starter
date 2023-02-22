@@ -8,7 +8,7 @@ export interface NotificationDataModel {
 }
 
 @Component({
-  selector: 'bls-notification-panel',
+  selector: 'app-notification-panel',
   templateUrl: './notification-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

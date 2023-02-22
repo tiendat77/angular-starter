@@ -31,12 +31,12 @@ export class MetaService {
     // Init version info
     const version = new Version(environment.version).full;
     const element = this._document.querySelector('[ng-version]');
-    this._renderer?.setAttribute(element, 'bls-version', version);
+    this._renderer?.setAttribute(element, 'app-version', version);
   }
 
   update(meta: Partial<Metadata>) {
     this._meta.addTags(this._generate(meta));
-    this._title.setTitle(meta?.title || 'BLogic Systems');
+    this._title.setTitle(meta?.title || 'Angular Starter');
   }
 
   private _generate(meta: Partial<Metadata>): MetaDefinition[] {

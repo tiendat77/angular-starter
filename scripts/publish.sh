@@ -26,7 +26,7 @@ PACKAGE_VERSION=$(cat package.json \
 echo '📦  Package version:' "$PACKAGE_VERSION"
 echo '🐳  Build docker image ' "$REGISTRY/$OWNER/$IMAGE_NAME"
 
-# ghcr.io/blogic-datht/license-dashboard
+# ghcr.io/tiendat77/license-dashboard
 docker build -t "$REGISTRY/$OWNER/$IMAGE_NAME:latest" .
 
 echo '🎉  Build done!'

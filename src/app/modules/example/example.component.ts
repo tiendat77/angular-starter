@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NotificationService } from '@services';
 
 @Component({
   selector: 'app-example',
@@ -7,5 +8,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExampleComponent {
+
+  constructor(
+    private _notification: NotificationService
+  ) { }
+
+  toast() {
+    this._notification.success('This is a test notification');
+  }
 
 }

@@ -34,7 +34,7 @@
       "@models": ["src/app/models/index"],
       "@services": ["src/app/services/index"],
       "@shared/*": ["src/app/shared/*"],
-      "@libs/*": ["src/app/libs/*"]
+      "@libs/*": ["src/libs/*"]
     }
   },
   "angularCompilerOptions": {
