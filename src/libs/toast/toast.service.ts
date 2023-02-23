@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
-import { NotificationPanelComponent } from './notification-panel/notification-panel.component';
+import { ToastPanelComponent } from './toast-panel/toast-panel.component';
 
-export type NotificationType = 'basic' | 'info' | 'success' | 'error' | 'warning';
+export type ToastType = 'basic' | 'info' | 'success' | 'error' | 'warning';
 
-@Injectable()
-export class NotificationService {
+@Injectable({providedIn: 'root'})
+export class ToastService {
 
   constructor(private _toast: HotToastService) {}
 
-  toast(message: string, type: NotificationType) {
+  toast(message: string, type: ToastType) {
     switch(type) {
       case 'info':
         return this._toast.info(message);
@@ -29,7 +29,7 @@ export class NotificationService {
   }
 
   info(message: string) {
-    return this._toast.show(NotificationPanelComponent, {
+    return this._toast.show(ToastPanelComponent, {
       className: 'hot-toast-notification-panel',
       position: 'top-right',
       data: {
@@ -41,7 +41,7 @@ export class NotificationService {
   }
 
   success(message: string) {
-    return this._toast.show(NotificationPanelComponent, {
+    return this._toast.show(ToastPanelComponent, {
       className: 'hot-toast-notification-panel',
       position: 'top-right',
       data: {
@@ -53,7 +53,7 @@ export class NotificationService {
   }
 
   error(message: string) {
-    return this._toast.show(NotificationPanelComponent, {
+    return this._toast.show(ToastPanelComponent, {
       className: 'hot-toast-notification-panel',
       position: 'top-right',
       data: {
@@ -65,7 +65,7 @@ export class NotificationService {
   }
 
   warning(message: string) {
-    return this._toast.show(NotificationPanelComponent, {
+    return this._toast.show(ToastPanelComponent, {
       className: 'hot-toast-notification-panel',
       position: 'top-right',
       data: {
@@ -76,8 +76,8 @@ export class NotificationService {
     });
   }
 
-  show(message: string, title = '', type: NotificationType = 'basic', options?: any) {
-    return this._toast.show(NotificationPanelComponent, {
+  show(message: string, title = '', type: ToastType = 'basic', options?: any) {
+    return this._toast.show(ToastPanelComponent, {
       className: 'hot-toast-notification-panel',
       position: 'top-right',
       data: {

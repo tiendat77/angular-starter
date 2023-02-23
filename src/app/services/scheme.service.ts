@@ -6,7 +6,7 @@ import { STORAGE_KEY } from '../configs/storage.config';
 @Injectable()
 export class SchemeService {
 
-  private _scheme = 'theme-default';
+  private _scheme = 'default';
 
   constructor(
     @Inject(DOCUMENT) private _document: any,
@@ -24,7 +24,7 @@ export class SchemeService {
 
     // If not, apply the default theme
     } else {
-      this.update('theme-default');
+      this.update('default');
     }
   }
 
@@ -33,15 +33,17 @@ export class SchemeService {
     this._scheme = value;
     StorageHelper.set(STORAGE_KEY.SCHEME, value);
 
-    // Find the class name for the previously selected theme and remove it
-    this._document.body.classList.forEach((className: string) => {
-      if ( className.startsWith('theme-') ) {
-        this._document.body.classList.remove(className, className.split('-')[1]);
-      }
-    });
+    document.documentElement.setAttribute('data-theme', value);
 
-    // Add class name for the currently selected theme
-    this._document.body.classList.add(value);
+    // // Find the class name for the previously selected theme and remove it
+    // this._document.body.classList.forEach((className: string) => {
+    //   if ( className.startsWith('theme-') ) {
+    //     this._document.body.classList.remove(className, className.split('-')[1]);
+    //   }
+    // });
+
+    // // Add class name for the currently selected theme
+    // this._document.body.classList.add(value);
   }
 
 }
