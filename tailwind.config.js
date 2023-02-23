@@ -133,9 +133,46 @@ module.exports = {
     require(path.resolve(__dirname, 'tailwind/safe-area')),
     require(path.resolve(__dirname, 'tailwind/colors'))({themes}),
 
+    // DaisyUI
+    require('daisyui'),
+
     // Other third party and/or custom plugins
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/line-clamp'),
   ],
+
+  // DaisyUI Config
+  daisyui: {
+    styled: true,
+    base: true,
+    utils: true,
+    logs: false,
+    rtl: false,
+    prefix: "daisy-",
+    darkTheme: "dark",
+    themes: [
+      {
+        default: {
+          primary: '#242424',
+          'primary-content': '#ffffff',
+          secondary: '#1e293b',
+          'secondary-content': '#ffffff',
+          accent: '#1e293b',
+          'accent-content': '#ffffff',
+          neutral: '#242424',
+          'neutral-content': '#ffffff',
+          info: '#52d9ff',
+          'info-content': '#ffffff',
+          success: '#6ddf54',
+          'success-content': '#ffffff',
+          warning: '#dd5679',
+          'warning-content': '#ffffff',
+          error: '#dc2626',
+          'error-content': '#ffffff',
+          'base-100': '#ffffff',
+        }
+      }
+    ]
+  },
 }

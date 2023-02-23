@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NotificationService } from '@services';
+import { DialogService } from '@libs/dialog';
+import { ExampleDialogComponent } from './example-dialog/example-dialog.component';
 
 @Component({
   selector: 'app-example',
@@ -10,11 +12,16 @@ import { NotificationService } from '@services';
 export class ExampleComponent {
 
   constructor(
-    private _notification: NotificationService
+    private _notification: NotificationService,
+    private _dialog: DialogService
   ) { }
 
   toast() {
-    this._notification.success('This is a test notification');
+    this._notification.error('This is a test notification');
+  }
+
+  dialog() {
+    this._dialog.open(ExampleDialogComponent);
   }
 
 }

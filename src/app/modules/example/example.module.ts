@@ -4,6 +4,7 @@ import { Route, RouterModule } from '@angular/router';
 
 import { ExampleComponent } from './example.component';
 import { IconsModule } from '@libs/icons';
+import { ExampleDialogComponent } from './example-dialog/example-dialog.component';
 
 const routes: Route[] = [{
   path: '',
@@ -12,7 +13,8 @@ const routes: Route[] = [{
 
 @NgModule({
   declarations: [
-    ExampleComponent
+    ExampleComponent,
+    ExampleDialogComponent
   ],
   imports: [
     CommonModule,
