@@ -42,6 +42,7 @@
     "@angular/compiler-cli": "^15.1.0",
     "@commitlint/cli": "^17.4.4",
     "@commitlint/config-conventional": "^17.4.4",
+    "@commitlint/cz-commitlint": "^17.4.4",
     "@commitlint/prompt": "^17.4.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/line-clamp": "^0.4.2",
@@ -65,7 +66,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "@commitlint/prompt"
+      "path": "@commitlint/cz-commitlint"
     }
   }
 }
