@@ -10,21 +10,4 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
-  title = 'angular-starter';
-
-  array = [1, 2, 3, 4, 5];
-
-  test() {
-    const a = 1;
-    const b = 2;
-
-    if (a === 1) {
-      console.log('a is 1');
-    }
-  }
-
-  text() {
-    return 'text';
-  }
-}
+export class AppComponent {}
