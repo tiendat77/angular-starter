@@ -6,6 +6,16 @@ const prettierRecommended = require('eslint-plugin-prettier/recommended');
 
 module.exports = tseslint.config(
   {
+    files: ['**/*.js'],
+    extends: [prettierRecommended],
+    rules: {
+      'eol-last': 'error',
+      semi: 'error',
+      indent: ['error', 2, { SwitchCase: 1 }],
+      quotes: ['error', 'single', { avoidEscape: true }],
+    },
+  },
+  {
     files: ['**/*.ts'],
     extends: [
       prettierRecommended,
@@ -37,7 +47,7 @@ module.exports = tseslint.config(
       ],
       'eol-last': 'error',
       semi: 'error',
-      indent: ['error', 2, { "SwitchCase": 1 }],
+      indent: ['error', 2, { SwitchCase: 1 }],
       quotes: ['error', 'single', { avoidEscape: true }],
     },
     ignores: ['**/*.spec.ts'],
@@ -62,8 +72,8 @@ module.exports = tseslint.config(
       '@angular-eslint/template/prefer-control-flow': 'warn',
       '@angular-eslint/template/prefer-self-closing-tags': 'warn',
       '@angular-eslint/template/use-track-by-function': 'warn',
-      '@angular-eslint/template/conditional-complexity': ['warn', { 'maxComplexity': 3 }],
-      '@angular-eslint/template/eqeqeq': ['error', { 'allowNullOrUndefined': true }]
+      '@angular-eslint/template/conditional-complexity': ['warn', { maxComplexity: 3 }],
+      '@angular-eslint/template/eqeqeq': ['error', { allowNullOrUndefined: true }],
     },
     ignores: [],
   }
