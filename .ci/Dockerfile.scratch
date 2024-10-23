@@ -1,0 +1,38 @@
+#################################################
+# STAGE 1: Build
+#################################################
+ARG NODE_VERSION=20.17.0
+
+FROM node:${NODE_VERSION}-alpine AS build
+WORKDIR /workspace
+
+COPY package*.json .
+COPY packages ./packages
+
+RUN npm pkg delete scripts.prepare
+RUN yarn install --frozen-lockfile
+
+COPY . .
+RUN npm run build
+
+#################################################
+# STAGE 2: Zip
+#################################################
+FROM alpine:latest AS zip
+WORKDIR /workspace
+
+COPY --from=build /workspace/dist/browser ./build
+COPY package.json .
+
+RUN apk --no-cache add zip
+RUN mkdir -p output
+
+ARG OUTPUT_NAME
+RUN zip -r dist.zip build
+RUN mv dist.zip output/${OUTPUT_NAME}
+
+#################################################
+# STAGE 3: Export
+#################################################
+FROM scratch
+COPY --from=zip /workspace/output .
