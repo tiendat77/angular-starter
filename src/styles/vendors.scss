@@ -1,0 +1,23 @@
+@import '@angular/cdk/overlay-prebuilt.css';
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Dialog
+/* ----------------------------------------------------------------------------------------------------- */
+
+@media screen and (max-width: 640px) {
+  .dialog-fullscreen-on-mobile {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Swiper
+/* ----------------------------------------------------------------------------------------------------- */
+
+:root {
+  --swiper-theme-color: #ffffff;
+  --swiper-pagination-bottom: 0;
+  --swiper-pagination-color: #ffffff;
+  --swiper-pagination-bullet-inactive-color: #4b4b4b;
+}

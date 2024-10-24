@@ -31,7 +31,12 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles/colors.scss",
+              "src/styles/styles.scss",
+              "src/styles/tailwind.scss",
+              "src/styles/vendors.scss"
+            ],
             "scripts": []
           },
           "configurations": {
