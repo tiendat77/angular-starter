@@ -45,10 +45,20 @@ const theme = {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
-  content: ['./src/**/*.{html,ts}'],
+  content: ['./src/**/*.{html,ts}', './projects/**/*.{html,ts}'],
+  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
+      scale: {
+        97: '0.97',
+        98: '0.98',
+        99: '0.99',
+      },
+      opacity: {
+        12: '0.12',
+        38: '0.38',
+        87: '0.87',
+      },
       extendedSpacing: {
         // Fractional values
         '1/2': '50%',
