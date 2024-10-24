@@ -38,6 +38,5 @@ testem.log
 /typings
 
 # System files
-Icon?
 .DS_Store
 Thumbs.db
