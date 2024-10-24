@@ -25,8 +25,6 @@
           --ground-600: #a7a7a7;
           --ground-700: #acacac;
           --ground-800: #e0e0e0;
-          --primary-500: #2c3940;
-          --primary-600: #1b2328;
         }
       }
     </style>
