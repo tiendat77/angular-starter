@@ -1,5 +1,5 @@
 <section class="container mx-auto my-10 sm:my-20">
-  <h1 class="text-3xl font-bold text-center text-on-primary">Example</h1>
+  <h1 class="text-3xl font-bold text-center">Example</h1>
 
   <div class="flex flex-wrap gap-10">
     <button
@@ -47,15 +47,3 @@
 </section>
 
 <app-welcome />
-
-<vertical-navigation
-  class="bg-base-100 print:hidden"
-  [appearance]="'dense'"
-  [mode]="'side'"
-  [name]="'main-navigation'"
-  [navigation]="navigation"
->
-  <ng-container verticalNavigationContentHeader>
-    <div class="flex items-center justify-center h-20">Logo</div>
-  </ng-container>
-</vertical-navigation>

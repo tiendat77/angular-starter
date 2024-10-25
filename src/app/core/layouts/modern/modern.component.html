@@ -1,0 +1,53 @@
+@if (isScreenSmall) {
+  <vertical-navigation
+    class="bg-base-100 print:hidden"
+    [mode]="'over'"
+    [name]="'mainNavigation'"
+    [navigation]="navigation"
+    [opened]="false"
+  >
+    <ng-container verticalNavigationContentHeader>
+      <div class="flex items-center h-20 px-8 pt-6">
+        <app-logo />
+      </div>
+    </ng-container>
+  </vertical-navigation>
+}
+
+<div class="flex flex-col flex-auto w-full min-w-0">
+  <div
+    class="relative flex items-center w-full h-16 px-4 shadow flex-0 sm:h-20 md:px-6 z-49 dark:shadow-none dark:border-b bg-base-100 dark:bg-transparent print:hidden"
+  >
+    @if (!isScreenSmall) {
+      <div class="flex items-center mx-2 lg:mr-8">
+        <app-logo />
+      </div>
+
+      <horizontal-navigation
+        class="mr-2"
+        [name]="'mainNavigation'"
+        [navigation]="navigation"
+      />
+    }
+
+    <!-- Navigation toggle button -->
+    @if (isScreenSmall) {
+      <button
+        class="btn btn-circle"
+        (click)="toggleNavigation('mainNavigation')"
+      >
+        <svg-icon name="heroicons_outline:bars-3" />
+      </button>
+    }
+
+    <!-- Components -->
+    <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+      <!-- <user></user> -->
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="flex flex-col flex-auto w-full">
+    <router-outlet />
+  </div>
+</div>
