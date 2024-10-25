@@ -3,13 +3,14 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { DialogService } from '@libs/dialog';
 import { LoaderService } from '@libs/loader';
 import { ToastService } from '@libs/toast';
+import { SvgIcon } from '@libs/svg-icon';
 
 import { ExampleDialogComponent } from './example-dialog/example-dialog.component';
 
 @Component({
   selector: 'app-example',
   standalone: true,
-  imports: [WelcomeComponent],
+  imports: [WelcomeComponent, SvgIcon],
   templateUrl: './example.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

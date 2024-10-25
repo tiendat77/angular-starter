@@ -249,6 +249,36 @@
           }
         }
       }
+    },
+    "svg-icon": {
+      "projectType": "library",
+      "root": "projects/svg-icon",
+      "sourceRoot": "projects/svg-icon/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/svg-icon/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/svg-icon/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/svg-icon/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/svg-icon/**/*.ts", "projects/svg-icon/**/*.html"],
+            "eslintConfig": "projects/svg-icon/eslint.config.js"
+          }
+        }
+      }
     }
   },
   "cli": {
