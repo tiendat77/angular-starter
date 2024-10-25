@@ -1,0 +1,91 @@
+<!-- Item wrapper -->
+<div
+  class="vertical-navigation-item-wrapper"
+  [class.vertical-navigation-item-has-subtitle]="!!item.subtitle"
+  [ngClass]="item.classes?.wrapper"
+>
+  <div class="vertical-navigation-item">
+    <!-- Icon -->
+    @if (item.icon) {
+      <svg-icon
+        class="vertical-navigation-item-icon"
+        [ngClass]="item.classes?.icon"
+        [name]="item.icon"
+      />
+    }
+
+    <!-- Title & Subtitle -->
+    <div class="vertical-navigation-item-title-wrapper">
+      <div class="vertical-navigation-item-title">
+        <span [ngClass]="item.classes?.title">
+          {{ item.title }}
+        </span>
+      </div>
+      @if (item.subtitle) {
+        <div class="vertical-navigation-item-subtitle">
+          <span [ngClass]="item.classes?.subtitle">
+            {{ item.subtitle }}
+          </span>
+        </div>
+      }
+    </div>
+
+    <!-- Badge -->
+    @if (item.badge) {
+      <div class="vertical-navigation-item-badge">
+        <div
+          class="vertical-navigation-item-badge-content"
+          [ngClass]="item.badge.classes"
+        >
+          {{ item.badge.title }}
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+@for (item of item.children; track item.id) {
+  <!-- Skip the hidden items -->
+  @if ((item.hidden && !item.hidden(item)) || !item.hidden) {
+    <!-- Basic -->
+    @if (item.type === 'basic') {
+      <vertical-navigation-basic-item
+        [item]="item"
+        [name]="name"
+      />
+    }
+
+    <!-- Collapsable -->
+    @if (item.type === 'collapsable') {
+      <vertical-navigation-collapsable-item
+        [item]="item"
+        [name]="name"
+        [autoCollapse]="autoCollapse"
+      />
+    }
+
+    <!-- Divider -->
+    @if (item.type === 'divider') {
+      <vertical-navigation-divider-item
+        [item]="item"
+        [name]="name"
+      />
+    }
+
+    <!-- Group -->
+    @if (item.type === 'group') {
+      <vertical-navigation-group-item
+        [item]="item"
+        [name]="name"
+      />
+    }
+
+    <!-- Spacer -->
+    @if (item.type === 'spacer') {
+      <vertical-navigation-spacer-item
+        [item]="item"
+        [name]="name"
+      />
+    }
+  }
+}

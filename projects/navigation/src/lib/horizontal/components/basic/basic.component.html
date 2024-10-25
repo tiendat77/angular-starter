@@ -1,0 +1,132 @@
+<!-- Item wrapper -->
+<div
+  class="horizontal-navigation-item-wrapper"
+  [class.horizontal-navigation-item-has-subtitle]="!!item.subtitle"
+  [ngClass]="item.classes?.wrapper"
+>
+  <!-- Item with an internal link -->
+  @if (item.link && !item.externalLink && !item.function && !item.disabled) {
+    <div
+      class="horizontal-navigation-item"
+      [ngClass]="{ 'horizontal-navigation-item-active-forced': item.active }"
+      [routerLink]="[item.link]"
+      [fragment]="item.fragment"
+      [preserveFragment]="item.preserveFragment ?? false"
+      [queryParams]="item.queryParams"
+      [queryParamsHandling]="item.queryParamsHandling"
+      [routerLinkActive]="'horizontal-navigation-item-active'"
+      [routerLinkActiveOptions]="isActiveMatchOptions"
+    >
+      <ng-container *ngTemplateOutlet="itemTemplate" />
+    </div>
+  }
+
+  <!-- Item with an external link -->
+  @if (item.link && item.externalLink && !item.function && !item.disabled) {
+    <a
+      class="horizontal-navigation-item"
+      [href]="item.link"
+      [target]="item.target || '_self'"
+    >
+      <ng-container *ngTemplateOutlet="itemTemplate" />
+    </a>
+  }
+
+  <!-- Item with a function -->
+  @if (!item.link && item.function && !item.disabled) {
+    <button
+      class="horizontal-navigation-item"
+      [ngClass]="{ 'horizontal-navigation-item-active-forced': item.active }"
+      (click)="item.function(item)"
+    >
+      <ng-container *ngTemplateOutlet="itemTemplate" />
+    </button>
+  }
+
+  <!-- Item with an internal link and function -->
+  @if (item.link && !item.externalLink && item.function && !item.disabled) {
+    <button
+      class="horizontal-navigation-item"
+      [ngClass]="{ 'horizontal-navigation-item-active-forced': item.active }"
+      [routerLink]="[item.link]"
+      [fragment]="item.fragment"
+      [preserveFragment]="item.preserveFragment ?? false"
+      [queryParams]="item.queryParams"
+      [queryParamsHandling]="item.queryParamsHandling"
+      [routerLinkActive]="'horizontal-navigation-item-active'"
+      [routerLinkActiveOptions]="isActiveMatchOptions"
+      (click)="item.function(item)"
+    >
+      <ng-container *ngTemplateOutlet="itemTemplate" />
+    </button>
+  }
+
+  <!-- Item with an external link and function -->
+  @if (item.link && item.externalLink && item.function && !item.disabled) {
+    <a
+      class="horizontal-navigation-item"
+      [href]="item.link"
+      [target]="item.target || '_self'"
+      (click)="item.function(item)"
+    >
+      <ng-container *ngTemplateOutlet="itemTemplate" />
+    </a>
+  }
+
+  <!-- Item with a no link and no function -->
+  @if (!item.link && !item.function && !item.disabled) {
+    <div
+      class="horizontal-navigation-item"
+      [ngClass]="{ 'horizontal-navigation-item-active-forced': item.active }"
+    >
+      <ng-container *ngTemplateOutlet="itemTemplate" />
+    </div>
+  }
+
+  <!-- Item is disabled -->
+  @if (item.disabled) {
+    <div class="horizontal-navigation-item horizontal-navigation-item-disabled">
+      <ng-container *ngTemplateOutlet="itemTemplate" />
+    </div>
+  }
+</div>
+
+<!-- Item template -->
+<ng-template #itemTemplate>
+  <!-- Icon -->
+  @if (item.icon) {
+    <svg-icon
+      class="horizontal-navigation-item-icon"
+      [ngClass]="item.classes?.icon"
+      [name]="item.icon"
+    />
+  }
+
+  <!-- Title & Subtitle -->
+  <div class="horizontal-navigation-item-title-wrapper">
+    <div class="horizontal-navigation-item-title">
+      <span [ngClass]="item.classes?.title">
+        {{ item.title }}
+      </span>
+    </div>
+    @if (item.subtitle) {
+      <div class="horizontal-navigation-item-subtitle text-hint">
+        <span [ngClass]="item.classes?.subtitle">
+          {{ item.subtitle }}
+        </span>
+      </div>
+    }
+  </div>
+
+  <!-- Badge -->
+  @if (item.badge) {
+    <div class="horizontal-navigation-item-badge">
+      <div
+        class="horizontal-navigation-item-badge-content"
+        [ngClass]="item.badge.classes"
+      >
+        {{ item.badge.title }}
+      </div>
+    </div>
+  }
+</ng-template>
