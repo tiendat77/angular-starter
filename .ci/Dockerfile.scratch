@@ -8,6 +8,7 @@ WORKDIR /workspace
 
 COPY package*.json .
 COPY packages ./packages
+COPY projects ./projects
 
 RUN npm pkg delete scripts.prepare
 RUN yarn install --frozen-lockfile
