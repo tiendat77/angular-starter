@@ -1,0 +1,205 @@
+<section class="container flex flex-col items-center justify-center flex-auto mx-auto">
+  <div
+    aria-hidden="true"
+    class="fixed inset-0 z-0 grid grid-cols-2 -space-x-52 opacity-10 dark:opacity-5"
+  >
+    <div class="blur-[106px] h-96 bg-gradient-to-br from-purple-400 to-rose-300 dark:from-purple-700 dark:to-rose-700">
+      <!-- Gradient Circle Background -->
+    </div>
+    <div class="blur-[106px] h-90 bg-gradient-to-r from-indigo-400 to-cyan-400 dark:from-indigo-600 dark:to-cyan-600">
+      <!-- Gradient Circle Background -->
+    </div>
+  </div>
+
+  <div class="z-10 flex flex-col items-center justify-center flex-auto w-full md:max-w-screen-sm">
+    <div class="w-full h-full bg-base-100 sm:h-auto md:border md:flex-none md:rounded-lg md:shadow-card">
+      <div class="p-6 sm:p-8">
+        <div class="flex flex-col items-center justify-center">
+          <img
+            class="max-w-sm"
+            src="images/sign-in-illustration.svg"
+            alt="Illustration"
+          />
+        </div>
+
+        <h1 class="mt-6 text-3xl font-bold leading-tight tracking-tight">Sign up</h1>
+
+        <form
+          class="mt-6"
+          [formGroup]="form"
+        >
+          @if (message) {
+            <div
+              role="alert"
+              class="flex mb-4 text-red-500 border-red-500 rounded-lg alert bg-red-50 animate__animated animate__headShake"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 stroke-current shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>{{ message }}</span>
+            </div>
+          }
+
+          <label class="w-full form-control">
+            <div class="font-medium label">Name</div>
+            <input
+              type="text"
+              class="w-full input input-bordered"
+              formControlName="name"
+              placeholder="Your name"
+            />
+            @if (form.get('name')?.touched && form.get('name')?.invalid) {
+              <div class="label">
+                @if (form.get('name')?.hasError('required')) {
+                  <span class="label-text-alt text-error">Name is required</span>
+                }
+              </div>
+            }
+          </label>
+
+          <label class="w-full form-control">
+            <div class="font-medium label">Email</div>
+            <input
+              type="email"
+              class="w-full input input-bordered"
+              formControlName="email"
+              placeholder="Email address"
+            />
+            @if (form.get('email')?.touched && form.get('email')?.invalid) {
+              <div class="label">
+                @if (form.get('email')?.hasError('required')) {
+                  <span class="label-text-alt text-error">Email is required</span>
+                }
+
+                @if (form.get('email')?.hasError('email')) {
+                  <span class="label-text-alt text-error">Invalid email address</span>
+                }
+              </div>
+            }
+          </label>
+
+          <label class="w-full mt-1 form-control">
+            <div class="font-medium label">Password</div>
+            <input
+              type="password"
+              placeholder="••••••••"
+              class="w-full input input-bordered"
+              formControlName="password"
+            />
+
+            @if (form.get('password')?.touched) {
+              <div class="label">
+                @if (form.get('password')?.hasError('required')) {
+                  <span class="label-text-alt text-error">Password is required</span>
+                } @else {
+                  <div class="grid grid-cols-1 gap-2">
+                    <ng-container
+                      [ngTemplateOutlet]="validationTemplate"
+                      [ngTemplateOutletContext]="{
+                        data: {
+                          hasError: form.get('password')?.hasError('minlength'),
+                          message: 'Password must be at least 6 characters',
+                        },
+                      }"
+                    />
+
+                    <ng-container
+                      [ngTemplateOutlet]="validationTemplate"
+                      [ngTemplateOutletContext]="{
+                        data: {
+                          hasError: form.get('password')?.hasError('whitespaces'),
+                          message: 'Password must not contain whitespaces',
+                        },
+                      }"
+                    />
+
+                    <ng-container
+                      [ngTemplateOutlet]="validationTemplate"
+                      [ngTemplateOutletContext]="{
+                        data: {
+                          hasError: form.get('password')?.hasError('letters'),
+                          message: 'Password must contain at least one letter (a-z, A-Z)',
+                        },
+                      }"
+                    />
+
+                    <ng-container
+                      [ngTemplateOutlet]="validationTemplate"
+                      [ngTemplateOutletContext]="{
+                        data: {
+                          hasError: form.get('password')?.hasError('digits'),
+                          message: 'Password must contain at least one number (0-9)',
+                        },
+                      }"
+                    />
+                  </div>
+                }
+              </div>
+            }
+          </label>
+
+          <div class="mt-4">
+            <button
+              class="w-full mt-2 btn btn-primary"
+              [disabled]="form.disabled"
+              (click)="submit()"
+            >
+              Sign up
+            </button>
+          </div>
+        </form>
+
+        <div class="flex justify-center mt-10 md:mt-16">
+          <a
+            routerLink="/sign-in"
+            class="text-sm"
+          >
+            Already have an account? <span class="text-primary">Sign in</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template
+  #validationTemplate
+  let-data="data"
+>
+  <div class="flex items-center gap-1">
+    @switch (data.hasError) {
+      @case (true) {
+        <svg-icon
+          class="text-red-500 icon-size-4"
+          name="heroicons_outline:x-mark"
+        />
+      }
+      @default {
+        <svg-icon
+          class="text-green-500 icon-size-4"
+          name="heroicons_outline:check"
+        />
+      }
+    }
+
+    <span
+      class="label-text-alt"
+      [ngClass]="{
+        'text-red-500': data.hasError,
+        'text-green-500': !data.hasError,
+      }"
+    >
+      {{ data.message }}
+    </span>
+  </div>
+</ng-template>
