@@ -233,6 +233,46 @@ export class AuthService {
     );
   }
 
+  signUp(form: { name: string; email: string; password: string }): Observable<any> {
+    return this._httpClient
+      .post<ResponseModel>(`${environment.apiUrl}/authentication/sign-up`, form)
+      .pipe(
+        switchMap((response: any) => {
+          if (response.isError) {
+            return throwError(() => new Error(response.message || 'An error occurred'));
+          }
+
+          return of(response.data);
+        }),
+        tap((response: any) => {
+          this.accessToken = response.accessToken;
+          this.refreshToken = response.refreshToken;
+          this._authenticated = true;
+
+          // Get the user data
+          const decoded = AuthUtils.decode(response.accessToken);
+
+          if (decoded) {
+            this._user.user$.set(decoded as any);
+          }
+        })
+      );
+  }
+
+  forgotPassword(email: string): Observable<any> {
+    return this._httpClient
+      .post<ResponseModel>(`${environment.apiUrl}/authentication/forgot-password`, { email })
+      .pipe(
+        switchMap((response: any) => {
+          if (response.isError) {
+            return throwError(() => new Error(response.message || 'An error occurred'));
+          }
+
+          return of(response.data);
+        })
+      );
+  }
+
   // -----------------------------------------------------------------------------------------------------
   // @ Private methods
   // -----------------------------------------------------------------------------------------------------
