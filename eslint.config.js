@@ -66,7 +66,6 @@ module.exports = tseslint.config(
       '@angular-eslint/template/banana-in-box': 'warn',
       '@angular-eslint/template/click-events-have-key-events': 'warn',
       '@angular-eslint/template/elements-content': 'warn',
-      '@angular-eslint/template/no-call-expression': 'warn',
       '@angular-eslint/template/no-duplicate-attributes': 'warn',
       '@angular-eslint/template/no-interpolation-in-attributes': 'warn',
       '@angular-eslint/template/no-negated-async': 'warn',
@@ -75,6 +74,14 @@ module.exports = tseslint.config(
       '@angular-eslint/template/use-track-by-function': 'warn',
       '@angular-eslint/template/conditional-complexity': ['warn', { maxComplexity: 3 }],
       '@angular-eslint/template/eqeqeq': ['error', { allowNullOrUndefined: true }],
+      '@angular-eslint/template/no-call-expression': [
+        'warn',
+        {
+          allowList: ['get', 'hasError'],
+          allowPrefix: '$',
+          allowSuffix: '$',
+        },
+      ],
     },
   },
   {
