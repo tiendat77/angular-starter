@@ -26,6 +26,7 @@ module.exports = tseslint.config(
     ],
     processor: angular.processInlineTemplates,
     rules: {
+      'prettier/prettier': 'warn',
       '@typescript-eslint/no-require-imports': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'off',
@@ -59,6 +60,7 @@ module.exports = tseslint.config(
       ...angular.configs.templateAccessibility,
     ],
     rules: {
+      'prettier/prettier': 'warn',
       '@angular-eslint/template/attributes-order': 'warn',
       '@angular-eslint/template/alt-text': 'warn',
       '@angular-eslint/template/banana-in-box': 'warn',
