@@ -1,0 +1,99 @@
+<section class="container flex flex-col items-center justify-center flex-auto mx-auto">
+  <div
+    aria-hidden="true"
+    class="fixed inset-0 z-0 grid grid-cols-2 -space-x-52 opacity-10 dark:opacity-5"
+  >
+    <div class="blur-[106px] h-96 bg-gradient-to-br from-purple-400 to-rose-300 dark:from-purple-700 dark:to-rose-700">
+      <!-- Gradient Circle Background -->
+    </div>
+    <div class="blur-[106px] h-90 bg-gradient-to-r from-indigo-400 to-cyan-400 dark:from-indigo-600 dark:to-cyan-600">
+      <!-- Gradient Circle Background -->
+    </div>
+  </div>
+
+  <div class="z-10 flex flex-col items-center justify-center flex-auto w-full md:max-w-screen-sm">
+    <div class="w-full h-full bg-base-100 sm:h-auto md:border md:flex-none md:rounded-lg md:shadow-card">
+      <div class="p-6 sm:p-8">
+        <div class="flex flex-col items-center justify-center">
+          <img
+            class="max-w-sm"
+            src="images/forgot-password-illustration.svg"
+            alt="Illustration"
+          />
+        </div>
+
+        <h1 class="mt-6 text-3xl font-bold leading-tight tracking-tight">Forgot password</h1>
+
+        <p class="mt-2 text-hint">
+          That's okay, it happens! Enter your email address below and we'll send you a link to reset your password.
+        </p>
+
+        <form
+          class="mt-6"
+          [formGroup]="form"
+        >
+          @if (message) {
+            <div
+              role="alert"
+              class="flex mb-4 text-red-500 border-red-500 rounded-lg alert bg-red-50 animate__animated animate__headShake"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 stroke-current shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>{{ message }}</span>
+            </div>
+          }
+
+          <label class="w-full form-control">
+            <div class="font-medium label">Email address</div>
+            <input
+              type="email"
+              class="w-full input input-bordered"
+              formControlName="email"
+              placeholder="Email address"
+            />
+            @if (form.get('email')?.touched && form.get('email')?.invalid) {
+              <div class="label">
+                @if (form.get('email')?.hasError('required')) {
+                  <span class="label-text-alt text-error">Email is required</span>
+                }
+                @if (form.get('email')?.hasError('email')) {
+                  <span class="label-text-alt text-error">Invalid email address</span>
+                }
+              </div>
+            }
+          </label>
+
+          <div class="mt-4">
+            <button
+              class="w-full mt-2 btn btn-primary"
+              [disabled]="form.disabled"
+              (click)="submit()"
+            >
+              Send me reset link
+            </button>
+          </div>
+        </form>
+
+        <div class="flex justify-center mt-10 md:mt-16">
+          <a
+            routerLink="/sign-in"
+            class="text-sm"
+          >
+            Remember your password? ? <span class="text-primary">Back to sign in</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
