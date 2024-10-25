@@ -309,6 +309,36 @@
           }
         }
       }
+    },
+    "paginator": {
+      "projectType": "library",
+      "root": "projects/paginator",
+      "sourceRoot": "projects/paginator/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/paginator/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/paginator/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/paginator/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/paginator/**/*.ts", "projects/paginator/**/*.html"],
+            "eslintConfig": "projects/paginator/eslint.config.js"
+          }
+        }
+      }
     }
   },
   "cli": {

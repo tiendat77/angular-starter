@@ -27,6 +27,7 @@
     "@libs/dialog": "file:projects/dialog/dist",
     "@libs/loader": "file:projects/loader/dist",
     "@libs/navigation": "file:projects/navigation/dist",
+    "@libs/paginator": "file:projects/paginator/dist",
     "@libs/scrollbar": "file:projects/scrollbar/dist",
     "@libs/svg-icon": "file:projects/svg-icon/dist",
     "@libs/toast": "file:projects/toast/dist",
