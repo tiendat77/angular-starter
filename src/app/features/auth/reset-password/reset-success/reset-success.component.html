@@ -1,0 +1,42 @@
+<section class="container flex flex-col items-center justify-center flex-auto mx-auto">
+  <div
+    aria-hidden="true"
+    class="fixed inset-0 z-0 grid grid-cols-2 -space-x-52 opacity-10 dark:opacity-5"
+  >
+    <div class="blur-[106px] h-96 bg-gradient-to-br from-purple-400 to-rose-300 dark:from-purple-700 dark:to-rose-700">
+      <!-- Gradient Circle Background -->
+    </div>
+    <div class="blur-[106px] h-90 bg-gradient-to-r from-indigo-400 to-cyan-400 dark:from-indigo-600 dark:to-cyan-600">
+      <!-- Gradient Circle Background -->
+    </div>
+  </div>
+
+  <div class="z-10 flex flex-col items-center justify-center flex-auto w-full md:max-w-screen-sm">
+    <div class="w-full h-full bg-base-100 sm:h-auto md:border md:flex-none md:rounded-lg md:shadow-card">
+      <div class="p-6 sm:p-8">
+        <div class="flex flex-col items-center justify-center">
+          <img
+            class="max-w-sm"
+            src="images/reset-password-illustration.svg"
+            alt="Illustration"
+          />
+        </div>
+
+        <h1 class="mt-6 text-3xl font-bold leading-tight tracking-tight">Reset password success</h1>
+
+        <p class="mt-2 text-hint">
+          Congratulations! Your password has been successfully reset. You can now log in with your new password.
+        </p>
+
+        <div class="mt-6">
+          <button
+            class="w-full btn btn-primary"
+            routerLink="/sign-in"
+          >
+            Sign in
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
