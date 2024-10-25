@@ -77,7 +77,7 @@ class ScrollbarDirective {
         // Scrollbar options
         if ('scrollbarOptions' in changes) {
             // Merge the options
-            this._options = merge(this._options, changes['scrollbarOptions'].currentValue);
+            this._options = merge(this._options || {}, changes['scrollbarOptions'].currentValue);
             // Return if not initialized
             if (!this._ps) {
                 return;
