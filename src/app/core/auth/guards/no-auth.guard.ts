@@ -12,7 +12,7 @@ export const NoAuthGuard: CanActivateFn | CanActivateChildFn = (_route, _state) 
     .pipe(
       switchMap((authenticated) => {
         if (authenticated) {
-          return of(router.parseUrl(''));
+          return of(router.parseUrl('/signed-in-redirect'));
         }
 
         // Allow the access

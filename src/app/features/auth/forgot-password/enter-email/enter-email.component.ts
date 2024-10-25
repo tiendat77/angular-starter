@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
-import { takeUntil } from 'rxjs';
-import { AuthService } from '@/core/auth';
+import { of, switchMap, takeUntil, throwError } from 'rxjs';
+
 import { BaseComponent } from '@models';
+import { ResponseModel } from '@/api/models';
+import { environment } from '@environment';
 
 @Component({
   selector: 'app-forgot-password-enter-email',
@@ -20,8 +23,7 @@ export class EnterEmailComponent extends BaseComponent {
 
   message: string | null = null;
 
-  private _auth = inject(AuthService);
-  private _route = inject(ActivatedRoute);
+  private _httpClient = inject(HttpClient);
   private _router = inject(Router);
   private _cdr = inject(ChangeDetectorRef);
 
@@ -48,9 +50,18 @@ export class EnterEmailComponent extends BaseComponent {
 
     this.form.disable();
 
-    this._auth
-      .forgotPassword(email)
-      .pipe(takeUntil(this._destroyed$))
+    return this._httpClient
+      .post<ResponseModel>(`${environment.apiUrl}/authentication/forgot-password`, { email })
+      .pipe(
+        switchMap((response: any) => {
+          if (response.isError) {
+            return throwError(() => new Error(response.message || 'An error occurred'));
+          }
+
+          return of(response.data);
+        }),
+        takeUntil(this._destroyed$)
+      )
       .subscribe({
         next: () => {
           this._router.navigate(['/forgot-password/email-sent'], {

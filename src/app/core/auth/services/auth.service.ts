@@ -97,8 +97,8 @@ export class AuthService {
 
   signInUsingToken(): Observable<any> {
     return forkJoin([
-      from(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ?? ''),
-      from(localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ?? ''),
+      of(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ?? ''),
+      of(localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ?? ''),
     ]).pipe(
       switchMap(([token, refreshToken]) => {
         if (!token || !refreshToken) {
@@ -205,7 +205,7 @@ export class AuthService {
     }
 
     // Check if token already generated
-    return from(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ?? '').pipe(
+    return of(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ?? '').pipe(
       switchMap((token) => {
         if (!token) {
           return of(false);
@@ -255,20 +255,6 @@ export class AuthService {
           if (decoded) {
             this._user.user$.set(decoded as any);
           }
-        })
-      );
-  }
-
-  forgotPassword(email: string): Observable<any> {
-    return this._httpClient
-      .post<ResponseModel>(`${environment.apiUrl}/authentication/forgot-password`, { email })
-      .pipe(
-        switchMap((response: any) => {
-          if (response.isError) {
-            return throwError(() => new Error(response.message || 'An error occurred'));
-          }
-
-          return of(response.data);
         })
       );
   }
