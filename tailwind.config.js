@@ -153,6 +153,7 @@ module.exports = {
     require('daisyui'),
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
+    require(path.resolve(__dirname, 'tailwind/icon-size')),
     require(path.resolve(__dirname, 'tailwind/safe-area')),
     require(path.resolve(__dirname, 'tailwind/theming'))({ theme }),
 
