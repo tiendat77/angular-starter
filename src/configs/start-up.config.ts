@@ -7,5 +7,3 @@ import { of } from 'rxjs';
 export const startUpFn = () => {
   return () => of({});
 };
-
-export default startUpFn;

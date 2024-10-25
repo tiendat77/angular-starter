@@ -144,7 +144,7 @@ module.exports = {
           'neutral-content': '#FFFFFF',
           'info-content': '#FFFFFF',
           'warning-content': '#FFFFFF',
-          'base-100': '#111827',
+          'base-100': '#242424',
         },
       },
     ],
