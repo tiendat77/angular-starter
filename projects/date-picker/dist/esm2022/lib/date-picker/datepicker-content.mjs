@@ -1,0 +1,147 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { CdkPortalOutlet } from '@angular/cdk/portal';
+import { ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation, Inject, Optional, } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Subject, Subscription } from 'rxjs';
+import { animations } from '../utils/animations';
+import { DATE_FORMATS } from '../adapter/date-formats';
+import { Calendar } from '../calendar/calendar';
+import { DateRange, } from './date-selection-model';
+import * as i0 from "@angular/core";
+import * as i1 from "./date-selection-model";
+import * as i2 from "../adapter/date-adapter";
+/**
+ * Component used as the content for the datepicker overlay. We use this instead of using
+ * Calendar directly as the content so we can control the initial focus. This also gives us a
+ * place to put additional features of the overlay that are not part of the calendar itself in the
+ * future. (e.g. confirmation buttons).
+ * @docs-private
+ */
+export class DatepickerContent {
+    _elementRef;
+    _changeDetectorRef;
+    _globalModel;
+    _dateAdapter;
+    _dateFormats;
+    _subscriptions = new Subscription();
+    _model;
+    /** Reference to the internal calendar component. */
+    _calendar;
+    /** Reference to the datepicker that created the overlay. */
+    datepicker;
+    /** Start of the comparison range. */
+    comparisonStart;
+    /** End of the comparison range. */
+    comparisonEnd;
+    /** ARIA Accessible name of the `<input startDate/>` */
+    startDateAccessibleName;
+    /** ARIA Accessible name of the `<input endDate/>` */
+    endDateAccessibleName;
+    /** Whether the datepicker is above or below the input. */
+    _isAbove;
+    /** Current state of the animation. */
+    _animationState;
+    /** Emits when an animation has finished. */
+    _animationDone = new Subject();
+    /** Whether there is an in-progress animation. */
+    _isAnimating = false;
+    /** Whether the close button currently has focus. */
+    _closeButtonFocused;
+    /** Id of the label for the `role="dialog"` element. */
+    _dialogLabelId;
+    constructor(_elementRef, _changeDetectorRef, _globalModel, _dateAdapter, _dateFormats) {
+        this._elementRef = _elementRef;
+        this._changeDetectorRef = _changeDetectorRef;
+        this._globalModel = _globalModel;
+        this._dateAdapter = _dateAdapter;
+        this._dateFormats = _dateFormats;
+    }
+    ngOnInit() {
+        this._animationState = this.datepicker.touchUi ? 'enter-dialog' : 'enter-dropdown';
+    }
+    ngAfterViewInit() {
+        this._subscriptions.add(this.datepicker.stateChanges.subscribe(() => {
+            this._changeDetectorRef.markForCheck();
+        }));
+        this._calendar.focusActiveCell();
+    }
+    ngOnDestroy() {
+        this._subscriptions.unsubscribe();
+        this._animationDone.complete();
+    }
+    _handleUserSelection(event) {
+        const selection = this._model.selection;
+        const value = event.value;
+        const isRange = selection instanceof DateRange;
+        if (value && (isRange || !this._dateAdapter.sameDate(value, selection))) {
+            this._model.add(value);
+        }
+        if (!this._model || this._model.isComplete()) {
+            this.datepicker.close();
+        }
+    }
+    _handleUserDragDrop(event) {
+        this._model.updateSelection(event.value, this);
+    }
+    _startExitAnimation() {
+        this._animationState = 'void';
+        this._changeDetectorRef.markForCheck();
+    }
+    _handleAnimationEvent(event) {
+        this._isAnimating = event.phaseName === 'start';
+        if (!this._isAnimating) {
+            this._animationDone.next();
+        }
+    }
+    _getSelected() {
+        return this._model?.selection;
+    }
+    _getSelectedDisplay() {
+        const selected = this._model.selection || this._dateAdapter.today();
+        return selected
+            ? this._dateAdapter.format(selected, this._dateFormats.display.dayMonthDateLabel)
+            : '';
+    }
+    /** Applies the current pending selection to the global model. */
+    _applyPendingSelection() {
+        if (this._model !== this._globalModel) {
+            this._globalModel.updateSelection(this._model.selection, this);
+        }
+    }
+    /**
+     * @param forceRerender
+     */
+    _assignModel(forceRerender) {
+        this._model = this._globalModel;
+        if (forceRerender) {
+            this._changeDetectorRef.detectChanges();
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.2.8", ngImport: i0, type: DatepickerContent, deps: [{ token: i0.ElementRef }, { token: i0.ChangeDetectorRef }, { token: i1.DateSelectionModel }, { token: i2.DateAdapter }, { token: DATE_FORMATS, optional: true }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "18.2.8", type: DatepickerContent, isStandalone: true, selector: "datepicker-content", host: { listeners: { "@transformPanel.start": "_handleAnimationEvent($event)", "@transformPanel.done": "_handleAnimationEvent($event)" }, properties: { "@transformPanel": "_animationState", "class.datepicker-content-touch": "datepicker.touchUi" }, classAttribute: "datepicker-content" }, viewQueries: [{ propertyName: "_calendar", first: true, predicate: Calendar, descendants: true }], exportAs: ["datepickerContent"], ngImport: i0, template: "<div\n  cdkTrapFocus\n  role=\"dialog\"\n  class=\"flex flex-col flex-auto overflow-hidden rounded-lg\"\n  [attr.aria-modal]=\"true\"\n  [attr.aria-labelledby]=\"_dialogLabelId ?? undefined\"\n>\n  <div class=\"flex flex-col px-3 py-2 bg-primary\">\n    <div class=\"flex flex-col\">\n      <span class=\"text-xs font-normal tracking-wider uppercase text-primary-content\">\n        Selected date\n      </span>\n    </div>\n    <div class=\"flex flex-col mt-4\">\n      <span class=\"text-xl font-normal text-primary-content\">\n        {{ _getSelectedDisplay() }}\n      </span>\n    </div>\n  </div>\n\n  <calendar\n    class=\"flex-auto\"\n    [id]=\"datepicker.id\"\n    [ngClass]=\"datepicker.panelClass\"\n    [startAt]=\"datepicker.startAt\"\n    [startView]=\"datepicker.startView\"\n    [minDate]=\"datepicker._getMinDate()\"\n    [maxDate]=\"datepicker._getMaxDate()\"\n    [dateFilter]=\"datepicker._getDateFilter()\"\n    [headerComponent]=\"datepicker.calendarHeaderComponent\"\n    [selected]=\"_getSelected()\"\n    [dateClass]=\"datepicker.dateClass\"\n    [comparisonStart]=\"comparisonStart\"\n    [comparisonEnd]=\"comparisonEnd\"\n    [@fadeInCalendar]=\"'enter'\"\n    [startDateAccessibleName]=\"startDateAccessibleName\"\n    [endDateAccessibleName]=\"endDateAccessibleName\"\n    (yearSelected)=\"datepicker._selectYear($event)\"\n    (monthSelected)=\"datepicker._selectMonth($event)\"\n    (viewChanged)=\"datepicker._viewChanged($event)\"\n    (_userSelection)=\"_handleUserSelection($event)\"\n    (_userDragDrop)=\"_handleUserDragDrop($event)\"\n  />\n\n  <div class=\"flex items-center justify-end w-full gap-3 px-3 py-3\">\n    <button\n      type=\"button\"\n      class=\"btn\"\n      [class.cdk-visually-hidden]=\"!_closeButtonFocused\"\n      (focus)=\"_closeButtonFocused = true\"\n      (blur)=\"_closeButtonFocused = false\"\n      (click)=\"datepicker.close()\"\n    >\n      Close\n    </button>\n\n    <button\n      type=\"button\"\n      class=\"btn btn-primary\"\n      (click)=\"datepicker.apply()\"\n    >\n      Apply\n    </button>\n  </div>\n</div>\n", styles: [".datepicker-content{position:relative;display:flex;flex-direction:column;border-radius:.5rem;background-color:oklch(var(--b1));box-shadow:0 0 #0000,0 0 #0000,rgba(var(--shadow-card-rgb),.2) 0 8px 24px}.datepicker-content .calendar{width:22rem;height:24rem}.datepicker-content-container{display:flex;flex-direction:column;justify-content:space-between}.datepicker-content-touch{display:block;max-height:80vh;position:relative;overflow:visible}.datepicker-content-touch .datepicker-content-container{min-height:312px;max-height:788px;min-width:250px;max-width:750px}.datepicker-content-touch .calendar{width:100%;height:auto}@media all and (orientation: landscape){.datepicker-content-touch .datepicker-content-container{width:64vh;height:80vh}}@media all and (orientation: portrait){.datepicker-content-touch .datepicker-content-container{width:80vw;height:100vw}}\n"], dependencies: [{ kind: "component", type: Calendar, selector: "calendar", inputs: ["headerComponent", "startAt", "startView", "selected", "minDate", "maxDate", "dateFilter", "dateClass", "comparisonStart", "comparisonEnd", "startDateAccessibleName", "endDateAccessibleName"], outputs: ["selectedChange", "yearSelected", "monthSelected", "viewChanged", "_userSelection", "_userDragDrop"], exportAs: ["calendar"] }, { kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }], animations: [animations.transformPanel, animations.fadeInCalendar], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.8", ngImport: i0, type: DatepickerContent, decorators: [{
+            type: Component,
+            args: [{ selector: 'datepicker-content', host: {
+                        class: 'datepicker-content',
+                        '[@transformPanel]': '_animationState',
+                        '(@transformPanel.start)': '_handleAnimationEvent($event)',
+                        '(@transformPanel.done)': '_handleAnimationEvent($event)',
+                        '[class.datepicker-content-touch]': 'datepicker.touchUi',
+                    }, animations: [animations.transformPanel, animations.fadeInCalendar], exportAs: 'datepickerContent', encapsulation: ViewEncapsulation.None, changeDetection: ChangeDetectionStrategy.OnPush, standalone: true, imports: [Calendar, NgClass, CdkPortalOutlet], template: "<div\n  cdkTrapFocus\n  role=\"dialog\"\n  class=\"flex flex-col flex-auto overflow-hidden rounded-lg\"\n  [attr.aria-modal]=\"true\"\n  [attr.aria-labelledby]=\"_dialogLabelId ?? undefined\"\n>\n  <div class=\"flex flex-col px-3 py-2 bg-primary\">\n    <div class=\"flex flex-col\">\n      <span class=\"text-xs font-normal tracking-wider uppercase text-primary-content\">\n        Selected date\n      </span>\n    </div>\n    <div class=\"flex flex-col mt-4\">\n      <span class=\"text-xl font-normal text-primary-content\">\n        {{ _getSelectedDisplay() }}\n      </span>\n    </div>\n  </div>\n\n  <calendar\n    class=\"flex-auto\"\n    [id]=\"datepicker.id\"\n    [ngClass]=\"datepicker.panelClass\"\n    [startAt]=\"datepicker.startAt\"\n    [startView]=\"datepicker.startView\"\n    [minDate]=\"datepicker._getMinDate()\"\n    [maxDate]=\"datepicker._getMaxDate()\"\n    [dateFilter]=\"datepicker._getDateFilter()\"\n    [headerComponent]=\"datepicker.calendarHeaderComponent\"\n    [selected]=\"_getSelected()\"\n    [dateClass]=\"datepicker.dateClass\"\n    [comparisonStart]=\"comparisonStart\"\n    [comparisonEnd]=\"comparisonEnd\"\n    [@fadeInCalendar]=\"'enter'\"\n    [startDateAccessibleName]=\"startDateAccessibleName\"\n    [endDateAccessibleName]=\"endDateAccessibleName\"\n    (yearSelected)=\"datepicker._selectYear($event)\"\n    (monthSelected)=\"datepicker._selectMonth($event)\"\n    (viewChanged)=\"datepicker._viewChanged($event)\"\n    (_userSelection)=\"_handleUserSelection($event)\"\n    (_userDragDrop)=\"_handleUserDragDrop($event)\"\n  />\n\n  <div class=\"flex items-center justify-end w-full gap-3 px-3 py-3\">\n    <button\n      type=\"button\"\n      class=\"btn\"\n      [class.cdk-visually-hidden]=\"!_closeButtonFocused\"\n      (focus)=\"_closeButtonFocused = true\"\n      (blur)=\"_closeButtonFocused = false\"\n      (click)=\"datepicker.close()\"\n    >\n      Close\n    </button>\n\n    <button\n      type=\"button\"\n      class=\"btn btn-primary\"\n      (click)=\"datepicker.apply()\"\n    >\n      Apply\n    </button>\n  </div>\n</div>\n", styles: [".datepicker-content{position:relative;display:flex;flex-direction:column;border-radius:.5rem;background-color:oklch(var(--b1));box-shadow:0 0 #0000,0 0 #0000,rgba(var(--shadow-card-rgb),.2) 0 8px 24px}.datepicker-content .calendar{width:22rem;height:24rem}.datepicker-content-container{display:flex;flex-direction:column;justify-content:space-between}.datepicker-content-touch{display:block;max-height:80vh;position:relative;overflow:visible}.datepicker-content-touch .datepicker-content-container{min-height:312px;max-height:788px;min-width:250px;max-width:750px}.datepicker-content-touch .calendar{width:100%;height:auto}@media all and (orientation: landscape){.datepicker-content-touch .datepicker-content-container{width:64vh;height:80vh}}@media all and (orientation: portrait){.datepicker-content-touch .datepicker-content-container{width:80vw;height:100vw}}\n"] }]
+        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: i0.ChangeDetectorRef }, { type: i1.DateSelectionModel }, { type: i2.DateAdapter }, { type: undefined, decorators: [{
+                    type: Optional
+                }, {
+                    type: Inject,
+                    args: [DATE_FORMATS]
+                }] }], propDecorators: { _calendar: [{
+                type: ViewChild,
+                args: [Calendar]
+            }] } });
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGF0ZXBpY2tlci1jb250ZW50LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vc3JjL2xpYi9kYXRlLXBpY2tlci9kYXRlcGlja2VyLWNvbnRlbnQudHMiLCIuLi8uLi8uLi8uLi9zcmMvbGliL2RhdGUtcGlja2VyL2RhdGVwaWNrZXItY29udGVudC5odG1sIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7R0FNRztBQUVILE9BQU8sRUFBRSxlQUFlLEVBQUUsTUFBTSxxQkFBcUIsQ0FBQztBQUV0RCxPQUFPLEVBRUwsdUJBQXVCLEVBQ3ZCLFNBQVMsRUFHVCxTQUFTLEVBQ1QsaUJBQWlCLEVBR2pCLE1BQU0sRUFDTixRQUFRLEdBQ1QsTUFBTSxlQUFlLENBQUM7QUFFdkIsT0FBTyxFQUFFLE9BQU8sRUFBRSxNQUFNLGlCQUFpQixDQUFDO0FBRzFDLE9BQU8sRUFBRSxPQUFPLEVBQUUsWUFBWSxFQUFFLE1BQU0sTUFBTSxDQUFDO0FBRTdDLE9BQU8sRUFBRSxVQUFVLEVBQUUsTUFBTSxxQkFBcUIsQ0FBQztBQUVqRCxPQUFPLEVBQUUsWUFBWSxFQUFlLE1BQU0seUJBQXlCLENBQUM7QUFDcEUsT0FBTyxFQUFFLFFBQVEsRUFBRSxNQUFNLHNCQUFzQixDQUFDO0FBSWhELE9BQU8sRUFHTCxTQUFTLEdBQ1YsTUFBTSx3QkFBd0IsQ0FBQzs7OztBQUVoQzs7Ozs7O0dBTUc7QUFtQkgsTUFBTSxPQUFPLGlCQUFpQjtJQTJDaEI7SUFDRjtJQUNBO0lBQ0E7SUFDa0M7SUE1Q3BDLGNBQWMsR0FBRyxJQUFJLFlBQVksRUFBRSxDQUFDO0lBQ3BDLE1BQU0sQ0FBMkI7SUFFekMsb0RBQW9EO0lBQy9CLFNBQVMsQ0FBYztJQUU1Qyw0REFBNEQ7SUFDNUQsVUFBVSxDQUE0QjtJQUV0QyxxQ0FBcUM7SUFDckMsZUFBZSxDQUFXO0lBRTFCLG1DQUFtQztJQUNuQyxhQUFhLENBQVc7SUFFeEIsdURBQXVEO0lBQ3ZELHVCQUF1QixDQUFnQjtJQUV2QyxxREFBcUQ7SUFDckQscUJBQXFCLENBQWdCO0lBRXJDLDBEQUEwRDtJQUMxRCxRQUFRLENBQVU7SUFFbEIsc0NBQXNDO0lBQ3RDLGVBQWUsQ0FBNkM7SUFFNUQsNENBQTRDO0lBQ25DLGNBQWMsR0FBRyxJQUFJLE9BQU8sRUFBUSxDQUFDO0lBRTlDLGlEQUFpRDtJQUNqRCxZQUFZLEdBQUcsS0FBSyxDQUFDO0lBRXJCLG9EQUFvRDtJQUNwRCxtQkFBbUIsQ0FBVTtJQUU3Qix1REFBdUQ7SUFDdkQsY0FBYyxDQUFnQjtJQUU5QixZQUNZLFdBQXVCLEVBQ3pCLGtCQUFxQyxFQUNyQyxZQUFzQyxFQUN0QyxZQUE0QixFQUNNLFlBQXlCO1FBSnpELGdCQUFXLEdBQVgsV0FBVyxDQUFZO1FBQ3pCLHVCQUFrQixHQUFsQixrQkFBa0IsQ0FBbUI7UUFDckMsaUJBQVksR0FBWixZQUFZLENBQTBCO1FBQ3RDLGlCQUFZLEdBQVosWUFBWSxDQUFnQjtRQUNNLGlCQUFZLEdBQVosWUFBWSxDQUFhO0lBQ2xFLENBQUM7SUFFSixRQUFRO1FBQ04sSUFBSSxDQUFDLGVBQWUsR0FBRyxJQUFJLENBQUMsVUFBVSxDQUFDLE9BQU8sQ0FBQyxDQUFDLENBQUMsY0FBYyxDQUFDLENBQUMsQ0FBQyxnQkFBZ0IsQ0FBQztJQUNyRixDQUFDO0lBRUQsZUFBZTtRQUNiLElBQUksQ0FBQyxjQUFjLENBQUMsR0FBRyxDQUNyQixJQUFJLENBQUMsVUFBVSxDQUFDLFlBQVksQ0FBQyxTQUFTLENBQUMsR0FBRyxFQUFFO1lBQzFDLElBQUksQ0FBQyxrQkFBa0IsQ0FBQyxZQUFZLEVBQUUsQ0FBQztRQUN6QyxDQUFDLENBQUMsQ0FDSCxDQUFDO1FBQ0YsSUFBSSxDQUFDLFNBQVMsQ0FBQyxlQUFlLEVBQUUsQ0FBQztJQUNuQyxDQUFDO0lBRUQsV0FBVztRQUNULElBQUksQ0FBQyxjQUFjLENBQUMsV0FBVyxFQUFFLENBQUM7UUFDbEMsSUFBSSxDQUFDLGNBQWMsQ0FBQyxRQUFRLEVBQUUsQ0FBQztJQUNqQyxDQUFDO0lBRUQsb0JBQW9CLENBQUMsS0FBa0M7UUFDckQsTUFBTSxTQUFTLEdBQUcsSUFBSSxDQUFDLE1BQU0sQ0FBQyxTQUFTLENBQUM7UUFDeEMsTUFBTSxLQUFLLEdBQUcsS0FBSyxDQUFDLEtBQUssQ0FBQztRQUMxQixNQUFNLE9BQU8sR0FBRyxTQUFTLFlBQVksU0FBUyxDQUFDO1FBRS9DLElBQUksS0FBSyxJQUFJLENBQUMsT0FBTyxJQUFJLENBQUMsSUFBSSxDQUFDLFlBQVksQ0FBQyxRQUFRLENBQUMsS0FBSyxFQUFFLFNBQXlCLENBQUMsQ0FBQyxFQUFFLENBQUM7WUFDeEYsSUFBSSxDQUFDLE1BQU0sQ0FBQyxHQUFHLENBQUMsS0FBSyxDQUFDLENBQUM7UUFDekIsQ0FBQztRQUVELElBQUksQ0FBQyxJQUFJLENBQUMsTUFBTSxJQUFJLElBQUksQ0FBQyxNQUFNLENBQUMsVUFBVSxFQUFFLEVBQUUsQ0FBQztZQUM3QyxJQUFJLENBQUMsVUFBVSxDQUFDLEtBQUssRUFBRSxDQUFDO1FBQzFCLENBQUM7SUFDSCxDQUFDO0lBRUQsbUJBQW1CLENBQUMsS0FBc0M7UUFDeEQsSUFBSSxDQUFDLE1BQU0sQ0FBQyxlQUFlLENBQUMsS0FBSyxDQUFDLEtBQXFCLEVBQUUsSUFBSSxDQUFDLENBQUM7SUFDakUsQ0FBQztJQUVELG1CQUFtQjtRQUNqQixJQUFJLENBQUMsZUFBZSxHQUFHLE1BQU0sQ0FBQztRQUM5QixJQUFJLENBQUMsa0JBQWtCLENBQUMsWUFBWSxFQUFFLENBQUM7SUFDekMsQ0FBQztJQUVELHFCQUFxQixDQUFDLEtBQXFCO1FBQ3pDLElBQUksQ0FBQyxZQUFZLEdBQUcsS0FBSyxDQUFDLFNBQVMsS0FBSyxPQUFPLENBQUM7UUFFaEQsSUFBSSxDQUFDLElBQUksQ0FBQyxZQUFZLEVBQUUsQ0FBQztZQUN2QixJQUFJLENBQUMsY0FBYyxDQUFDLElBQUksRUFBRSxDQUFDO1FBQzdCLENBQUM7SUFDSCxDQUFDO0lBRUQsWUFBWTtRQUNWLE9BQU8sSUFBSSxDQUFDLE1BQU0sRUFBRSxTQUErQyxDQUFDO0lBQ3RFLENBQUM7SUFFRCxtQkFBbUI7UUFDakIsTUFBTSxRQUFRLEdBQUksSUFBSSxDQUFDLE1BQU0sQ0FBQyxTQUFpQyxJQUFJLElBQUksQ0FBQyxZQUFZLENBQUMsS0FBSyxFQUFFLENBQUM7UUFDN0YsT0FBTyxRQUFRO1lBQ2IsQ0FBQyxDQUFDLElBQUksQ0FBQyxZQUFZLENBQUMsTUFBTSxDQUFDLFFBQVEsRUFBRSxJQUFJLENBQUMsWUFBWSxDQUFDLE9BQU8sQ0FBQyxpQkFBaUIsQ0FBQztZQUNqRixDQUFDLENBQUMsRUFBRSxDQUFDO0lBQ1QsQ0FBQztJQUVELGlFQUFpRTtJQUNqRSxzQkFBc0I7UUFDcEIsSUFBSSxJQUFJLENBQUMsTUFBTSxLQUFLLElBQUksQ0FBQyxZQUFZLEVBQUUsQ0FBQztZQUN0QyxJQUFJLENBQUMsWUFBWSxDQUFDLGVBQWUsQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLFNBQVMsRUFBRSxJQUFJLENBQUMsQ0FBQztRQUNqRSxDQUFDO0lBQ0gsQ0FBQztJQUVEOztPQUVHO0lBQ0gsWUFBWSxDQUFDLGFBQXNCO1FBQ2pDLElBQUksQ0FBQyxNQUFNLEdBQUcsSUFBSSxDQUFDLFlBQVksQ0FBQztRQUVoQyxJQUFJLGFBQWEsRUFBRSxDQUFDO1lBQ2xCLElBQUksQ0FBQyxrQkFBa0IsQ0FBQyxhQUFhLEVBQUUsQ0FBQztRQUMxQyxDQUFDO0lBQ0gsQ0FBQzt1R0E5SFUsaUJBQWlCLDBJQStDTixZQUFZOzJGQS9DdkIsaUJBQWlCLHlaQU9qQixRQUFRLGlGQzFFckIsc2pFQWlFQSwyNUJEQVksUUFBUSx1WUFBRSxPQUFPLHNFQUxmLENBQUMsVUFBVSxDQUFDLGNBQWMsRUFBRSxVQUFVLENBQUMsY0FBYyxDQUFDOzsyRkFPdkQsaUJBQWlCO2tCQWxCN0IsU0FBUzsrQkFDRSxvQkFBb0IsUUFHeEI7d0JBQ0osS0FBSyxFQUFFLG9CQUFvQjt3QkFDM0IsbUJBQW1CLEVBQUUsaUJBQWlCO3dCQUN0Qyx5QkFBeUIsRUFBRSwrQkFBK0I7d0JBQzFELHdCQUF3QixFQUFFLCtCQUErQjt3QkFDekQsa0NBQWtDLEVBQUUsb0JBQW9CO3FCQUN6RCxjQUNXLENBQUMsVUFBVSxDQUFDLGNBQWMsRUFBRSxVQUFVLENBQUMsY0FBYyxDQUFDLFlBQ3hELG1CQUFtQixpQkFDZCxpQkFBaUIsQ0FBQyxJQUFJLG1CQUNwQix1QkFBdUIsQ0FBQyxNQUFNLGNBQ25DLElBQUksV0FDUCxDQUFDLFFBQVEsRUFBRSxPQUFPLEVBQUUsZUFBZSxDQUFDOzswQkFpRDFDLFFBQVE7OzBCQUFJLE1BQU07MkJBQUMsWUFBWTt5Q0F4Q2IsU0FBUztzQkFBN0IsU0FBUzt1QkFBQyxRQUFRIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBAbGljZW5zZVxuICogQ29weXJpZ2h0IEdvb2dsZSBMTEMgQWxsIFJpZ2h0cyBSZXNlcnZlZC5cbiAqXG4gKiBVc2Ugb2YgdGhpcyBzb3VyY2UgY29kZSBpcyBnb3Zlcm5lZCBieSBhbiBNSVQtc3R5bGUgbGljZW5zZSB0aGF0IGNhbiBiZVxuICogZm91bmQgaW4gdGhlIExJQ0VOU0UgZmlsZSBhdCBodHRwczovL2FuZ3VsYXIuaW8vbGljZW5zZVxuICovXG5cbmltcG9ydCB7IENka1BvcnRhbE91dGxldCB9IGZyb20gJ0Bhbmd1bGFyL2Nkay9wb3J0YWwnO1xuXG5pbXBvcnQge1xuICBBZnRlclZpZXdJbml0LFxuICBDaGFuZ2VEZXRlY3Rpb25TdHJhdGVneSxcbiAgQ29tcG9uZW50LFxuICBFbGVtZW50UmVmLFxuICBPbkRlc3Ryb3ksXG4gIFZpZXdDaGlsZCxcbiAgVmlld0VuY2Fwc3VsYXRpb24sXG4gIENoYW5nZURldGVjdG9yUmVmLFxuICBPbkluaXQsXG4gIEluamVjdCxcbiAgT3B0aW9uYWwsXG59IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuXG5pbXBvcnQgeyBOZ0NsYXNzIH0gZnJvbSAnQGFuZ3VsYXIvY29tbW9uJztcbmltcG9ydCB7IEFuaW1hdGlvbkV2ZW50IH0gZnJvbSAnQGFuZ3VsYXIvYW5pbWF0aW9ucyc7XG5cbmltcG9ydCB7IFN1YmplY3QsIFN1YnNjcmlwdGlvbiB9IGZyb20gJ3J4anMnO1xuXG5pbXBvcnQgeyBhbmltYXRpb25zIH0gZnJvbSAnLi4vdXRpbHMvYW5pbWF0aW9ucyc7XG5pbXBvcnQgeyBEYXRlQWRhcHRlciB9IGZyb20gJy4uL2FkYXB0ZXIvZGF0ZS1hZGFwdGVyJztcbmltcG9ydCB7IERBVEVfRk9STUFUUywgRGF0ZUZvcm1hdHMgfSBmcm9tICcuLi9hZGFwdGVyL2RhdGUtZm9ybWF0cyc7XG5pbXBvcnQgeyBDYWxlbmRhciB9IGZyb20gJy4uL2NhbGVuZGFyL2NhbGVuZGFyJztcbmltcG9ydCB7IENhbGVuZGFyVXNlckV2ZW50IH0gZnJvbSAnLi4vY2FsZW5kYXIvY2FsZW5kYXItYm9keSc7XG5cbmltcG9ydCB7IERhdGVwaWNrZXJCYXNlIH0gZnJvbSAnLi9kYXRlcGlja2VyLWJhc2UnO1xuaW1wb3J0IHtcbiAgRXh0cmFjdERhdGVUeXBlRnJvbVNlbGVjdGlvbixcbiAgRGF0ZVNlbGVjdGlvbk1vZGVsLFxuICBEYXRlUmFuZ2UsXG59IGZyb20gJy4vZGF0ZS1zZWxlY3Rpb24tbW9kZWwnO1xuXG4vKipcbiAqIENvbXBvbmVudCB1c2VkIGFzIHRoZSBjb250ZW50IGZvciB0aGUgZGF0ZXBpY2tlciBvdmVybGF5LiBXZSB1c2UgdGhpcyBpbnN0ZWFkIG9mIHVzaW5nXG4gKiBDYWxlbmRhciBkaXJlY3RseSBhcyB0aGUgY29udGVudCBzbyB3ZSBjYW4gY29udHJvbCB0aGUgaW5pdGlhbCBmb2N1cy4gVGhpcyBhbHNvIGdpdmVzIHVzIGFcbiAqIHBsYWNlIHRvIHB1dCBhZGRpdGlvbmFsIGZlYXR1cmVzIG9mIHRoZSBvdmVybGF5IHRoYXQgYXJlIG5vdCBwYXJ0IG9mIHRoZSBjYWxlbmRhciBpdHNlbGYgaW4gdGhlXG4gKiBmdXR1cmUuIChlLmcuIGNvbmZpcm1hdGlvbiBidXR0b25zKS5cbiAqIEBkb2NzLXByaXZhdGVcbiAqL1xuQENvbXBvbmVudCh7XG4gIHNlbGVjdG9yOiAnZGF0ZXBpY2tlci1jb250ZW50JyxcbiAgdGVtcGxhdGVVcmw6ICdkYXRlcGlja2VyLWNvbnRlbnQuaHRtbCcsXG4gIHN0eWxlVXJsOiAnZGF0ZXBpY2tlci1jb250ZW50LnNjc3MnLFxuICBob3N0OiB7XG4gICAgY2xhc3M6ICdkYXRlcGlja2VyLWNvbnRlbnQnLFxuICAgICdbQHRyYW5zZm9ybVBhbmVsXSc6ICdfYW5pbWF0aW9uU3RhdGUnLFxuICAgICcoQHRyYW5zZm9ybVBhbmVsLnN0YXJ0KSc6ICdfaGFuZGxlQW5pbWF0aW9uRXZlbnQoJGV2ZW50KScsXG4gICAgJyhAdHJhbnNmb3JtUGFuZWwuZG9uZSknOiAnX2hhbmRsZUFuaW1hdGlvbkV2ZW50KCRldmVudCknLFxuICAgICdbY2xhc3MuZGF0ZXBpY2tlci1jb250ZW50LXRvdWNoXSc6ICdkYXRlcGlja2VyLnRvdWNoVWknLFxuICB9LFxuICBhbmltYXRpb25zOiBbYW5pbWF0aW9ucy50cmFuc2Zvcm1QYW5lbCwgYW5pbWF0aW9ucy5mYWRlSW5DYWxlbmRhcl0sXG4gIGV4cG9ydEFzOiAnZGF0ZXBpY2tlckNvbnRlbnQnLFxuICBlbmNhcHN1bGF0aW9uOiBWaWV3RW5jYXBzdWxhdGlvbi5Ob25lLFxuICBjaGFuZ2VEZXRlY3Rpb246IENoYW5nZURldGVjdGlvblN0cmF0ZWd5Lk9uUHVzaCxcbiAgc3RhbmRhbG9uZTogdHJ1ZSxcbiAgaW1wb3J0czogW0NhbGVuZGFyLCBOZ0NsYXNzLCBDZGtQb3J0YWxPdXRsZXRdLFxufSlcbmV4cG9ydCBjbGFzcyBEYXRlcGlja2VyQ29udGVudDxTLCBEID0gRXh0cmFjdERhdGVUeXBlRnJvbVNlbGVjdGlvbjxTPj5cbiAgaW1wbGVtZW50cyBPbkluaXQsIEFmdGVyVmlld0luaXQsIE9uRGVzdHJveVxue1xuICBwcml2YXRlIF9zdWJzY3JpcHRpb25zID0gbmV3IFN1YnNjcmlwdGlvbigpO1xuICBwcml2YXRlIF9tb2RlbDogRGF0ZVNlbGVjdGlvbk1vZGVsPFMsIEQ+O1xuXG4gIC8qKiBSZWZlcmVuY2UgdG8gdGhlIGludGVybmFsIGNhbGVuZGFyIGNvbXBvbmVudC4gKi9cbiAgQFZpZXdDaGlsZChDYWxlbmRhcikgX2NhbGVuZGFyOiBDYWxlbmRhcjxEPjtcblxuICAvKiogUmVmZXJlbmNlIHRvIHRoZSBkYXRlcGlja2VyIHRoYXQgY3JlYXRlZCB0aGUgb3ZlcmxheS4gKi9cbiAgZGF0ZXBpY2tlcjogRGF0ZXBpY2tlckJhc2U8YW55LCBTLCBEPjtcblxuICAvKiogU3RhcnQgb2YgdGhlIGNvbXBhcmlzb24gcmFuZ2UuICovXG4gIGNvbXBhcmlzb25TdGFydDogRCB8IG51bGw7XG5cbiAgLyoqIEVuZCBvZiB0aGUgY29tcGFyaXNvbiByYW5nZS4gKi9cbiAgY29tcGFyaXNvbkVuZDogRCB8IG51bGw7XG5cbiAgLyoqIEFSSUEgQWNjZXNzaWJsZSBuYW1lIG9mIHRoZSBgPGlucHV0IHN0YXJ0RGF0ZS8+YCAqL1xuICBzdGFydERhdGVBY2Nlc3NpYmxlTmFtZTogc3RyaW5nIHwgbnVsbDtcblxuICAvKiogQVJJQSBBY2Nlc3NpYmxlIG5hbWUgb2YgdGhlIGA8aW5wdXQgZW5kRGF0ZS8+YCAqL1xuICBlbmREYXRlQWNjZXNzaWJsZU5hbWU6IHN0cmluZyB8IG51bGw7XG5cbiAgLyoqIFdoZXRoZXIgdGhlIGRhdGVwaWNrZXIgaXMgYWJvdmUgb3IgYmVsb3cgdGhlIGlucHV0LiAqL1xuICBfaXNBYm92ZTogYm9vbGVhbjtcblxuICAvKiogQ3VycmVudCBzdGF0ZSBvZiB0aGUgYW5pbWF0aW9uLiAqL1xuICBfYW5pbWF0aW9uU3RhdGU6ICdlbnRlci1kcm9wZG93bicgfCAnZW50ZXItZGlhbG9nJyB8ICd2b2lkJztcblxuICAvKiogRW1pdHMgd2hlbiBhbiBhbmltYXRpb24gaGFzIGZpbmlzaGVkLiAqL1xuICByZWFkb25seSBfYW5pbWF0aW9uRG9uZSA9IG5ldyBTdWJqZWN0PHZvaWQ+KCk7XG5cbiAgLyoqIFdoZXRoZXIgdGhlcmUgaXMgYW4gaW4tcHJvZ3Jlc3MgYW5pbWF0aW9uLiAqL1xuICBfaXNBbmltYXRpbmcgPSBmYWxzZTtcblxuICAvKiogV2hldGhlciB0aGUgY2xvc2UgYnV0dG9uIGN1cnJlbnRseSBoYXMgZm9jdXMuICovXG4gIF9jbG9zZUJ1dHRvbkZvY3VzZWQ6IGJvb2xlYW47XG5cbiAgLyoqIElkIG9mIHRoZSBsYWJlbCBmb3IgdGhlIGByb2xlPVwiZGlhbG9nXCJgIGVsZW1lbnQuICovXG4gIF9kaWFsb2dMYWJlbElkOiBzdHJpbmcgfCBudWxsO1xuXG4gIGNvbnN0cnVjdG9yKFxuICAgIHByb3RlY3RlZCBfZWxlbWVudFJlZjogRWxlbWVudFJlZixcbiAgICBwcml2YXRlIF9jaGFuZ2VEZXRlY3RvclJlZjogQ2hhbmdlRGV0ZWN0b3JSZWYsXG4gICAgcHJpdmF0ZSBfZ2xvYmFsTW9kZWw6IERhdGVTZWxlY3Rpb25Nb2RlbDxTLCBEPixcbiAgICBwcml2YXRlIF9kYXRlQWRhcHRlcjogRGF0ZUFkYXB0ZXI8RD4sXG4gICAgQE9wdGlvbmFsKCkgQEluamVjdChEQVRFX0ZPUk1BVFMpIHByaXZhdGUgX2RhdGVGb3JtYXRzOiBEYXRlRm9ybWF0c1xuICApIHt9XG5cbiAgbmdPbkluaXQoKSB7XG4gICAgdGhpcy5fYW5pbWF0aW9uU3RhdGUgPSB0aGlzLmRhdGVwaWNrZXIudG91Y2hVaSA/ICdlbnRlci1kaWFsb2cnIDogJ2VudGVyLWRyb3Bkb3duJztcbiAgfVxuXG4gIG5nQWZ0ZXJWaWV3SW5pdCgpIHtcbiAgICB0aGlzLl9zdWJzY3JpcHRpb25zLmFkZChcbiAgICAgIHRoaXMuZGF0ZXBpY2tlci5zdGF0ZUNoYW5nZXMuc3Vic2NyaWJlKCgpID0+IHtcbiAgICAgICAgdGhpcy5fY2hhbmdlRGV0ZWN0b3JSZWYubWFya0ZvckNoZWNrKCk7XG4gICAgICB9KVxuICAgICk7XG4gICAgdGhpcy5fY2FsZW5kYXIuZm9jdXNBY3RpdmVDZWxsKCk7XG4gIH1cblxuICBuZ09uRGVzdHJveSgpIHtcbiAgICB0aGlzLl9zdWJzY3JpcHRpb25zLnVuc3Vic2NyaWJlKCk7XG4gICAgdGhpcy5fYW5pbWF0aW9uRG9uZS5jb21wbGV0ZSgpO1xuICB9XG5cbiAgX2hhbmRsZVVzZXJTZWxlY3Rpb24oZXZlbnQ6IENhbGVuZGFyVXNlckV2ZW50PEQgfCBudWxsPikge1xuICAgIGNvbnN0IHNlbGVjdGlvbiA9IHRoaXMuX21vZGVsLnNlbGVjdGlvbjtcbiAgICBjb25zdCB2YWx1ZSA9IGV2ZW50LnZhbHVlO1xuICAgIGNvbnN0IGlzUmFuZ2UgPSBzZWxlY3Rpb24gaW5zdGFuY2VvZiBEYXRlUmFuZ2U7XG5cbiAgICBpZiAodmFsdWUgJiYgKGlzUmFuZ2UgfHwgIXRoaXMuX2RhdGVBZGFwdGVyLnNhbWVEYXRlKHZhbHVlLCBzZWxlY3Rpb24gYXMgdW5rbm93biBhcyBEKSkpIHtcbiAgICAgIHRoaXMuX21vZGVsLmFkZCh2YWx1ZSk7XG4gICAgfVxuXG4gICAgaWYgKCF0aGlzLl9tb2RlbCB8fCB0aGlzLl9tb2RlbC5pc0NvbXBsZXRlKCkpIHtcbiAgICAgIHRoaXMuZGF0ZXBpY2tlci5jbG9zZSgpO1xuICAgIH1cbiAgfVxuXG4gIF9oYW5kbGVVc2VyRHJhZ0Ryb3AoZXZlbnQ6IENhbGVuZGFyVXNlckV2ZW50PERhdGVSYW5nZTxEPj4pIHtcbiAgICB0aGlzLl9tb2RlbC51cGRhdGVTZWxlY3Rpb24oZXZlbnQudmFsdWUgYXMgdW5rbm93biBhcyBTLCB0aGlzKTtcbiAgfVxuXG4gIF9zdGFydEV4aXRBbmltYXRpb24oKSB7XG4gICAgdGhpcy5fYW5pbWF0aW9uU3RhdGUgPSAndm9pZCc7XG4gICAgdGhpcy5fY2hhbmdlRGV0ZWN0b3JSZWYubWFya0ZvckNoZWNrKCk7XG4gIH1cblxuICBfaGFuZGxlQW5pbWF0aW9uRXZlbnQoZXZlbnQ6IEFuaW1hdGlvbkV2ZW50KSB7XG4gICAgdGhpcy5faXNBbmltYXRpbmcgPSBldmVudC5waGFzZU5hbWUgPT09ICdzdGFydCc7XG5cbiAgICBpZiAoIXRoaXMuX2lzQW5pbWF0aW5nKSB7XG4gICAgICB0aGlzLl9hbmltYXRpb25Eb25lLm5leHQoKTtcbiAgICB9XG4gIH1cblxuICBfZ2V0U2VsZWN0ZWQoKSB7XG4gICAgcmV0dXJuIHRoaXMuX21vZGVsPy5zZWxlY3Rpb24gYXMgdW5rbm93biBhcyBEIHwgRGF0ZVJhbmdlPEQ+IHwgbnVsbDtcbiAgfVxuXG4gIF9nZXRTZWxlY3RlZERpc3BsYXkoKSB7XG4gICAgY29uc3Qgc2VsZWN0ZWQgPSAodGhpcy5fbW9kZWwuc2VsZWN0aW9uIGFzIHVua25vd24gYXMgRCB8IG51bGwpIHx8IHRoaXMuX2RhdGVBZGFwdGVyLnRvZGF5KCk7XG4gICAgcmV0dXJuIHNlbGVjdGVkXG4gICAgICA/IHRoaXMuX2RhdGVBZGFwdGVyLmZvcm1hdChzZWxlY3RlZCwgdGhpcy5fZGF0ZUZvcm1hdHMuZGlzcGxheS5kYXlNb250aERhdGVMYWJlbClcbiAgICAgIDogJyc7XG4gIH1cblxuICAvKiogQXBwbGllcyB0aGUgY3VycmVudCBwZW5kaW5nIHNlbGVjdGlvbiB0byB0aGUgZ2xvYmFsIG1vZGVsLiAqL1xuICBfYXBwbHlQZW5kaW5nU2VsZWN0aW9uKCkge1xuICAgIGlmICh0aGlzLl9tb2RlbCAhPT0gdGhpcy5fZ2xvYmFsTW9kZWwpIHtcbiAgICAgIHRoaXMuX2dsb2JhbE1vZGVsLnVwZGF0ZVNlbGVjdGlvbih0aGlzLl9tb2RlbC5zZWxlY3Rpb24sIHRoaXMpO1xuICAgIH1cbiAgfVxuXG4gIC8qKlxuICAgKiBAcGFyYW0gZm9yY2VSZXJlbmRlclxuICAgKi9cbiAgX2Fzc2lnbk1vZGVsKGZvcmNlUmVyZW5kZXI6IGJvb2xlYW4pIHtcbiAgICB0aGlzLl9tb2RlbCA9IHRoaXMuX2dsb2JhbE1vZGVsO1xuXG4gICAgaWYgKGZvcmNlUmVyZW5kZXIpIHtcbiAgICAgIHRoaXMuX2NoYW5nZURldGVjdG9yUmVmLmRldGVjdENoYW5nZXMoKTtcbiAgICB9XG4gIH1cbn1cbiIsIjxkaXZcbiAgY2RrVHJhcEZvY3VzXG4gIHJvbGU9XCJkaWFsb2dcIlxuICBjbGFzcz1cImZsZXggZmxleC1jb2wgZmxleC1hdXRvIG92ZXJmbG93LWhpZGRlbiByb3VuZGVkLWxnXCJcbiAgW2F0dHIuYXJpYS1tb2RhbF09XCJ0cnVlXCJcbiAgW2F0dHIuYXJpYS1sYWJlbGxlZGJ5XT1cIl9kaWFsb2dMYWJlbElkID8/IHVuZGVmaW5lZFwiXG4+XG4gIDxkaXYgY2xhc3M9XCJmbGV4IGZsZXgtY29sIHB4LTMgcHktMiBiZy1wcmltYXJ5XCI+XG4gICAgPGRpdiBjbGFzcz1cImZsZXggZmxleC1jb2xcIj5cbiAgICAgIDxzcGFuIGNsYXNzPVwidGV4dC14cyBmb250LW5vcm1hbCB0cmFja2luZy13aWRlciB1cHBlcmNhc2UgdGV4dC1wcmltYXJ5LWNvbnRlbnRcIj5cbiAgICAgICAgU2VsZWN0ZWQgZGF0ZVxuICAgICAgPC9zcGFuPlxuICAgIDwvZGl2PlxuICAgIDxkaXYgY2xhc3M9XCJmbGV4IGZsZXgtY29sIG10LTRcIj5cbiAgICAgIDxzcGFuIGNsYXNzPVwidGV4dC14bCBmb250LW5vcm1hbCB0ZXh0LXByaW1hcnktY29udGVudFwiPlxuICAgICAgICB7eyBfZ2V0U2VsZWN0ZWREaXNwbGF5KCkgfX1cbiAgICAgIDwvc3Bhbj5cbiAgICA8L2Rpdj5cbiAgPC9kaXY+XG5cbiAgPGNhbGVuZGFyXG4gICAgY2xhc3M9XCJmbGV4LWF1dG9cIlxuICAgIFtpZF09XCJkYXRlcGlja2VyLmlkXCJcbiAgICBbbmdDbGFzc109XCJkYXRlcGlja2VyLnBhbmVsQ2xhc3NcIlxuICAgIFtzdGFydEF0XT1cImRhdGVwaWNrZXIuc3RhcnRBdFwiXG4gICAgW3N0YXJ0Vmlld109XCJkYXRlcGlja2VyLnN0YXJ0Vmlld1wiXG4gICAgW21pbkRhdGVdPVwiZGF0ZXBpY2tlci5fZ2V0TWluRGF0ZSgpXCJcbiAgICBbbWF4RGF0ZV09XCJkYXRlcGlja2VyLl9nZXRNYXhEYXRlKClcIlxuICAgIFtkYXRlRmlsdGVyXT1cImRhdGVwaWNrZXIuX2dldERhdGVGaWx0ZXIoKVwiXG4gICAgW2hlYWRlckNvbXBvbmVudF09XCJkYXRlcGlja2VyLmNhbGVuZGFySGVhZGVyQ29tcG9uZW50XCJcbiAgICBbc2VsZWN0ZWRdPVwiX2dldFNlbGVjdGVkKClcIlxuICAgIFtkYXRlQ2xhc3NdPVwiZGF0ZXBpY2tlci5kYXRlQ2xhc3NcIlxuICAgIFtjb21wYXJpc29uU3RhcnRdPVwiY29tcGFyaXNvblN0YXJ0XCJcbiAgICBbY29tcGFyaXNvbkVuZF09XCJjb21wYXJpc29uRW5kXCJcbiAgICBbQGZhZGVJbkNhbGVuZGFyXT1cIidlbnRlcidcIlxuICAgIFtzdGFydERhdGVBY2Nlc3NpYmxlTmFtZV09XCJzdGFydERhdGVBY2Nlc3NpYmxlTmFtZVwiXG4gICAgW2VuZERhdGVBY2Nlc3NpYmxlTmFtZV09XCJlbmREYXRlQWNjZXNzaWJsZU5hbWVcIlxuICAgICh5ZWFyU2VsZWN0ZWQpPVwiZGF0ZXBpY2tlci5fc2VsZWN0WWVhcigkZXZlbnQpXCJcbiAgICAobW9udGhTZWxlY3RlZCk9XCJkYXRlcGlja2VyLl9zZWxlY3RNb250aCgkZXZlbnQpXCJcbiAgICAodmlld0NoYW5nZWQpPVwiZGF0ZXBpY2tlci5fdmlld0NoYW5nZWQoJGV2ZW50KVwiXG4gICAgKF91c2VyU2VsZWN0aW9uKT1cIl9oYW5kbGVVc2VyU2VsZWN0aW9uKCRldmVudClcIlxuICAgIChfdXNlckRyYWdEcm9wKT1cIl9oYW5kbGVVc2VyRHJhZ0Ryb3AoJGV2ZW50KVwiXG4gIC8+XG5cbiAgPGRpdiBjbGFzcz1cImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktZW5kIHctZnVsbCBnYXAtMyBweC0zIHB5LTNcIj5cbiAgICA8YnV0dG9uXG4gICAgICB0eXBlPVwiYnV0dG9uXCJcbiAgICAgIGNsYXNzPVwiYnRuXCJcbiAgICAgIFtjbGFzcy5jZGstdmlzdWFsbHktaGlkZGVuXT1cIiFfY2xvc2VCdXR0b25Gb2N1c2VkXCJcbiAgICAgIChmb2N1cyk9XCJfY2xvc2VCdXR0b25Gb2N1c2VkID0gdHJ1ZVwiXG4gICAgICAoYmx1cik9XCJfY2xvc2VCdXR0b25Gb2N1c2VkID0gZmFsc2VcIlxuICAgICAgKGNsaWNrKT1cImRhdGVwaWNrZXIuY2xvc2UoKVwiXG4gICAgPlxuICAgICAgQ2xvc2VcbiAgICA8L2J1dHRvbj5cblxuICAgIDxidXR0b25cbiAgICAgIHR5cGU9XCJidXR0b25cIlxuICAgICAgY2xhc3M9XCJidG4gYnRuLXByaW1hcnlcIlxuICAgICAgKGNsaWNrKT1cImRhdGVwaWNrZXIuYXBwbHkoKVwiXG4gICAgPlxuICAgICAgQXBwbHlcbiAgICA8L2J1dHRvbj5cbiAgPC9kaXY+XG48L2Rpdj5cbiJdfQ==

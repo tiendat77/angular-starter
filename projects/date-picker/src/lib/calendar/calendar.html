@@ -1,0 +1,52 @@
+<ng-template [cdkPortalOutlet]="_calendarHeaderPortal" />
+
+<div
+  class="px-3 pt-1.5"
+  cdkMonitorSubtreeFocus
+  tabindex="-1"
+>
+  @switch (currentView) {
+    @case ('month') {
+      <month-view
+        [selected]="selected"
+        [dateFilter]="dateFilter"
+        [maxDate]="maxDate"
+        [minDate]="minDate"
+        [dateClass]="dateClass"
+        [comparisonStart]="comparisonStart"
+        [comparisonEnd]="comparisonEnd"
+        [activeDrag]="_activeDrag"
+        [(activeDate)]="activeDate"
+        (_userSelection)="_dateSelected($event)"
+        (dragStarted)="_dragStarted($event)"
+        (dragEnded)="_dragEnded($event)"
+      />
+    }
+
+    @case ('year') {
+      <year-view
+        [selected]="selected"
+        [dateFilter]="dateFilter"
+        [maxDate]="maxDate"
+        [minDate]="minDate"
+        [dateClass]="dateClass"
+        [(activeDate)]="activeDate"
+        (monthSelected)="_monthSelectedInYearView($event)"
+        (selectedChange)="_goToDateInView($event, 'month')"
+      />
+    }
+
+    @case ('multi-year') {
+      <multi-year-view
+        [selected]="selected"
+        [dateFilter]="dateFilter"
+        [maxDate]="maxDate"
+        [minDate]="minDate"
+        [dateClass]="dateClass"
+        [(activeDate)]="activeDate"
+        (yearSelected)="_yearSelectedInMultiYearView($event)"
+        (selectedChange)="_goToDateInView($event, 'year')"
+      />
+    }
+  }
+</div>

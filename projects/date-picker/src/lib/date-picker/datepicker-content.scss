@@ -1,0 +1,83 @@
+$calendar-padding: 0.5rem; // 8px
+$non-touch-calendar-cell-size: 3rem; // 40px
+$non-touch-calendar-width: $non-touch-calendar-cell-size * 7 + $calendar-padding * 2;
+// Based on the natural height of the calendar in a month with 6 rows of dates
+// (largest the calendar will get).
+$non-touch-calendar-height: 24rem; // 384px
+
+.datepicker-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem; // 8px
+  background-color: oklch(var(--b1));
+  box-shadow:
+    0 0 #0000,
+    0 0 #0000,
+    rgba(var(--shadow-card-rgb), 0.2) 0px 8px 24px;
+
+  .calendar {
+    width: $non-touch-calendar-width;
+    height: $non-touch-calendar-height;
+  }
+}
+
+// Ideally the calendar would have a constant aspect ratio, no matter its size, and we would base
+// these measurements off the aspect ratio. Unfortunately, the aspect ratio does change a little as
+// the calendar grows, since some of the elements have pixel-based sizes. These numbers have been
+// chosen to minimize extra whitespace at larger sizes, while still ensuring we won't need
+// scrollbars at smaller sizes.
+$touch-landscape-width: 64vh;
+$touch-landscape-height: 80vh;
+$touch-portrait-width: 80vw;
+$touch-portrait-height: 100vw;
+$touch-portrait-height-with-actions: 115vw;
+$touch-min-width: 250px;
+$touch-min-height: 312px;
+$touch-max-width: 750px;
+$touch-max-height: 788px;
+
+.datepicker-content-container {
+  display: flex;
+  flex-direction: column;
+
+  // Ensures that `datepicker-actions` is pushed to the bottom of the popup.
+  justify-content: space-between;
+}
+
+.datepicker-content-touch {
+  display: block;
+  max-height: 80vh;
+
+  // Allows for the screen reader close button to be seen in touch UI mode.
+  position: relative;
+
+  // Prevents the content from jumping around on Windows while the animation is running.
+  overflow: visible;
+
+  .datepicker-content-container {
+    min-height: $touch-min-height;
+    max-height: $touch-max-height;
+    min-width: $touch-min-width;
+    max-width: $touch-max-width;
+  }
+
+  .calendar {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media all and (orientation: landscape) {
+  .datepicker-content-touch .datepicker-content-container {
+    width: $touch-landscape-width;
+    height: $touch-landscape-height;
+  }
+}
+
+@media all and (orientation: portrait) {
+  .datepicker-content-touch .datepicker-content-container {
+    width: $touch-portrait-width;
+    height: $touch-portrait-height;
+  }
+}

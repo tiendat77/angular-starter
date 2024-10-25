@@ -26,6 +26,23 @@
     <button class="btn">
       <svg-icon name="heroicons_outline:camera" />
     </button>
+
+    <div class="form-control">
+      <div class="label">Pick a date</div>
+
+      <label class="flex items-center w-full gap-2 input input-bordered">
+        <datepicker-toggle [for]="datePicker" />
+
+        <input
+          type="string"
+          class="grow"
+          formControlName="birthday"
+          [datepicker]="datePicker"
+        />
+      </label>
+
+      <date-picker #datePicker />
+    </div>
   </div>
 </section>
 

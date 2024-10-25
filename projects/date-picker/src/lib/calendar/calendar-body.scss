@@ -1,0 +1,90 @@
+@use 'sass:math';
+
+// We don't want the label to jump around when we switch between month and year views, so we use
+// the same amount of padding regardless of the number of columns. We align the header label with
+// the one third mark of the first cell, this was chosen somewhat arbitrarily to make it look
+// roughly like the mock. Half way is too far since the cell text is center aligned.
+$calendar-body-label-side-padding: math.div(33%, 7) !default;
+$calendar-body-cell-min-size: 2.5rem !default;
+$calendar-body-cell-content-margin: 5% !default;
+$calendar-body-cell-content-border-width: 1px !default;
+$calendar-body-cell-radius: 999px !default;
+
+$calendar-body-min-size: 7 * $calendar-body-cell-min-size !default;
+$calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 !default;
+
+.calendar-body {
+  min-width: $calendar-body-min-size;
+}
+
+.calendar-body-today {
+  border-color: var(--border) !important;
+}
+
+.calendar-body-label {
+  height: 0;
+  line-height: 0;
+  text-align: start;
+  padding-left: $calendar-body-label-side-padding;
+  padding-right: $calendar-body-label-side-padding;
+}
+
+// Label that is not rendered and removed from the accessibility tree.
+.calendar-body-hidden-label {
+  display: none;
+}
+
+.calendar-body-cell-container {
+  position: relative;
+  height: 0;
+  line-height: 0;
+}
+
+.calendar-body-cell {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: none;
+  text-align: center;
+  outline: none;
+  font-family: inherit;
+  margin: 0;
+}
+
+.calendar-body-cell-content {
+  top: $calendar-body-cell-content-margin;
+  left: $calendar-body-cell-content-margin;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+  width: $calendar-body-cell-content-size;
+  height: $calendar-body-cell-content-size;
+
+  // Prevents text being off-center on Android.
+  line-height: 1;
+
+  border-width: $calendar-body-cell-content-border-width;
+  border-style: solid;
+  // Choosing a value clearly larger than the height ensures we get the correct capsule shape.
+  border-radius: $calendar-body-cell-radius;
+  border-color: transparent;
+
+  // Increase specificity because focus indicator styles are part of the `core` mixin and can
+  // potentially overwrite the absolute position of the container.
+  &.focus-indicator {
+    position: absolute;
+  }
+}
+
+.calendar-body-active {
+  .calendar-body-cell-content {
+    background-color: var(--primary);
+    color: var(--on-primary);
+  }
+}

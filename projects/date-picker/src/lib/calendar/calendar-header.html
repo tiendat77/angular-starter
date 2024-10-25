@@ -1,0 +1,84 @@
+<div class="px-3 pt-2.5 pb-0 flex items-center justify-between">
+  <!-- [Firefox Issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1880533]
+    Relocated label next to related button and made visually hidden via cdk-visually-hidden
+    to enable label to appear in a11y tree for SR when using Firefox -->
+  <label
+    class="hidden cdk-visually-hidden"
+    for=""
+    [id]="_periodButtonLabelId"
+  >
+    {{ periodButtonDescription }}
+  </label>
+
+  <button
+    class="btn btn-ghost"
+    aria-live="polite"
+    [attr.aria-label]="periodButtonLabel"
+    [attr.aria-describedby]="_periodButtonLabelId"
+    (click)="currentPeriodClicked()"
+  >
+    <span aria-hidden="true">{{ periodButtonText }}</span>
+
+    <svg
+      class="w-3 h-3"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="3"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="m19.5 8.25-7.5 7.5-7.5-7.5"
+      />
+    </svg>
+  </button>
+
+  <div class="flex-auto"></div>
+
+  <ng-content />
+
+  <button
+    type="button"
+    class="btn btn-ghost btn-circle btn-sm"
+    [disabled]="!previousEnabled()"
+    [attr.aria-label]="prevButtonLabel"
+    (click)="previousClicked()"
+  >
+    <svg
+      class="w-6 h-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M15.75 19.5 8.25 12l7.5-7.5"
+      />
+    </svg>
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-ghost btn-circle btn-sm"
+    [disabled]="!nextEnabled()"
+    [attr.aria-label]="nextButtonLabel"
+    (click)="nextClicked()"
+  >
+    <svg
+      class="w-6 h-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="m8.25 4.5 7.5 7.5-7.5 7.5"
+      />
+    </svg>
+  </button>
+</div>

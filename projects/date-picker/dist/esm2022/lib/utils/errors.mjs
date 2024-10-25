@@ -1,0 +1,14 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/** @docs-private */
+export function createMissingDateImplError(provider) {
+    return Error(`Datepicker: No provider found for ${provider}. You must add one of the following ` +
+        'to your app config: provideNativeDateAdapter, provideDateFnsAdapter, ' +
+        'provideLuxonDateAdapter, provideMomentDateAdapter, or provide a custom implementation.');
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZXJyb3JzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vc3JjL2xpYi91dGlscy9lcnJvcnMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7OztHQU1HO0FBRUgsb0JBQW9CO0FBQ3BCLE1BQU0sVUFBVSwwQkFBMEIsQ0FBQyxRQUFnQjtJQUN6RCxPQUFPLEtBQUssQ0FDVixxQ0FBcUMsUUFBUSxzQ0FBc0M7UUFDakYsdUVBQXVFO1FBQ3ZFLHdGQUF3RixDQUMzRixDQUFDO0FBQ0osQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuXG4vKiogQGRvY3MtcHJpdmF0ZSAqL1xuZXhwb3J0IGZ1bmN0aW9uIGNyZWF0ZU1pc3NpbmdEYXRlSW1wbEVycm9yKHByb3ZpZGVyOiBzdHJpbmcpIHtcbiAgcmV0dXJuIEVycm9yKFxuICAgIGBEYXRlcGlja2VyOiBObyBwcm92aWRlciBmb3VuZCBmb3IgJHtwcm92aWRlcn0uIFlvdSBtdXN0IGFkZCBvbmUgb2YgdGhlIGZvbGxvd2luZyBgICtcbiAgICAgICd0byB5b3VyIGFwcCBjb25maWc6IHByb3ZpZGVOYXRpdmVEYXRlQWRhcHRlciwgcHJvdmlkZURhdGVGbnNBZGFwdGVyLCAnICtcbiAgICAgICdwcm92aWRlTHV4b25EYXRlQWRhcHRlciwgcHJvdmlkZU1vbWVudERhdGVBZGFwdGVyLCBvciBwcm92aWRlIGEgY3VzdG9tIGltcGxlbWVudGF0aW9uLidcbiAgKTtcbn1cbiJdfQ==

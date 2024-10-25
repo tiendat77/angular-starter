@@ -1,0 +1,13 @@
+.calendar {
+  .calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .calendar-table-header th {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--text-hint);
+    padding-bottom: 0.5rem;
+  }
+}

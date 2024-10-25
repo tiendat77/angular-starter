@@ -5,6 +5,7 @@ import { DialogService } from '@libs/dialog';
 import { LoaderService } from '@libs/loader';
 import { ToastService } from '@libs/toast';
 import { SvgIcon } from '@libs/svg-icon';
+import { DatepickerModule, provideLuxonDateAdapter } from '@libs/date-picker';
 import { NavigationItem, VerticalNavigationComponent } from '@libs/navigation';
 
 import { ExampleDialogComponent } from './example-dialog/example-dialog.component';
@@ -12,9 +13,10 @@ import { ExampleDialogComponent } from './example-dialog/example-dialog.componen
 @Component({
   selector: 'app-example',
   standalone: true,
-  imports: [WelcomeComponent, SvgIcon, VerticalNavigationComponent],
+  imports: [WelcomeComponent, SvgIcon, VerticalNavigationComponent, DatepickerModule],
   templateUrl: './example.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideLuxonDateAdapter()],
 })
 export class ExampleComponent {
   navigation: NavigationItem[] = [
