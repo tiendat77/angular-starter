@@ -1,0 +1,52 @@
+<div
+  class="relative z-0 flex flex-col overflow-x-hidden overflow-y-auto transition duration-200 bg-base-100 rounded-md w-auto h-auto max-w-[90vw] max-h-[90vh] md:max-w-[700px]"
+>
+  <!-- Indicator -->
+  <div
+    class="absolute top-0 z-[11] w-full h-1 bg-red"
+    [ngClass]="{
+      'bg-info': data.type === 'info',
+      'bg-success': data.type === 'success',
+      'bg-warning': data.type === 'warning',
+      'bg-error': data.type === 'error',
+    }"
+  ></div>
+
+  <!-- Body -->
+  <div class="flex flex-col flex-auto w-full px-3 py-6 space-y-3 lg:px-4">
+    <h2
+      class="text-lg font-semibold truncate sm:text-xl"
+      [innerHTML]="data.title"
+    ></h2>
+
+    <p
+      class="text-base-content text-opacity-80"
+      [innerHTML]="data.message"
+    ></p>
+  </div>
+
+  <!-- Footer -->
+  <div
+    class="sticky bottom-0 z-10 flex items-center w-full gap-4 p-3 dialog-actions lg:px-4 sm:justify-end bg-base-100"
+  >
+    <button
+      class="btn btn-outline"
+      (click)="dialogRef.close()"
+    >
+      Close
+    </button>
+
+    <button
+      class="btn btn-primary"
+      [ngClass]="{
+        'btn-info': data.type === 'info',
+        'btn-success': data.type === 'success',
+        'btn-warning': data.type === 'warning',
+        'btn-error': data.type === 'error',
+      }"
+      (click)="dialogRef.close(true)"
+    >
+      Confirm
+    </button>
+  </div>
+</div>

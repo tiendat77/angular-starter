@@ -129,6 +129,66 @@
           }
         }
       }
+    },
+    "dialog": {
+      "projectType": "library",
+      "root": "projects/dialog",
+      "sourceRoot": "projects/dialog/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/dialog/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/dialog/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/dialog/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/dialog/**/*.ts", "projects/dialog/**/*.html"],
+            "eslintConfig": "projects/dialog/eslint.config.js"
+          }
+        }
+      }
+    },
+    "scrollbar": {
+      "projectType": "library",
+      "root": "projects/scrollbar",
+      "sourceRoot": "projects/scrollbar/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/scrollbar/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/scrollbar/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/scrollbar/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/scrollbar/**/*.ts", "projects/scrollbar/**/*.html"],
+            "eslintConfig": "projects/scrollbar/eslint.config.js"
+          }
+        }
+      }
     }
   },
   "cli": {
