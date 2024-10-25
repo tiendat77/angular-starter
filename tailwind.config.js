@@ -150,6 +150,7 @@ module.exports = {
     ],
   },
   plugins: [
+    require('daisyui'),
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
     require(path.resolve(__dirname, 'tailwind/safe-area')),

@@ -14,7 +14,6 @@ module.exports = tseslint.config(
       indent: ['error', 2, { SwitchCase: 1 }],
       quotes: ['error', 'single', { avoidEscape: true }],
     },
-    ignores: ['**/*.spec.ts', 'dist/**', 'node_modules/**', 'public/**'],
   },
   {
     files: ['**/*.ts'],
@@ -51,7 +50,6 @@ module.exports = tseslint.config(
       indent: ['error', 2, { SwitchCase: 1 }],
       quotes: ['error', 'single', { avoidEscape: true }],
     },
-    ignores: ['**/*.spec.ts', 'dist/**', 'node_modules/**', 'public/**'],
   },
   {
     files: ['**/*.html'],
@@ -76,6 +74,8 @@ module.exports = tseslint.config(
       '@angular-eslint/template/conditional-complexity': ['warn', { maxComplexity: 3 }],
       '@angular-eslint/template/eqeqeq': ['error', { allowNullOrUndefined: true }],
     },
-    ignores: ['dist/**', 'node_modules/**', 'public/**'],
+  },
+  {
+    ignores: ['**/*.spec.ts', 'dist/**', 'node_modules/**', 'public/**', 'projects/**'],
   }
 );
