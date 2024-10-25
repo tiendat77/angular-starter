@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { DialogService } from '@libs/dialog';
 import { LoaderService } from '@libs/loader';
+import { ToastService } from '@libs/toast';
 
 import { ExampleDialogComponent } from './example-dialog/example-dialog.component';
 
@@ -15,6 +16,7 @@ import { ExampleDialogComponent } from './example-dialog/example-dialog.componen
 export class ExampleComponent {
   protected _dialog = inject(DialogService);
   protected _loader = inject(LoaderService);
+  protected _toast = inject(ToastService);
 
   openDialog() {
     this._dialog.open(ExampleDialogComponent, {
@@ -31,5 +33,9 @@ export class ExampleComponent {
     setTimeout(() => {
       this._loader.hide();
     }, 3000);
+  }
+
+  openToast() {
+    this._toast.warning('Message: Lorem ipsum dolor sit amet', 'Hello World');
   }
 }

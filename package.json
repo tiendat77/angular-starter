@@ -27,6 +27,7 @@
     "@libs/dialog": "file:projects/dialog/dist",
     "@libs/loader": "file:projects/loader/dist",
     "@libs/scrollbar": "file:projects/scrollbar/dist",
+    "@libs/toast": "file:projects/toast/dist",
     "@lottiefiles/dotlottie-wc": "^0.2.22",
     "es-toolkit": "^1.25.2",
     "perfect-scrollbar": "^1.5.5",
