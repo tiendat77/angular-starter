@@ -1,0 +1,9 @@
+/*
+ * Public API Surface of loader
+ */
+export * from './lib/loader.component';
+export * from './lib/loader.module';
+export * from './lib/loader.provider';
+export * from './lib/loader.ref';
+export * from './lib/loader.service';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9wdWJsaWMtYXBpLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBRUgsY0FBYyx3QkFBd0IsQ0FBQztBQUN2QyxjQUFjLHFCQUFxQixDQUFDO0FBQ3BDLGNBQWMsdUJBQXVCLENBQUM7QUFDdEMsY0FBYyxrQkFBa0IsQ0FBQztBQUNqQyxjQUFjLHNCQUFzQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLypcbiAqIFB1YmxpYyBBUEkgU3VyZmFjZSBvZiBsb2FkZXJcbiAqL1xuXG5leHBvcnQgKiBmcm9tICcuL2xpYi9sb2FkZXIuY29tcG9uZW50JztcbmV4cG9ydCAqIGZyb20gJy4vbGliL2xvYWRlci5tb2R1bGUnO1xuZXhwb3J0ICogZnJvbSAnLi9saWIvbG9hZGVyLnByb3ZpZGVyJztcbmV4cG9ydCAqIGZyb20gJy4vbGliL2xvYWRlci5yZWYnO1xuZXhwb3J0ICogZnJvbSAnLi9saWIvbG9hZGVyLnNlcnZpY2UnO1xuIl19

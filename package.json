@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@libs/dialog": "file:projects/dialog/dist",
+    "@libs/loader": "file:projects/loader/dist",
     "@libs/scrollbar": "file:projects/scrollbar/dist",
     "@lottiefiles/dotlottie-wc": "^0.2.22",
     "es-toolkit": "^1.25.2",

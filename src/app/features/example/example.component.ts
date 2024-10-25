@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { DialogService } from '@libs/dialog';
+import { LoaderService } from '@libs/loader';
 
 import { ExampleDialogComponent } from './example-dialog/example-dialog.component';
 
@@ -13,6 +14,7 @@ import { ExampleDialogComponent } from './example-dialog/example-dialog.componen
 })
 export class ExampleComponent {
   protected _dialog = inject(DialogService);
+  protected _loader = inject(LoaderService);
 
   openDialog() {
     this._dialog.open(ExampleDialogComponent, {
@@ -21,5 +23,13 @@ export class ExampleComponent {
         message: 'Hello World',
       },
     });
+  }
+
+  openLoader() {
+    this._loader.show();
+
+    setTimeout(() => {
+      this._loader.hide();
+    }, 3000);
   }
 }

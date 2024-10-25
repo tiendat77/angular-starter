@@ -1,0 +1,34 @@
+$loader_dot_color: var(--fallback-p, oklch(var(--p)));
+
+:host {
+  > div {
+    animation: spin 1s linear infinite;
+
+    div {
+      animation: meetup 1.25s infinite ease;
+      background-color: var(--loader_dot_color, $loader_dot_color);
+
+      @for $el from 1 through 4 {
+        &:nth-child(#{$el}) {
+          --rotation: #{90 * $el};
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes meetup {
+  0%,
+  100% {
+    transform: rotate(calc(var(--rotation) * 1deg)) translateY(0);
+  }
+  50% {
+    transform: rotate(calc(var(--rotation) * 1deg)) translateY(200%);
+  }
+}
