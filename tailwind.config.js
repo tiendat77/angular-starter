@@ -1,4 +1,5 @@
 const path = require('path');
+const colors = require('tailwindcss/colors');
 const plugin = require('tailwindcss/plugin');
 
 /**
@@ -40,6 +41,14 @@ const theme = {
   'on-secondary': {
     500: '#ffffff',
     DEFAULT: '#ffffff',
+  },
+  accent: {
+    ...colors.slate,
+    DEFAULT: colors.slate[800],
+  },
+  warn: {
+    ...colors.red,
+    DEFAULT: colors.red[600],
   },
 };
 

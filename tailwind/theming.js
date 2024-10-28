@@ -1,79 +1,15 @@
-import { omitBy, flatten } from 'es-toolkit';
-import { fromPairs, get } from 'es-toolkit/compat';
-
 const chroma = require('chroma-js');
 const plugin = require('tailwindcss/plugin');
 
 const flattenColorPalette = require('tailwindcss/lib/util/flattenColorPalette').default;
 
-// -----------------------------------------------------------------------------------------------------
-// @ Utilities
-// -----------------------------------------------------------------------------------------------------
+import { omitBy, flatten } from 'es-toolkit';
+import { fromPairs, get } from 'es-toolkit/compat';
+import { map } from './utils/object-map';
 
-/**
- * Maps the provided object with the given function.
- *
- * @param obj: any
- * @param fn: (value: any, key: string) => any)
- */
-const map = (obj, fn) => {
-  return Object.keys(obj).map((key) => fn(obj[key], key));
-};
-
-/**
- * Normalizes the provided theme by omitting empty values and values that
- * start with "on" from each palette. Also sets the correct DEFAULT value
- * of each palette.
- * @type {import('./theming').Theme}
- * @param theme: Theme
- */
-const normalizeTheme = (theme) => {
-  return fromPairs(
-    map(
-      omitBy(
-        theme,
-        (palette, paletteName) => `${paletteName}`.startsWith('on') || !Object.keys(palette).length
-      ),
-      (palette, paletteName) => [
-        paletteName,
-        {
-          ...palette,
-          DEFAULT: palette['DEFAULT'] || palette[500],
-        },
-      ]
-    )
-  );
-};
-
-/**
- * Generates contrasting counterparts of the given palette.
- * The provided palette must be in the same format with
- * default Tailwind color palettes.
- * @type {import('./theming').Palette}
- * @param palette: Palette
- */
-const generateContrasts = (palette) => {
-  const lightColor = '#FFFFFF';
-  let darkColor = '#FFFFFF';
-
-  // Iterate through the palette to find the darkest color
-  Object.keys(palette).forEach((hue) => {
-    darkColor =
-      chroma.contrast(palette[hue], '#FFFFFF') > chroma.contrast(darkColor, '#FFFFFF')
-        ? palette[hue]
-        : darkColor;
-  });
-
-  // Generate the contrasting colors
-  return fromPairs(
-    map(palette, (color, hue) => [
-      hue,
-      chroma.contrast(color, darkColor) > chroma.contrast(color, lightColor)
-        ? darkColor
-        : lightColor,
-    ])
-  );
-};
+import material from './material';
+import normalizeTheme from './utils/normalize-theme';
+import generateContrasts from './utils/generate-contrasts';
 
 // -----------------------------------------------------------------------------------------------------
 // @ TailwindCSS Main Plugin
@@ -83,6 +19,9 @@ const generateContrasts = (palette) => {
 const theming = plugin.withOptions(
   (options) =>
     ({ addComponents, e }) => {
+      /**
+       * Generate the CSS variables for each color in the theme.
+       */
       addComponents({
         ':root': fromPairs(
           flatten(
@@ -113,6 +52,11 @@ const theming = plugin.withOptions(
           )
         ),
       });
+
+      /**
+       * Generate themes.scss for Material UI configuration.
+       */
+      material(options.theme);
     },
   (options) => {
     return {
