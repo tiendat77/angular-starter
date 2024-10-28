@@ -6,13 +6,25 @@ import { LoaderService } from '@libs/loader';
 import { ToastService } from '@libs/toast';
 import { SvgIcon } from '@libs/svg-icon';
 import { DatepickerModule, provideLuxonDateAdapter } from '@libs/date-picker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { ExampleDialogComponent } from './example-dialog/example-dialog.component';
 
 @Component({
   selector: 'app-example',
   standalone: true,
-  imports: [WelcomeComponent, SvgIcon, DatepickerModule],
+  imports: [
+    WelcomeComponent,
+    SvgIcon,
+    DatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './example.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideLuxonDateAdapter()],
