@@ -60,7 +60,7 @@ const material = (theme) => {
   }
 
   /* Write the file if the map has been changed */
-  if (data !== sassMap) {
+  if (data.replace(/[\s,]+/g, '').toLowerCase() !== sassMap.replace(/[\s,]+/g, '').toLowerCase()) {
     try {
       fs.writeFileSync(filename, sassMap, { encoding: 'utf8' });
     } catch (err) {
