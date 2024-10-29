@@ -41,7 +41,8 @@
             ],
             "styles": [
               "src/styles/colors.scss",
-              "src/styles/material.scss",
+              "src/styles/material-overrides.scss",
+              "src/styles/material-setup.scss",
               "src/styles/styles.scss",
               "src/styles/tailwind.scss",
               "src/styles/vendors.scss"
@@ -121,7 +122,8 @@
             ],
             "styles": [
               "src/styles/colors.scss",
-              "src/styles/material.scss",
+              "src/styles/material-overrides.scss",
+              "src/styles/material-setup.scss",
               "src/styles/styles.scss",
               "src/styles/tailwind.scss",
               "src/styles/vendors.scss"

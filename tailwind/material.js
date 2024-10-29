@@ -49,7 +49,7 @@ const material = (theme) => {
   const sassMap = jsonToSassMap(JSON.stringify({ themes: themes }));
 
   /* Get the file path */
-  const filename = path.resolve(__dirname, '../src/styles/themes.scss');
+  const filename = path.resolve(__dirname, '../src/styles/material-themes.scss');
 
   /* Read the file and get its data */
   let data;
