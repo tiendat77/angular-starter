@@ -1,6 +1,0 @@
-/*
- * Public API Surface of scrollbar
- */
-export * from './lib/scrollbar.directive';
-export * from './lib/scrollbar.types';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9wdWJsaWMtYXBpLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBRUgsY0FBYywyQkFBMkIsQ0FBQztBQUMxQyxjQUFjLHVCQUF1QixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLypcbiAqIFB1YmxpYyBBUEkgU3VyZmFjZSBvZiBzY3JvbGxiYXJcbiAqL1xuXG5leHBvcnQgKiBmcm9tICcuL2xpYi9zY3JvbGxiYXIuZGlyZWN0aXZlJztcbmV4cG9ydCAqIGZyb20gJy4vbGliL3Njcm9sbGJhci50eXBlcyc7XG4iXX0=

@@ -1,12 +1,12 @@
 /** Angular */
-import { Router } from '@angular/router';
-import { Injectable, inject } from '@angular/core';
 import { HttpBackend, HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 /** Utils */
-import { AuthUtils } from '../helpers/auth.utils';
-import { BehaviorSubject, Observable, forkJoin, from, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, forkJoin, of, throwError } from 'rxjs';
 import { catchError, filter, finalize, switchMap, take, tap } from 'rxjs/operators';
+import { AuthUtils } from '../helpers/auth.utils';
 
 /** Services */
 import { DialogService } from '@libs/dialog';
@@ -14,9 +14,9 @@ import { ToastService } from '@libs/toast';
 import { UserService } from './user.service';
 
 /** Models */
+import { ResponseModel } from '@/api/models';
 import { STORAGE_KEYS } from '@configs/storage.config';
 import { environment } from '@environment';
-import { ResponseModel } from '@/api/models';
 
 @Injectable({
   providedIn: 'root',

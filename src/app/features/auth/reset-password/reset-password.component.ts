@@ -6,6 +6,8 @@ import {
   OnInit,
 } from '@angular/core';
 
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   AbstractControl,
   FormControl,
@@ -15,15 +17,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NgClass, NgTemplateOutlet } from '@angular/common';
 
-import { of, switchMap, takeUntil, throwError } from 'rxjs';
 import { SvgIcon } from '@libs/svg-icon';
+import { of, switchMap, takeUntil, throwError } from 'rxjs';
 
+import { ResponseModel } from '@/api/models';
 import { environment } from '@environment';
 import { BaseComponent } from '@models';
-import { ResponseModel } from '@/api/models';
 import { PasswordValidators } from '../sign-up/validators';
 
 @Component({

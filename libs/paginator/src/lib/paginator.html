@@ -1,0 +1,133 @@
+<div class="flex gap-3">
+  @if (!hidePageSize) {
+    <div class="flex gap-2">
+      <div class="label">
+        <span class="whitespace-nowrap text-base">Page size: </span>
+      </div>
+
+      @if (_displayedPageSizeOptions.length > 1) {
+        <select
+          class="min-w-22 select select-bordered w-full max-w-xs"
+          [disabled]="disabled"
+          [ngModel]="pageSize"
+          (ngModelChange)="_changePageSize($event)"
+        >
+          @for (pageSizeOption of _displayedPageSizeOptions; track pageSizeOption) {
+            <option [value]="pageSizeOption">
+              {{ pageSizeOption }}
+            </option>
+          }
+        </select>
+      }
+    </div>
+
+    @if (_displayedPageSizeOptions.length <= 1) {
+      <div class="label">
+        <span class="whitespace-nowrap text-base">
+          {{ pageSize }}
+        </span>
+      </div>
+    }
+  }
+
+  <div class="join">
+    <!-- Previous Page Button -->
+    @if (showFirstLastButtons) {
+      <button
+        class="btn btn-circle join-item"
+        [disabled]="_previousButtonsDisabled()"
+        (click)="firstPage()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="h-6 w-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5"
+          />
+        </svg>
+      </button>
+    }
+    <button
+      class="btn btn-circle join-item"
+      [disabled]="_previousButtonsDisabled()"
+      (click)="previousPage()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        class="h-6 w-6"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </button>
+
+    <!-- Page Buttons -->
+    @for (page of _pages; track page.number) {
+      <button
+        class="btn join-item"
+        [ngClass]="{ 'btn-primary': page.number === pageIndex }"
+        (click)="selectPage(page.number)"
+      >
+        {{ page.text }}
+      </button>
+    }
+
+    <!-- Next Page Button -->
+    <button
+      class="btn btn-circle join-item"
+      [disabled]="_nextButtonsDisabled()"
+      (click)="nextPage()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        class="h-6 w-6"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </button>
+
+    @if (showFirstLastButtons) {
+      <button
+        class="btn btn-circle join-item"
+        [disabled]="_nextButtonsDisabled()"
+        (click)="nextPage()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="h-6 w-6"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M13.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L11.69 12 4.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
+            clip-rule="evenodd"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M19.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06L17.69 12l-6.97-6.97a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    }
+  </div>
+</div>

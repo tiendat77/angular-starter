@@ -1,13 +1,13 @@
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 
 import { of, switchMap, takeUntil, throwError } from 'rxjs';
 
-import { BaseComponent } from '@models';
 import { ResponseModel } from '@/api/models';
 import { environment } from '@environment';
+import { BaseComponent } from '@models';
 
 @Component({
   selector: 'app-forgot-password-enter-email',

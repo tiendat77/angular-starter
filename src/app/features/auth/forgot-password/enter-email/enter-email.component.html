@@ -1,18 +1,18 @@
-<section class="container flex flex-col items-center justify-center flex-auto mx-auto">
+<section class="container mx-auto flex flex-auto flex-col items-center justify-center">
   <div
     aria-hidden="true"
     class="fixed inset-0 z-0 grid grid-cols-2 -space-x-52 opacity-10 dark:opacity-5"
   >
-    <div class="blur-[106px] h-96 bg-gradient-to-br from-purple-400 to-rose-300 dark:from-purple-700 dark:to-rose-700">
+    <div class="h-96 bg-gradient-to-br from-purple-400 to-rose-300 blur-[106px] dark:from-purple-700 dark:to-rose-700">
       <!-- Gradient Circle Background -->
     </div>
-    <div class="blur-[106px] h-90 bg-gradient-to-r from-indigo-400 to-cyan-400 dark:from-indigo-600 dark:to-cyan-600">
+    <div class="h-90 bg-gradient-to-r from-indigo-400 to-cyan-400 blur-[106px] dark:from-indigo-600 dark:to-cyan-600">
       <!-- Gradient Circle Background -->
     </div>
   </div>
 
-  <div class="z-10 flex flex-col items-center justify-center flex-auto w-full md:max-w-screen-sm">
-    <div class="w-full h-full bg-base-100 sm:h-auto md:border md:flex-none md:rounded-lg md:shadow-card">
+  <div class="z-10 flex w-full flex-auto flex-col items-center justify-center md:max-w-screen-sm">
+    <div class="h-full w-full bg-base-100 md:shadow-card sm:h-auto md:flex-none md:rounded-lg md:border">
       <div class="p-6 sm:p-8">
         <div class="flex flex-col items-center justify-center">
           <img
@@ -24,7 +24,7 @@
 
         <h1 class="mt-6 text-3xl font-bold leading-tight tracking-tight">Forgot password</h1>
 
-        <p class="mt-2 text-hint">
+        <p class="text-hint mt-2">
           That's okay, it happens! Enter your email address below and we'll send you a link to reset your password.
         </p>
 
@@ -35,11 +35,11 @@
           @if (message) {
             <div
               role="alert"
-              class="flex mb-4 text-red-500 border-red-500 rounded-lg alert bg-red-50 animate__animated animate__headShake"
+              class="animate__animated animate__headShake alert mb-4 flex rounded-lg border-red-500 bg-red-50 text-red-500"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6 stroke-current shrink-0"
+                class="h-6 w-6 shrink-0 stroke-current"
                 fill="none"
                 viewBox="0 0 24 24"
               >
@@ -54,11 +54,11 @@
             </div>
           }
 
-          <label class="w-full form-control">
-            <div class="font-medium label">Email address</div>
+          <label class="form-control w-full">
+            <div class="label font-medium">Email address</div>
             <input
               type="email"
-              class="w-full input input-bordered"
+              class="input input-bordered w-full"
               formControlName="email"
               placeholder="Email address"
             />
@@ -76,7 +76,7 @@
 
           <div class="mt-4">
             <button
-              class="w-full mt-2 btn btn-primary"
+              class="btn btn-primary mt-2 w-full"
               [disabled]="form.disabled"
               (click)="submit()"
             >
@@ -85,7 +85,7 @@
           </div>
         </form>
 
-        <div class="flex justify-center mt-10 md:mt-16">
+        <div class="mt-10 flex justify-center md:mt-16">
           <a
             routerLink="/sign-in"
             class="text-sm"

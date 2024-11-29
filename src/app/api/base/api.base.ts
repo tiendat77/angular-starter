@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 
-import { Observable, of, tap } from 'rxjs';
 import { environment } from '@environment';
+import { Observable, of, tap } from 'rxjs';
 
+import { PagingDataModel, PagingResponseModel, ResponseModel } from '../models';
 import { BaseAPIOperator } from './operators';
-import { ResponseModel, PagingDataModel, PagingResponseModel } from '../models';
 
 /**
  * Base API Service

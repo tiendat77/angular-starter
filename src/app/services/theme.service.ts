@@ -1,11 +1,11 @@
-import { inject, Injectable, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { inject, Injectable, signal } from '@angular/core';
 
-import { ColorSchemeType } from '@models';
 import { STORAGE_KEYS } from '@configs/storage.config';
+import { ColorSchemeType } from '@models';
 
+import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { Observable, Subscription, fromEvent } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

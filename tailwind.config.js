@@ -45,7 +45,7 @@ const theme = {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{html,ts}', './projects/**/*.{html,ts}'],
+  content: ['./src/**/*.{html,ts}', './libs/**/*.{html,ts}'],
   darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {

@@ -1,14 +1,14 @@
-<div class="relative flex-auto w-full h-full background-universe">
-  <div class="flex flex-col items-center justify-center flex-auto h-full min-w-full background-stars">
+<div class="background-universe relative h-full w-full flex-auto">
+  <div class="background-stars flex h-full min-w-full flex-auto flex-col items-center justify-center">
     <!-- text -->
-    <div class="z-10 flex flex-col items-center justify-center w-full px-4 py-6 text-white sm:px-6 sm:py-10">
-      <h1 class="font-extrabold tracking-wider text-center text-9xl">404</h1>
-      <p class="mt-4 text-2xl font-medium text-center">OOPS! LOOKS LIKE YOU ARE LOST</p>
+    <div class="z-10 flex w-full flex-col items-center justify-center px-4 py-6 text-white sm:px-6 sm:py-10">
+      <h1 class="text-center text-9xl font-extrabold tracking-wider">404</h1>
+      <p class="mt-4 text-center text-2xl font-medium">OOPS! LOOKS LIKE YOU ARE LOST</p>
 
       <div class="mt-6">
         <a
           href="/"
-          class="text-white border-2 btn btn-outline"
+          class="btn btn-outline border-2 text-white"
         >
           GO BACK HOME
         </a>
@@ -18,9 +18,9 @@
     <!-- objects -->
     <div class="z-0 w-full">
       <!-- earth -->
-      <div class="absolute w-26 h-26 lg:w-40 lg:h-40 top-26 left-12 sm:top-40 sm:left-40">
+      <div class="w-26 h-26 top-26 absolute left-12 sm:left-40 sm:top-40 lg:h-40 lg:w-40">
         <svg
-          class="w-full h-full"
+          class="h-full w-full"
           version="1.1"
           viewBox="0 0 140 140"
           xmlns="http://www.w3.org/2000/svg"
@@ -63,9 +63,9 @@
       </div>
 
       <!-- moon -->
-      <div class="absolute w-24 h-24 lg:w-30 lg:h-30 top-9 left-36 sm:top-20 sm:left-64">
+      <div class="lg:w-30 lg:h-30 absolute left-36 top-9 h-24 w-24 sm:left-64 sm:top-20">
         <svg
-          class="w-full h-full"
+          class="h-full w-full"
           viewBox="0 0 92 92"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +91,7 @@
       </div>
 
       <!-- rocket -->
-      <div class="absolute w-15 h-15 rocket">
+      <div class="w-15 h-15 rocket absolute">
         <svg
           version="1.1"
           viewBox="0 0 57.83 41.92"
@@ -145,7 +145,7 @@
       </div>
 
       <!-- astronaut -->
-      <div class="absolute flex items-center justify-center astronaut-box w-44 h-44 will-change-transform">
+      <div class="astronaut-box absolute flex h-44 w-44 items-center justify-center will-change-transform">
         <svg
           class="astronaut"
           width="129"

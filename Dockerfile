@@ -8,16 +8,16 @@ WORKDIR /workspace
 
 COPY package*.json .
 COPY packages ./packages
-COPY projects ./projects
+COPY libs ./libs
 
 RUN npm pkg delete scripts.prepare
-RUN yarn install --frozen-lockfile
+RUN yarn
 
 ENV NODE_OPTIONS=--max-old-space-size=8192
 ENV NODE_ENV=production
 
 COPY . .
-RUN npm run build
+RUN yarn build
 
 #################################################
 # STAGE 2: Run

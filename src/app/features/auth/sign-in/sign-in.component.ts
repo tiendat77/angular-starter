@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { takeUntil } from 'rxjs';
 import { AuthService } from '@/core/auth';
 import { BaseComponent } from '@models';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',

@@ -1,0 +1,12 @@
+/*
+ * Public API Surface of svg-icon
+ */
+export * from './lib/icon';
+export * from './lib/icon-module';
+export * from './lib/icon-registry';
+export * from './lib/icon.interface';
+export * from './lib/icon.token';
+export * from './lib/icons.provider';
+export * from './lib/icons.service';
+export * from './lib/trusted-types';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL2xpYnMvc3ZnLWljb24vc3JjL3B1YmxpYy1hcGkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFFSCxjQUFjLFlBQVksQ0FBQztBQUMzQixjQUFjLG1CQUFtQixDQUFDO0FBQ2xDLGNBQWMscUJBQXFCLENBQUM7QUFDcEMsY0FBYyxzQkFBc0IsQ0FBQztBQUNyQyxjQUFjLGtCQUFrQixDQUFDO0FBQ2pDLGNBQWMsc0JBQXNCLENBQUM7QUFDckMsY0FBYyxxQkFBcUIsQ0FBQztBQUNwQyxjQUFjLHFCQUFxQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLypcbiAqIFB1YmxpYyBBUEkgU3VyZmFjZSBvZiBzdmctaWNvblxuICovXG5cbmV4cG9ydCAqIGZyb20gJy4vbGliL2ljb24nO1xuZXhwb3J0ICogZnJvbSAnLi9saWIvaWNvbi1tb2R1bGUnO1xuZXhwb3J0ICogZnJvbSAnLi9saWIvaWNvbi1yZWdpc3RyeSc7XG5leHBvcnQgKiBmcm9tICcuL2xpYi9pY29uLmludGVyZmFjZSc7XG5leHBvcnQgKiBmcm9tICcuL2xpYi9pY29uLnRva2VuJztcbmV4cG9ydCAqIGZyb20gJy4vbGliL2ljb25zLnByb3ZpZGVyJztcbmV4cG9ydCAqIGZyb20gJy4vbGliL2ljb25zLnNlcnZpY2UnO1xuZXhwb3J0ICogZnJvbSAnLi9saWIvdHJ1c3RlZC10eXBlcyc7XG4iXX0=

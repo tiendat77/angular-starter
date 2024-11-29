@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { WelcomeComponent } from './welcome/welcome.component';
 
+import { DatepickerModule, provideLuxonDateAdapter } from '@libs/date-picker';
 import { DialogService } from '@libs/dialog';
 import { LoaderService } from '@libs/loader';
-import { ToastService } from '@libs/toast';
 import { SvgIcon } from '@libs/svg-icon';
-import { DatepickerModule, provideLuxonDateAdapter } from '@libs/date-picker';
+import { ToastService } from '@libs/toast';
 
 import { ExampleDialogComponent } from './example-dialog/example-dialog.component';
 

@@ -1,0 +1,12 @@
+export class AnimationCurves {
+    static standard = 'cubic-bezier(0.4, 0.0, 0.2, 1)';
+    static deceleration = 'cubic-bezier(0.0, 0.0, 0.2, 1)';
+    static acceleration = 'cubic-bezier(0.4, 0.0, 1, 1)';
+    static sharp = 'cubic-bezier(0.4, 0.0, 0.6, 1)';
+}
+export class AnimationDurations {
+    static complex = '375ms';
+    static entering = '225ms';
+    static exiting = '195ms';
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGVmYXVsdHMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi9saWJzL25hdmlnYXRpb24vc3JjL2xpYi9hbmltYXRpb25zL2RlZmF1bHRzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE1BQU0sT0FBTyxlQUFlO0lBQzFCLE1BQU0sQ0FBQyxRQUFRLEdBQUcsZ0NBQWdDLENBQUM7SUFDbkQsTUFBTSxDQUFDLFlBQVksR0FBRyxnQ0FBZ0MsQ0FBQztJQUN2RCxNQUFNLENBQUMsWUFBWSxHQUFHLDhCQUE4QixDQUFDO0lBQ3JELE1BQU0sQ0FBQyxLQUFLLEdBQUcsZ0NBQWdDLENBQUM7O0FBR2xELE1BQU0sT0FBTyxrQkFBa0I7SUFDN0IsTUFBTSxDQUFDLE9BQU8sR0FBRyxPQUFPLENBQUM7SUFDekIsTUFBTSxDQUFDLFFBQVEsR0FBRyxPQUFPLENBQUM7SUFDMUIsTUFBTSxDQUFDLE9BQU8sR0FBRyxPQUFPLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgY2xhc3MgQW5pbWF0aW9uQ3VydmVzIHtcbiAgc3RhdGljIHN0YW5kYXJkID0gJ2N1YmljLWJlemllcigwLjQsIDAuMCwgMC4yLCAxKSc7XG4gIHN0YXRpYyBkZWNlbGVyYXRpb24gPSAnY3ViaWMtYmV6aWVyKDAuMCwgMC4wLCAwLjIsIDEpJztcbiAgc3RhdGljIGFjY2VsZXJhdGlvbiA9ICdjdWJpYy1iZXppZXIoMC40LCAwLjAsIDEsIDEpJztcbiAgc3RhdGljIHNoYXJwID0gJ2N1YmljLWJlemllcigwLjQsIDAuMCwgMC42LCAxKSc7XG59XG5cbmV4cG9ydCBjbGFzcyBBbmltYXRpb25EdXJhdGlvbnMge1xuICBzdGF0aWMgY29tcGxleCA9ICczNzVtcyc7XG4gIHN0YXRpYyBlbnRlcmluZyA9ICcyMjVtcyc7XG4gIHN0YXRpYyBleGl0aW5nID0gJzE5NW1zJztcbn1cbiJdfQ==

@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 
-import { map, Observable, tap } from 'rxjs';
 import { environment } from '@environment';
+import { map, Observable, tap } from 'rxjs';
 
 import { ResponseModel } from '@/api/models';
 import { UserModel } from '../models';

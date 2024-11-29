@@ -1,14 +1,13 @@
-/* eslint-disable @angular-eslint/component-selector */
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 import { Subject, takeUntil } from 'rxjs';
 
-import { LayoutService } from '../layout.service';
 import { LogoComponent } from '@/core/commons/logo/logo.component';
+import { LayoutService } from '../layout.service';
 
-import { SvgIcon } from '@libs/svg-icon';
 import { NavigationItem, NavigationService, VerticalNavigationComponent } from '@libs/navigation';
+import { SvgIcon } from '@libs/svg-icon';
 
 @Component({
   standalone: true,

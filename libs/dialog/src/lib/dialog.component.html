@@ -1,0 +1,51 @@
+<!-- Header -->
+<div
+  class="min-h-18 sticky top-0 z-10 flex w-full items-center justify-center bg-base-100 p-3 transition duration-300 lg:px-4"
+>
+  <div class="flex-auto overflow-hidden">
+    @if (_hasTitle) {
+      <h2
+        dialogHeader
+        class="animate__animated animate__faster animate__slideInUp truncate text-lg font-semibold sm:text-xl"
+      >
+        <ng-template [cdkPortalOutlet]="_titleTemplate" />
+      </h2>
+    }
+  </div>
+
+  <div class="relative flex-shrink-0">
+    <button
+      dialogDismiss
+      class="group btn btn-circle btn-ghost btn-sm"
+    >
+      <svg
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 transition duration-500 group-hover:rotate-90"
+      >
+        <path
+          d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<div class="mb-3 w-full px-3 lg:px-4">
+  @if (_hasTitle) {
+    <h2 class="truncate text-2xl font-semibold">
+      <ng-template [cdkPortalOutlet]="_titleTemplate" />
+    </h2>
+  }
+</div>
+
+<!-- Body -->
+<div class="flex w-full flex-auto flex-col px-3 py-4 lg:px-4">
+  <ng-template [cdkPortalOutlet]="_bodyTemplate" />
+</div>
+
+<!-- Footer -->
+<div class="dialog-actions sticky bottom-0 z-10 flex w-full items-center gap-4 bg-base-100 p-3 sm:justify-end lg:px-4">
+  <ng-template [cdkPortalOutlet]="_actionTemplate" />
+</div>

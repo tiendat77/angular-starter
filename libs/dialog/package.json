@@ -1,0 +1,13 @@
+{
+  "name": "@libs/dialog",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "@libs/scrollbar": "file:../../packages/scrollbar"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}

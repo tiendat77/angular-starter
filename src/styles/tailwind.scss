@@ -134,11 +134,11 @@
   }
 
   .table :where(th:first-child, td:first-child) {
-    @apply rounded-tl rounded-bl;
+    @apply rounded-bl rounded-tl;
   }
 
   .table :where(th:last-child, td:last-child) {
-    @apply rounded-tr rounded-br;
+    @apply rounded-br rounded-tr;
   }
 
   .table :where(thead tr, tbody tr:not(:last-child), tbody tr:first-child:last-child) {
@@ -146,7 +146,7 @@
   }
 
   .tab {
-    @apply text-base h-12;
+    @apply h-12 text-base;
   }
 
   .tab.tab-active:not(.tab-disabled):not([disabled]),

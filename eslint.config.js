@@ -9,10 +9,10 @@ module.exports = tseslint.config(
     files: ['**/*.js'],
     extends: [prettierRecommended],
     rules: {
-      'eol-last': 'error',
-      semi: 'error',
-      indent: ['error', 2, { SwitchCase: 1 }],
-      quotes: ['error', 'single', { avoidEscape: true }],
+      'eol-last': 'warn',
+      semi: 'warn',
+      indent: ['off', 2, { SwitchCase: 1 }],
+      quotes: ['warn', 'single', { avoidEscape: true }],
     },
   },
   {
@@ -28,10 +28,33 @@ module.exports = tseslint.config(
     rules: {
       'prettier/prettier': 'warn',
       '@typescript-eslint/no-require-imports': 'warn',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/consistent-indexed-object-style': 'off',
+      '@typescript-eslint/no-inferrable-types': 'warn',
+      '@typescript-eslint/prefer-for-of': 'warn',
+      '@angular-eslint/no-async-lifecycle-method': ['warn'],
+      '@angular-eslint/no-attribute-decorator': ['warn'],
+      '@angular-eslint/no-conflicting-lifecycle': ['warn'],
+      '@angular-eslint/no-duplicates-in-metadata-arrays': ['warn'],
+      '@angular-eslint/no-lifecycle-call': ['warn'],
+      '@angular-eslint/no-inputs-metadata-property': ['warn'],
+      '@angular-eslint/no-output-native': ['warn'],
+      '@angular-eslint/no-outputs-metadata-property': ['warn'],
+      '@angular-eslint/no-empty-lifecycle-method': ['warn'],
+      '@angular-eslint/no-pipe-impure': ['warn'],
+      '@angular-eslint/no-queries-metadata-property': ['warn'],
+      '@angular-eslint/prefer-on-push-component-change-detection': ['warn'],
+      '@angular-eslint/use-injectable-provided-in': ['warn'],
+      '@angular-eslint/use-lifecycle-interface': ['warn'],
+      '@angular-eslint/prefer-output-readonly': ['warn'],
+      '@angular-eslint/prefer-standalone': ['warn'],
+      '@angular-eslint/relative-url-prefix': ['warn'],
+      '@angular-eslint/sort-lifecycle-methods': ['warn'],
+      '@angular-eslint/use-pipe-transform-interface': ['warn'],
+      '@angular-eslint/no-output-on-prefix': ['warn'],
       '@angular-eslint/directive-selector': [
-        'error',
+        'warn',
         {
           type: 'attribute',
           prefix: '',
@@ -39,17 +62,17 @@ module.exports = tseslint.config(
         },
       ],
       '@angular-eslint/component-selector': [
-        'error',
+        'warn',
         {
           type: 'element',
-          prefix: 'app',
+          prefix: '',
           style: 'kebab-case',
         },
       ],
-      'eol-last': 'error',
-      semi: 'error',
-      indent: ['error', 2, { SwitchCase: 1 }],
-      quotes: ['error', 'single', { avoidEscape: true }],
+      'eol-last': 'warn',
+      semi: 'warn',
+      indent: ['off', 2, { SwitchCase: 1 }],
+      quotes: ['warn', 'single', { avoidEscape: true }],
     },
   },
   {
@@ -73,7 +96,7 @@ module.exports = tseslint.config(
       '@angular-eslint/template/prefer-self-closing-tags': 'warn',
       '@angular-eslint/template/use-track-by-function': 'warn',
       '@angular-eslint/template/conditional-complexity': ['warn', { maxComplexity: 3 }],
-      '@angular-eslint/template/eqeqeq': ['error', { allowNullOrUndefined: true }],
+      '@angular-eslint/template/eqeqeq': ['warn', { allowNullOrUndefined: true }],
       '@angular-eslint/template/no-call-expression': [
         'warn',
         {
@@ -85,6 +108,6 @@ module.exports = tseslint.config(
     },
   },
   {
-    ignores: ['**/*.spec.ts', 'dist/**', 'node_modules/**', 'public/**', 'projects/**'],
+    ignores: ['**/*.spec.ts', 'dist/**', 'node_modules/**', 'public/**', 'packages/**', 'libs/**'],
   }
 );

@@ -1,0 +1,12 @@
+/*
+ * Public API Surface of dialog
+ */
+export * from './lib/dialog-actions.directive';
+export * from './lib/dialog-body.directive';
+export * from './lib/dialog-dismiss.directive';
+export * from './lib/dialog-header.directive';
+export * from './lib/dialog-title.directive';
+export * from './lib/dialog.component';
+export * from './lib/dialog.module';
+export * from './lib/dialog.service';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL2xpYnMvZGlhbG9nL3NyYy9wdWJsaWMtYXBpLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBRUgsY0FBYyxnQ0FBZ0MsQ0FBQztBQUMvQyxjQUFjLDZCQUE2QixDQUFDO0FBQzVDLGNBQWMsZ0NBQWdDLENBQUM7QUFDL0MsY0FBYywrQkFBK0IsQ0FBQztBQUM5QyxjQUFjLDhCQUE4QixDQUFDO0FBQzdDLGNBQWMsd0JBQXdCLENBQUM7QUFDdkMsY0FBYyxxQkFBcUIsQ0FBQztBQUNwQyxjQUFjLHNCQUFzQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLypcbiAqIFB1YmxpYyBBUEkgU3VyZmFjZSBvZiBkaWFsb2dcbiAqL1xuXG5leHBvcnQgKiBmcm9tICcuL2xpYi9kaWFsb2ctYWN0aW9ucy5kaXJlY3RpdmUnO1xuZXhwb3J0ICogZnJvbSAnLi9saWIvZGlhbG9nLWJvZHkuZGlyZWN0aXZlJztcbmV4cG9ydCAqIGZyb20gJy4vbGliL2RpYWxvZy1kaXNtaXNzLmRpcmVjdGl2ZSc7XG5leHBvcnQgKiBmcm9tICcuL2xpYi9kaWFsb2ctaGVhZGVyLmRpcmVjdGl2ZSc7XG5leHBvcnQgKiBmcm9tICcuL2xpYi9kaWFsb2ctdGl0bGUuZGlyZWN0aXZlJztcbmV4cG9ydCAqIGZyb20gJy4vbGliL2RpYWxvZy5jb21wb25lbnQnO1xuZXhwb3J0ICogZnJvbSAnLi9saWIvZGlhbG9nLm1vZHVsZSc7XG5leHBvcnQgKiBmcm9tICcuL2xpYi9kaWFsb2cuc2VydmljZSc7XG4iXX0=

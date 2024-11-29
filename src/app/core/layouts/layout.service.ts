@@ -1,14 +1,14 @@
 /** Angular */
-import { Injectable } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { Injectable } from '@angular/core';
 
 /** Utils */
 import { fromPairs } from 'es-toolkit/compat';
 import { Observable, ReplaySubject, map, of, switchMap } from 'rxjs';
 
 /** Config */
-import { NavigationItem } from '@libs/navigation';
 import { navigation } from '@configs/navigation.config';
+import { NavigationItem } from '@libs/navigation';
 
 interface MediaChange {
   matchingAliases: string[];

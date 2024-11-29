@@ -1,0 +1,43 @@
+<div class="modal-header">
+  @if (title) {
+    <div class="hotkeys-help-header">
+      <span class="hotkeys-help-header-title">{{ title }}</span>
+    </div>
+  }
+  <button
+    type="button"
+    class="hotkeys-help-header-dismiss-button"
+    (click)="handleDismiss()"
+  >
+    &#x2715;
+  </button>
+</div>
+
+<div class="modal-body preview-modal-body">
+  @for (hotkeyGroup of hotkeys; track $index) {
+    <table class="hotkeys-table-help">
+      @if (hotkeyGroup.group) {
+        <thead>
+          <tr>
+            <th
+              class="hotkeys-table-help-group"
+              colspan="2"
+            >
+              {{ hotkeyGroup.group }}
+            </th>
+          </tr>
+        </thead>
+      }
+      <tbody>
+        @for (hotkey of hotkeyGroup.hotkeys; track hotkey) {
+          <tr class="hotkeys-table-help-shortcut">
+            <td class="hotkeys-table-help-shortcut-description">{{ hotkey.description }}</td>
+            <td class="hotkeys-table-help-shortcut-keys">
+              <kbd [innerHTML]="hotkey.keys | hotkeysShortcut"></kbd>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

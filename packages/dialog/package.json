@@ -1,0 +1,26 @@
+{
+  "name": "@libs/dialog",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "@libs/scrollbar": "file:../../packages/scrollbar"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false,
+  "module": "fesm2022/libs-dialog.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2022": "./esm2022/libs-dialog.mjs",
+      "esm": "./esm2022/libs-dialog.mjs",
+      "default": "./fesm2022/libs-dialog.mjs"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { omitBy, flatten } from 'es-toolkit';
+import { flatten, omitBy } from 'es-toolkit';
 import { fromPairs, get } from 'es-toolkit/compat';
 
 const chroma = require('chroma-js');

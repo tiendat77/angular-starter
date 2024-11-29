@@ -1,2 +1,2 @@
-export * from './response.model';
 export * from './paging-response.model';
+export * from './response.model';

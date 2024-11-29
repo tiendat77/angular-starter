@@ -1,0 +1,20 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+export const LUXON_DATE_FORMATS = {
+  parse: {
+    dateInput: 'dd/MM/yyyy',
+  },
+  display: {
+    dateInput: 'dd/MM/yyyy',
+    monthYearLabel: 'LLL yyyy',
+    dateA11yLabel: 'DD',
+    monthYearA11yLabel: 'LLLL yyyy',
+    dayMonthDateLabel: 'ccc, MMMM dd',
+  },
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibHV4b24tZGF0ZS1mb3JtYXRzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vbGlicy9kYXRlLXBpY2tlci9zcmMvbGliL2FkYXB0ZXIvbHV4b24vbHV4b24tZGF0ZS1mb3JtYXRzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7R0FNRztBQUlILE1BQU0sQ0FBQyxNQUFNLGtCQUFrQixHQUFnQjtJQUM3QyxLQUFLLEVBQUU7UUFDTCxTQUFTLEVBQUUsWUFBWTtLQUN4QjtJQUNELE9BQU8sRUFBRTtRQUNQLFNBQVMsRUFBRSxZQUFZO1FBQ3ZCLGNBQWMsRUFBRSxVQUFVO1FBQzFCLGFBQWEsRUFBRSxJQUFJO1FBQ25CLGtCQUFrQixFQUFFLFdBQVc7UUFDL0IsaUJBQWlCLEVBQUUsY0FBYztLQUNsQztDQUNGLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgR29vZ2xlIExMQyBBbGwgUmlnaHRzIFJlc2VydmVkLlxuICpcbiAqIFVzZSBvZiB0aGlzIHNvdXJjZSBjb2RlIGlzIGdvdmVybmVkIGJ5IGFuIE1JVC1zdHlsZSBsaWNlbnNlIHRoYXQgY2FuIGJlXG4gKiBmb3VuZCBpbiB0aGUgTElDRU5TRSBmaWxlIGF0IGh0dHBzOi8vYW5ndWxhci5pby9saWNlbnNlXG4gKi9cblxuaW1wb3J0IHsgRGF0ZUZvcm1hdHMgfSBmcm9tICcuLi9kYXRlLWZvcm1hdHMnO1xuXG5leHBvcnQgY29uc3QgTFVYT05fREFURV9GT1JNQVRTOiBEYXRlRm9ybWF0cyA9IHtcbiAgcGFyc2U6IHtcbiAgICBkYXRlSW5wdXQ6ICdkZC9NTS95eXl5JyxcbiAgfSxcbiAgZGlzcGxheToge1xuICAgIGRhdGVJbnB1dDogJ2RkL01NL3l5eXknLFxuICAgIG1vbnRoWWVhckxhYmVsOiAnTExMIHl5eXknLFxuICAgIGRhdGVBMTF5TGFiZWw6ICdERCcsXG4gICAgbW9udGhZZWFyQTExeUxhYmVsOiAnTExMTCB5eXl5JyxcbiAgICBkYXlNb250aERhdGVMYWJlbDogJ2NjYywgTU1NTSBkZCcsXG4gIH0sXG59O1xuIl19

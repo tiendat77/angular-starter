@@ -1,4 +1,3 @@
-/* eslint-disable @angular-eslint/component-selector */
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
@@ -8,10 +7,10 @@ import { LayoutService } from '../layout.service';
 import { LogoComponent } from '@/core/commons/logo/logo.component';
 
 import {
+  HorizontalNavigationComponent,
   NavigationItem,
   NavigationService,
   VerticalNavigationComponent,
-  HorizontalNavigationComponent,
 } from '@libs/navigation';
 import { SvgIconModule } from '@libs/svg-icon';
 

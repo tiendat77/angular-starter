@@ -1,2 +1,2 @@
-export * from './theme.type';
 export * from './pagination.model';
+export * from './theme.type';

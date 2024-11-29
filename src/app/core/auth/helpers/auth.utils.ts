@@ -5,7 +5,7 @@
 // https://github.com/auth0/angular2-jwt
 // -----------------------------------------------------------------------------------------------------
 
-import { UserModel, ClaimModel } from '../models';
+import { ClaimModel, UserModel } from '../models';
 
 export class AuthUtils {
   // -----------------------------------------------------------------------------------------------------

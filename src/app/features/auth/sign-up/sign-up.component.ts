@@ -1,12 +1,12 @@
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 import { AuthService } from '@/core/auth';
 import { SvgIcon } from '@libs/svg-icon';
-import { takeUntil } from 'rxjs';
 import { BaseComponent } from '@models';
+import { takeUntil } from 'rxjs';
 import { PasswordValidators } from './validators';
 
 @Component({

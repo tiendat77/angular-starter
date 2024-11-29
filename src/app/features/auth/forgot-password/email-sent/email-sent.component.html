@@ -1,18 +1,18 @@
-<section class="container flex flex-col items-center justify-center flex-auto mx-auto">
+<section class="container mx-auto flex flex-auto flex-col items-center justify-center">
   <div
     aria-hidden="true"
     class="fixed inset-0 z-0 grid grid-cols-2 -space-x-52 opacity-10 dark:opacity-5"
   >
-    <div class="blur-[106px] h-96 bg-gradient-to-br from-purple-400 to-rose-300 dark:from-purple-700 dark:to-rose-700">
+    <div class="h-96 bg-gradient-to-br from-purple-400 to-rose-300 blur-[106px] dark:from-purple-700 dark:to-rose-700">
       <!-- Gradient Circle Background -->
     </div>
-    <div class="blur-[106px] h-90 bg-gradient-to-r from-indigo-400 to-cyan-400 dark:from-indigo-600 dark:to-cyan-600">
+    <div class="h-90 bg-gradient-to-r from-indigo-400 to-cyan-400 blur-[106px] dark:from-indigo-600 dark:to-cyan-600">
       <!-- Gradient Circle Background -->
     </div>
   </div>
 
-  <div class="z-10 flex flex-col items-center justify-center flex-auto w-full md:max-w-screen-sm">
-    <div class="w-full h-full bg-base-100 sm:h-auto md:border md:flex-none md:rounded-lg md:shadow-card">
+  <div class="z-10 flex w-full flex-auto flex-col items-center justify-center md:max-w-screen-sm">
+    <div class="h-full w-full bg-base-100 md:shadow-card sm:h-auto md:flex-none md:rounded-lg md:border">
       <div class="p-6 sm:p-8">
         <div class="flex flex-col items-center justify-center">
           <img
@@ -29,7 +29,7 @@
             An email instruction has been sent to <strong>{{ email }}</strong>
           </h2>
 
-          <p class="mt-1 text-hint">
+          <p class="text-hint mt-1">
             Please check your inbox to reset your password. If you didn't receive your email, please check your junk
             mail folder.
           </p>
@@ -37,7 +37,7 @@
           <div class="mt-4">
             <a
               href="mailto:"
-              class="w-full mt-2 btn btn-primary"
+              class="btn btn-primary mt-2 w-full"
             >
               Open email app
             </a>

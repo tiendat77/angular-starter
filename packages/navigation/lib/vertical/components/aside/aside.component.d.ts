@@ -1,0 +1,30 @@
+import { BooleanInput } from '@angular/cdk/coercion';
+import { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Router } from '@angular/router';
+import { NavigationService } from '../../../navigation.service';
+import { NavigationItem } from '../../../navigation.types';
+import * as i0 from "@angular/core";
+export declare class VerticalNavigationAsideItemComponent implements OnChanges, OnInit, OnDestroy {
+    private _changeDetectorRef;
+    private _router;
+    private _NavigationService;
+    static ngAcceptInputType_autoCollapse: BooleanInput;
+    static ngAcceptInputType_skipChildren: BooleanInput;
+    activeItemId: string;
+    autoCollapse: boolean;
+    item: NavigationItem;
+    name: string;
+    skipChildren: boolean;
+    active: boolean;
+    private _VerticalNavigationComponent;
+    private _unsubscribeAll;
+    constructor(_changeDetectorRef: ChangeDetectorRef, _router: Router, _NavigationService: NavigationService);
+    ngOnChanges(changes: SimpleChanges): void;
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+    trackByFn(index: number, item: any): any;
+    private _hasActiveChild;
+    private _markIfActive;
+    static ɵfac: i0.ɵɵFactoryDeclaration<VerticalNavigationAsideItemComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<VerticalNavigationAsideItemComponent, "vertical-navigation-aside-item", never, { "activeItemId": { "alias": "activeItemId"; "required": false; }; "autoCollapse": { "alias": "autoCollapse"; "required": false; }; "item": { "alias": "item"; "required": false; }; "name": { "alias": "name"; "required": false; }; "skipChildren": { "alias": "skipChildren"; "required": false; }; }, {}, never, never, true, never>;
+}

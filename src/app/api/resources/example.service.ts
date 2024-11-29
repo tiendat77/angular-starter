@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { environment } from '@environment';
 
 import {
+  ApiCreate,
+  ApiDelete,
   ApiList,
   ApiPaginate,
-  ApiCreate,
   ApiRead,
   ApiUpdate,
-  ApiDelete,
   BaseApiService,
 } from '../base';
 
