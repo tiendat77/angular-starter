@@ -39,12 +39,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles/colors.scss",
-              "src/styles/styles.scss",
-              "src/styles/tailwind.scss",
-              "src/styles/vendors.scss"
-            ],
+            "styles": ["src/styles/index.css"],
             "scripts": []
           },
           "configurations": {
@@ -118,7 +113,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": ["src/styles/index.css"],
             "scripts": []
           }
         },

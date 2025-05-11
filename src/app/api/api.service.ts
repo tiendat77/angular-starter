@@ -9,5 +9,5 @@ import { ExampleAPIService } from './resources/example.service';
   providedIn: 'root',
 })
 export class ApiService {
-  public example = inject(ExampleAPIService);
+  example = inject(ExampleAPIService);
 }

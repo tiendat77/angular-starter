@@ -1,6 +1,6 @@
 <div
   role="alert"
-  class="alert relative min-w-60 border-0 border-l-4 bg-base-100 px-4 py-3 shadow-lg"
+  class="alert bg-base-200 relative min-w-60 border-0 border-l-4 px-4 py-3 shadow-lg"
   [ngClass]="{
     'border-info': data.type === 'info',
     'border-success': data.type === 'success',
@@ -95,7 +95,7 @@
 
     <!-- Dismiss -->
     <button
-      class="btn btn-circle btn-ghost btn-sm absolute right-1 top-1 transition"
+      class="btn btn-circle btn-ghost btn-sm absolute top-1 right-1 transition"
       (click)="dismiss()"
     >
       <svg

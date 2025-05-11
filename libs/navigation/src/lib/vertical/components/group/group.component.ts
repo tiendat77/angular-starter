@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -28,8 +28,6 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
   standalone: true,
   imports: [
     NgClass,
-    NgIf,
-    NgFor,
     SvgIconModule,
     VerticalNavigationBasicItemComponent,
     VerticalNavigationCollapsableItemComponent,

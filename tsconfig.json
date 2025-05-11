@@ -27,7 +27,17 @@
       "@/*": ["src/app/*"],
       "@configs/*": ["src/configs/*"],
       "@models": ["src/models/index"],
-      "@environment": ["src/environments/environment"]
+      "@environment": ["src/environments/environment"],
+      "@libs/date-picker": ["libs/date-picker/src/public-api"],
+      "@libs/dialog": ["libs/dialog/src/public-api"],
+      "@libs/hotkeys": ["libs/hotkeys/src/public-api"],
+      "@libs/loader": ["libs/loader/src/public-api"],
+      "@libs/navigation": ["libs/navigation/src/public-api"],
+      "@libs/paginator": ["libs/paginator/src/public-api"],
+      "@libs/scrollbar": ["libs/scrollbar/src/public-api"],
+      "@libs/storage": ["libs/storage/src/public-api"],
+      "@libs/svg-icon": ["libs/svg-icon/src/public-api"],
+      "@libs/toast": ["libs/toast/src/public-api"]
     }
   },
   "angularCompilerOptions": {

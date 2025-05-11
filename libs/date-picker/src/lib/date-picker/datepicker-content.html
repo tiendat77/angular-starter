@@ -5,12 +5,12 @@
   [attr.aria-modal]="true"
   [attr.aria-labelledby]="_dialogLabelId ?? undefined"
 >
-  <div class="flex flex-col bg-primary px-3 py-2">
+  <div class="bg-primary flex flex-col px-3 py-2">
     <div class="flex flex-col">
-      <span class="text-xs font-normal uppercase tracking-wider text-primary-content"> Selected date </span>
+      <span class="text-primary-content text-xs font-normal tracking-wider uppercase"> Selected date </span>
     </div>
     <div class="mt-4 flex flex-col">
-      <span class="text-xl font-normal text-primary-content">
+      <span class="text-primary-content text-xl font-normal">
         {{ _getSelectedDisplay() }}
       </span>
     </div>

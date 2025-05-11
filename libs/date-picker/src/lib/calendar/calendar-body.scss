@@ -18,7 +18,7 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
 }
 
 .calendar-body-today {
-  border-color: var(--border) !important;
+  border-color: rgb(var(--border-default-rgb)) !important;
 }
 
 .calendar-body-label {
@@ -84,7 +84,7 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
 
 .calendar-body-active {
   .calendar-body-cell-content {
-    background-color: var(--primary);
+    background-color: var(--primary-500);
     color: var(--on-primary);
   }
 }

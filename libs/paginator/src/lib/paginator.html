@@ -2,12 +2,12 @@
   @if (!hidePageSize) {
     <div class="flex gap-2">
       <div class="label">
-        <span class="whitespace-nowrap text-base">Page size: </span>
+        <span class="text-base whitespace-nowrap">Page size: </span>
       </div>
 
       @if (_displayedPageSizeOptions.length > 1) {
         <select
-          class="min-w-22 select select-bordered w-full max-w-xs"
+          class="select select-bordered w-full max-w-xs min-w-22"
           [disabled]="disabled"
           [ngModel]="pageSize"
           (ngModelChange)="_changePageSize($event)"
@@ -23,7 +23,7 @@
 
     @if (_displayedPageSizeOptions.length <= 1) {
       <div class="label">
-        <span class="whitespace-nowrap text-base">
+        <span class="text-base whitespace-nowrap">
           {{ pageSize }}
         </span>
       </div>

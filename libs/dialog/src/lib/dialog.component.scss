@@ -4,8 +4,9 @@ dialog-layout {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   transition: 200ms;
+  background-color: var(--color-base-200);
 }
 
 /**

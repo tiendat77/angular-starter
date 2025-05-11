@@ -1,10 +1,9 @@
 import { BooleanInput } from '@angular/cdk/coercion';
-import { NgClass, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  forwardRef,
   Input,
   OnDestroy,
   OnInit,
@@ -25,14 +24,11 @@ import { HorizontalNavigationDividerItemComponent } from '../divider/divider.com
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgIf,
     NgClass,
     NgTemplateOutlet,
-    NgFor,
     SvgIconModule,
     HorizontalNavigationBasicItemComponent,
     HorizontalNavigationDividerItemComponent,
-    forwardRef(() => HorizontalNavigationBranchItemComponent),
   ],
 })
 export class HorizontalNavigationBranchItemComponent implements OnInit, OnDestroy {

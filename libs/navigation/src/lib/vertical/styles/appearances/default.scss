@@ -25,8 +25,8 @@ vertical-navigation {
   &.vertical-navigation-animations-enabled {
     transition-duration: 400ms;
     transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-    transition-property: visibility, margin-left, margin-right, transform, width, max-width,
-      min-width;
+    transition-property:
+      visibility, margin-left, margin-right, transform, width, max-width, min-width;
 
     /* Wrapper */
     .vertical-navigation-wrapper {
@@ -132,7 +132,7 @@ vertical-navigation {
     overflow: hidden;
     z-index: 10;
     background: inherit;
-    box-shadow: inset -1px 0 0 var(--border);
+    box-shadow: inset -1px 0 0 rgb(var(--border-default-rgb));
 
     /* Header */
     .vertical-navigation-header {

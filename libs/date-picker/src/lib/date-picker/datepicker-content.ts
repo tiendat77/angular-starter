@@ -6,8 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { CdkPortalOutlet } from '@angular/cdk/portal';
-
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -49,8 +47,8 @@ import { DatepickerBase } from './datepicker-base';
  */
 @Component({
   selector: 'datepicker-content',
-  templateUrl: 'datepicker-content.html',
-  styleUrl: 'datepicker-content.scss',
+  templateUrl: './datepicker-content.html',
+  styleUrl: './datepicker-content.scss',
   host: {
     class: 'datepicker-content',
     '[@transformPanel]': '_animationState',
@@ -63,7 +61,7 @@ import { DatepickerBase } from './datepicker-base';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [Calendar, NgClass, CdkPortalOutlet],
+  imports: [Calendar, NgClass],
 })
 export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
   implements OnInit, AfterViewInit, OnDestroy

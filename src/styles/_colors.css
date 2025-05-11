@@ -1,0 +1,54 @@
+:root {
+  /** Primary */
+  --on-primary: #ffffff;
+  --primary-50: #fff0f1;
+  --primary-100: #ffdee1;
+  --primary-200: #ffc3c8;
+  --primary-300: #ff99a1;
+  --primary-400: #ff5f6c;
+  --primary-500: #ff2d3e;
+  --primary-600: #f50d20;
+  --primary-700: #d70718;
+  --primary-800: #aa0a17;
+  --primary-900: #8c101a;
+  --primary-950: #4d0208;
+
+  /** Secondary */
+  --on-secondary: #ffffff;
+  --secondary-50: #fff8ec;
+  --secondary-100: #fff0d3;
+  --secondary-200: #ffdea5;
+  --secondary-300: #ffc56d;
+  --secondary-400: #ffa132;
+  --secondary-500: #ff840a;
+  --secondary-600: #ff6c02;
+  --secondary-700: #cc4c02;
+  --secondary-800: #a13b0b;
+  --secondary-900: #82330c;
+  --secondary-950: #461704;
+}
+
+[data-theme='light'] {
+  --background-card-rgb: 255, 255, 255;
+  --background-default-rgb: 241, 245, 249;
+  --foreground-default-rgb: 30, 41, 59;
+  --foreground-hint-rgb: 148, 163, 184;
+  --foreground-disabled-rgb: 148, 163, 184;
+  --border-default-rgb: 226, 232, 240;
+  --scrollbar-track-rgb: 241, 245, 249;
+  --scrollbar-thumb-rgb: 183, 183, 184;
+  --scrollbar-thumb-active-rgb: 142, 143, 147;
+}
+
+[data-theme='dark'] {
+  --background-card-rgb: 39, 58, 75;
+  --background-default-rgb: 17, 24, 39;
+  --foreground-default-rgb: 255, 255, 255;
+  --foreground-hint-rgb: 100, 116, 139;
+  --foreground-disabled-rgb: 71, 85, 105;
+  --border-default-rgb: 241, 245, 249;
+  --scrollbar-track-rgb: 17, 24, 39;
+  --scrollbar-thumb-rgb: 109, 119, 125;
+  --scrollbar-thumb-active-rgb: 88, 95, 102;
+}
+

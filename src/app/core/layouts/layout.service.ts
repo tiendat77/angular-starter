@@ -86,7 +86,7 @@ export class LayoutService {
   get(): Observable<NavigationItem[]> {
     return new Observable((resolver) => {
       this._navigation.next(navigation);
-      resolver.next();
+      resolver.next([]);
       resolver.complete();
     });
   }

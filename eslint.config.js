@@ -31,7 +31,7 @@ module.exports = tseslint.config(
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/consistent-indexed-object-style': 'off',
-      '@typescript-eslint/no-inferrable-types': 'warn',
+      '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/prefer-for-of': 'warn',
       '@angular-eslint/no-async-lifecycle-method': ['warn'],
       '@angular-eslint/no-attribute-decorator': ['warn'],

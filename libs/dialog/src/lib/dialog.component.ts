@@ -1,20 +1,24 @@
 import {
   AfterContentInit,
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ContentChild,
+  DestroyRef,
   ElementRef,
+  inject,
   Input,
-  OnDestroy,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import { PortalModule } from '@angular/cdk/portal';
-import { Subject, fromEvent, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { fromEvent } from 'rxjs';
 
-import { ScrollbarDirective } from '@libs/scrollbar';
+import PerfectScrollbar from 'perfect-scrollbar';
+
 import { DialogActionsDirective } from './dialog-actions.directive';
 import { DialogBodyDirective } from './dialog-body.directive';
 import { DialogDismissDirective } from './dialog-dismiss.directive';
@@ -27,16 +31,8 @@ import { DialogTitleDirective } from './dialog-title.directive';
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
   encapsulation: ViewEncapsulation.None,
-  imports: [
-    PortalModule,
-    ScrollbarDirective,
-    DialogActionsDirective,
-    DialogBodyDirective,
-    DialogDismissDirective,
-    DialogHeaderDirective,
-    DialogTitleDirective,
-  ],
-  hostDirectives: [ScrollbarDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [PortalModule, DialogDismissDirective, DialogHeaderDirective],
   host: {
     '[class.just-dialog]': '!alert',
     '[class.alert-dialog]': 'alert',
@@ -44,7 +40,7 @@ import { DialogTitleDirective } from './dialog-title.directive';
     class: 'animate__fadeInUp animate__animated animate__faster',
   },
 })
-export class DialogLayoutComponent implements AfterViewInit, AfterContentInit, OnDestroy {
+export class DialogLayoutComponent implements AfterViewInit, AfterContentInit {
   /**
    * Input
    */
@@ -89,32 +85,28 @@ export class DialogLayoutComponent implements AfterViewInit, AfterContentInit, O
   /**
    * Private properties
    */
-  private _destroyed$ = new Subject<void>();
-
-  constructor(private _element: ElementRef) {}
+  private _element = inject(ElementRef);
+  private _destroyRef = inject(DestroyRef);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
 
-  ngAfterViewInit(): void {
-    /**
-     * Watch scroll event to slide the header up
-     */
-    fromEvent(this._element?.nativeElement, 'scroll')
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((event) => {
-        this._onScroll(event);
-      });
-  }
-
   ngAfterContentInit() {
     this._checkTitleTypes();
   }
 
-  ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+  ngAfterViewInit(): void {
+    new PerfectScrollbar(this._element?.nativeElement, {});
+
+    /**
+     * Watch scroll event to slide the header up
+     */
+    fromEvent(this._element?.nativeElement, 'scroll')
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe((event) => {
+        this._onScroll(event);
+      });
   }
 
   // -----------------------------------------------------------------------------------------------------

@@ -1,0 +1,92 @@
+@plugin 'daisyui';
+
+@plugin "daisyui/theme" {
+  name: 'light';
+  default: true;
+  prefersdark: false;
+  color-scheme: 'light';
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(98% 0 0);
+  --color-base-300: oklch(95% 0 0);
+  --color-base-content: oklch(21% 0.006 285.885);
+  --color-primary: var(--primary-500);
+  --color-primary-content: #ffffff;
+  --color-secondary: var(--secondary-500);
+  --color-secondary-content: #ffffff;
+  --color-accent: #000;
+  --color-accent-content: #ffffff;
+  --color-neutral: oklch(14% 0.005 285.823);
+  --color-neutral-content: oklch(92% 0.004 286.32);
+  --color-info: #48cae4;
+  --color-info-content: #ffffff;
+  --color-success: #70e000;
+  --color-success-content: #ffffff;
+  --color-warning: #ff2f4b;
+  --color-warning-content: #ffffff;
+  --color-error: #d62828;
+  --color-error-content: #ffffff;
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: 'dark';
+  default: fasle;
+  prefersdark: false;
+  color-scheme: 'dark';
+  --color-base-100: oklch(14% 0.005 285.823);
+  --color-base-200: oklch(21% 0.006 285.885);
+  --color-base-300: oklch(27% 0.006 286.033);
+  --color-base-content: oklch(97% 0.001 106.424);
+  --color-primary: var(--primary-500);
+  --color-primary-content: #ffffff;
+  --color-secondary: var(--secondary-500);
+  --color-secondary-content: #ffffff;
+  --color-accent: #fafafa;
+  --color-accent-content: #ffffff;
+  --color-neutral: oklch(14% 0.005 285.823);
+  --color-neutral-content: oklch(92% 0.004 286.32);
+  --color-info: #48cae4;
+  --color-info-content: #ffffff;
+  --color-success: #70e000;
+  --color-success-content: #ffffff;
+  --color-warning: #ff2f4b;
+  --color-warning-content: #ffffff;
+  --color-error: #d62828;
+  --color-error-content: #ffffff;
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ DaisyUI
+/* ----------------------------------------------------------------------------------------------------- */
+@layer components {
+  .btn {
+    font-size: 1rem;
+  }
+
+  .btn-circle:hover {
+    background-color: transparent;
+  }
+
+  .menu {
+    font-size: 1rem;
+  }
+
+  .label-text {
+    font-size: 1rem;
+  }
+}

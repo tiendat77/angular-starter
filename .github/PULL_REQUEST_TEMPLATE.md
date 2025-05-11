@@ -1,42 +1,39 @@
-## PR Type
+## Jira Ticket 🎟️
+
+<!-- Provide the Jira ticket link related to this PR. -->
+
+Jira Link: [Insert Jira ticket URL here]
+
+## PR Type 🚀
 
 What kind of change does this PR introduce?
 
-<!-- Please check the one that applies to this PR using "x". -->
+- [ ] 🐛 **Bugfix** - Smashing bugs like a pro!
+- [ ] ✨ **Feature** - Dropping shiny new goodness!
+- [ ] 🎨 **Code Style Update** - Making it pretty (formatting, local vars)!
+- [ ] ♻️ **Refactoring** - Polishing the gears, no functional shake-ups!
+- [ ] 👷 **Build Related Changes** - Tweaking the engine room!
+- [ ] 💚 **Ci Related Changes** - Keeping the pipeline vibin’!
+- [ ] 📝 **Documentation Update** - Scribbling some wisdom!
+- [ ] **Other** - Spill the tea:
 
-- [ ] 🐛 Bugfix
-- [ ] ✨ Feature
-- [ ] 🎨 Code style update (formatting, local variables)
-- [ ] ♻️ Refactoring (no functional changes, no api changes)
-- [ ] 👷 Build related changes
-- [ ] 💚 CI related changes
-- [ ] 📝 Documentation content changes
-- [ ] Other... Please describe:
-
-## PR Checklist
+## PR Checklist ✅
 
 Please check if your PR fulfills the following requirements:
 
-<!-- Please check the one that applies to this PR using "x". -->
-
-- [ ] 🚨 The commit message follows our guidelines: https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines
-- [ ] 📐 The code has been formatted with Prettier
-- [ ] 🧪 Tests for the changes have been added (for bug fixes / features)
-- [ ] 📝 Docs have been added / updated (for bug fixes / features)
-
-## What is the current behavior?
-
-<!-- Please describe the current behavior that you are modifying, or link to a relevant issue. -->
-
-Issue Number: N/A
-
-## What is the new behavior?
-
-## Does this PR introduce a breaking change?
+- [ ] 🔄 **Rebased from latest develop** - Synced up and fresh!
+- [ ] 📐 **Formatted with Prettier & ESLint** - Code so clean it sparkles!
+- [ ] 🚨 **Commit Message Vibes** - Following the squad’s rules: [Angular Commit Guidelines](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines)
 
 <!-- If this PR contains a breaking change, please describe the impact and migration path for existing applications below. -->
 
-- [ ] Yes
-- [ ] No
+## Breaking Change Alert? 💥
 
-## Other information
+- [ ] **Yes** - Chaos incoming!
+- [x] **No** - Smooth sailing ahead!
+
+<!-- If it’s a breaking change, spill the deets on the impact and how to roll with it below. -->
+
+## Other information 🌈
+
+<!-- Any additional information or context you want to provide? -->

@@ -12,7 +12,7 @@
   </div>
 
   <div class="z-10 flex w-full flex-auto flex-col items-center justify-center md:max-w-screen-sm">
-    <div class="h-full w-full bg-base-100 md:shadow-card sm:h-auto md:flex-none md:rounded-lg md:border">
+    <div class="bg-base-100 md:shadow-card h-full w-full sm:h-auto md:flex-none md:rounded-lg md:border">
       <div class="p-6 sm:p-8">
         <div class="flex flex-col items-center justify-center">
           <img
@@ -22,7 +22,7 @@
           />
         </div>
 
-        <h1 class="mt-6 text-3xl font-bold leading-tight tracking-tight">Sign up</h1>
+        <h1 class="mt-6 text-3xl leading-tight font-bold tracking-tight">Sign up</h1>
 
         <form
           class="mt-6"
@@ -180,13 +180,13 @@
     @switch (data.hasError) {
       @case (true) {
         <svg-icon
-          class="text-red-500 icon-size-4"
+          class="icon-size-4 text-red-500"
           name="heroicons_outline:x-mark"
         />
       }
       @default {
         <svg-icon
-          class="text-green-500 icon-size-4"
+          class="icon-size-4 text-green-500"
           name="heroicons_outline:check"
         />
       }

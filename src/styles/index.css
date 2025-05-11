@@ -1,0 +1,58 @@
+@import 'tailwindcss';
+
+@import './_colors.css';
+@import './_daisyui.css';
+@import './_themes.css';
+@import './_vendors.css';
+
+@plugin '@tailwindcss/typography';
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ App styles
+/* ----------------------------------------------------------------------------------------------------- */
+:root {
+  line-height: 1.5;
+  color-scheme: light;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.inter-gg0i34SF {
+  font-family: 'Inter', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+html {
+  width: 100%;
+  height: 100dvh;
+  overflow: auto;
+}
+
+body {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+
+  router-outlet {
+    + * {
+      position: relative;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+}

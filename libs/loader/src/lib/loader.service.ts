@@ -28,6 +28,8 @@ export class LoaderService {
     if (this._openedLoaderRef) {
       this._openedLoaderRef.close();
     }
+
+    this._openedLoaderRef = null;
   }
 
   // -----------------------------------------------------------------------------------------------------

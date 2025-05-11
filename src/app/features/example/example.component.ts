@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { WelcomeComponent } from './welcome/welcome.component';
 
-import { DatepickerModule, provideLuxonDateAdapter } from '@libs/date-picker';
+import { DatepickerModule, provideNativeDateAdapter } from '@libs/date-picker';
 import { DialogService } from '@libs/dialog';
 import { LoaderService } from '@libs/loader';
 import { SvgIcon } from '@libs/svg-icon';
@@ -15,7 +15,7 @@ import { ExampleDialogComponent } from './example-dialog/example-dialog.componen
   imports: [WelcomeComponent, SvgIcon, DatepickerModule],
   templateUrl: './example.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [provideLuxonDateAdapter()],
+  providers: [provideNativeDateAdapter()],
 })
 export class ExampleComponent {
   protected _dialog = inject(DialogService);
