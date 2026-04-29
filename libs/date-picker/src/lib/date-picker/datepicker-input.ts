@@ -54,7 +54,7 @@ export const INPUT_VALUE_ACCESSOR: any = {
     '[attr.min]': 'min ? _dateAdapter.toIso8601(min) : null',
     '[attr.max]': 'max ? _dateAdapter.toIso8601(max) : null',
     '[disabled]': 'disabled',
-    '(input)': '_onInput($event.target.value)',
+    '(input)': '_onInput($any($event.target).value)',
     '(change)': '_onChange()',
     '(blur)': '_onBlur()',
     '(keydown)': '_onKeydown($event)',

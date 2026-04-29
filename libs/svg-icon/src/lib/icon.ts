@@ -140,6 +140,9 @@ export class SvgIcon implements OnInit, AfterViewChecked, OnDestroy {
    */
   @Input({ transform: booleanAttribute }) inline = false;
 
+  /** Theme color of the icon. */
+  @Input() color?: string;
+
   /** Name of the icon in the SVG icon set. */
   @Input()
   get name(): string {
