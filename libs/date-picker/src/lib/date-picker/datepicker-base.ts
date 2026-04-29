@@ -31,11 +31,11 @@ import {
 } from '@angular/cdk/overlay';
 import { ComponentPortal, ComponentType } from '@angular/cdk/portal';
 
-import { DOCUMENT } from '@angular/common';
 import {
   booleanAttribute,
   ComponentRef,
   Directive,
+  DOCUMENT,
   ElementRef,
   EventEmitter,
   Inject,

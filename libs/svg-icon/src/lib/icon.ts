@@ -6,13 +6,13 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { DOCUMENT } from '@angular/common';
 import {
   AfterViewChecked,
   Attribute,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  DOCUMENT,
   ElementRef,
   ErrorHandler,
   inject,

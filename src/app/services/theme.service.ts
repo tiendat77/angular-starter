@@ -1,5 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import { inject, Injectable, signal } from '@angular/core';
+import { DOCUMENT, inject, Injectable, signal } from '@angular/core';
 
 import { STORAGE_KEYS } from '@configs/storage.config';
 import { ColorSchemeType } from '@models';
