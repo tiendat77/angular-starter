@@ -597,10 +597,10 @@ class SvgIconRegistry {
         }
         return undefined;
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: SvgIconRegistry, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: SvgIconRegistry, providedIn: 'root' });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: SvgIconRegistry, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: SvgIconRegistry, providedIn: 'root' });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: SvgIconRegistry, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: SvgIconRegistry, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root' }]
         }], ctorParameters: () => [] });
@@ -957,10 +957,10 @@ class SvgIcon {
             });
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: SvgIcon, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "16.1.0", version: "21.2.10", type: SvgIcon, isStandalone: true, selector: "svg-icon", inputs: { inline: ["inline", "inline", booleanAttribute], color: "color", name: "name", fontSet: "fontSet", fontIcon: "fontIcon" }, host: { attributes: { "role": "img" }, properties: { "class": "color ? \"svg-\" + color : \"\"", "attr.data-svg-icon-type": "_usingFontIcon() ? \"font\" : \"svg\"", "attr.data-svg-icon-name": "_svgName || fontIcon", "attr.data-svg-icon-namespace": "_svgNamespace || fontSet", "attr.fontIcon": "_usingFontIcon() ? fontIcon : null", "class.svg-icon-inline": "inline", "class.svg-icon-no-color": "color !== \"primary\" && color !== \"accent\" && color !== \"warn\"" }, classAttribute: "svg-icon notranslate" }, exportAs: ["svgIcon"], ngImport: i0, template: '<ng-content />', isInline: true, styles: [".svg-icon{-webkit-user-select:none;user-select:none;background-repeat:no-repeat;display:inline-block;fill:currentColor;height:24px;width:24px;min-width:24px;min-height:24px;overflow:hidden}.svg-icon.svg-icon-inline{font-size:inherit;height:inherit;line-height:inherit;width:inherit}.svg-icon.svg-ligature-font[fontIcon]:before{content:attr(fontIcon)}[dir=rtl] .svg-icon-rtl-mirror{transform:scaleX(-1)}\n"], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: SvgIcon, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "16.1.0", version: "21.2.11", type: SvgIcon, isStandalone: true, selector: "svg-icon", inputs: { inline: ["inline", "inline", booleanAttribute], color: "color", name: "name", fontSet: "fontSet", fontIcon: "fontIcon" }, host: { attributes: { "role": "img" }, properties: { "class": "color ? \"svg-\" + color : \"\"", "attr.data-svg-icon-type": "_usingFontIcon() ? \"font\" : \"svg\"", "attr.data-svg-icon-name": "_svgName || fontIcon", "attr.data-svg-icon-namespace": "_svgNamespace || fontSet", "attr.fontIcon": "_usingFontIcon() ? fontIcon : null", "class.svg-icon-inline": "inline", "class.svg-icon-no-color": "color !== \"primary\" && color !== \"accent\" && color !== \"warn\"" }, classAttribute: "svg-icon notranslate" }, exportAs: ["svgIcon"], ngImport: i0, template: '<ng-content />', isInline: true, styles: [".svg-icon{-webkit-user-select:none;user-select:none;background-repeat:no-repeat;display:inline-block;fill:currentColor;height:24px;width:24px;min-width:24px;min-height:24px;overflow:hidden}.svg-icon.svg-icon-inline{font-size:inherit;height:inherit;line-height:inherit;width:inherit}.svg-icon.svg-ligature-font[fontIcon]:before{content:attr(fontIcon)}[dir=rtl] .svg-icon-rtl-mirror{transform:scaleX(-1)}\n"], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: SvgIcon, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: SvgIcon, decorators: [{
             type: Component,
             args: [{ template: '<ng-content />', selector: 'svg-icon', exportAs: 'svgIcon', host: {
                         role: 'img',
@@ -994,11 +994,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.10", ngImpo
  * found in the LICENSE file at https://angular.io/license
  */
 class SvgIconModule {
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: SvgIconModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "21.2.10", ngImport: i0, type: SvgIconModule, imports: [SvgIcon], exports: [SvgIcon] });
-    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: SvgIconModule });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: SvgIconModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "21.2.11", ngImport: i0, type: SvgIconModule, imports: [SvgIcon], exports: [SvgIcon] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: SvgIconModule });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: SvgIconModule, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: SvgIconModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [SvgIcon],
@@ -1022,10 +1022,10 @@ class IconsService {
             this._svgIconRegistry.addSvgIconSetInNamespace(namespace.name, this._domSanitizer.bypassSecurityTrustResourceUrl(namespace.url));
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: IconsService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: IconsService, providedIn: 'root' });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: IconsService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: IconsService, providedIn: 'root' });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: IconsService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.11", ngImport: i0, type: IconsService, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root' }]
         }], ctorParameters: () => [] });

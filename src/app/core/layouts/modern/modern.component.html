@@ -1,14 +1,14 @@
-@if (isScreenSmall) {
+@if ($isScreenSmall()) {
   <vertical-navigation
     class="bg-base-100 print:hidden"
     [mode]="'over'"
     [name]="'mainNavigation'"
-    [navigation]="navigation"
+    [navigation]="$navigation()"
     [opened]="false"
   >
     <ng-container verticalNavigationContentHeader>
       <div class="flex h-20 items-center px-8 pt-6">
-        <app-logo />
+        <logo />
       </div>
     </ng-container>
   </vertical-navigation>
@@ -18,20 +18,20 @@
   <div
     class="bg-base-100 relative z-49 flex h-16 w-full flex-0 items-center px-4 shadow sm:h-20 md:px-6 dark:border-b dark:bg-transparent dark:shadow-none print:hidden"
   >
-    @if (!isScreenSmall) {
+    @if (!$isScreenSmall()) {
       <div class="mx-2 flex items-center lg:mr-8">
-        <app-logo />
+        <logo />
       </div>
 
       <horizontal-navigation
         class="mr-2"
         [name]="'mainNavigation'"
-        [navigation]="navigation"
+        [navigation]="$navigation()"
       />
     }
 
     <!-- Navigation toggle button -->
-    @if (isScreenSmall) {
+    @if ($isScreenSmall()) {
       <button
         class="btn btn-circle"
         (click)="toggleNavigation('mainNavigation')"

@@ -13,4 +13,8 @@ export interface PagingDataModel<T> {
   pageSize?: number;
   currentPage?: number;
   totalPages?: number;
+  hasNext?: boolean;
+  hasPrevious?: boolean;
+
+  [key: string]: any;
 }

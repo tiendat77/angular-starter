@@ -12,7 +12,7 @@ This document provides a comprehensive overview of the architecture and technica
 - **Validation**: [Zod](https://zod.dev/)
 - **Real-time**: [ASP.NET Core SignalR](https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction)
 - **Observability**: [OpenTelemetry](https://opentelemetry.io/)
-- **Utilities**: `lodash-es`, `date-fns`, `dayjs`, `nanoid`, `exceljs`
+- **Utilities**: `es-toolkit`, `date-fns`, `dayjs`, `nanoid`, `exceljs`
 
 ---
 

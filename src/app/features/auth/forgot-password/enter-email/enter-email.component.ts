@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { of, switchMap, takeUntil, throwError } from 'rxjs';
+import { of, switchMap, throwError } from 'rxjs';
 
 import { ResponseModel } from '@/api/models';
 import { environment } from '@environment';
@@ -59,7 +60,7 @@ export class EnterEmailComponent extends BaseComponent {
 
           return of(response.data);
         }),
-        takeUntil(this._destroyed$)
+        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe({
         next: () => {

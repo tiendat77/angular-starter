@@ -1,17 +1,31 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
-
-import { environment } from '@environment';
-import { map, Observable, tap } from 'rxjs';
+import { inject, Injectable, Signal, signal } from '@angular/core';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 import { ResponseModel } from '@/api/models';
-import { UserModel } from '../models';
+import { environment } from '@environment';
+import { UserModel } from '@models';
+import { map, Observable, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  user$ = signal<UserModel | null>(null);
-
   private _httpClient = inject(HttpClient);
+  private _user = signal<UserModel | null>(null);
+  private _permission = inject(NgxPermissionsService);
+
+  // -----------------------------------------------------------------------------------------------------
+  // @ Accessors
+  // -----------------------------------------------------------------------------------------------------
+
+  set user(value: UserModel | null) {
+    this._user.set(value);
+    this._permission.flushPermissions();
+    this._permission.loadPermissions(value?.permissions ?? []);
+  }
+
+  get $user(): Signal<UserModel | null> {
+    return this._user;
+  }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
@@ -20,7 +34,7 @@ export class UserService {
   get(): Observable<UserModel> {
     return this._httpClient.get<UserModel>('api/common/user').pipe(
       tap((user) => {
-        this.user$.set(user);
+        this._user.set(user);
       })
     );
   }
@@ -28,7 +42,7 @@ export class UserService {
   update(user: UserModel): Observable<any> {
     return this._httpClient.patch<UserModel>('api/common/user', { user }).pipe(
       map((response) => {
-        this.user$.set(response);
+        this._user.set(response);
       })
     );
   }

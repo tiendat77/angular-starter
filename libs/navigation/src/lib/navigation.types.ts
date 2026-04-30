@@ -31,6 +31,7 @@ export interface NavigationItem {
   };
   children?: NavigationItem[];
   meta?: any;
+  permissions?: string[];
 }
 
 export type VerticalNavigationAppearance = 'default' | 'compact' | 'dense' | 'thin';

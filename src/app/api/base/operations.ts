@@ -1,6 +1,8 @@
+import { Workbook } from 'exceljs';
 import { Observable } from 'rxjs';
 
-import { PagingDataModel } from '../models/response';
+import { ExcelLabelModel } from '../helpers';
+import { ExportRequestModel, PagingDataModel, PagingRequestModel } from '../models';
 
 /**
  * API Read Interface
@@ -13,7 +15,7 @@ export declare interface ApiRead<T = any> {
  * API Create Interface
  */
 export declare interface ApiCreate<T = any> {
-  create(data: T): Observable<T>;
+  create(data: T): Observable<string>;
 }
 
 /**
@@ -45,8 +47,15 @@ export declare interface ApiList<T = any> {
 }
 
 /**
+ * API List Interface
+ */
+export declare interface ApiExport {
+  export(excelLabels: ExcelLabelModel[], filterOptions: ExportRequestModel): Observable<Workbook>;
+}
+
+/**
  * API Paginate Interface
  */
 export declare interface ApiPaginate<T = any> {
-  paginate(page: number, size: number): Observable<PagingDataModel<T>>;
+  paginate(options: PagingRequestModel): Observable<PagingDataModel<T>>;
 }

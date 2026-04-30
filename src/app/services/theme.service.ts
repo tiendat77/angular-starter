@@ -1,4 +1,5 @@
-import { DOCUMENT, inject, Injectable, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { inject, Injectable, signal } from '@angular/core';
 
 import { STORAGE_KEYS } from '@configs/storage.config';
 import { ColorSchemeType } from '@models';
@@ -30,14 +31,14 @@ export class ThemeService {
   }
 
   private _listener: Subscription;
-  private _document = inject<Document>(DOCUMENT);
+  private _document = inject(DOCUMENT);
 
   constructor() {
     this._initialize();
   }
 
   private _initialize() {
-    let scheme = localStorage.getItem(STORAGE_KEYS.SCHEME) as ColorSchemeType;
+    let scheme: ColorSchemeType = localStorage.getItem(STORAGE_KEYS.SCHEME) as any;
     if (scheme && !['dark', 'light', 'system'].includes(scheme)) {
       scheme = this._getSystemScheme();
     }

@@ -4,6 +4,7 @@ import {
   inject,
   OnDestroy,
   OnInit,
+  signal,
   ViewEncapsulation,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
@@ -11,7 +12,7 @@ import { RouterOutlet } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LayoutService } from '../layout.service';
 
-import { LogoComponent } from '@/core/commons/logo/logo.component';
+import { LogoComponent } from '../../commons/logo';
 
 import {
   HorizontalNavigationComponent,
@@ -35,8 +36,8 @@ import { SvgIconModule } from '@libs/svg-icon';
   ],
 })
 export class ModernLayoutComponent implements OnInit, OnDestroy {
-  isScreenSmall: boolean;
-  navigation: NavigationItem[];
+  $isScreenSmall = signal<boolean>(false);
+  $navigation = signal<NavigationItem[]>([]);
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -51,13 +52,13 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
     this._layoutService.navigation$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((navigation: NavigationItem[]) => {
-        this.navigation = navigation;
+        this.$navigation.set(navigation);
       });
 
     this._layoutService.onMediaChange$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(({ matchingAliases }) => {
-        this.isScreenSmall = !matchingAliases.includes('md');
+        this.$isScreenSmall.set(!matchingAliases.includes('md'));
       });
   }
 

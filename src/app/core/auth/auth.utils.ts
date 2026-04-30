@@ -5,7 +5,8 @@
 // https://github.com/auth0/angular2-jwt
 // -----------------------------------------------------------------------------------------------------
 
-import { ClaimModel, UserModel } from '../models';
+import { UserModel } from '@models';
+import { flatten } from 'es-toolkit';
 
 export class AuthUtils {
   // -----------------------------------------------------------------------------------------------------
@@ -13,33 +14,53 @@ export class AuthUtils {
   // -----------------------------------------------------------------------------------------------------
 
   static decode(token: string): Partial<UserModel> | null {
-    if (!token) {
+    if (!token || token === '') {
       return null;
     }
 
     try {
-      const decoded = this._decodeToken(token);
+      const decoded: any = this._decodeToken(token);
 
       if (!decoded) {
         return null;
       }
 
       const user: Partial<UserModel> = {};
-      user['id'] = decoded['userID'] ?? '';
+
+      user['id'] = decoded['id'] ?? '';
       user['email'] = decoded['email'] ?? '';
       user['name'] = decoded['name'] ?? '';
       user['avatar'] = decoded['avatar'] || null;
-      user['permissions'] = decoded['permissions'] || [];
+      user['organizationID'] = decoded['organizationID'] ?? '';
+
+      try {
+        const permissions: string[] = JSON.parse(decoded['permissions'] || '[]');
+
+        /**
+         * Format "ClientSite:ProductCategories,Products"
+         * To ["ProductCategories", "Products"]
+         */
+        user['permissions'] = flatten(
+          permissions.map((p) =>
+            p
+              .split(':')?.[1]
+              ?.split(',')
+              .map((s) => s.trim())
+          )
+        );
+      } catch {
+        user['permissions'] = [];
+      }
+
       return user;
-    } catch (error) {
-      console.error(error);
+    } catch {
       return null;
     }
   }
 
   static isTokenExpired(token: string, offsetSeconds?: number): boolean {
     // Return if there is no token
-    if (!token) {
+    if (!token || token === '') {
       return true;
     }
 
@@ -121,7 +142,7 @@ export class AuthUtils {
     return this._b64DecodeUnicode(output);
   }
 
-  private static _decodeToken(token: string): ClaimModel | null {
+  private static _decodeToken(token: string): any {
     // Return if there is no token
     if (!token) {
       return null;
@@ -150,10 +171,6 @@ export class AuthUtils {
     // Get the decoded token
     const decodedToken = this._decodeToken(token);
 
-    if (!decodedToken) {
-      return null;
-    }
-
     // Return if the decodedToken doesn't have an 'exp' field
     if (!('exp' in decodedToken)) {
       return null;
@@ -161,7 +178,7 @@ export class AuthUtils {
 
     // Convert the expiration date
     const date = new Date(0);
-    date.setUTCSeconds(decodedToken['exp']);
+    date.setUTCSeconds(decodedToken.exp);
 
     return date;
   }

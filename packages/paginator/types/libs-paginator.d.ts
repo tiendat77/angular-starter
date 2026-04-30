@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { OnInit, OnDestroy, EventEmitter, InjectionToken } from '@angular/core';
+import { InjectionToken, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 
 /**

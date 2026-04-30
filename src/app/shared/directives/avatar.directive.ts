@@ -12,7 +12,7 @@ export class AvatarDirective {
 
   private elementRef = inject(ElementRef<HTMLImageElement>);
 
-  @HostListener('error', ['$event'])
+  @HostListener('error')
   onError() {
     if (this.element) {
       this.element.src = `https://ui-avatars.com/api/?format=svg&name=${this.name || 'Unknown'}&rounded=true&background=random&color=ffffff`;

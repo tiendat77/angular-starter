@@ -1,18 +1,27 @@
-import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  importProvidersFrom,
+  inject,
+  provideEnvironmentInitializer,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { provideIcons } from '@libs/svg-icon';
 
-import { ThemeService } from '@/services/theme.service';
-import { startUpFn } from '@configs/start-up.config';
+import { provideAuth } from './core/auth';
+import { ThemeService } from './services/theme.service';
+import { UserService } from './services/user.service';
 
+import { NgxPermissionsModule } from 'ngx-permissions';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideAnimations(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideAnimations(),
+    provideAuth(),
     provideIcons([
       // See more at https://heroicons.com/
       {
@@ -24,13 +33,10 @@ export const appConfig: ApplicationConfig = {
         url: 'icons/heroicons-solid.svg',
       },
     ]),
-
-    /** Preload setup before the app starts */
-    {
-      provide: APP_INITIALIZER,
-      useFactory: startUpFn,
-      deps: [ThemeService],
-      multi: true,
-    },
+    importProvidersFrom([NgxPermissionsModule.forRoot()]),
+    provideEnvironmentInitializer(() => {
+      inject(ThemeService);
+      inject(UserService);
+    }),
   ],
 };

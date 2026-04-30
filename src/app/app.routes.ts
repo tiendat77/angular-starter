@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 
-import { AuthGuard, NoAuthGuard } from '@/core/auth';
+import { AuthGuard, NoAuthGuard } from '@/core/guard';
 import { LayoutComponent, LayoutService } from '@/core/layouts';
 
 export const routes: Routes = [

@@ -1,5 +1,3 @@
-export * from './entity.base';
-export * from './example.model';
+export * from './example';
+export * from './request';
 export * from './response';
-
-/** Resource Models */

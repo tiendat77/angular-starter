@@ -8,6 +8,7 @@ import {
 
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormControl,
@@ -19,7 +20,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SvgIcon } from '@libs/svg-icon';
-import { of, switchMap, takeUntil, throwError } from 'rxjs';
+import { of, switchMap, throwError } from 'rxjs';
 
 import { ResponseModel } from '@/api/models';
 import { environment } from '@environment';
@@ -131,7 +132,7 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
 
           return of(response.data);
         }),
-        takeUntil(this._destroyed$)
+        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe({
         next: () => {

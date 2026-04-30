@@ -2,9 +2,9 @@ import { inject } from '@angular/core';
 import { CanActivateChildFn, CanActivateFn, Router } from '@angular/router';
 
 import { of, switchMap } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../auth';
 
-export const NoAuthGuard: CanActivateFn | CanActivateChildFn = (_route, _state) => {
+export const NoAuthGuard: CanActivateFn | CanActivateChildFn = () => {
   const router: Router = inject(Router);
 
   return inject(AuthService)
@@ -12,7 +12,7 @@ export const NoAuthGuard: CanActivateFn | CanActivateChildFn = (_route, _state) 
     .pipe(
       switchMap((authenticated) => {
         if (authenticated) {
-          return of(router.parseUrl('/signed-in-redirect'));
+          return of(router.parseUrl(''));
         }
 
         // Allow the access

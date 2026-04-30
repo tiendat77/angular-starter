@@ -35,6 +35,7 @@ interface NavigationItem {
     };
     children?: NavigationItem[];
     meta?: any;
+    permissions?: string[];
 }
 type VerticalNavigationAppearance = 'default' | 'compact' | 'dense' | 'thin';
 type VerticalNavigationMode = 'over' | 'side';

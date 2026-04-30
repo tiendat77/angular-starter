@@ -1,14 +1,14 @@
 <vertical-navigation
   class="bg-base-100 print:hidden"
-  [appearance]="navigationAppearance"
-  [mode]="isScreenSmall ? 'over' : 'side'"
+  [appearance]="$navigationAppearance()"
+  [mode]="$isScreenSmall() ? 'over' : 'side'"
   [name]="'main-navigation'"
-  [navigation]="navigation"
-  [opened]="!isScreenSmall"
+  [navigation]="$navigation()"
+  [opened]="!$isScreenSmall()"
 >
   <ng-container verticalNavigationContentHeader>
     <div class="flex h-20 items-center justify-center">
-      <app-logo
+      <logo
         routerLink="/"
         class="w-12 cursor-pointer"
       />
@@ -17,25 +17,10 @@
 </vertical-navigation>
 
 <div class="flex h-full w-full min-w-0 flex-auto flex-col">
-  <!-- Background Gradient -->
-  <div
-    aria-hidden="true"
-    class="fixed inset-0 grid grid-cols-2 -space-x-52 opacity-10 dark:opacity-5"
-  >
-    <div
-      class="h-96 bg-gradient-to-br from-purple-400 to-rose-300 blur-[106px] dark:from-purple-700 dark:to-rose-700"
-    ></div>
-    <div
-      class="h-90 bg-gradient-to-r from-indigo-400 to-cyan-400 blur-[106px] dark:from-indigo-600 dark:to-cyan-600"
-    ></div>
-  </div>
-
   <!-- Header -->
-  <div
-    class="bg-base-200 bg-opacity-35 sticky inset-x-0 top-0 z-49 flex-0 border-b backdrop-blur-sm transition dark:backdrop-blur print:hidden"
-  >
-    <div class="navbar mx-auto px-4 sm:px-6 md:container md:px-8">
-      <div class="flex-1 lg:hidden">
+  <div class="bg-base-100 sticky inset-x-0 top-0 z-49 flex-0 border-b transition print:hidden">
+    <div class="mx-auto flex min-h-16 w-full items-center p-2 px-4 sm:px-6 md:px-8">
+      <div class="flex-1">
         <button
           class="btn btn-circle btn-ghost"
           (click)="toggle()"
@@ -44,13 +29,16 @@
         </button>
       </div>
 
-      <div class="ml-auto flex flex-none items-center space-x-0.5 pl-2 sm:space-x-2"></div>
+      <div class="ml-auto flex flex-none items-center space-x-0.5 pl-2 sm:space-x-2">
+        <!-- <user /> -->
+        <!-- <notification /> -->
+      </div>
     </div>
   </div>
 
   <!-- Content -->
   <div class="flex flex-auto flex-col overflow-hidden">
-    <main class="mx-auto flex h-full w-full flex-auto flex-col p-4 sm:p-6 md:container md:p-8">
+    <main class="mx-auto flex h-full w-full flex-auto flex-col p-4 sm:p-6 md:p-8">
       <router-outlet />
     </main>
   </div>

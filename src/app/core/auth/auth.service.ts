@@ -4,14 +4,13 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 /** Utils */
-import { BehaviorSubject, Observable, forkJoin, of, throwError } from 'rxjs';
-import { catchError, filter, finalize, switchMap, take, tap } from 'rxjs/operators';
-import { AuthUtils } from '../helpers/auth.utils';
+import { Observable, forkJoin, of, throwError } from 'rxjs';
+import { catchError, finalize, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { AuthUtils } from './auth.utils';
 
 /** Services */
-import { DialogService } from '@libs/dialog';
-import { ToastService } from '@libs/toast';
-import { UserService } from './user.service';
+import { UserService } from '@/services/user.service';
+import { LayoutService } from '../layouts';
 
 /** Models */
 import { ResponseModel } from '@/api/models';
@@ -26,8 +25,7 @@ export class AuthService {
 
   private _router = inject(Router);
   private _user = inject(UserService);
-  private _toast = inject(ToastService);
-  private _dialog = inject(DialogService);
+  private _layout = inject(LayoutService);
 
   private _httpHandler = inject(HttpBackend);
   private _httpClient = new HttpClient(this._httpHandler);
@@ -44,8 +42,8 @@ export class AuthService {
   }
 
   set accessToken(value: string) {
-    this._accessToken = value;
-    localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, value);
+    this._accessToken = value || '';
+    localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, value || '');
   }
 
   private _accessToken = '';
@@ -58,12 +56,17 @@ export class AuthService {
   }
 
   set refreshToken(value: string) {
-    this._refreshToken = value;
-    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, value);
+    this._refreshToken = value || '';
+    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, value || '');
   }
 
   private _refreshToken = '';
-  private _refreshTokenSub$ = new BehaviorSubject<string | null>(null);
+
+  /** Single in-flight refresh so concurrent 401s share one HTTP call */
+  private _refreshInFlight$: Observable<{
+    accessToken: string;
+    refreshToken: string;
+  }> | null = null;
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
@@ -71,7 +74,7 @@ export class AuthService {
 
   signIn(credentials: { username: string; password: string }): Observable<any> {
     return this._httpClient
-      .post<ResponseModel>(`${environment.apiUrl}/authentication/login`, credentials)
+      .post<ResponseModel>(`${environment.apiUrl}/auth/login`, credentials)
       .pipe(
         switchMap((response: any) => {
           if (response.isError) {
@@ -89,7 +92,8 @@ export class AuthService {
           const decoded = AuthUtils.decode(response.accessToken);
 
           if (decoded) {
-            this._user.user$.set(decoded as any);
+            this._user.user = decoded as any;
+            this._layout.get(decoded.permissions).subscribe();
           }
         })
       );
@@ -97,8 +101,8 @@ export class AuthService {
 
   signInUsingToken(): Observable<any> {
     return forkJoin([
-      of(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ?? ''),
-      of(localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ?? ''),
+      of(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN)),
+      of(localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN)),
     ]).pipe(
       switchMap(([token, refreshToken]) => {
         if (!token || !refreshToken) {
@@ -116,7 +120,8 @@ export class AuthService {
         this._authenticated = true;
 
         // Get the user data
-        this._user.user$.set(decoded as any);
+        this._user.user = decoded as any;
+        this._layout.get(decoded.permissions).subscribe();
 
         return of(true);
       }),
@@ -127,24 +132,24 @@ export class AuthService {
     );
   }
 
+  signUp(credentials: { name: string; email: string; password: string }): Observable<any> {
+    return this._httpClient.post<ResponseModel>(`${environment.apiUrl}/auth/sign-up`, credentials);
+  }
+
   signOut(): Observable<any> {
     // Set the authenticated flag to false
     this._authenticated = false;
 
     // Clear user data
-    this._user.user$.set(null);
-
-    // Close all the dialogs
-    this._dialog.closeAll();
-
-    // Close all toast notifications
-    this._toast.dismiss();
+    this._user.user = null;
 
     // Remove the access token from the local storage
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+
     this._accessToken = '';
     this._refreshToken = '';
+    this._refreshInFlight$ = null;
 
     // Navigate to the sign-in page
     this._router.navigate(['/sign-in']);
@@ -156,23 +161,12 @@ export class AuthService {
     accessToken: string;
     refreshToken: string;
   }> {
-    if (this._refreshTokenSub$.value) {
-      return this._refreshTokenSub$.pipe(
-        filter((token) => token != null),
-        take(1),
-        switchMap(() => {
-          return of({
-            accessToken: this.accessToken,
-            refreshToken: this.refreshToken,
-          });
-        })
-      );
+    if (this._refreshInFlight$) {
+      return this._refreshInFlight$;
     }
 
-    this._refreshTokenSub$.next(null);
-
-    return this._httpClient
-      .post(`${environment.apiUrl}/authentication/refresh-token`, {
+    this._refreshInFlight$ = this._httpClient
+      .post(`${environment.apiUrl}/auth/refresh-token`, {
         accessToken: this.accessToken,
         refreshToken: this.refreshToken,
       })
@@ -193,9 +187,12 @@ export class AuthService {
           return throwError(() => error);
         }),
         finalize(() => {
-          this._refreshTokenSub$.next(this.refreshToken);
-        })
+          this._refreshInFlight$ = null;
+        }),
+        shareReplay({ bufferSize: 1, refCount: true })
       );
+
+    return this._refreshInFlight$;
   }
 
   check(): Observable<boolean> {
@@ -205,7 +202,7 @@ export class AuthService {
     }
 
     // Check if token already generated
-    return of(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ?? '').pipe(
+    return of(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN)).pipe(
       switchMap((token) => {
         if (!token) {
           return of(false);
@@ -227,15 +224,16 @@ export class AuthService {
       catchError(() => {
         // Clear invalid token
         localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-        localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
         return of(false);
       })
     );
   }
 
-  signUp(form: { name: string; email: string; password: string }): Observable<any> {
+  forgotPassword(username: string): Observable<any> {
     return this._httpClient
-      .post<ResponseModel>(`${environment.apiUrl}/authentication/sign-up`, form)
+      .post<ResponseModel>(`${environment.apiUrl}/auth/forgot-password`, {
+        username,
+      })
       .pipe(
         switchMap((response: any) => {
           if (response.isError) {
@@ -243,23 +241,21 @@ export class AuthService {
           }
 
           return of(response.data);
-        }),
-        tap((response: any) => {
-          this.accessToken = response.accessToken;
-          this.refreshToken = response.refreshToken;
-          this._authenticated = true;
-
-          // Get the user data
-          const decoded = AuthUtils.decode(response.accessToken);
-
-          if (decoded) {
-            this._user.user$.set(decoded as any);
-          }
         })
       );
   }
 
-  // -----------------------------------------------------------------------------------------------------
-  // @ Private methods
-  // -----------------------------------------------------------------------------------------------------
+  resetPassword(credentials: { newPassword: string; token: string }): Observable<any> {
+    return this._httpClient
+      .post<ResponseModel>(`${environment.apiUrl}/auth/reset-password`, credentials)
+      .pipe(
+        switchMap((response: any) => {
+          if (response.isError) {
+            return throwError(() => new Error(response.message || 'An error occurred'));
+          }
+
+          return of(response.data);
+        })
+      );
+  }
 }

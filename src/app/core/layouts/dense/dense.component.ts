@@ -5,13 +5,14 @@ import {
   inject,
   OnDestroy,
   OnInit,
+  signal,
   ViewEncapsulation,
 } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 import { Subject, takeUntil } from 'rxjs';
 
-import { LogoComponent } from '@/core/commons/logo/logo.component';
+import { LogoComponent } from '../../commons/logo';
 import { LayoutService } from '../layout.service';
 
 import { NavigationItem, NavigationService, VerticalNavigationComponent } from '@libs/navigation';
@@ -23,11 +24,14 @@ import { SvgIcon } from '@libs/svg-icon';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, RouterLink, SvgIcon, LogoComponent, VerticalNavigationComponent],
+  host: {
+    class: 'flex flex-row flex-auto w-full h-full',
+  },
 })
 export class DenseLayoutComponent implements OnInit, OnDestroy {
-  isScreenSmall: boolean;
-  navigation: NavigationItem[];
-  navigationAppearance: 'default' | 'dense' = 'dense';
+  $isScreenSmall = signal<boolean>(false);
+  $navigation = signal<NavigationItem[]>([]);
+  $navigationAppearance = signal<'default' | 'dense'>('default');
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -43,14 +47,13 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
     this._layoutService.navigation$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((navigation: NavigationItem[]) => {
-        this.navigation = navigation;
+        this.$navigation.set(navigation);
       });
 
     this._layoutService.onMediaChange$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(({ matchingAliases }) => {
-        this.isScreenSmall = !matchingAliases.includes('md');
-        this.navigationAppearance = this.isScreenSmall ? 'default' : 'dense';
+        this.$isScreenSmall.set(!matchingAliases.includes('lg'));
       });
   }
 
@@ -64,13 +67,21 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
   // -----------------------------------------------------------------------------------------------------
 
   toggle(): void {
-    const navigation =
-      this._navigationService.getComponent<VerticalNavigationComponent>('main-navigation');
+    if (this.$isScreenSmall()) {
+      const navigation =
+        this._navigationService.getComponent<VerticalNavigationComponent>('main-navigation');
 
-    if (navigation) {
-      navigation.toggle();
+      if (navigation) {
+        navigation.toggle();
+        this.$navigationAppearance.set('default');
+      }
+
+      this._cdRef.markForCheck();
+      return;
     }
 
-    this._cdRef.markForCheck();
+    this.$navigationAppearance.update((appearance) =>
+      appearance === 'default' ? 'dense' : 'default'
+    );
   }
 }

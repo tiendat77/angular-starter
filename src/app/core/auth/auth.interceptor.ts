@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { environment } from '@environment';
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from './auth.service';
 
 export const authInterceptor = (
   req: HttpRequest<unknown>,

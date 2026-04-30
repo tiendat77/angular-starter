@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '@/core/auth';
 import { BaseComponent } from '@models';
-import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -43,7 +43,7 @@ export class SignInComponent extends BaseComponent {
 
     this._auth
       .signIn({ username, password })
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe({
         next: () => {
           this._redirect();

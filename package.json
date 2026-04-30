@@ -27,6 +27,8 @@
     "@lottiefiles/dotlottie-wc": "^0.9.12",
     "dayjs": "^1.11.20",
     "es-toolkit": "^1.46.1",
+    "exceljs": "^4.4.0",
+    "ngx-permissions": "^19.0.0",
     "rxjs": "~7.8.0",
     "swiper": "^12.1.3",
     "zod": "^4.4.1",
