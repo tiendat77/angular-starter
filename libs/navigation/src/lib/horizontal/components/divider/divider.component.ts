@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -17,7 +18,6 @@ import { HorizontalNavigationComponent } from '../../horizontal.component';
   selector: 'horizontal-navigation-divider-item',
   templateUrl: './divider.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [NgClass],
 })
 export class HorizontalNavigationDividerItemComponent implements OnInit, OnDestroy {
@@ -27,10 +27,8 @@ export class HorizontalNavigationDividerItemComponent implements OnInit, OnDestr
   private _horizontalNavigationComponent: HorizontalNavigationComponent;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _navigationService: NavigationService
-  ) {}
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _navigationService = inject(NavigationService);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks

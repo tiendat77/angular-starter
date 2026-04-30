@@ -6,7 +6,6 @@ import { ToastRef } from './toast.ref';
 
 @Component({
   selector: 'toast',
-  standalone: true,
   imports: [NgClass],
   templateUrl: './toast.component.html',
 })

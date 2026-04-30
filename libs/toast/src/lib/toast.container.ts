@@ -6,6 +6,7 @@ import {
   NgZone,
   OnDestroy,
   ViewChild,
+  inject,
 } from '@angular/core';
 
 import {
@@ -22,7 +23,6 @@ import { Observable, Subject } from 'rxjs';
 import { toastAnimations } from './toast.animation';
 
 @Component({
-  standalone: true,
   selector: 'toast-container',
   template: '<ng-template cdkPortalOutlet />',
   animations: [toastAnimations.toastState],
@@ -34,6 +34,9 @@ import { toastAnimations } from './toast.animation';
   },
 })
 export class ToastContainerComponent extends BasePortalOutlet implements OnDestroy {
+  private _ngZone = inject(NgZone);
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+
   /** Whether the component has been destroyed. */
   private _destroyed = false;
 
@@ -48,13 +51,6 @@ export class ToastContainerComponent extends BasePortalOutlet implements OnDestr
 
   /** The state of the toast animations. */
   _animationState = 'void';
-
-  constructor(
-    private _ngZone: NgZone,
-    private _changeDetectorRef: ChangeDetectorRef
-  ) {
-    super();
-  }
 
   attachComponentPortal<T>(portal: ComponentPortal<T>): ComponentRef<T> {
     const result = this._portalOutlet.attachComponentPortal(portal);

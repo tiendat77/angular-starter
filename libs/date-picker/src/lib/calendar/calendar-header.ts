@@ -10,10 +10,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  forwardRef,
-  Inject,
-  Optional,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 
 import { DATE_FORMATS, DateAdapter, DateFormats } from '../adapter';
@@ -24,20 +22,20 @@ let calendarHeaderId = 1;
 
 /** Default header for MatCalendar */
 @Component({
-  standalone: true,
   selector: 'calendar-header',
-  templateUrl: 'calendar-header.html',
+  templateUrl: './calendar-header.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'calendarHeader',
 })
 export class CalendarHeader<D> {
-  constructor(
-    @Inject(forwardRef(() => Calendar)) public calendar: Calendar<D>,
-    @Optional() private _dateAdapter: DateAdapter<D>,
-    @Optional() @Inject(DATE_FORMATS) private _dateFormats: DateFormats,
-    changeDetectorRef: ChangeDetectorRef
-  ) {
+  calendar = inject<Calendar<D>>(Calendar);
+  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+
+  constructor() {
+    const changeDetectorRef = inject(ChangeDetectorRef);
+
     this.calendar.stateChanges.subscribe(() => changeDetectorRef.markForCheck());
   }
 

@@ -8,8 +8,6 @@
   <div
     #navigationContent
     class="vertical-navigation-content"
-    scrollbar
-    [scrollbarOptions]="{ wheelPropagation: inner, suppressScrollX: true }"
   >
     <!-- Content header -->
     <div class="vertical-navigation-content-header">
@@ -101,8 +99,6 @@
 @if (activeAsideItemId) {
   <div
     class="vertical-navigation-aside-wrapper"
-    scrollbar
-    [scrollbarOptions]="{ wheelPropagation: false, suppressScrollX: true }"
     [@fadeInLeft]="position === 'left'"
     [@fadeInRight]="position === 'right'"
     [@fadeOutLeft]="position === 'left'"

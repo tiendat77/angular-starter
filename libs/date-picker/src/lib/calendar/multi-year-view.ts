@@ -28,10 +28,10 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
-  Optional,
   Output,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -61,10 +61,13 @@ export const yearsPerRow = 4;
   exportAs: 'multiYearView',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [CalendarBody],
 })
 export class MultiYearView<D> implements AfterContentInit, OnDestroy {
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  private _dir = inject(Directionality, { optional: true });
+
   private _rerenderSubscription = Subscription.EMPTY;
 
   /** Flag used to filter out space/enter keyup events that originated outside of the view. */
@@ -159,11 +162,7 @@ export class MultiYearView<D> implements AfterContentInit, OnDestroy {
   /** The year of the selected date. Null if the selected date is null. */
   _selectedYear: number | null;
 
-  constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    @Optional() public _dateAdapter: DateAdapter<D>,
-    @Optional() private _dir?: Directionality
-  ) {
+  constructor() {
     if (!this._dateAdapter) {
       throw createMissingDateImplError('DateAdapter');
     }

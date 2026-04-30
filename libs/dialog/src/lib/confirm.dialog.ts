@@ -11,7 +11,6 @@ export interface DialogConfirmConfig {
 @Component({
   selector: 'dialog-confirm',
   templateUrl: './confirm.dialog.html',
-  standalone: true,
   imports: [NgClass],
 })
 export class DialogConfirmComponent {

@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { FactoryProvider, Injectable, OnDestroy, Optional, SkipSelf } from '@angular/core';
+import { FactoryProvider, Injectable, OnDestroy, Optional, SkipSelf, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { DateAdapter } from '../adapter/date-adapter';
 
@@ -51,21 +51,24 @@ export interface DateSelectionModelChange<S> {
  * A selection model containing a date selection.
  * @docs-private
  */
+// eslint-disable-next-line @angular-eslint/use-injectable-provided-in
 @Injectable()
-export abstract class DateSelectionModel<S, D = ExtractDateTypeFromSelection<S>>
-  implements OnDestroy
-{
+export abstract class DateSelectionModel<
+  S,
+  D = ExtractDateTypeFromSelection<S>,
+> implements OnDestroy {
+  readonly selection: S;
+  protected _adapter: DateAdapter<D>;
+
   private readonly _selectionChanged = new Subject<DateSelectionModelChange<S>>();
 
   /** Emits when the selection has changed. */
   selectionChanged: Observable<DateSelectionModelChange<S>> = this._selectionChanged;
 
-  protected constructor(
-    /** The current selection. */
-    readonly selection: S,
-    protected _adapter: DateAdapter<D>
-  ) {
+  // eslint-disable-next-line @angular-eslint/prefer-inject
+  protected constructor(selection: S, adapter: DateAdapter<D>) {
     this.selection = selection;
+    this._adapter = adapter;
   }
 
   /**
@@ -104,10 +107,12 @@ export abstract class DateSelectionModel<S, D = ExtractDateTypeFromSelection<S>>
  * A selection model that contains a single date.
  * @docs-private
  */
+// eslint-disable-next-line @angular-eslint/use-injectable-provided-in
 @Injectable()
 export class SingleDateSelectionModel<D> extends DateSelectionModel<D | null, D> {
-  constructor(adapter: DateAdapter<D>) {
-    super(null, adapter);
+  // eslint-disable-next-line @angular-eslint/prefer-inject
+  constructor(adapter?: DateAdapter<D>) {
+    super(null, adapter || inject<DateAdapter<D>>(DateAdapter));
   }
 
   /**
@@ -120,7 +125,7 @@ export class SingleDateSelectionModel<D> extends DateSelectionModel<D | null, D>
 
   /** Checks whether the current selection is valid. */
   isValid(): boolean {
-    return this.selection != null && this._isValidDateInstance(this.selection);
+    return this.selection != null && this._isValidDateInstance(this.selection as D);
   }
 
   /**

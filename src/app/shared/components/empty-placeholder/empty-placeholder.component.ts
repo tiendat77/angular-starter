@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  standalone: true,
   selector: 'empty-placeholder',
   templateUrl: './empty-placeholder.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

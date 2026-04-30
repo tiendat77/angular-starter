@@ -20,6 +20,5 @@ import { DatepickerBase, DatepickerControl } from './datepicker-base';
     SINGLE_DATE_SELECTION_MODEL_PROVIDER,
     { provide: DatepickerBase, useExisting: Datepicker },
   ],
-  standalone: true,
 })
 export class Datepicker<D> extends DatepickerBase<DatepickerControl<D>, D | null, D> {}

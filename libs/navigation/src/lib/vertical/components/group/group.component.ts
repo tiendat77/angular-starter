@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   Component,
   forwardRef,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -25,7 +26,6 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
   selector: 'vertical-navigation-group-item',
   templateUrl: './group.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     NgClass,
     SvgIconModule,
@@ -37,6 +37,9 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
   ],
 })
 export class VerticalNavigationGroupItemComponent implements OnInit, OnDestroy {
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _navigationService = inject(NavigationService);
+
   static ngAcceptInputType_autoCollapse: BooleanInput;
 
   @Input() autoCollapse: boolean;
@@ -45,11 +48,6 @@ export class VerticalNavigationGroupItemComponent implements OnInit, OnDestroy {
 
   private _verticalNavigationComponent: VerticalNavigationComponent;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-  constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _navigationService: NavigationService
-  ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks

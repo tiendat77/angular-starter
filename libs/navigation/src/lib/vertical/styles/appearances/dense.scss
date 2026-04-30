@@ -1,6 +1,6 @@
 /* Variables */
 :root {
-  --vertical-navigation-width: 280px;
+  --vertical-navigation-width: 230px;
   --vertical-navigation-dense-width: 80px;
 }
 
@@ -129,11 +129,6 @@ vertical-navigation {
       left: var(--vertical-navigation-dense-width);
     }
 
-    /* Background gradient */
-    .vertical-navigation-background-gradient {
-      display: none;
-    }
-
     /* Hover */
     &.vertical-navigation-hover {
       .vertical-navigation-wrapper {
@@ -160,10 +155,6 @@ vertical-navigation {
 
       .vertical-navigation-aside-wrapper {
         left: var(--vertical-navigation-width);
-      }
-
-      .vertical-navigation-background-gradient {
-        display: block;
       }
     }
   }

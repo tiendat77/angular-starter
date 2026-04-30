@@ -5,22 +5,11 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/* eslint-disable @angular-eslint/directive-class-suffix */
 
-import {
-  Directive,
-  ElementRef,
-  forwardRef,
-  Inject,
-  InjectionToken,
-  Input,
-  OnDestroy,
-  Optional,
-} from '@angular/core';
+import { Directive, ElementRef, forwardRef, InjectionToken, Input, OnDestroy } from '@angular/core';
 import { NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidatorFn, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { DATE_FORMATS, DateAdapter, DateFormats } from '../adapter';
 import { DateSelectionModelChange } from './date-selection-model';
 import { DatepickerControl, DatepickerPanel } from './datepicker-base';
 import { DateFilterFn, DatepickerInputBase } from './datepicker-input-base';
@@ -46,7 +35,6 @@ export const INPUT_VALUE_ACCESSOR: any = {
 
 /** Directive used to connect an input to a Datepicker. */
 @Directive({
-  standalone: true,
   selector: 'input[datepicker]',
   providers: [DATEPICKER_VALUE_ACCESSOR, DATEPICKER_VALIDATORS, INPUT_VALUE_ACCESSOR],
   host: {
@@ -126,12 +114,8 @@ export class DatepickerInput<D>
   /** The combined form control validator for this input. */
   protected _validator: ValidatorFn | null;
 
-  constructor(
-    elementRef: ElementRef<HTMLInputElement>,
-    @Optional() dateAdapter: DateAdapter<D>,
-    @Optional() @Inject(DATE_FORMATS) dateFormats: DateFormats
-  ) {
-    super(elementRef, dateAdapter, dateFormats);
+  constructor() {
+    super();
     this._validator = Validators.compose(super._getValidators());
   }
 

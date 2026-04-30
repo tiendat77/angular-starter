@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  standalone: true,
   selector: 'empty-layout',
   templateUrl: './empty.component.html',
   encapsulation: ViewEncapsulation.None,

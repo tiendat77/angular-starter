@@ -10,7 +10,6 @@ import { HotkeysShortcutPipe } from '../hotkeys-shortcut.pipe';
 import { HotkeysService } from '../hotkeys.service';
 
 @Component({
-  standalone: true,
   imports: [HotkeysShortcutPipe],
   templateUrl: './hotkeys-help.component.html',
   styleUrl: './hotkeys-help.component.scss',

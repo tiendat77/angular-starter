@@ -10,7 +10,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   DOCUMENT,
   ErrorHandler,
-  Inject,
+  inject,
   Injectable,
   InjectionToken,
   OnDestroy,
@@ -119,6 +119,10 @@ type LoadedSvgIconConfig = SvgIconConfig & { svgText: TrustedHTML };
  */
 @Injectable({ providedIn: 'root' })
 export class SvgIconRegistry implements OnDestroy {
+  private _httpClient = inject(HttpClient, { optional: true });
+  private _sanitizer = inject(DomSanitizer);
+  private readonly _errorHandler = inject(ErrorHandler);
+
   private _document: Document;
 
   /**
@@ -151,13 +155,10 @@ export class SvgIconRegistry implements OnDestroy {
    */
   private _defaultFontSetClass = ['svg-icons', 'svg-ligature-font'];
 
-  constructor(
-    @Optional() private _httpClient: HttpClient,
-    private _sanitizer: DomSanitizer,
-    @Optional() @Inject(DOCUMENT) document: any,
-    private readonly _errorHandler: ErrorHandler
-  ) {
-    this._document = document;
+  constructor() {
+    const document = inject(DOCUMENT, { optional: true });
+
+    this._document = document as Document;
   }
 
   /**
@@ -733,14 +734,8 @@ export class SvgIconRegistry implements OnDestroy {
 }
 
 /** @docs-private */
-export function ICON_REGISTRY_PROVIDER_FACTORY(
-  parentRegistry: SvgIconRegistry,
-  httpClient: HttpClient,
-  sanitizer: DomSanitizer,
-  errorHandler: ErrorHandler,
-  document?: any
-) {
-  return parentRegistry || new SvgIconRegistry(httpClient, sanitizer, document, errorHandler);
+export function ICON_REGISTRY_PROVIDER_FACTORY(parentRegistry: SvgIconRegistry) {
+  return parentRegistry || new SvgIconRegistry();
 }
 
 /** @docs-private */

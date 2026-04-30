@@ -28,7 +28,6 @@ const pcSymbols = {
 };
 
 @Pipe({
-  standalone: true,
   name: 'hotkeysShortcut',
 })
 export class HotkeysShortcutPipe implements PipeTransform {

@@ -1,6 +1,6 @@
 /* Variables */
 :root {
-  --vertical-navigation-width: 280px;
+  --vertical-navigation-width: 230px;
 }
 
 vertical-navigation {
@@ -132,7 +132,7 @@ vertical-navigation {
     overflow: hidden;
     z-index: 10;
     background: inherit;
-    box-shadow: inset -1px 0 0 rgb(var(--border-default-rgb));
+    box-shadow: inset -1px 0 0 rgba(var(--border-default-rgb), var(--border-opacity));
 
     /* Header */
     .vertical-navigation-header {
@@ -147,6 +147,7 @@ vertical-navigation {
       overflow-y: auto;
       overscroll-behavior: contain;
       transition: transform 400ms ease;
+      padding-bottom: 80px;
 
       /* Divider */
       > vertical-navigation-divider-item {
@@ -160,12 +161,12 @@ vertical-navigation {
 
       /** Scroll bar */
       &::-webkit-scrollbar {
-        width: 0px;
+        width: 6px;
         background: transparent;
       }
 
       &:hover::-webkit-scrollbar {
-        width: 4px;
+        width: 6px;
       }
 
       &::-webkit-scrollbar:hover,
@@ -174,7 +175,12 @@ vertical-navigation {
       }
 
       &::-webkit-scrollbar-thumb {
-        background: linear-gradient(175deg, oklch(var(--p)), oklch(var(--a)), oklch(var(--p)));
+        background: linear-gradient(
+          175deg,
+          var(--color-primary),
+          var(--color-accent),
+          var(--color-primary)
+        );
       }
 
       @media (hover: none) {
@@ -484,7 +490,7 @@ vertical-navigation-group-item {
 
       .vertical-navigation-item-icon {
         color: currentColor;
-        opacity: 0.6;
+        opacity: 0.8;
       }
 
       .vertical-navigation-item-title-wrapper {
@@ -588,7 +594,7 @@ vertical-navigation-group-item {
       .vertical-navigation-item-title-wrapper {
         .vertical-navigation-item-title {
           opacity: 1;
-          color: var(--fallback-p, oklch(var(--p)));
+          color: var(--primary-500);
         }
       }
     }

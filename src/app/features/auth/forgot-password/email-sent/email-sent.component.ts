@@ -4,7 +4,6 @@ import { BaseComponent } from '@models';
 
 @Component({
   selector: 'app-email-sent',
-  standalone: true,
   imports: [],
   templateUrl: './email-sent.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

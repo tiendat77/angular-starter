@@ -6,6 +6,7 @@ import {
   Component,
   forwardRef,
   HostBinding,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -30,7 +31,6 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
   templateUrl: './collapsable.component.html',
   animations: [expandCollapse],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     NgClass,
     SvgIconModule,
@@ -54,11 +54,9 @@ export class VerticalNavigationCollapsableItemComponent implements OnInit, OnDes
   private _verticalNavigationComponent: VerticalNavigationComponent;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  constructor(
-    private _router: Router,
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _navigationService: NavigationService
-  ) {}
+  private _router = inject(Router);
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _navigationService = inject(NavigationService);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors

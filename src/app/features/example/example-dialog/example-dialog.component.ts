@@ -4,7 +4,6 @@ import { DialogModule } from '@libs/dialog';
 
 @Component({
   selector: 'app-example-dialog',
-  standalone: true,
   imports: [DialogModule],
   templateUrl: './example-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

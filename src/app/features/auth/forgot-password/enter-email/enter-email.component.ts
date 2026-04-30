@@ -11,7 +11,6 @@ import { BaseComponent } from '@models';
 
 @Component({
   selector: 'app-forgot-password-enter-email',
-  standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './enter-email.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

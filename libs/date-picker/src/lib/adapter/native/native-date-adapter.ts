@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { inject, Inject, Injectable, Optional } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { DATE_LOCALE, DateAdapter } from '../date-adapter';
 
 /**
@@ -38,13 +38,9 @@ export class NativeDateAdapter extends DateAdapter<Date> {
   /** The injected locale. */
   private readonly _dateLocale = inject(DATE_LOCALE, { optional: true });
 
-  constructor(
-    /**
-     * @deprecated Now injected via inject(), param to be removed.
-     * @breaking-change 18.0.0
-     */
-    @Optional() @Inject(DATE_LOCALE) dateLocale?: string
-  ) {
+  constructor() {
+    const dateLocale = inject(DATE_LOCALE, { optional: true });
+
     super();
     if (dateLocale !== undefined) {
       this._dateLocale = dateLocale;

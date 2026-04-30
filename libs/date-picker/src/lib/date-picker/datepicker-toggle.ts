@@ -14,6 +14,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -26,16 +27,17 @@ import { DatepickerControl, DatepickerPanel } from './datepicker-base';
 
 @Component({
   selector: 'datepicker-toggle',
-  templateUrl: 'datepicker-toggle.html',
+  templateUrl: './datepicker-toggle.html',
   host: {
     '(click)': '_open($event)',
   },
-  standalone: true,
   exportAs: 'datepickerToggle',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatepickerToggle<D> implements AfterContentInit, OnChanges, OnDestroy {
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+
   private _stateChanges = Subscription.EMPTY;
 
   /** Datepicker instance that the button will toggle. */
@@ -57,8 +59,6 @@ export class DatepickerToggle<D> implements AfterContentInit, OnChanges, OnDestr
     this._disabled = value;
   }
   private _disabled: boolean;
-
-  constructor(private _changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['datepicker']) {

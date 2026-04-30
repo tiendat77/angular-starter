@@ -28,11 +28,10 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
-  Optional,
   Output,
   SimpleChanges,
   ViewChild,
@@ -61,14 +60,18 @@ const DAYS_PER_WEEK = 7;
  */
 @Component({
   selector: 'month-view',
-  templateUrl: 'month-view.html',
+  templateUrl: './month-view.html',
   exportAs: 'monthView',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [CalendarBody],
 })
 export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
+  readonly _changeDetectorRef = inject(ChangeDetectorRef);
+  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  private _dir = inject(Directionality, { optional: true });
+
   private _rerenderSubscription = Subscription.EMPTY;
 
   /** Flag used to filter out space/enter keyup events that originated outside of the view. */
@@ -209,12 +212,7 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
   /** The names of the weekdays. */
   _weekdays: { long: string; narrow: string }[];
 
-  constructor(
-    readonly _changeDetectorRef: ChangeDetectorRef,
-    @Optional() @Inject(DATE_FORMATS) private _dateFormats: DateFormats,
-    @Optional() public _dateAdapter: DateAdapter<D>,
-    @Optional() private _dir?: Directionality
-  ) {
+  constructor() {
     if (!this._dateAdapter) {
       throw createMissingDateImplError('DateAdapter');
     }
@@ -394,7 +392,8 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
       ? this._dateAdapter.format(this.activeDate, this._dateFormats.display.monthLabel)
       : this._dateAdapter
           .getMonthNames('short')
-          [this._dateAdapter.getMonth(this.activeDate)].toLocaleUpperCase();
+          [this._dateAdapter.getMonth(this.activeDate)] // eslint-disable-line
+          .toLocaleUpperCase();
 
     const firstOfMonth = this._dateAdapter.createDate(
       this._dateAdapter.getYear(this.activeDate),
@@ -423,7 +422,9 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
   }
 
   /** Called when the user has activated a new cell and the preview needs to be updated. */
-  _previewChanged({ event, value: cell }: CalendarUserEvent<CalendarCell<D> | null>) {}
+  _previewChanged({ event, value: cell }: CalendarUserEvent<CalendarCell<D> | null>) {
+    /** No-oop */
+  }
 
   /**
    * Called when the user has ended a drag. If the drag/drop was successful,

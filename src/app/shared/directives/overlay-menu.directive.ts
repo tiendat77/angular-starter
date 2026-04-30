@@ -13,7 +13,6 @@ import {
 import { Subject } from 'rxjs';
 
 @Directive({
-  standalone: true,
   selector: 'overlay-menu, [overlayMenu]',
 })
 export class OverlayMenuDirective implements OnDestroy {

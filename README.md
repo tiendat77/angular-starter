@@ -25,7 +25,9 @@ After the category, there should be a `"/"` followed by the reference of the iss
 After the reference, there should be another `"/"` followed by a description which sums up the purpose of this specific branch. This description should be short and "kebab-cased".
 
 By default, you can use the title of the issue/ticket you are working on. Just replace any special character by `"-"`.
-****
+
+---
+
 **Examples:**
 
 - You need to add, refactor or remove a feature: `git branch feat/issue-42/create-new-button-component`
@@ -76,6 +78,16 @@ If you are using `Visual Studio Code`, install these extensions:
 - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
 - [Angular Language Service](https://marketplace.visualstudio.com/items?itemName=Angular.ng-template)
+
+## Libraries and Utilities
+
+When contributing to this project, please ensure you use the following installed libraries as per our standards:
+
+- **Date and Time**: Use `dayjs` instead of `moment` for all date-time calculations.
+- **Schema Validation**: Use `zod` for all schema validation needs.
+- **Utilities**: Use `es-toolkit` instead of `lodash` for general utility functions.
+- **Animations**: Use `@lottiefiles` for handling UI animations.
+- **Excel Manipulating**: Use `exceljs` for reading, writing, and manipulating Excel worksheets.
 
 ## Development server
 

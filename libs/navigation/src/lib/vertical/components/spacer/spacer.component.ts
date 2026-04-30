@@ -6,6 +6,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  inject,
 } from '@angular/core';
 
 import { Subject, takeUntil } from 'rxjs';
@@ -17,20 +18,17 @@ import { VerticalNavigationComponent } from '../../vertical.component';
   selector: 'vertical-navigation-spacer-item',
   templateUrl: './spacer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [NgClass],
 })
 export class VerticalNavigationSpacerItemComponent implements OnInit, OnDestroy {
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _navigationService = inject(NavigationService);
+
   @Input() item: NavigationItem;
   @Input() name: string;
 
   private _verticalNavigationComponent: VerticalNavigationComponent;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-  constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _navigationService: NavigationService
-  ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks

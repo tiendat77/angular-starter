@@ -1,7 +1,6 @@
 import { Directive, HostListener } from '@angular/core';
 
 @Directive({
-  standalone: true,
   selector: '[verticalScroll]',
 })
 export class VerticalScrollDirective {

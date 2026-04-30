@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -26,7 +27,6 @@ import { HorizontalNavigationSpacerItemComponent } from './components/spacer/spa
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'horizontalNavigation',
-  standalone: true,
   imports: [
     HorizontalNavigationBasicItemComponent,
     HorizontalNavigationBranchItemComponent,
@@ -40,13 +40,8 @@ export class HorizontalNavigationComponent implements OnChanges, OnInit, OnDestr
   onRefreshed: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  /**
-   * Constructor
-   */
-  constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _navigationService: NavigationService
-  ) {}
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _navigationService = inject(NavigationService);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks

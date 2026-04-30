@@ -10,7 +10,6 @@ import { Component, Inject, inject } from '@angular/core';
 import { DialogModule } from '@libs/dialog';
 
 @Component({
-  standalone: true,
   selector: 'app-example-dialog',
   template: `
     <dialog-layout>
@@ -128,7 +127,6 @@ export class ExampleDialogComponent {
 }
 
 @Component({
-  standalone: true,
   selector: 'app-example',
   template: `
     <button

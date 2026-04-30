@@ -8,15 +8,14 @@
 
 import {
   AfterViewChecked,
-  Attribute,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   DOCUMENT,
   ElementRef,
   ErrorHandler,
+  HostAttributeToken,
   inject,
-  Inject,
   InjectionToken,
   Input,
   OnDestroy,
@@ -131,9 +130,13 @@ const funcIriPattern = /^url\(['"]?#(.*?)['"]?\)$/;
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
 })
 export class SvgIcon implements OnInit, AfterViewChecked, OnDestroy {
+  readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private _iconRegistry = inject(SvgIconRegistry);
+  private readonly _errorHandler = inject(ErrorHandler);
+  private _location = inject<SvgIconLocation>(SVG_ICON_LOCATION);
+
   /**
    * Whether the icon should be inlined, automatically sizing the icon to match the font size of
    * the element the icon is contained in.
@@ -205,13 +208,10 @@ export class SvgIcon implements OnInit, AfterViewChecked, OnDestroy {
   /** Subscription to the current in-progress SVG icon request. */
   private _currentIconFetch = Subscription.EMPTY;
 
-  constructor(
-    readonly _elementRef: ElementRef<HTMLElement>,
-    private _iconRegistry: SvgIconRegistry,
-    private readonly _errorHandler: ErrorHandler,
-    @Attribute('aria-hidden') ariaHidden: string,
-    @Inject(SVG_ICON_LOCATION) private _location: SvgIconLocation
-  ) {
+  constructor() {
+    const _elementRef = this._elementRef;
+    const ariaHidden = inject(new HostAttributeToken('aria-hidden'), { optional: true });
+
     // If the user has not explicitly set aria-hidden, mark the icon as hidden, as this is
     // the right thing to do for the majority of icon use-cases.
     if (!ariaHidden) {

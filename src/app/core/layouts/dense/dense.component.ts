@@ -18,7 +18,6 @@ import { NavigationItem, NavigationService, VerticalNavigationComponent } from '
 import { SvgIcon } from '@libs/svg-icon';
 
 @Component({
-  standalone: true,
   selector: 'dense-layout',
   templateUrl: './dense.component.html',
   encapsulation: ViewEncapsulation.None,

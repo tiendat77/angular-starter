@@ -6,6 +6,7 @@
     "start": "ng serve --open",
     "dev": "ng serve --open",
     "build": "ng build",
+    "build:libs": "node .ci/build-libs.js",
     "build:staging": "ng build --configuration staging",
     "build:prod": "ng build --configuration production",
     "lint": "npx eslint .",
@@ -24,10 +25,11 @@
     "@angular/platform-browser-dynamic": "^21.2.10",
     "@angular/router": "^21.2.10",
     "@lottiefiles/dotlottie-wc": "^0.9.12",
+    "dayjs": "^1.11.20",
     "es-toolkit": "^1.46.1",
-    "perfect-scrollbar": "^1.5.5",
     "rxjs": "~7.8.0",
     "swiper": "^12.1.3",
+    "zod": "^4.4.1",
     "zone.js": "^0.16.1"
   },
   "devDependencies": {

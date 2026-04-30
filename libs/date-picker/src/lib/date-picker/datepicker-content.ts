@@ -12,12 +12,11 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Inject,
   OnDestroy,
   OnInit,
-  Optional,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 
 import { AnimationEvent } from '@angular/animations';
@@ -60,12 +59,17 @@ import { DatepickerBase } from './datepicker-base';
   exportAs: 'datepickerContent',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [Calendar, NgClass],
 })
 export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
   implements OnInit, AfterViewInit, OnDestroy
 {
+  protected _elementRef = inject(ElementRef);
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _globalModel = inject<DateSelectionModel<S, D>>(DateSelectionModel);
+  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter);
+  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+
   private _subscriptions = new Subscription();
   private _model: DateSelectionModel<S, D>;
 
@@ -104,14 +108,6 @@ export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
 
   /** Id of the label for the `role="dialog"` element. */
   _dialogLabelId: string | null;
-
-  constructor(
-    protected _elementRef: ElementRef,
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _globalModel: DateSelectionModel<S, D>,
-    private _dateAdapter: DateAdapter<D>,
-    @Optional() @Inject(DATE_FORMATS) private _dateFormats: DateFormats
-  ) {}
 
   ngOnInit() {
     this._animationState = this.datepicker.touchUi ? 'enter-dialog' : 'enter-dropdown';
@@ -176,7 +172,7 @@ export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
   /** Applies the current pending selection to the global model. */
   _applyPendingSelection() {
     if (this._model !== this._globalModel) {
-      this._globalModel.updateSelection(this._model.selection, this);
+      this._globalModel.updateSelection(this._model.selection as S, this);
     }
   }
 

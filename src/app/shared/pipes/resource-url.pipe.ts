@@ -2,7 +2,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { environment } from '@environment';
 
 @Pipe({
-  standalone: true,
   name: 'resourceUrl',
 })
 export class ResourceUrlPipe implements PipeTransform {

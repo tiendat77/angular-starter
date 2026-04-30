@@ -17,8 +17,6 @@ import { PortalModule } from '@angular/cdk/portal';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { fromEvent } from 'rxjs';
 
-import PerfectScrollbar from 'perfect-scrollbar';
-
 import { DialogActionsDirective } from './dialog-actions.directive';
 import { DialogBodyDirective } from './dialog-body.directive';
 import { DialogDismissDirective } from './dialog-dismiss.directive';
@@ -26,7 +24,6 @@ import { DialogHeaderDirective } from './dialog-header.directive';
 import { DialogTitleDirective } from './dialog-title.directive';
 
 @Component({
-  standalone: true,
   selector: 'dialog-layout',
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
@@ -97,8 +94,6 @@ export class DialogLayoutComponent implements AfterViewInit, AfterContentInit {
   }
 
   ngAfterViewInit(): void {
-    new PerfectScrollbar(this._element?.nativeElement, {});
-
     /**
      * Watch scroll event to slide the header up
      */

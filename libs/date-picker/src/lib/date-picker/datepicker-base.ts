@@ -38,14 +38,12 @@ import {
   DOCUMENT,
   ElementRef,
   EventEmitter,
-  Inject,
   inject,
   InjectionToken,
   Input,
   NgZone,
   OnChanges,
   OnDestroy,
-  Optional,
   Output,
   SimpleChanges,
   ViewContainerRef,
@@ -137,12 +135,19 @@ export interface DatepickerPanel<
 /** Base class for a datepicker. */
 @Directive()
 export abstract class DatepickerBase<
-    C extends DatepickerControl<D>,
-    S,
-    D = ExtractDateTypeFromSelection<S>,
-  >
+  C extends DatepickerControl<D>,
+  S,
+  D = ExtractDateTypeFromSelection<S>,
+>
   implements DatepickerPanel<C, S, D>, OnDestroy, OnChanges
 {
+  private _overlay = inject(Overlay);
+  private _ngZone = inject(NgZone);
+  private _viewContainerRef = inject(ViewContainerRef);
+  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  private _dir = inject(Directionality, { optional: true });
+  private _model = inject<DateSelectionModel<S, D>>(DateSelectionModel);
+
   private _scrollStrategy: () => ScrollStrategy;
   private _inputStateChanges = Subscription.EMPTY;
   private _document = inject(DOCUMENT);
@@ -287,15 +292,9 @@ export abstract class DatepickerBase<
   /** Emits when the datepicker's state changes. */
   readonly stateChanges = new Subject<void>();
 
-  constructor(
-    private _overlay: Overlay,
-    private _ngZone: NgZone,
-    private _viewContainerRef: ViewContainerRef,
-    @Inject(DATEPICKER_SCROLL_STRATEGY) scrollStrategy: any,
-    @Optional() private _dateAdapter: DateAdapter<D>,
-    @Optional() private _dir: Directionality,
-    private _model: DateSelectionModel<S, D>
-  ) {
+  constructor() {
+    const scrollStrategy = inject(DATEPICKER_SCROLL_STRATEGY);
+
     if (!this._dateAdapter) {
       throw createMissingDateImplError('DateAdapter');
     }
@@ -471,7 +470,7 @@ export abstract class DatepickerBase<
           isDialog ? 'cdk-overlay-dark-backdrop' : 'overlay-transparent-backdrop',
           this._backdropHarnessClass,
         ],
-        direction: this._dir,
+        direction: this._dir || undefined,
         scrollStrategy: isDialog ? this._overlay.scrollStrategies.block() : this._scrollStrategy(),
         panelClass: `datepicker-${isDialog ? 'dialog' : 'popup'}`,
       })

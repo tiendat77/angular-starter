@@ -139,36 +139,6 @@
         }
       }
     },
-    "scrollbar": {
-      "projectType": "library",
-      "root": "libs/scrollbar",
-      "sourceRoot": "libs/scrollbar/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "libs/scrollbar/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "libs/scrollbar/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "libs/scrollbar/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["libs/scrollbar/**/*.ts", "libs/scrollbar/**/*.html"],
-            "eslintConfig": "libs/scrollbar/eslint.config.js"
-          }
-        }
-      }
-    },
     "loader": {
       "projectType": "library",
       "root": "libs/loader",

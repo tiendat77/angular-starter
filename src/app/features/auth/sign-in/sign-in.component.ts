@@ -10,7 +10,6 @@ import { takeUntil } from 'rxjs';
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [RouterLink, ReactiveFormsModule],
 })
 export class SignInComponent extends BaseComponent {

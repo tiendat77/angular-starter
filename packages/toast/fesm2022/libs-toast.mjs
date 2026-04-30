@@ -1,11 +1,10 @@
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, state, transition, style, animate } from '@angular/animations';
 import { NgClass } from '@angular/common';
 import * as i0 from '@angular/core';
-import { InjectionToken, inject, Component, ViewChild, Injector, TemplateRef, Injectable, Optional, SkipSelf, Inject, NgModule, ENVIRONMENT_INITIALIZER } from '@angular/core';
+import { InjectionToken, inject, Component, NgZone, ChangeDetectorRef, ViewChild, Injector, TemplateRef, Injectable, NgModule, ENVIRONMENT_INITIALIZER } from '@angular/core';
 import { Subject } from 'rxjs';
 import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal, PortalModule } from '@angular/cdk/portal';
-import * as i1 from '@angular/cdk/overlay';
-import { OverlayConfig, OverlayModule } from '@angular/cdk/overlay';
+import { Overlay, OverlayConfig, OverlayModule } from '@angular/cdk/overlay';
 
 const toastAnimations = {
     toastState: trigger('state', [
@@ -146,17 +145,17 @@ class ToastComponent {
     dismiss() {
         this.toastRef.dismiss();
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "18.2.13", type: ToastComponent, isStandalone: true, selector: "toast", ngImport: i0, template: "<div\n  role=\"alert\"\n  class=\"alert relative min-w-60 border-0 border-l-4 bg-base-100 px-4 py-3 shadow-lg\"\n  [ngClass]=\"{\n    'border-info': data.type === 'info',\n    'border-success': data.type === 'success',\n    'border-warning': data.type === 'warning',\n    'border-error': data.type === 'error',\n  }\"\n>\n  <div class=\"mr-6 flex items-start gap-4\">\n    <!-- Icon -->\n    @switch (data.type) {\n      @case ('info') {\n        <span class=\"text-info\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('success') {\n        <span class=\"text-success\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('warning') {\n        <span class=\"text-warning\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('error') {\n        <span class=\"text-error\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n    }\n\n    <!-- Message -->\n    <div class=\"flex-1\">\n      <strong\n        class=\"block font-medium\"\n        [innerHTML]=\"data.title\"\n      ></strong>\n      <p\n        class=\"mt-1\"\n        [innerHTML]=\"data.message\"\n      ></p>\n    </div>\n\n    <!-- Dismiss -->\n    <button\n      class=\"btn btn-circle btn-ghost btn-sm absolute right-1 top-1 transition\"\n      (click)=\"dismiss()\"\n    >\n      <svg\n        xmlns=\"http://www.w3.org/2000/svg\"\n        fill=\"none\"\n        viewBox=\"0 0 24 24\"\n        stroke-width=\"1.5\"\n        stroke=\"currentColor\"\n        class=\"text-hint h-5 w-5\"\n      >\n        <path\n          stroke-linecap=\"round\"\n          stroke-linejoin=\"round\"\n          d=\"M6 18L18 6M6 6l12 12\"\n        />\n      </svg>\n    </button>\n  </div>\n</div>\n", dependencies: [{ kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }] });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.10", type: ToastComponent, isStandalone: true, selector: "toast", ngImport: i0, template: "<div\n  role=\"alert\"\n  class=\"alert bg-base-200 relative min-w-60 border-0 border-l-4 px-4 py-3 shadow-lg\"\n  [ngClass]=\"{\n    'border-info': data.type === 'info',\n    'border-success': data.type === 'success',\n    'border-warning': data.type === 'warning',\n    'border-error': data.type === 'error',\n  }\"\n>\n  <div class=\"mr-6 flex items-start gap-4\">\n    <!-- Icon -->\n    @switch (data.type) {\n      @case ('info') {\n        <span class=\"text-info\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('success') {\n        <span class=\"text-success\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('warning') {\n        <span class=\"text-warning\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('error') {\n        <span class=\"text-error\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n    }\n\n    <!-- Message -->\n    <div class=\"flex-1\">\n      <strong\n        class=\"block font-medium\"\n        [innerHTML]=\"data.title\"\n      ></strong>\n      <p\n        class=\"mt-1\"\n        [innerHTML]=\"data.message\"\n      ></p>\n    </div>\n\n    <!-- Dismiss -->\n    <button\n      class=\"btn btn-circle btn-ghost btn-sm absolute top-1 right-1 transition\"\n      (click)=\"dismiss()\"\n    >\n      <svg\n        xmlns=\"http://www.w3.org/2000/svg\"\n        fill=\"none\"\n        viewBox=\"0 0 24 24\"\n        stroke-width=\"1.5\"\n        stroke=\"currentColor\"\n        class=\"text-hint h-5 w-5\"\n      >\n        <path\n          stroke-linecap=\"round\"\n          stroke-linejoin=\"round\"\n          d=\"M6 18L18 6M6 6l12 12\"\n        />\n      </svg>\n    </button>\n  </div>\n</div>\n", dependencies: [{ kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }] });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastComponent, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'toast', standalone: true, imports: [NgClass], template: "<div\n  role=\"alert\"\n  class=\"alert relative min-w-60 border-0 border-l-4 bg-base-100 px-4 py-3 shadow-lg\"\n  [ngClass]=\"{\n    'border-info': data.type === 'info',\n    'border-success': data.type === 'success',\n    'border-warning': data.type === 'warning',\n    'border-error': data.type === 'error',\n  }\"\n>\n  <div class=\"mr-6 flex items-start gap-4\">\n    <!-- Icon -->\n    @switch (data.type) {\n      @case ('info') {\n        <span class=\"text-info\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('success') {\n        <span class=\"text-success\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('warning') {\n        <span class=\"text-warning\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('error') {\n        <span class=\"text-error\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n    }\n\n    <!-- Message -->\n    <div class=\"flex-1\">\n      <strong\n        class=\"block font-medium\"\n        [innerHTML]=\"data.title\"\n      ></strong>\n      <p\n        class=\"mt-1\"\n        [innerHTML]=\"data.message\"\n      ></p>\n    </div>\n\n    <!-- Dismiss -->\n    <button\n      class=\"btn btn-circle btn-ghost btn-sm absolute right-1 top-1 transition\"\n      (click)=\"dismiss()\"\n    >\n      <svg\n        xmlns=\"http://www.w3.org/2000/svg\"\n        fill=\"none\"\n        viewBox=\"0 0 24 24\"\n        stroke-width=\"1.5\"\n        stroke=\"currentColor\"\n        class=\"text-hint h-5 w-5\"\n      >\n        <path\n          stroke-linecap=\"round\"\n          stroke-linejoin=\"round\"\n          d=\"M6 18L18 6M6 6l12 12\"\n        />\n      </svg>\n    </button>\n  </div>\n</div>\n" }]
+            args: [{ selector: 'toast', imports: [NgClass], template: "<div\n  role=\"alert\"\n  class=\"alert bg-base-200 relative min-w-60 border-0 border-l-4 px-4 py-3 shadow-lg\"\n  [ngClass]=\"{\n    'border-info': data.type === 'info',\n    'border-success': data.type === 'success',\n    'border-warning': data.type === 'warning',\n    'border-error': data.type === 'error',\n  }\"\n>\n  <div class=\"mr-6 flex items-start gap-4\">\n    <!-- Icon -->\n    @switch (data.type) {\n      @case ('info') {\n        <span class=\"text-info\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('success') {\n        <span class=\"text-success\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('warning') {\n        <span class=\"text-warning\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\"\n            />\n          </svg>\n        </span>\n      }\n      @case ('error') {\n        <span class=\"text-error\">\n          <svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            class=\"h-7 w-7 shrink-0 stroke-current\"\n            fill=\"none\"\n            viewBox=\"0 0 24 24\"\n          >\n            <path\n              stroke-linecap=\"round\"\n              stroke-linejoin=\"round\"\n              stroke-width=\"2\"\n              d=\"M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z\"\n            />\n          </svg>\n        </span>\n      }\n    }\n\n    <!-- Message -->\n    <div class=\"flex-1\">\n      <strong\n        class=\"block font-medium\"\n        [innerHTML]=\"data.title\"\n      ></strong>\n      <p\n        class=\"mt-1\"\n        [innerHTML]=\"data.message\"\n      ></p>\n    </div>\n\n    <!-- Dismiss -->\n    <button\n      class=\"btn btn-circle btn-ghost btn-sm absolute top-1 right-1 transition\"\n      (click)=\"dismiss()\"\n    >\n      <svg\n        xmlns=\"http://www.w3.org/2000/svg\"\n        fill=\"none\"\n        viewBox=\"0 0 24 24\"\n        stroke-width=\"1.5\"\n        stroke=\"currentColor\"\n        class=\"text-hint h-5 w-5\"\n      >\n        <path\n          stroke-linecap=\"round\"\n          stroke-linejoin=\"round\"\n          d=\"M6 18L18 6M6 6l12 12\"\n        />\n      </svg>\n    </button>\n  </div>\n</div>\n" }]
         }] });
 
 class ToastContainerComponent extends BasePortalOutlet {
-    _ngZone;
-    _changeDetectorRef;
+    _ngZone = inject(NgZone);
+    _changeDetectorRef = inject(ChangeDetectorRef);
     /** Whether the component has been destroyed. */
     _destroyed = false;
     /** The portal outlet inside of this container into which the toast content will be loaded. */
@@ -167,11 +166,6 @@ class ToastContainerComponent extends BasePortalOutlet {
     _onEnter = new Subject();
     /** The state of the toast animations. */
     _animationState = 'void';
-    constructor(_ngZone, _changeDetectorRef) {
-        super();
-        this._ngZone = _ngZone;
-        this._changeDetectorRef = _changeDetectorRef;
-    }
     attachComponentPortal(portal) {
         const result = this._portalOutlet.attachComponentPortal(portal);
         return result;
@@ -221,13 +215,12 @@ class ToastContainerComponent extends BasePortalOutlet {
             this._onExit.complete();
         });
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastContainerComponent, deps: [{ token: i0.NgZone }, { token: i0.ChangeDetectorRef }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "18.2.13", type: ToastContainerComponent, isStandalone: true, selector: "toast-container", host: { listeners: { "@state.done": "onAnimationEnd($event)" }, properties: { "@state": "_animationState" }, classAttribute: "m-4 flex flex-col" }, viewQueries: [{ propertyName: "_portalOutlet", first: true, predicate: CdkPortalOutlet, descendants: true, static: true }], usesInheritance: true, ngImport: i0, template: '<ng-template cdkPortalOutlet />', isInline: true, dependencies: [{ kind: "directive", type: CdkPortalOutlet, selector: "[cdkPortalOutlet]", inputs: ["cdkPortalOutlet"], outputs: ["attached"], exportAs: ["cdkPortalOutlet"] }], animations: [toastAnimations.toastState] });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastContainerComponent, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.10", type: ToastContainerComponent, isStandalone: true, selector: "toast-container", host: { listeners: { "@state.done": "onAnimationEnd($event)" }, properties: { "@state": "_animationState" }, classAttribute: "m-4 flex flex-col" }, viewQueries: [{ propertyName: "_portalOutlet", first: true, predicate: CdkPortalOutlet, descendants: true, static: true }], usesInheritance: true, ngImport: i0, template: '<ng-template cdkPortalOutlet />', isInline: true, dependencies: [{ kind: "directive", type: CdkPortalOutlet, selector: "[cdkPortalOutlet]", inputs: ["cdkPortalOutlet"], outputs: ["attached"], exportAs: ["cdkPortalOutlet"] }], animations: [toastAnimations.toastState] });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastContainerComponent, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastContainerComponent, decorators: [{
             type: Component,
             args: [{
-                    standalone: true,
                     selector: 'toast-container',
                     template: '<ng-template cdkPortalOutlet />',
                     animations: [toastAnimations.toastState],
@@ -238,7 +231,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.13", ngImpo
                         '(@state.done)': 'onAnimationEnd($event)',
                     },
                 }]
-        }], ctorParameters: () => [{ type: i0.NgZone }, { type: i0.ChangeDetectorRef }], propDecorators: { _portalOutlet: [{
+        }], propDecorators: { _portalOutlet: [{
                 type: ViewChild,
                 args: [CdkPortalOutlet, { static: true }]
             }] } });
@@ -251,10 +244,10 @@ const TOAST_DEFAULT_OPTIONS = new InjectionToken('toast-default-options', {
     factory: TOAST_DEFAULT_OPTIONS_FACTORY,
 });
 class ToastService {
-    _overlay;
-    _injector;
-    _parentToast;
-    _defaultConfig;
+    _overlay = inject(Overlay);
+    _injector = inject(Injector);
+    _parentToast = inject(ToastService, { optional: true, skipSelf: true });
+    _defaultConfig = inject(TOAST_DEFAULT_OPTIONS);
     _toastRefAtThisLevel = null;
     toastComponent = ToastComponent;
     toastContainerComponent = ToastContainerComponent;
@@ -269,12 +262,6 @@ class ToastService {
         else {
             this._toastRefAtThisLevel = value;
         }
-    }
-    constructor(_overlay, _injector, _parentToast, _defaultConfig) {
-        this._overlay = _overlay;
-        this._injector = _injector;
-        this._parentToast = _parentToast;
-        this._defaultConfig = _defaultConfig;
     }
     open(type, title, message, config) {
         const _config = {
@@ -407,27 +394,20 @@ class ToastService {
             ],
         });
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastService, deps: [{ token: i1.Overlay }, { token: i0.Injector }, { token: ToastService, optional: true, skipSelf: true }, { token: TOAST_DEFAULT_OPTIONS }], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastService, providedIn: 'root' });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastService, providedIn: 'root' });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastService, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root' }]
-        }], ctorParameters: () => [{ type: i1.Overlay }, { type: i0.Injector }, { type: ToastService, decorators: [{
-                    type: Optional
-                }, {
-                    type: SkipSelf
-                }] }, { type: ToastConfig, decorators: [{
-                    type: Inject,
-                    args: [TOAST_DEFAULT_OPTIONS]
-                }] }] });
+        }] });
 
 class ToastModule {
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "18.2.13", ngImport: i0, type: ToastModule, imports: [OverlayModule, PortalModule, ToastContainerComponent, ToastComponent], exports: [ToastContainerComponent, ToastComponent] });
-    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastModule, providers: [ToastService], imports: [OverlayModule, PortalModule] });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "21.2.10", ngImport: i0, type: ToastModule, imports: [OverlayModule, PortalModule, ToastContainerComponent, ToastComponent], exports: [ToastContainerComponent, ToastComponent] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastModule, providers: [ToastService], imports: [OverlayModule, PortalModule] });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.13", ngImport: i0, type: ToastModule, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.10", ngImport: i0, type: ToastModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [OverlayModule, PortalModule, ToastContainerComponent, ToastComponent],

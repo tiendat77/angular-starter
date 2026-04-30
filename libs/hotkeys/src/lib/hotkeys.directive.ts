@@ -19,7 +19,6 @@ import { coerceArray } from './utils/array';
 type Options = Omit<ServiceOptions, 'group' | 'element' | 'description'>;
 
 @Directive({
-  standalone: true,
   selector: '[hotkeys]',
 })
 export class HotkeysDirective implements OnChanges, OnDestroy {

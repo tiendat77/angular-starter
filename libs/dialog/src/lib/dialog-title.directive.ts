@@ -1,12 +1,14 @@
 import { CdkPortal } from '@angular/cdk/portal';
-import { Directive, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, TemplateRef, ViewContainerRef, inject } from '@angular/core';
 
 @Directive({
-  standalone: true,
   selector: '[dialog-title], [dialogTitle]',
 })
 export class DialogTitleDirective extends CdkPortal {
-  constructor(templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef) {
+  constructor() {
+    const templateRef = inject<TemplateRef<any>>(TemplateRef);
+    const viewContainerRef = inject(ViewContainerRef);
+
     super(templateRef, viewContainerRef);
   }
 }

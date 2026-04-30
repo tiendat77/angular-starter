@@ -80,18 +80,20 @@ const passiveEventOptions = normalizePassiveListenerOptions({ passive: true });
  */
 @Component({
   selector: '[calendar-body]',
-  templateUrl: 'calendar-body.html',
+  templateUrl: './calendar-body.html',
   styleUrl: 'calendar-body.scss',
   host: {
     class: 'calendar-body',
   },
   exportAs: 'calendarBody',
-  standalone: true,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgClass],
 })
 export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChecked {
+  private _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private _ngZone = inject(NgZone);
+
   private _platform = inject(Platform);
 
   /**
@@ -188,10 +190,10 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
 
   private _didDragSinceMouseDown = false;
 
-  constructor(
-    private _elementRef: ElementRef<HTMLElement>,
-    private _ngZone: NgZone
-  ) {
+  constructor() {
+    const _elementRef = this._elementRef;
+    const _ngZone = this._ngZone;
+
     _ngZone.runOutsideAngular(() => {
       const element = _elementRef.nativeElement;
 

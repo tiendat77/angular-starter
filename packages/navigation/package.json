@@ -2,9 +2,8 @@
   "name": "@libs/navigation",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^18.2.0",
-    "@angular/core": "^18.2.0",
-    "@libs/scrollbar": "file:../../packages/scrollbar",
+    "@angular/common": "^19.2.8",
+    "@angular/core": "^19.2.8",
     "@libs/svg-icon": "file:../../packages/svg-icon"
   },
   "dependencies": {
@@ -12,16 +11,15 @@
   },
   "sideEffects": false,
   "module": "fesm2022/libs-navigation.mjs",
-  "typings": "index.d.ts",
+  "typings": "types/libs-navigation.d.ts",
   "exports": {
     "./package.json": {
       "default": "./package.json"
     },
     ".": {
-      "types": "./index.d.ts",
-      "esm2022": "./esm2022/libs-navigation.mjs",
-      "esm": "./esm2022/libs-navigation.mjs",
+      "types": "./types/libs-navigation.d.ts",
       "default": "./fesm2022/libs-navigation.mjs"
     }
-  }
+  },
+  "type": "module"
 }

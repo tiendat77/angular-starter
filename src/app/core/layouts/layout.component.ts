@@ -11,7 +11,6 @@ import { DenseLayoutComponent } from './dense/dense.component';
 import { EmptyLayoutComponent } from './empty/empty.component';
 
 @Component({
-  standalone: true,
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',

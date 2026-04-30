@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -20,7 +21,6 @@ import { HorizontalNavigationComponent } from '../../horizontal.component';
   selector: 'horizontal-navigation-basic-item',
   templateUrl: './basic.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [NgClass, NgTemplateOutlet, RouterLink, RouterLinkActive, SvgIconModule],
 })
 export class HorizontalNavigationBasicItemComponent implements OnInit, OnDestroy {
@@ -32,10 +32,10 @@ export class HorizontalNavigationBasicItemComponent implements OnInit, OnDestroy
   private _horizontalNavigationComponent: HorizontalNavigationComponent;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _navigationService: NavigationService
-  ) {
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _navigationService = inject(NavigationService);
+
+  constructor() {
     // Set the equivalent of {exact: false} as default for active match options.
     // We are not assigning the item.isActiveMatchOptions directly to the
     // [routerLinkActiveOptions] because if it's "undefined" initially, the router

@@ -26,13 +26,12 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
-  Optional,
   Output,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -58,10 +57,14 @@ import {
   exportAs: 'yearView',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [CalendarBody],
 })
 export class YearView<D> implements AfterContentInit, OnDestroy {
+  readonly _changeDetectorRef = inject(ChangeDetectorRef);
+  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  private _dir = inject(Directionality, { optional: true });
+
   private _rerenderSubscription = Subscription.EMPTY;
 
   /** Flag used to filter out space/enter keyup events that originated outside of the view. */
@@ -153,12 +156,7 @@ export class YearView<D> implements AfterContentInit, OnDestroy {
    */
   _selectedMonth: number | null;
 
-  constructor(
-    readonly _changeDetectorRef: ChangeDetectorRef,
-    @Optional() @Inject(DATE_FORMATS) private _dateFormats: DateFormats,
-    @Optional() public _dateAdapter: DateAdapter<D>,
-    @Optional() private _dir?: Directionality
-  ) {
+  constructor() {
     if (!this._dateAdapter) {
       throw createMissingDateImplError('DateAdapter');
     }

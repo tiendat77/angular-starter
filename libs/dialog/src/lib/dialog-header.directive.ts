@@ -1,15 +1,14 @@
-import { Directive, ElementRef, OnInit } from '@angular/core';
+import { Directive, ElementRef, OnInit, inject } from '@angular/core';
 
 @Directive({
-  standalone: true,
   selector: '[dialog-header], [dialogHeader]',
 })
 export class DialogHeaderDirective implements OnInit {
+  private _element = inject(ElementRef);
+
   get element() {
     return this._element.nativeElement as HTMLElement;
   }
-
-  constructor(private _element: ElementRef) {}
 
   ngOnInit(): void {
     this.element.classList.add('hidden');

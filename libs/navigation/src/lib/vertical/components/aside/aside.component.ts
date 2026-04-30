@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -28,7 +29,6 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
   selector: 'vertical-navigation-aside-item',
   templateUrl: './aside.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     NgClass,
     SvgIconModule,
@@ -54,11 +54,9 @@ export class VerticalNavigationAsideItemComponent implements OnChanges, OnInit, 
   private _VerticalNavigationComponent: VerticalNavigationComponent;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _router: Router,
-    private _NavigationService: NavigationService
-  ) {}
+  private _router = inject(Router);
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _NavigationService = inject(NavigationService);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks

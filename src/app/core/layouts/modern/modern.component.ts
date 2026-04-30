@@ -22,7 +22,6 @@ import {
 import { SvgIconModule } from '@libs/svg-icon';
 
 @Component({
-  standalone: true,
   selector: 'modern-layout',
   templateUrl: './modern.component.html',
   encapsulation: ViewEncapsulation.None,

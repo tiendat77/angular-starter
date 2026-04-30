@@ -11,7 +11,6 @@ import { ExampleDialogComponent } from './example-dialog/example-dialog.componen
 
 @Component({
   selector: 'app-example',
-  standalone: true,
   imports: [WelcomeComponent, SvgIcon, DatepickerModule],
   templateUrl: './example.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,7 +1,6 @@
 import { animate, AnimationBuilder, AnimationPlayer, style } from '@angular/animations';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
-
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -12,17 +11,15 @@ import {
   EventEmitter,
   HostBinding,
   HostListener,
-  Inject,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  QueryList,
   Renderer2,
   SimpleChanges,
   ViewChild,
-  ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
@@ -31,7 +28,6 @@ import { fadeInLeft, fadeInRight, fadeOutLeft, fadeOutRight } from '../animation
 import { NavigationService } from '../navigation.service';
 import { UtilsHelper } from '../utils.helper';
 
-import { ScrollbarDirective } from '@libs/scrollbar';
 import { VerticalNavigationAsideItemComponent } from './components/aside/aside.component';
 import { VerticalNavigationBasicItemComponent } from './components/basic/basic.component';
 import { VerticalNavigationCollapsableItemComponent } from './components/collapsable/collapsable.component';
@@ -39,8 +35,8 @@ import { VerticalNavigationDividerItemComponent } from './components/divider/div
 import { VerticalNavigationGroupItemComponent } from './components/group/group.component';
 import { VerticalNavigationSpacerItemComponent } from './components/spacer/spacer.component';
 
-import { merge, ReplaySubject, Subject, Subscription } from 'rxjs';
-import { delay, filter, takeUntil } from 'rxjs/operators';
+import { ReplaySubject, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import {
   NavigationItem,
   VerticalNavigationAppearance,
@@ -49,7 +45,6 @@ import {
 } from '../navigation.types';
 
 @Component({
-  standalone: true,
   selector: 'vertical-navigation',
   templateUrl: './vertical.component.html',
   styleUrls: ['./vertical.component.scss'],
@@ -58,7 +53,6 @@ import {
   exportAs: 'verticalNavigation',
   animations: [fadeInLeft, fadeInRight, fadeOutLeft, fadeOutRight],
   imports: [
-    ScrollbarDirective,
     VerticalNavigationBasicItemComponent,
     VerticalNavigationGroupItemComponent,
     VerticalNavigationAsideItemComponent,
@@ -81,7 +75,8 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
   @Input() opened = true;
   @Input() position: VerticalNavigationPosition = 'left';
   @Input() transparentOverlay = false;
-  @Output() readonly appearanceChanged: EventEmitter<VerticalNavigationAppearance> =
+  @Output()
+  readonly appearanceChanged: EventEmitter<VerticalNavigationAppearance> =
     new EventEmitter<VerticalNavigationAppearance>();
   @Output() readonly modeChanged: EventEmitter<VerticalNavigationMode> =
     new EventEmitter<VerticalNavigationMode>();
@@ -104,20 +99,18 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
   private _overlay: HTMLElement;
   private _player: AnimationPlayer;
   private _scrollStrategy: ScrollStrategy;
-  private _scrollbarDirectives!: QueryList<ScrollbarDirective>;
-  private _scrollbarDirectivesSubscription: Subscription;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  constructor(
-    @Inject(DOCUMENT) private _document: Document,
-    private _animationBuilder: AnimationBuilder,
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _elementRef: ElementRef,
-    private _renderer2: Renderer2,
-    private _router: Router,
-    private _scrollStrategyOptions: ScrollStrategyOptions,
-    private _navigationService: NavigationService
-  ) {
+  private _document = inject(DOCUMENT);
+  private _animationBuilder = inject(AnimationBuilder);
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _elementRef = inject(ElementRef);
+  private _renderer2 = inject(Renderer2);
+  private _router = inject(Router);
+  private _scrollStrategyOptions = inject(ScrollStrategyOptions);
+  private _navigationService = inject(NavigationService);
+
+  constructor() {
     this._handleAsideOverlayClick = (): void => {
       this.closeAside();
     };
@@ -151,40 +144,12 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
     };
   }
 
-  @ViewChildren(ScrollbarDirective)
-  set scrollbarDirectives(scrollbarDirectives: QueryList<ScrollbarDirective>) {
-    this._scrollbarDirectives = scrollbarDirectives;
-
-    // Return if there are no directives
-    if (scrollbarDirectives.length === 0) {
-      return;
-    }
-
-    // Unsubscribe the previous subscriptions
-    if (this._scrollbarDirectivesSubscription) {
-      this._scrollbarDirectivesSubscription.unsubscribe();
-    }
-
-    // Update the scrollbars on collapsable items' collapse/expand
-    this._scrollbarDirectivesSubscription = merge(
-      this.onCollapsableItemCollapsed,
-      this.onCollapsableItemExpanded
-    )
-      .pipe(takeUntil(this._unsubscribeAll), delay(250))
-      .subscribe(() => {
-        // Loop through the scrollbars and update them
-        scrollbarDirectives.forEach((scrollbarDirective) => {
-          scrollbarDirective.update();
-        });
-      });
-  }
-
   // -----------------------------------------------------------------------------------------------------
   // @ Decorated methods
   // -----------------------------------------------------------------------------------------------------
 
   @HostListener('mouseenter')
-  protected _onMouseenter(): void {
+  onMouseenter(): void {
     // Enable the animations
     this._enableAnimations();
 
@@ -193,7 +158,7 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
   }
 
   @HostListener('mouseleave')
-  protected _onMouseleave(): void {
+  onMouseleave(): void {
     // Enable the animations
     this._enableAnimations();
 
@@ -315,30 +280,7 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
   }
 
   ngAfterViewInit(): void {
-    // Fix for Firefox.
-    //
-    // Because 'position: sticky' doesn't work correctly inside a 'position: fixed' parent,
-    // adding the '.cdk-global-scrollblock' to the html element breaks the navigation's position.
-    // This fixes the problem by reading the 'top' value from the html element and adding it as a
-    // 'marginTop' to the navigation itself.
-    this._mutationObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        const mutationTarget = mutation.target as HTMLElement;
-        if (mutation.attributeName === 'class') {
-          if (mutationTarget.classList.contains('cdk-global-scrollblock')) {
-            const top = parseInt(mutationTarget.style.top, 10);
-            this._renderer2.setStyle(
-              this._elementRef.nativeElement,
-              'margin-top',
-              `${Math.abs(top)}px`
-            );
-          } else {
-            this._renderer2.setStyle(this._elementRef.nativeElement, 'margin-top', null);
-          }
-        }
-      });
-    });
-    this._mutationObserver.observe(this._document.documentElement, {
+    this._mutationObserver?.observe(this._document.documentElement, {
       attributes: true,
       attributeFilter: ['class'],
     });
@@ -349,38 +291,20 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
         return;
       }
 
-      // If 'navigation content' element doesn't have
-      // perfect scrollbar activated on it...
-      if (!this._navigationContentEl.nativeElement.classList.contains('ps')) {
-        // Find the active item
-        const activeItem = this._navigationContentEl.nativeElement.querySelector(
-          '.vertical-navigation-item-active'
-        );
+      const activeItem = this._navigationContentEl.nativeElement.querySelector(
+        '.vertical-navigation-item-active'
+      );
 
-        // If the active item exists, scroll it into view
-        if (activeItem) {
-          activeItem.scrollIntoView();
-        }
-      }
-      // Otherwise
-      else {
-        // Go through all the scrollbar directives
-        this._scrollbarDirectives.forEach((scrollbarDirective) => {
-          // Skip if not enabled
-          if (!scrollbarDirective.isEnabled()) {
-            return;
-          }
-
-          // Scroll to the active element
-          scrollbarDirective.scrollToElement('.vertical-navigation-item-active', -120, true);
-        });
+      // If the active item exists, scroll it into view
+      if (activeItem) {
+        activeItem.scrollIntoView();
       }
     });
   }
 
   ngOnDestroy(): void {
     // Disconnect the mutation observer
-    this._mutationObserver.disconnect();
+    this._mutationObserver?.disconnect();
 
     // Forcefully close the navigation and aside in case they are opened
     this.close();

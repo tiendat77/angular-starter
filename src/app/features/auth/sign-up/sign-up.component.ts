@@ -13,7 +13,6 @@ import { PasswordValidators } from './validators';
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [NgClass, NgTemplateOutlet, ReactiveFormsModule, RouterLink, SvgIcon],
 })
 export class SignUpComponent extends BaseComponent {

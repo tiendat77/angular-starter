@@ -12,15 +12,14 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
   InjectionToken,
   Input,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
   ViewEncapsulation,
   booleanAttribute,
+  inject,
   numberAttribute,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -47,7 +46,6 @@ let nextUniqueId = 0;
  * navigational button to go to the previous or next page.
  */
 @Component({
-  standalone: true,
   selector: 'paginator',
   exportAs: 'paginator',
   templateUrl: 'paginator.html',
@@ -61,6 +59,8 @@ let nextUniqueId = 0;
   imports: [NgClass, FormsModule, ReactiveFormsModule],
 })
 export class Paginator implements OnInit, OnDestroy {
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+
   /** ID for the DOM node containing the paginator's items per page label. */
   readonly _pageSizeLabelId = `paginator-page-size-label-${nextUniqueId++}`;
 
@@ -142,12 +142,9 @@ export class Paginator implements OnInit, OnDestroy {
   /** Emits when the paginator is initialized. */
   initialized: Observable<void> = this._initializedStream;
 
-  constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    @Optional()
-    @Inject(PAGINATOR_DEFAULT_OPTIONS)
-    defaults?: PaginatorDefaultOptions
-  ) {
+  constructor() {
+    const defaults = inject<PaginatorDefaultOptions>(PAGINATOR_DEFAULT_OPTIONS, { optional: true });
+
     if (defaults) {
       const { pageSize, pageSizeOptions, hidePageSize, showFirstLastButtons } = defaults;
 

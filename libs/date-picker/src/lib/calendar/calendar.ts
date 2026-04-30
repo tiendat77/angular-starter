@@ -16,16 +16,15 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
-  Optional,
   Output,
   SimpleChange,
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 
 import { Subject } from 'rxjs';
@@ -60,10 +59,13 @@ export type CalendarView = 'month' | 'year' | 'multi-year';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [SINGLE_DATE_SELECTION_MODEL_PROVIDER],
-  standalone: true,
   imports: [CdkPortalOutlet, CdkMonitorFocus, MonthView, YearView, MultiYearView],
 })
 export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestroy, OnChanges {
+  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+
   /** An input indicating the type of the header component, if set. */
   @Input() headerComponent: ComponentType<any>;
 
@@ -216,11 +218,7 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
    */
   readonly stateChanges = new Subject<void>();
 
-  constructor(
-    @Optional() private _dateAdapter: DateAdapter<D>,
-    @Optional() @Inject(DATE_FORMATS) private _dateFormats: DateFormats,
-    private _changeDetectorRef: ChangeDetectorRef
-  ) {
+  constructor() {
     if (!this._dateAdapter) {
       throw createMissingDateImplError('DateAdapter');
     }

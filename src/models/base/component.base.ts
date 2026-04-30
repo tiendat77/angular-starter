@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 export type ComponentState = 'loading' | 'loaded' | 'error' | 'empty' | 'not-found' | 'idle';
 
 @Component({
-  standalone: true,
   template: '',
   selector: 'app-base-component',
 })

@@ -14,11 +14,10 @@ import {
   Directive,
   ElementRef,
   EventEmitter,
-  Inject,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
-  Optional,
   Output,
   SimpleChanges,
 } from '@angular/core';
@@ -64,17 +63,22 @@ export class DatepickerInputEvent<D, S = unknown> {
 export type DateFilterFn<D> = (date: D | null) => boolean;
 
 /** Base class for datepicker inputs. */
-@Directive({ standalone: true })
+@Directive()
 export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>>
   implements ControlValueAccessor, AfterViewInit, OnChanges, OnDestroy, Validator
 {
+  protected _elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
+  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+  // @Optional() private _transloco: TranslocoService
+
   /** Whether the component has been initialized. */
   private _isInitialized: boolean;
 
   /** The value of the input. */
   @Input()
   get value(): D | null {
-    return this._model ? this._getValueFromModel(this._model.selection) : this._pendingValue;
+    return this._model ? this._getValueFromModel(this._model.selection as S) : this._pendingValue;
   }
   set value(value: any) {
     this._assignValueProgrammatically(value);
@@ -121,10 +125,16 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
   /** Emits when the internal state has changed */
   readonly stateChanges = new Subject<void>();
 
-  _onTouched = () => {};
-  _validatorOnChange = () => {};
+  _onTouched = () => {
+    /** No-op */
+  };
+  _validatorOnChange = () => {
+    /** No-op */
+  };
 
-  private _cvaOnChange: (value: any) => void = () => {};
+  private _cvaOnChange: (value: any) => void = () => {
+    /** No-op */
+  };
   private _valueChangesSubscription = Subscription.EMPTY;
   private _localeSubscription = Subscription.EMPTY;
   private _translocoSubscription = Subscription.EMPTY;
@@ -227,12 +237,9 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
   /** Whether the last value set on the input was valid. */
   protected _lastValueValid = false;
 
-  constructor(
-    protected _elementRef: ElementRef<HTMLInputElement>,
-    @Optional() public _dateAdapter: DateAdapter<D>,
-    @Optional() @Inject(DATE_FORMATS) private _dateFormats: DateFormats
-    // @Optional() private _transloco: TranslocoService
-  ) {
+  constructor() {
+    const _dateAdapter = this._dateAdapter;
+
     if (!this._dateAdapter) {
       throw createMissingDateImplError('DateAdapter');
     }

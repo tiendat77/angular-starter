@@ -4,14 +4,12 @@ import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal';
 import {
   ComponentRef,
   EmbeddedViewRef,
-  Inject,
   Injectable,
   InjectionToken,
   Injector,
   OnDestroy,
-  Optional,
-  SkipSelf,
   TemplateRef,
+  inject,
 } from '@angular/core';
 
 import { ToastComponent } from './toast.component';
@@ -30,6 +28,11 @@ export const TOAST_DEFAULT_OPTIONS = new InjectionToken<ToastConfig>('toast-defa
 
 @Injectable({ providedIn: 'root' })
 export class ToastService implements OnDestroy {
+  private _overlay = inject(Overlay);
+  private _injector = inject(Injector);
+  private _parentToast = inject(ToastService, { optional: true, skipSelf: true });
+  private _defaultConfig = inject<ToastConfig>(TOAST_DEFAULT_OPTIONS);
+
   private _toastRefAtThisLevel: ToastRef<any> | null = null;
 
   toastComponent = ToastComponent;
@@ -47,13 +50,6 @@ export class ToastService implements OnDestroy {
       this._toastRefAtThisLevel = value;
     }
   }
-
-  constructor(
-    private _overlay: Overlay,
-    private _injector: Injector,
-    @Optional() @SkipSelf() private _parentToast: ToastService,
-    @Inject(TOAST_DEFAULT_OPTIONS) private _defaultConfig: ToastConfig
-  ) {}
 
   open(
     type: ToastType,
