@@ -1,9 +1,9 @@
-/* eslint-disable @angular-eslint/component-selector */
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   standalone: true,
   selector: 'empty-placeholder',
   templateUrl: './empty-placeholder.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmptyPlaceholderComponent {}

@@ -1,6 +1,6 @@
 import packageJson from '../../package.json';
 
-export const environment: Environment = {
+export const environment = {
   version: packageJson.version,
-  apiUrl: 'http://localhost:3000/api',
+  apiUrl: window['env']?.API_URL || 'http://localhost:3000/api',
 };

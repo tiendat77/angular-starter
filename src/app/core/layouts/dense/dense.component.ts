@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 import { Subject, takeUntil } from 'rxjs';
@@ -14,6 +22,7 @@ import { SvgIcon } from '@libs/svg-icon';
   selector: 'dense-layout',
   templateUrl: './dense.component.html',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, RouterLink, SvgIcon, LogoComponent, VerticalNavigationComponent],
 })
 export class DenseLayoutComponent implements OnInit, OnDestroy {
@@ -23,11 +32,9 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  constructor(
-    private _cdRef: ChangeDetectorRef,
-    private _layoutService: LayoutService,
-    private _navigationService: NavigationService
-  ) {}
+  private _cdRef = inject(ChangeDetectorRef);
+  private _layoutService = inject(LayoutService);
+  private _navigationService = inject(NavigationService);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks

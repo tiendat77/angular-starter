@@ -108,6 +108,14 @@ module.exports = tseslint.config(
     },
   },
   {
-    ignores: ['**/*.spec.ts', 'dist/**', 'node_modules/**', 'public/**', 'packages/**', 'libs/**'],
+    ignores: [
+      '**/*.spec.ts',
+      'dist/**',
+      'node_modules/**',
+      'public/**',
+      'packages/**',
+      'libs/**',
+      '.angular/**',
+    ],
   }
 );

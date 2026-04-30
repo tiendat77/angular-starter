@@ -1,10 +1,10 @@
 /** Angular */
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
 /** Utils */
 import { fromPairs } from 'es-toolkit/compat';
-import { Observable, ReplaySubject, map, of, switchMap } from 'rxjs';
+import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
 
 /** Config */
 import { navigation } from '@configs/navigation.config';
@@ -20,7 +20,9 @@ export class LayoutService {
   private _navigation = new ReplaySubject<NavigationItem[]>(1);
   private _onMediaChange = new ReplaySubject<MediaChange>(1);
 
-  constructor(private _breakpointObserver: BreakpointObserver) {
+  private _breakpointObserver = inject(BreakpointObserver);
+
+  constructor() {
     const screens = fromPairs(
       Object.entries({
         sm: '600px',

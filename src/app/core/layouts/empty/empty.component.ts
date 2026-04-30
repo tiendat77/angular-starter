@@ -1,5 +1,4 @@
-/* eslint-disable @angular-eslint/component-selector */
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -7,6 +6,7 @@ import { RouterOutlet } from '@angular/router';
   selector: 'empty-layout',
   templateUrl: './empty.component.html',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet],
 })
 export class EmptyLayoutComponent {}

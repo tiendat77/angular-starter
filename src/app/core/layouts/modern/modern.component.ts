@@ -1,4 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { Subject, takeUntil } from 'rxjs';
@@ -19,6 +26,7 @@ import { SvgIconModule } from '@libs/svg-icon';
   selector: 'modern-layout',
   templateUrl: './modern.component.html',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterOutlet,
     LogoComponent,
@@ -33,10 +41,8 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  constructor(
-    private _layoutService: LayoutService,
-    private _navigationService: NavigationService
-  ) {}
+  private _layoutService = inject(LayoutService);
+  private _navigationService = inject(NavigationService);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
