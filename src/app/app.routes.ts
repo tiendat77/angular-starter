@@ -32,19 +32,19 @@ export const routes: Routes = [
     children: [
       {
         path: 'sign-in',
-        loadChildren: () => import('@/features/auth/sign-in/sign-in.routes'),
+        loadChildren: () => import('@/features/auth/sign-in/routes'),
       },
       {
         path: 'sign-up',
-        loadChildren: () => import('@/features/auth/sign-up/sign-up.routes'),
+        loadChildren: () => import('@/features/auth/sign-up/routes'),
       },
       {
         path: 'forgot-password',
-        loadChildren: () => import('@/features/auth/forgot-password/forgot-password.routes'),
+        loadChildren: () => import('@/features/auth/forgot-password/routes'),
       },
       {
         path: 'reset-password',
-        loadChildren: () => import('@/features/auth/reset-password/reset-password.routes'),
+        loadChildren: () => import('@/features/auth/reset-password/routes'),
       },
     ],
   },
@@ -86,7 +86,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
     data: { layout: 'empty' },
-    loadChildren: () => import('@/features/auth/access-denied/access-denied.routes'),
+    loadChildren: () => import('@/features/auth/access-denied/routes'),
   },
 
   /**
@@ -94,6 +94,6 @@ export const routes: Routes = [
    */
   {
     path: '**',
-    loadChildren: () => import('@/features/not-found/not-found.routes'),
+    loadChildren: () => import('@/features/not-found/routes'),
   },
 ];
