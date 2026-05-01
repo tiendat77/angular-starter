@@ -6,7 +6,6 @@
 // -----------------------------------------------------------------------------------------------------
 
 import { UserModel } from '@models';
-import { flatten } from 'es-toolkit';
 
 export class AuthUtils {
   // -----------------------------------------------------------------------------------------------------
@@ -31,26 +30,7 @@ export class AuthUtils {
       user['email'] = decoded['email'] ?? '';
       user['name'] = decoded['name'] ?? '';
       user['avatar'] = decoded['avatar'] || null;
-      user['organizationID'] = decoded['organizationID'] ?? '';
-
-      try {
-        const permissions: string[] = JSON.parse(decoded['permissions'] || '[]');
-
-        /**
-         * Format "ClientSite:ProductCategories,Products"
-         * To ["ProductCategories", "Products"]
-         */
-        user['permissions'] = flatten(
-          permissions.map((p) =>
-            p
-              .split(':')?.[1]
-              ?.split(',')
-              .map((s) => s.trim())
-          )
-        );
-      } catch {
-        user['permissions'] = [];
-      }
+      user['permissions'] = decoded['permissions'] ?? [];
 
       return user;
     } catch {

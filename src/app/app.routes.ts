@@ -3,6 +3,9 @@ import { Routes } from '@angular/router';
 
 import { AuthGuard, NoAuthGuard } from '@/core/guard';
 import { LayoutComponent, LayoutService } from '@/core/layouts';
+import { PERMISSION } from '@configs/permission.config';
+import { ngxPermissionsGuard } from 'ngx-permissions';
+import { UserService } from './services/user.service';
 
 export const routes: Routes = [
   /**
@@ -51,17 +54,28 @@ export const routes: Routes = [
    */
   {
     path: 'app',
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     component: LayoutComponent,
     data: { layout: 'dense' },
     resolve: {
       initial: () => {
         const _layoutService = inject(LayoutService);
-        return _layoutService.get();
+        const _userService = inject(UserService);
+
+        _layoutService.get(_userService.$user()?.permissions || []);
       },
     },
     children: [
       {
         path: 'overview',
+        canActivate: [ngxPermissionsGuard],
+        data: {
+          permissions: {
+            only: [PERMISSION.OVERVIEW],
+            redirectTo: '/access-denied',
+          },
+        },
         loadChildren: () => import('@/features/example/example.routes'),
       },
     ],

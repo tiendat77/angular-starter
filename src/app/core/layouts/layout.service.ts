@@ -1,11 +1,12 @@
 /** Angular */
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Utils */
 import { cloneDeep } from 'es-toolkit';
 import { fromPairs } from 'es-toolkit/compat';
-import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 
 /** Config */
 import { navigation } from '@configs/navigation.config';
@@ -13,11 +14,11 @@ import { NavigationItem } from '@libs/navigation';
 
 @Injectable({ providedIn: 'root' })
 export class LayoutService {
-  private _navigation = new ReplaySubject<NavigationItem[]>(1);
-  private _onMediaChange = new ReplaySubject<{
+  readonly $navigation = signal<NavigationItem[]>([]);
+  readonly $onMediaChange = signal<{
     matchingAliases: string[];
     matchingQueries: any;
-  }>(1);
+  }>({ matchingAliases: [], matchingQueries: {} });
 
   private _breakpointObserver = inject(BreakpointObserver);
 
@@ -33,6 +34,7 @@ export class LayoutService {
 
     of(Object.values(screens))
       .pipe(
+        takeUntilDestroyed(),
         switchMap((breakpoints) =>
           this._breakpointObserver.observe(breakpoints).pipe(
             map((state) => {
@@ -57,7 +59,7 @@ export class LayoutService {
               }
 
               // Execute the observable
-              this._onMediaChange.next({
+              this.$onMediaChange.set({
                 matchingAliases,
                 matchingQueries,
               });
@@ -69,30 +71,11 @@ export class LayoutService {
   }
 
   // -----------------------------------------------------------------------------------------------------
-  // @ Accessors
-  // -----------------------------------------------------------------------------------------------------
-
-  get navigation$(): Observable<NavigationItem[]> {
-    return this._navigation.asObservable();
-  }
-
-  get onMediaChange$(): Observable<{
-    matchingAliases: string[];
-    matchingQueries: any;
-  }> {
-    return this._onMediaChange.asObservable();
-  }
-
-  // -----------------------------------------------------------------------------------------------------
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
 
-  get(permissions: string[] = []): Observable<NavigationItem[]> {
-    return new Observable((resolver) => {
-      this._navigation.next(this._filter(cloneDeep(navigation), permissions));
-      resolver.next([]);
-      resolver.complete();
-    });
+  get(permissions: string[] = []): void {
+    this.$navigation.set(this._filter(cloneDeep(navigation), permissions));
   }
 
   // -----------------------------------------------------------------------------------------------------

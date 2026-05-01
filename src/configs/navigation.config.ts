@@ -1,4 +1,5 @@
 import { NavigationItem } from '@libs/navigation';
+import { PERMISSION } from './permission.config';
 
 export const navigation: NavigationItem[] = [
   {
@@ -14,6 +15,7 @@ export const navigation: NavigationItem[] = [
         type: 'basic',
         icon: 'heroicons_outline:bolt',
         link: '/app/overview',
+        permissions: [PERMISSION.OVERVIEW],
       },
     ],
   },

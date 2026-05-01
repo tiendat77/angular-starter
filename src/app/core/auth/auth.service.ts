@@ -93,7 +93,7 @@ export class AuthService {
 
           if (decoded) {
             this._user.user = decoded as any;
-            this._layout.get(decoded.permissions).subscribe();
+            this._layout.get(decoded.permissions);
           }
         })
       );
@@ -121,7 +121,7 @@ export class AuthService {
 
         // Get the user data
         this._user.user = decoded as any;
-        this._layout.get(decoded.permissions).subscribe();
+        this._layout.get(decoded.permissions);
 
         return of(true);
       }),

@@ -1,22 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
-  OnDestroy,
-  OnInit,
-  signal,
   ViewEncapsulation,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { Subject, takeUntil } from 'rxjs';
 import { LayoutService } from '../layout.service';
 
 import { LogoComponent } from '../../commons/logo';
 
 import {
   HorizontalNavigationComponent,
-  NavigationItem,
   NavigationService,
   VerticalNavigationComponent,
 } from '@libs/navigation';
@@ -35,37 +31,14 @@ import { SvgIconModule } from '@libs/svg-icon';
     HorizontalNavigationComponent,
   ],
 })
-export class ModernLayoutComponent implements OnInit, OnDestroy {
-  $isScreenSmall = signal<boolean>(false);
-  $navigation = signal<NavigationItem[]>([]);
-
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+export class ModernLayoutComponent {
   private _layoutService = inject(LayoutService);
   private _navigationService = inject(NavigationService);
 
-  // -----------------------------------------------------------------------------------------------------
-  // @ Lifecycle hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  ngOnInit(): void {
-    this._layoutService.navigation$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((navigation: NavigationItem[]) => {
-        this.$navigation.set(navigation);
-      });
-
-    this._layoutService.onMediaChange$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(({ matchingAliases }) => {
-        this.$isScreenSmall.set(!matchingAliases.includes('md'));
-      });
-  }
-
-  ngOnDestroy(): void {
-    this._unsubscribeAll.next(null);
-    this._unsubscribeAll.complete();
-  }
+  $navigation = this._layoutService.$navigation;
+  $isScreenSmall = computed(
+    () => !this._layoutService.$onMediaChange().matchingAliases.includes('md')
+  );
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods

@@ -2,20 +2,17 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   inject,
-  OnDestroy,
-  OnInit,
   signal,
   ViewEncapsulation,
 } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
-import { Subject, takeUntil } from 'rxjs';
-
 import { LogoComponent } from '../../commons/logo';
 import { LayoutService } from '../layout.service';
 
-import { NavigationItem, NavigationService, VerticalNavigationComponent } from '@libs/navigation';
+import { NavigationService, VerticalNavigationComponent } from '@libs/navigation';
 import { SvgIcon } from '@libs/svg-icon';
 
 @Component({
@@ -28,39 +25,17 @@ import { SvgIcon } from '@libs/svg-icon';
     class: 'flex flex-row flex-auto w-full h-full',
   },
 })
-export class DenseLayoutComponent implements OnInit, OnDestroy {
-  $isScreenSmall = signal<boolean>(false);
-  $navigation = signal<NavigationItem[]>([]);
+export class DenseLayoutComponent {
   $navigationAppearance = signal<'default' | 'dense'>('default');
-
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   private _cdRef = inject(ChangeDetectorRef);
   private _layoutService = inject(LayoutService);
   private _navigationService = inject(NavigationService);
 
-  // -----------------------------------------------------------------------------------------------------
-  // @ Lifecycle hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  ngOnInit(): void {
-    this._layoutService.navigation$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((navigation: NavigationItem[]) => {
-        this.$navigation.set(navigation);
-      });
-
-    this._layoutService.onMediaChange$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(({ matchingAliases }) => {
-        this.$isScreenSmall.set(!matchingAliases.includes('lg'));
-      });
-  }
-
-  ngOnDestroy(): void {
-    this._unsubscribeAll.next(null);
-    this._unsubscribeAll.complete();
-  }
+  $navigation = this._layoutService.$navigation;
+  $isScreenSmall = computed(
+    () => !this._layoutService.$onMediaChange().matchingAliases.includes('lg')
+  );
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods

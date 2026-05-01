@@ -1,6 +1,7 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import {
+  DestroyRef,
   Directive,
   ElementRef,
   HostListener,
@@ -10,7 +11,7 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { Subject } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Directive({
   selector: 'overlay-menu, [overlayMenu]',
@@ -24,8 +25,7 @@ export class OverlayMenuDirective implements OnDestroy {
 
   private _element = inject(ElementRef<HTMLElement>);
   private _viewContainerRef = inject(ViewContainerRef);
-
-  private _unsubscribe = new Subject<any>();
+  private _destroyRef = inject(DestroyRef);
 
   @HostListener('click') onClick(): void {
     this.openPanel();
@@ -36,9 +36,6 @@ export class OverlayMenuDirective implements OnDestroy {
   // -----------------------------------------------------------------------------------------------------
 
   ngOnDestroy(): void {
-    this._unsubscribe.next(null);
-    this._unsubscribe.complete();
-
     if (this._overlayRef) {
       this._overlayRef.dispose();
     }
@@ -116,8 +113,11 @@ export class OverlayMenuDirective implements OnDestroy {
     });
 
     // Detach the overlay from the portal on backdrop click
-    this._overlayRef.backdropClick().subscribe(() => {
-      this._overlayRef.detach();
-    });
+    this._overlayRef
+      .backdropClick()
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe(() => {
+        this._overlayRef.detach();
+      });
   }
 }
