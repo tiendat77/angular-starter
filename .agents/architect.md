@@ -4,10 +4,10 @@ This document provides a comprehensive overview of the architecture and technica
 
 ## 🏗️ Core Technology Stack
 
-- **Framework**: [Angular 20.x](https://angular.dev/) (Standalone Components, v20+ Best Practices)
+- **Framework**: [Angular 21](https://angular.dev/) (Standalone Components, v21+ Best Practices)
 - **Primary Language**: [TypeScript 5.8+](https://www.typescriptlang.org/)
-- **UI Framework**: [NG-ZORRO](https://ng.ant.design/) (Ant Design for Angular)
-- **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/) + [DaisyUI](https://daisyui.com/)
+- **UI Framework**: [DaisyUI](https://daisyui.com/)
+- **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/)
 - **State Management**: [Angular Signals](https://angular.dev/guide/signals) & [RxJS](https://rxjs.dev/)
 - **Validation**: [Zod](https://zod.dev/)
 - **Real-time**: [ASP.NET Core SignalR](https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction)
@@ -56,10 +56,7 @@ The backbone of the application. Contains singleton services, global guards, int
 Feature-based modules. Each feature is encapsulated within its own directory and uses **lazy loading** via `routes.ts` files.
 
 - `auth/`: Login, password recovery.
-- `users/`: Staff, MD, SD management.
-- `sale/`: Products, categories, orders, coupons, promotions.
-- `administration/`: System settings, configurations.
-- `warehouse/`: Inventory management.
+- `example/`: Example module for demonstration purposes.
 
 ### 3. `src/app/api/`
 
@@ -98,7 +95,7 @@ Uses `ngx-permissions` integrated with functional guards. Permissions are define
 
 ### 5. Modern Component Styling
 
-Combines the power of **NG-ZORRO** for complex UI components (Modals, Tables, Selects) with **Tailwind CSS 4.0** for utility-first layout and fine-tuned styling.
+Combines the power of **DaisyUI** for base components and **Tailwind CSS 4.0** for utility-first layout and fine-tuned styling.
 
 ---
 

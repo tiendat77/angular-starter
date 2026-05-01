@@ -4,18 +4,25 @@ import { PERMISSION } from './permission.config';
 export const navigation: NavigationItem[] = [
   {
     id: 'dashboard',
-    title: 'Overview',
+    title: 'Example',
     subtitle: 'Where the magic happens',
     type: 'group',
-    icon: 'heroicons_outline:home',
+    icon: 'heroicons_outline:beaker',
+    permissions: [PERMISSION.OVERVIEW],
     children: [
       {
-        id: 'dashboard.overview',
-        title: 'Overview',
+        id: 'dashboard.welcome',
+        title: 'Welcome',
         type: 'basic',
         icon: 'heroicons_outline:bolt',
-        link: '/app/overview',
-        permissions: [PERMISSION.OVERVIEW],
+        link: '/app/example/welcome',
+      },
+      {
+        id: 'dashboard.aria',
+        title: 'ARIA',
+        type: 'basic',
+        icon: 'heroicons_outline:sparkles',
+        link: '/app/example/aria',
       },
     ],
   },

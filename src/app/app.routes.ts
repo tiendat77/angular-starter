@@ -14,12 +14,12 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'app/overview',
+    redirectTo: 'app/example',
   },
   {
     path: 'signed-in-redirect',
     pathMatch: 'full',
-    redirectTo: 'app/overview',
+    redirectTo: 'app/example',
   },
 
   /**
@@ -68,7 +68,7 @@ export const routes: Routes = [
     },
     children: [
       {
-        path: 'overview',
+        path: 'example',
         canActivate: [ngxPermissionsGuard],
         data: {
           permissions: {
@@ -76,7 +76,7 @@ export const routes: Routes = [
             redirectTo: '/access-denied',
           },
         },
-        loadChildren: () => import('@/features/example/example.routes'),
+        loadChildren: () => import('@/features/example/routes'),
       },
     ],
   },

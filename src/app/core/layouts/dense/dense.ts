@@ -10,6 +10,7 @@ import {
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 import { LogoComponent } from '../../commons/logo';
+import { ThemeTogglerComponent } from '../../commons/theme-toggler';
 import { LayoutService } from '../layout.service';
 
 import { NavigationService, VerticalNavigationComponent } from '@libs/navigation';
@@ -20,7 +21,14 @@ import { SvgIcon } from '@libs/svg-icon';
   templateUrl: './dense.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, SvgIcon, LogoComponent, VerticalNavigationComponent],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    SvgIcon,
+    LogoComponent,
+    ThemeTogglerComponent,
+    VerticalNavigationComponent,
+  ],
   host: {
     class: 'flex flex-row flex-auto w-full h-full',
   },

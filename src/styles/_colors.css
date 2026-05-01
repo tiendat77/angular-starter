@@ -30,25 +30,24 @@
 
 [data-theme='light'] {
   --background-card-rgb: 255, 255, 255;
-  --background-default-rgb: 241, 245, 249;
-  --foreground-default-rgb: 30, 41, 59;
-  --foreground-hint-rgb: 148, 163, 184;
+  --background-default-rgb: 248, 250, 252;
+  --foreground-default-rgb: 15, 23, 42;
+  --foreground-hint-rgb: 100, 116, 139;
   --foreground-disabled-rgb: 148, 163, 184;
-  --border-default-rgb: 226, 232, 240;
-  --scrollbar-track-rgb: 241, 245, 249;
-  --scrollbar-thumb-rgb: 183, 183, 184;
-  --scrollbar-thumb-active-rgb: 142, 143, 147;
+  --border-default-rgb: 241, 245, 249;
+  --scrollbar-track-rgb: 248, 250, 252;
+  --scrollbar-thumb-rgb: 203, 213, 225;
+  --scrollbar-thumb-active-rgb: 148, 163, 184;
 }
 
 [data-theme='dark'] {
-  --background-card-rgb: 39, 58, 75;
-  --background-default-rgb: 17, 24, 39;
-  --foreground-default-rgb: 255, 255, 255;
-  --foreground-hint-rgb: 100, 116, 139;
+  --background-card-rgb: 15, 23, 42;
+  --background-default-rgb: 2, 6, 23;
+  --foreground-default-rgb: 248, 250, 252;
+  --foreground-hint-rgb: 148, 163, 184;
   --foreground-disabled-rgb: 71, 85, 105;
-  --border-default-rgb: 241, 245, 249;
-  --scrollbar-track-rgb: 17, 24, 39;
-  --scrollbar-thumb-rgb: 109, 119, 125;
-  --scrollbar-thumb-active-rgb: 88, 95, 102;
+  --border-default-rgb: 30, 41, 59;
+  --scrollbar-track-rgb: 2, 6, 23;
+  --scrollbar-thumb-rgb: 51, 65, 85;
+  --scrollbar-thumb-active-rgb: 71, 85, 105;
 }
-

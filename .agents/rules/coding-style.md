@@ -114,7 +114,7 @@ This document outlines the coding standards, rules, and conventions for the proj
 
 ### 1. UI Components
 
-- Use **NG-ZORRO** components for all core UI elements (`nz-table`, `nz-form`, `nz-modal`, `nz-select`).
+- Use **DaisyUI** components for all core UI elements (`table`, `form`, `modal`, `select`).
 - Use the custom `SvgIcon` component from `@libs/svg-icon`.
 
 ### 2. Layout Structure
@@ -134,7 +134,7 @@ This document outlines the coding standards, rules, and conventions for the proj
 ### 2. Design System
 
 - Use CSS variables defined in `src/styles/` (e.g., `_colors.css`, `_themes.css`) for consistent branding.
-- Leverage **DaisyUI** classes for common UI patterns where they don't conflict with NG-ZORRO.
+- Leverage **DaisyUI** classes for common UI patterns.
 
 ---
 

@@ -1,0 +1,94 @@
+<div class="space-y-4">
+  <h3 class="text-lg font-semibold">Tabs Example</h3>
+  <p class="text-sm text-gray-500">
+    A headless, accessible tabbed interface using <code>@angular/aria</code>. Use arrow keys to navigate between tabs.
+  </p>
+
+  <div
+    ngTabs
+    class="w-full max-w-2xl rounded-xl border bg-white shadow dark:border-gray-700 dark:bg-gray-800"
+  >
+    <div
+      ngTabList
+      selectionMode="follow"
+      selectedTab="overview"
+      class="flex border-b p-1 dark:border-gray-700"
+    >
+      <div
+        ngTab
+        value="overview"
+        class="cursor-pointer rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none aria-selected:bg-blue-50 aria-selected:text-blue-600 dark:hover:bg-gray-700 dark:aria-selected:bg-blue-900 dark:aria-selected:text-blue-300"
+      >
+        Overview
+      </div>
+      <div
+        ngTab
+        value="features"
+        class="cursor-pointer rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none aria-selected:bg-blue-50 aria-selected:text-blue-600 dark:hover:bg-gray-700 dark:aria-selected:bg-blue-900 dark:aria-selected:text-blue-300"
+      >
+        Features
+      </div>
+      <div
+        ngTab
+        value="accessibility"
+        class="cursor-pointer rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none aria-selected:bg-blue-50 aria-selected:text-blue-600 dark:hover:bg-gray-700 dark:aria-selected:bg-blue-900 dark:aria-selected:text-blue-300"
+      >
+        Accessibility
+      </div>
+    </div>
+
+    <div class="p-6">
+      <div
+        ngTabPanel
+        value="overview"
+        class="focus:outline-none"
+      >
+        <ng-template ngTabContent>
+          <div class="space-y-2">
+            <h4 class="font-medium">Overview Content</h4>
+            <p class="text-gray-600 dark:text-gray-400">
+              Angular Aria provides headless directives for building accessible interactive patterns. This
+              implementation uses <code>ngTabs</code>, <code>ngTabList</code>, <code>ngTab</code>, and
+              <code>ngTabPanel</code>.
+            </p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div
+        ngTabPanel
+        value="features"
+        class="focus:outline-none"
+      >
+        <ng-template ngTabContent>
+          <div class="space-y-2">
+            <h4 class="font-medium">Features Content</h4>
+            <ul class="list-disc pl-5 text-gray-600 dark:text-gray-400">
+              <li>Headless logic (you control the styling)</li>
+              <li>WAI-ARIA pattern compliance</li>
+              <li>Keyboard navigation support</li>
+              <li>Focus management</li>
+            </ul>
+          </div>
+        </ng-template>
+      </div>
+
+      <div
+        ngTabPanel
+        value="accessibility"
+        class="focus:outline-none"
+      >
+        <ng-template ngTabContent>
+          <div class="space-y-2">
+            <h4 class="font-medium">Accessibility Content</h4>
+            <p class="text-gray-600 dark:text-gray-400">
+              By using these directives, you automatically get the correct ARIA attributes like
+              <code>role="tablist"</code>, <code>role="tab"</code>, <code>role="tabpanel"</code>, and state management
+              like <code>aria-selected</code> and <code>aria-controls</code>.
+            </p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
