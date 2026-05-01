@@ -1,34 +1,21 @@
-import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '@/core/auth';
-import { SvgIcon } from '@libs/svg-icon';
 import { BaseComponent } from '@models';
-import { PasswordValidators } from './validators';
 
 @Component({
-  selector: 'app-sign-up',
-  templateUrl: './sign-up.component.html',
+  selector: 'app-sign-in',
+  templateUrl: './sign-in.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, NgTemplateOutlet, ReactiveFormsModule, RouterLink, SvgIcon],
+  imports: [RouterLink, ReactiveFormsModule],
 })
-export class SignUpComponent extends BaseComponent {
+export class SignInComponent extends BaseComponent {
   form = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
-    password: new FormControl(
-      '',
-      Validators.compose([
-        Validators.required,
-        Validators.minLength(6),
-        PasswordValidators.noWhiteSpace(),
-        PasswordValidators.letters(),
-        PasswordValidators.digits(),
-      ])
-    ),
+    username: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
   });
 
   message: string | null = null;
@@ -44,27 +31,18 @@ export class SignUpComponent extends BaseComponent {
 
   submit() {
     if (this.form.invalid) {
-      this.message = 'Please fill in all the fields';
-      return;
-    }
-
-    let { name, email, password } = this.form.value;
-    name = (name ?? '').trim();
-    email = (email ?? '').trim();
-    password = (password ?? '').trim();
-
-    if (!name || !email || !password) {
-      this.form.enable();
-      this.message = 'Please fill in all the fields';
-      this._cdr.markForCheck();
       return;
     }
 
     this.form.disable();
     this.message = null;
 
+    let { username, password } = this.form.value;
+    username = (username ?? '').trim();
+    password = (password ?? '').trim();
+
     this._auth
-      .signUp({ name, email, password })
+      .signIn({ username, password })
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe({
         next: () => {
@@ -73,8 +51,8 @@ export class SignUpComponent extends BaseComponent {
         error: (error) => {
           console.error(error);
 
-          if (error && error?.status === 400) {
-            return this._onSignUpError(error?.error?.detail);
+          if (error && error?.status === 401) {
+            return this._onSignInError();
           }
 
           return this._onServerError();
@@ -93,13 +71,17 @@ export class SignUpComponent extends BaseComponent {
     this._router.navigateByUrl(redirectURL);
   }
 
-  private _onSignUpError(message: string) {
+  private _onSignInError() {
     // Re-enable the form
     this.form.enable();
     this._cdr.markForCheck();
 
+    // Reset the form
+    this.form?.get('password')?.patchValue(null);
+    this.form?.get('password')?.markAsUntouched();
+
     // Show the alert
-    this.message = message ?? 'Unknown error occurred';
+    this.message = 'Invalid username or password';
   }
 
   private _onServerError() {

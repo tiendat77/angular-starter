@@ -7,13 +7,13 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { DenseLayoutComponent } from './dense/dense.component';
-import { EmptyLayoutComponent } from './empty/empty.component';
+import { DenseLayoutComponent } from './dense/dense';
+import { EmptyLayoutComponent } from './empty/empty';
 
 @Component({
   selector: 'app-layout',
-  templateUrl: './layout.component.html',
-  styleUrl: './layout.component.scss',
+  templateUrl: './layout.html',
+  styleUrl: './layout.scss',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [EmptyLayoutComponent, DenseLayoutComponent],

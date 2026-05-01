@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'error-placeholder',
-  templateUrl: './error-placeholder.component.html',
+  selector: 'empty-placeholder',
+  templateUrl: './empty-placeholder.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ErrorPlaceholderComponent {}
+export class EmptyPlaceholderComponent {}

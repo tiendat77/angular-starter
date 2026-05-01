@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-invalid-link',
   imports: [RouterLink],
-  templateUrl: './invalid-link.component.html',
+  templateUrl: './invalid-link.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvalidLinkComponent {}

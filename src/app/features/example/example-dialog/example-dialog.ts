@@ -5,7 +5,7 @@ import { DialogModule } from '@libs/dialog';
 @Component({
   selector: 'app-example-dialog',
   imports: [DialogModule],
-  templateUrl: './example-dialog.component.html',
+  templateUrl: './example-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExampleDialogComponent {

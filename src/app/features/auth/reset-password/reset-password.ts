@@ -30,7 +30,7 @@ import { PasswordValidators } from '../sign-up/validators';
 @Component({
   selector: 'app-reset-password',
   imports: [NgClass, NgTemplateOutlet, ReactiveFormsModule, SvgIcon],
-  templateUrl: './reset-password.component.html',
+  templateUrl: './reset-password.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResetPasswordComponent extends BaseComponent implements OnInit {

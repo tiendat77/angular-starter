@@ -13,7 +13,7 @@ import { BaseComponent } from '@models';
 @Component({
   selector: 'app-forgot-password-enter-email',
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './enter-email.component.html',
+  templateUrl: './enter-email.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EnterEmailComponent extends BaseComponent {

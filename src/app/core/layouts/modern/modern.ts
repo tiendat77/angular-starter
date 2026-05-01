@@ -20,7 +20,7 @@ import { SvgIconModule } from '@libs/svg-icon';
 
 @Component({
   selector: 'modern-layout',
-  templateUrl: './modern.component.html',
+  templateUrl: './modern.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [

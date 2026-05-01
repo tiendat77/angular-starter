@@ -5,7 +5,7 @@ import { BaseComponent } from '@models';
 @Component({
   selector: 'app-email-sent',
   imports: [],
-  templateUrl: './email-sent.component.html',
+  templateUrl: './email-sent.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmailSentComponent extends BaseComponent implements OnInit {

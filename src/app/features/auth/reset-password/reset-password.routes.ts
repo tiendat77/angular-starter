@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { ResetPasswordComponent } from './reset-password.component';
+import { ResetPasswordComponent } from './reset-password';
 
 const routes: Routes = [
   {
@@ -9,12 +9,11 @@ const routes: Routes = [
   {
     path: 'reset-success',
     loadComponent: () =>
-      import('./reset-success/reset-success.component').then((m) => m.ResetSuccessComponent),
+      import('./reset-success/reset-success').then((m) => m.ResetSuccessComponent),
   },
   {
     path: 'invalid-link',
-    loadComponent: () =>
-      import('./invalid-link/invalid-link.component').then((m) => m.InvalidLinkComponent),
+    loadComponent: () => import('./invalid-link/invalid-link').then((m) => m.InvalidLinkComponent),
   },
 ];
 

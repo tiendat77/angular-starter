@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-access-denied',
-  templateUrl: './access-denied.component.html',
+  templateUrl: './access-denied.html',
   imports: [RouterLink],
 })
 export class AccessDeniedComponent {}

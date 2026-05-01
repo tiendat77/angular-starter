@@ -8,13 +8,11 @@ const routes: Routes = [
   },
   {
     path: 'enter-email',
-    loadComponent: () =>
-      import('./enter-email/enter-email.component').then((m) => m.EnterEmailComponent),
+    loadComponent: () => import('./enter-email/enter-email').then((m) => m.EnterEmailComponent),
   },
   {
     path: 'email-sent',
-    loadComponent: () =>
-      import('./email-sent/email-sent.component').then((m) => m.EmailSentComponent),
+    loadComponent: () => import('./email-sent/email-sent').then((m) => m.EmailSentComponent),
   },
 ];
 

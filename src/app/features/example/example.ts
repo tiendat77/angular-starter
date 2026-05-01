@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { WelcomeComponent } from './welcome/welcome.component';
+import { WelcomeComponent } from './welcome/welcome';
 
 import { DatepickerModule, provideNativeDateAdapter } from '@libs/date-picker';
 import { DialogService } from '@libs/dialog';
@@ -7,12 +7,12 @@ import { LoaderService } from '@libs/loader';
 import { SvgIcon } from '@libs/svg-icon';
 import { ToastService } from '@libs/toast';
 
-import { ExampleDialogComponent } from './example-dialog/example-dialog.component';
+import { ExampleDialogComponent } from './example-dialog/example-dialog';
 
 @Component({
   selector: 'app-example',
   imports: [WelcomeComponent, SvgIcon, DatepickerModule],
-  templateUrl: './example.component.html',
+  templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideNativeDateAdapter()],
 })

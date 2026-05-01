@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AccessDeniedComponent } from './access-denied.component';
+import { AccessDeniedComponent } from './access-denied';
 
 const routes: Routes = [
   {

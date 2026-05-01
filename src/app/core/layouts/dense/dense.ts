@@ -17,7 +17,7 @@ import { SvgIcon } from '@libs/svg-icon';
 
 @Component({
   selector: 'dense-layout',
-  templateUrl: './dense.component.html',
+  templateUrl: './dense.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, RouterLink, SvgIcon, LogoComponent, VerticalNavigationComponent],
