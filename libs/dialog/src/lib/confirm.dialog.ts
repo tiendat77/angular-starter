@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { NgClass } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 export interface DialogConfirmConfig {
   type?: 'info' | 'success' | 'warning' | 'error';
@@ -11,6 +11,7 @@ export interface DialogConfirmConfig {
 @Component({
   selector: 'dialog-confirm',
   templateUrl: './confirm.dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass],
 })
 export class DialogConfirmComponent {

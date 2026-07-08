@@ -3,15 +3,15 @@
     aria-hidden="true"
     class="fixed inset-0 z-0 grid grid-cols-2 -space-x-52 opacity-10 dark:opacity-5"
   >
-    <div class="h-96 bg-gradient-to-br from-purple-400 to-rose-300 blur-[106px] dark:from-purple-700 dark:to-rose-700">
+    <div class="h-96 bg-linear-to-br from-purple-400 to-rose-300 blur-[106px] dark:from-purple-700 dark:to-rose-700">
       <!-- Gradient Circle Background -->
     </div>
-    <div class="h-90 bg-gradient-to-r from-indigo-400 to-cyan-400 blur-[106px] dark:from-indigo-600 dark:to-cyan-600">
+    <div class="h-90 bg-linear-to-r from-indigo-400 to-cyan-400 blur-[106px] dark:from-indigo-600 dark:to-cyan-600">
       <!-- Gradient Circle Background -->
     </div>
   </div>
 
-  <div class="z-10 flex w-full flex-auto flex-col items-center justify-center md:max-w-screen-sm">
+  <div class="z-10 flex w-full flex-auto flex-col items-center justify-center md:max-w-160">
     <div class="bg-base-100 md:shadow-card h-full w-full sm:h-auto md:flex-none md:rounded-lg md:border">
       <div class="p-6 sm:p-8">
         <div class="flex flex-col items-center justify-center">
@@ -107,7 +107,7 @@
                       [ngTemplateOutlet]="validationTemplate"
                       [ngTemplateOutletContext]="{
                         data: {
-                          hasError: form.get('password')?.hasError('minlength'),
+                          hasError: $safeNavigationMigration(form.get('password')?.hasError('minlength')),
                           message: 'Password must be at least 6 characters',
                         },
                       }"
@@ -117,7 +117,7 @@
                       [ngTemplateOutlet]="validationTemplate"
                       [ngTemplateOutletContext]="{
                         data: {
-                          hasError: form.get('password')?.hasError('whitespaces'),
+                          hasError: $safeNavigationMigration(form.get('password')?.hasError('whitespaces')),
                           message: 'Password must not contain whitespaces',
                         },
                       }"
@@ -127,7 +127,7 @@
                       [ngTemplateOutlet]="validationTemplate"
                       [ngTemplateOutletContext]="{
                         data: {
-                          hasError: form.get('password')?.hasError('letters'),
+                          hasError: $safeNavigationMigration(form.get('password')?.hasError('letters')),
                           message: 'Password must contain at least one letter (a-z, A-Z)',
                         },
                       }"
@@ -137,7 +137,7 @@
                       [ngTemplateOutlet]="validationTemplate"
                       [ngTemplateOutletContext]="{
                         data: {
-                          hasError: form.get('password')?.hasError('digits'),
+                          hasError: $safeNavigationMigration(form.get('password')?.hasError('digits')),
                           message: 'Password must contain at least one number (0-9)',
                         },
                       }"

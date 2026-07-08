@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { ENVIRONMENT_INITIALIZER, EnvironmentProviders, inject, Provider } from '@angular/core';
 
 import { IconNamespace } from './icon.interface';
@@ -9,7 +9,7 @@ export const provideIcons = (
   namespaces: IconNamespace[] = []
 ): (Provider | EnvironmentProviders)[] => {
   return [
-    provideHttpClient(),
+    provideHttpClient(withXhr()),
     {
       provide: ICON_NAMESPACES,
       useValue: namespaces,

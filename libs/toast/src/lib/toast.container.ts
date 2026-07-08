@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ComponentRef,
@@ -27,6 +28,7 @@ import { toastAnimations } from './toast.animation';
   template: '<ng-template cdkPortalOutlet />',
   animations: [toastAnimations.toastState],
   imports: [CdkPortalOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     class: 'm-4 flex flex-col',
     '[@state]': '_animationState',

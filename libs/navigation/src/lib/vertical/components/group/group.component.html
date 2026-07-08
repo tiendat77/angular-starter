@@ -2,14 +2,14 @@
 <div
   class="vertical-navigation-item-wrapper"
   [class.vertical-navigation-item-has-subtitle]="!!item.subtitle"
-  [ngClass]="item.classes?.wrapper"
+  [ngClass]="$safeNavigationMigration(item.classes?.wrapper)"
 >
   <div class="vertical-navigation-item">
     <!-- Icon -->
     @if (item.icon) {
       <svg-icon
         class="vertical-navigation-item-icon"
-        [ngClass]="item.classes?.icon"
+        [ngClass]="$safeNavigationMigration(item.classes?.icon)"
         [name]="item.icon"
       />
     }
@@ -17,13 +17,13 @@
     <!-- Title & Subtitle -->
     <div class="vertical-navigation-item-title-wrapper">
       <div class="vertical-navigation-item-title">
-        <span [ngClass]="item.classes?.title">
+        <span [ngClass]="$safeNavigationMigration(item.classes?.title)">
           {{ item.title }}
         </span>
       </div>
       @if (item.subtitle) {
         <div class="vertical-navigation-item-subtitle">
-          <span [ngClass]="item.classes?.subtitle">
+          <span [ngClass]="$safeNavigationMigration(item.classes?.subtitle)">
             {{ item.subtitle }}
           </span>
         </div>

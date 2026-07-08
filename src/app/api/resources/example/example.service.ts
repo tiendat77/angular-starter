@@ -19,4 +19,16 @@ export class ExampleAPIService extends BaseApiService<ExampleModel> implements A
   list() {
     return this._list();
   }
+
+  create(data: Partial<ExampleModel>) {
+    return this._create(data);
+  }
+
+  update(id: string, data: Partial<ExampleModel>) {
+    return this._update(id, data);
+  }
+
+  delete(id: string) {
+    return this._delete(id);
+  }
 }

@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { TOAST_DATA, ToastType } from './toast.config';
 import { ToastRef } from './toast.ref';
@@ -7,6 +7,7 @@ import { ToastRef } from './toast.ref';
 @Component({
   selector: 'toast',
   imports: [NgClass],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './toast.component.html',
 })
 export class ToastComponent {

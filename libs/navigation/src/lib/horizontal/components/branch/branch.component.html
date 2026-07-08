@@ -71,7 +71,7 @@
   <div
     class="horizontal-navigation-item-wrapper"
     [class.horizontal-navigation-item-has-subtitle]="!!item.subtitle"
-    [ngClass]="item.classes?.wrapper"
+    [ngClass]="$safeNavigationMigration(item.classes?.wrapper)"
   >
     <div
       class="horizontal-navigation-item"
@@ -84,7 +84,7 @@
       @if (item.icon) {
         <svg-icon
           class="horizontal-navigation-item-icon"
-          [ngClass]="item.classes?.icon"
+          [ngClass]="$safeNavigationMigration(item.classes?.icon)"
           [name]="item.icon"
         />
       }
@@ -92,13 +92,13 @@
       <!-- Title & Subtitle -->
       <div class="horizontal-navigation-item-title-wrapper">
         <div class="horizontal-navigation-item-title">
-          <span [ngClass]="item.classes?.title">
+          <span [ngClass]="$safeNavigationMigration(item.classes?.title)">
             {{ item.title }}
           </span>
         </div>
         @if (item.subtitle) {
           <div class="horizontal-navigation-item-subtitle text-hint">
-            <span [ngClass]="item.classes?.subtitle">
+            <span [ngClass]="$safeNavigationMigration(item.classes?.subtitle)">
               {{ item.subtitle }}
             </span>
           </div>

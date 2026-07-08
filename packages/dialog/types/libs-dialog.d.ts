@@ -7,13 +7,11 @@ import { DialogRef, Dialog, DialogConfig } from '@angular/cdk/dialog';
 import { Overlay, ComponentType } from '@angular/cdk/overlay';
 
 declare class DialogActionsDirective extends CdkPortal {
-    constructor();
     static ɵfac: i0.ɵɵFactoryDeclaration<DialogActionsDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<DialogActionsDirective, "[dialog-actions], [dialogActions]", never, {}, {}, never, never, true, never>;
 }
 
 declare class DialogBodyDirective extends CdkPortal {
-    constructor();
     static ɵfac: i0.ɵɵFactoryDeclaration<DialogBodyDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<DialogBodyDirective, "[dialog-body], [dialogBody]", never, {}, {}, never, never, true, never>;
 }
@@ -35,7 +33,6 @@ declare class DialogHeaderDirective implements OnInit {
 }
 
 declare class DialogTitleDirective extends CdkPortal {
-    constructor();
     static ɵfac: i0.ɵɵFactoryDeclaration<DialogTitleDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<DialogTitleDirective, "[dialog-title], [dialogTitle]", never, {}, {}, never, never, true, never>;
 }

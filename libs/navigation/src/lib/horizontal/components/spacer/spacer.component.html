@@ -1,4 +1,4 @@
 <div
   class="horizontal-navigation-item-wrapper"
-  [ngClass]="item.classes?.wrapper"
+  [ngClass]="$safeNavigationMigration(item.classes?.wrapper)"
 ></div>
