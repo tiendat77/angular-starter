@@ -33,7 +33,9 @@
       "@libs/paginator": ["./packages/paginator", "./libs/paginator/src/public-api"],
       "@libs/storage": ["./packages/storage", "./libs/storage/src/public-api"],
       "@libs/svg-icon": ["./packages/svg-icon", "./libs/svg-icon/src/public-api"],
-      "@libs/toast": ["./packages/toast", "./libs/toast/src/public-api"]
+      "@libs/toast": ["./packages/toast", "./libs/toast/src/public-api"],
+      "@libs/ui": ["./packages/ui", "./libs/ui/src/public-api"],
+      "@libs/ui/*": ["./packages/ui/*", "./libs/ui/*/src/public-api"]
     }
   },
   "angularCompilerOptions": {
