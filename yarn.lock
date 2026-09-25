@@ -1647,13 +1647,6 @@
   dependencies:
     "@tybys/wasm-util" "^0.10.3"
 
-"@ngrx/signals@^21.1.1":
-  version "21.1.1"
-  resolved "https://registry.npmjs.org/@ngrx/signals/-/signals-21.1.1.tgz"
-  integrity sha512-AXxsvO39cJ4gu2GMvLyUHwx+3qHi35Bn7OUqyIfJW0fffi/Af7ML6h0MPMWDHVROo55FBgxzJrYRswwzdew9VA==
-  dependencies:
-    tslib "^2.3.0"
-
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"
