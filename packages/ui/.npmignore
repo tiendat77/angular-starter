@@ -1,5 +1,6 @@
 # Nested package.json's are only needed for development.
-button/package.json
-core/package.json
-input/package.json
 checkbox/package.json
+core/package.json
+button/package.json
+input/package.json
+radio/package.json

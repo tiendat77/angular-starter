@@ -34,6 +34,10 @@
     "./input": {
       "types": "./types/libs-ui-input.d.ts",
       "default": "./fesm2022/libs-ui-input.mjs"
+    },
+    "./radio": {
+      "types": "./types/libs-ui-radio.d.ts",
+      "default": "./fesm2022/libs-ui-radio.mjs"
     }
   },
   "type": "module"

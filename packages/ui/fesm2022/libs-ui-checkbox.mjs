@@ -201,8 +201,8 @@ class UiCheckboxComponent {
         (blur)="onBlur()"
       />
       <span
-        [class]="$boxClass()"
         aria-hidden="true"
+        [class]="$boxClass()"
       >
         @if (indeterminate()) {
           <svg
@@ -263,8 +263,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
         (blur)="onBlur()"
       />
       <span
-        [class]="$boxClass()"
         aria-hidden="true"
+        [class]="$boxClass()"
       >
         @if (indeterminate()) {
           <svg
@@ -398,8 +398,8 @@ class UiSwitchComponent {
         (blur)="onBlur()"
       >
         <span
-          [class]="$thumbClass()"
           aria-hidden="true"
+          [class]="$thumbClass()"
         ></span>
       </button>
       @if (label()) {
@@ -441,8 +441,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
         (blur)="onBlur()"
       >
         <span
-          [class]="$thumbClass()"
           aria-hidden="true"
+          [class]="$thumbClass()"
         ></span>
       </button>
       @if (label()) {
