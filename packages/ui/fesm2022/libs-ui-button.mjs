@@ -27,7 +27,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
         }] });
 
 const buttonVariants = cva({
-    base: 'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer',
+    base: 'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 select-none cursor-pointer',
     variants: {
         variant: {
             primary: 'bg-primary text-primary-content hover:bg-primary/90 focus-visible:outline-primary',
