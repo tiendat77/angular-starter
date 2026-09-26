@@ -37,8 +37,17 @@ describe('UiButtonDirective', () => {
   });
 
   it('should apply primary variant and md size classes', () => {
-    expect(buttonEl.className).toContain('bg-primary');
-    expect(buttonEl.className).toContain('h-10');
+    expect(buttonEl.className).toContain('btn');
+    expect(buttonEl.className).toContain('btn-primary');
+    expect(buttonEl.className).toContain('btn-md');
+  });
+
+  it('should apply custom variant and size classes when signals change', () => {
+    fixture.componentInstance.variant.set('danger');
+    fixture.componentInstance.size.set('lg');
+    fixture.detectChanges();
+    expect(buttonEl.className).toContain('btn-danger');
+    expect(buttonEl.className).toContain('btn-lg');
   });
 
   it('should reflect loading state and aria-busy', () => {
