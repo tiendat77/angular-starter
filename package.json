@@ -9,6 +9,8 @@
     "build:libs": "node .ci/build-libs.js",
     "build:staging": "ng build --configuration staging",
     "build:prod": "ng build --configuration production",
+    "docs:dev": "ng serve docs",
+    "docs:build": "ng build docs",
     "lint": "npx eslint .",
     "prepare": "husky",
     "lint-staged": "lint-staged",
