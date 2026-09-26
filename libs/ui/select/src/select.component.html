@@ -1,0 +1,73 @@
+<div
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  [class]="triggerClass()"
+  (mousedown)="onTriggerMousedown($event)"
+  (click)="onTriggerClick()"
+>
+  @if (hasValue()) {
+    <span class="select-value">{{ selectedLabel() }}</span>
+  }
+
+  <input
+    #trigger
+    ngCombobox
+    #combobox="ngCombobox"
+    autocomplete="off"
+    [id]="id"
+    [(expanded)]="open"
+    [attr.placeholder]="showPlaceholder() ? placeholder() : null"
+    [attr.data-readonly]="searchable() ? null : ''"
+    (beforeinput)="!searchable() && $event.preventDefault()"
+    (keydown)="onTriggerKeydown($event)"
+  />
+
+  <span
+    class="select-arrow"
+    aria-hidden="true"
+  ></span>
+</div>
+
+<ng-template
+  ngComboboxPopup
+  [combobox]="combobox"
+>
+  <ng-template
+    cdkConnectedOverlay
+    cdkConnectedOverlayUsePopover="inline"
+    [cdkConnectedOverlayOrigin]="origin"
+    [cdkConnectedOverlayOpen]="true"
+    [cdkConnectedOverlayPositions]="positions"
+    [cdkConnectedOverlayMatchWidth]="true"
+  >
+    <div
+      #panel
+      class="select-panel"
+      ngComboboxWidget
+      ngListbox
+      #listbox="ngListbox"
+      focusMode="activedescendant"
+      selectionMode="explicit"
+      [value]="listboxValue()"
+      [activeDescendant]="listbox.activeDescendant()"
+      (valueChange)="onListboxChange($event)"
+      (mousedown)="$event.preventDefault()"
+    >
+      @for (opt of visibleOptions(); track opt) {
+        <div
+          class="select-option"
+          ngOption
+          [value]="opt.value()"
+          [label]="opt.label()"
+          [disabled]="opt.disabled()"
+        >
+          @if (opt.hasContent()) {
+            <ng-container [ngTemplateOutlet]="opt.content()" />
+          } @else {
+            {{ opt.label() }}
+          }
+        </div>
+      }
+    </div>
+  </ng-template>
+</ng-template>
