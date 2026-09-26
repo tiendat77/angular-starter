@@ -19,6 +19,10 @@
       "types": "./types/libs-ui.d.ts",
       "default": "./fesm2022/libs-ui.mjs"
     },
+    "./button": {
+      "types": "./types/libs-ui-button.d.ts",
+      "default": "./fesm2022/libs-ui-button.mjs"
+    },
     "./core": {
       "types": "./types/libs-ui-core.d.ts",
       "default": "./fesm2022/libs-ui-core.mjs"

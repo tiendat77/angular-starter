@@ -306,6 +306,14 @@
             "lintFilePatterns": ["libs/ui/**/*.ts", "libs/ui/**/*.html"],
             "eslintConfig": "libs/ui/eslint.config.js"
           }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "libs/ui/tsconfig.spec.json",
+            "buildTarget": "ui:build:development",
+            "include": ["../**/*.spec.ts"]
+          }
         }
       }
     },

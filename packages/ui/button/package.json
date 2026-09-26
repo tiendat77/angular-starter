@@ -1,0 +1,4 @@
+{
+  "module": "../fesm2022/libs-ui-button.mjs",
+  "typings": "../types/libs-ui-button.d.ts"
+}
