@@ -1,7 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UiSize } from '@libs/ui/core';
-import { UiFormFieldAppearance } from '@libs/ui/input';
+import {
+  UiErrorDirective,
+  UiFormFieldAppearance,
+  UiFormFieldComponent,
+  UiHintDirective,
+  UiLabelDirective,
+} from '@libs/ui/input';
 import {
   UiHighlightDirective,
   UiOptionComponent,
@@ -41,6 +47,11 @@ const PEOPLE: Person[] = [
   selector: 'doc-select',
   imports: [
     FormsModule,
+    ReactiveFormsModule,
+    UiFormFieldComponent,
+    UiLabelDirective,
+    UiHintDirective,
+    UiErrorDirective,
     UiSelectComponent,
     UiOptionComponent,
     UiHighlightDirective,
@@ -54,6 +65,7 @@ const PEOPLE: Person[] = [
 })
 export class SelectDocComponent {
   readonly people = PEOPLE;
+  readonly owner = new FormControl<Person | null>(null, Validators.required);
 
   // Playground controls
   readonly multiple = signal(false);
@@ -93,6 +105,19 @@ export class SelectDocComponent {
     const list = this.serverSearch() ? 'results()' : 'people';
     return `<ui-select\n  ${attrs.join('\n  ')}\n>\n  @for (p of ${list}; track p.id) {\n    <ui-option [value]="p" [label]="p.name" />\n  }\n</ui-select>`;
   });
+
+  readonly formFieldCode = `<ui-form-field>
+  <label uiLabel>Owner</label>
+  <ui-select [formControl]="owner" [compareWith]="byId" searchable allowClear>
+    @for (p of people; track p.id) {
+      <ui-option [value]="p" [label]="p.name" />
+    }
+  </ui-select>
+  <span uiHint>Who is responsible for this project.</span>
+  @if (owner.invalid && owner.touched) {
+    <span uiError>An owner is required.</span>
+  }
+</ui-form-field>`;
 
   readonly customCode = `<ui-select searchable [(value)]="owner">
   @for (p of people; track p.id) {

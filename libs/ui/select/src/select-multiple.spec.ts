@@ -143,4 +143,32 @@ describe('UiSelectComponent (multiple)', () => {
     expect(optionByText('Bob').getAttribute('aria-selected')).toBe('true');
     expect(tagTexts()).toEqual(['Bob']);
   });
+
+  it('keeps earlier values after a search is typed and cleared, then another pick', async () => {
+    host.value.set([USERS[0], USERS[1]]); // Alice, Bob
+    await settle(fixture);
+    type(trigger(), 'ali');
+    await settle(fixture);
+    type(trigger(), '');
+    await settle(fixture);
+
+    expect(optionByText('Bob').getAttribute('aria-selected')).toBe('true');
+    optionByText('Carol').click();
+    await settle(fixture);
+
+    expect(host.value()!.map((u) => u.id)).toEqual([1, 2, 3]);
+  });
+
+  it('keeps all values when a search hides every selected option, then another pick', async () => {
+    host.value.set([USERS[0]]); // Alice
+    await settle(fixture);
+    type(trigger(), 'zzz');
+    await settle(fixture);
+    type(trigger(), '');
+    await settle(fixture);
+    optionByText('Bob').click();
+    await settle(fixture);
+
+    expect(host.value()!.map((u) => u.id)).toEqual([1, 2]);
+  });
 });

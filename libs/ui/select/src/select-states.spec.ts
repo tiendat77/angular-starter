@@ -116,4 +116,37 @@ describe('UiSelectComponent (clear, disabled, openedChange)', () => {
 
     expect(host.opened).toEqual([true, false]);
   });
+
+  it('stretches to its container (host is a full-width block)', () => {
+    const hostEl = document.querySelector('ui-select')!;
+    expect(hostEl.classList).toContain('w-full');
+    expect(hostEl.classList).toContain('min-w-0');
+  });
+
+  it('ignores text that reaches a non-searchable input (IME / mobile) and hides the keyboard', async () => {
+    host.value.set('apple');
+    await settle(fixture);
+    expect(trigger().getAttribute('inputmode')).toBe('none');
+
+    trigger().focus();
+    trigger().value = 'x';
+    trigger().dispatchEvent(
+      new InputEvent('input', { bubbles: true, data: 'x', inputType: 'insertCompositionText' })
+    );
+    await settle(fixture);
+
+    expect(trigger().value).toBe('');
+    expect(document.querySelector('ui-select .select-value')?.textContent?.trim()).toBe('Apple');
+  });
+
+  it('accepts a single (non-array) value in multiple mode without crashing', async () => {
+    host.multiple.set(true);
+    host.value.set('apple');
+    await settle(fixture);
+
+    const tags = Array.from(document.querySelectorAll('ui-select .tag')).map((t) =>
+      t.firstChild?.textContent?.trim()
+    );
+    expect(tags).toEqual(['Apple']);
+  });
 });

@@ -95,6 +95,9 @@ declare class UiSelectComponent<T = unknown> extends UiFormFieldControl<T | T[]>
     readonly compareWith: _angular_core.InputSignal<(a: T, b: T) => boolean>;
     readonly maxTagCount: _angular_core.InputSignal<number | null>;
     readonly allowClear: _angular_core.InputSignalWithTransform<boolean, unknown>;
+    /** Accessible name when the select isn't labelled by a `ui-form-field` label. */
+    readonly ariaLabel: _angular_core.InputSignal<string | null>;
+    readonly ariaLabelledby: _angular_core.InputSignal<string | null>;
     readonly disabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
     /** Debounced search term, emitted whenever `searchable` is on. */
     readonly search: _angular_core.OutputEmitterRef<string>;
@@ -106,6 +109,8 @@ declare class UiSelectComponent<T = unknown> extends UiFormFieldControl<T | T[]>
     protected readonly positions: ConnectedPosition[];
     protected readonly open: _angular_core.WritableSignal<boolean>;
     readonly searchTerm: _angular_core.WritableSignal<string>;
+    protected readonly valueId: string;
+    private readonly _externalDescribedBy;
     private readonly _cvaDisabled;
     private readonly _focused;
     private readonly _invalid;
@@ -121,7 +126,12 @@ declare class UiSelectComponent<T = unknown> extends UiFormFieldControl<T | T[]>
     private readonly _labels;
     protected readonly selectedValues: _angular_core.Signal<T[]>;
     protected readonly visibleOptions: _angular_core.Signal<readonly UiOptionComponent<T>[]>;
-    /** Selected values mapped onto the rendered option values, so aria sees the same references. */
+    /**
+     * The selected values that are rendered, as the rendered option references. Only rendered values
+     * are given to aria (it would prune the rest), and the array is rebuilt whenever the rendered set
+     * changes, so aria's selection re-syncs after a search is cleared. Hidden selected values are
+     * kept by `onListboxChange`.
+     */
     protected readonly listboxValue: _angular_core.Signal<T[]>;
     protected readonly tags: _angular_core.Signal<{
         value: T;
@@ -133,6 +143,9 @@ declare class UiSelectComponent<T = unknown> extends UiFormFieldControl<T | T[]>
     }[]>;
     protected readonly hiddenTagCount: _angular_core.Signal<number>;
     protected readonly hasValue: _angular_core.Signal<boolean>;
+    /** Selected label(s) for assistive tech: the input itself never holds the selection. */
+    protected readonly valueText: _angular_core.Signal<string>;
+    protected readonly describedBy: _angular_core.Signal<string | null>;
     protected readonly showClear: _angular_core.Signal<boolean>;
     protected readonly selectedLabel: _angular_core.Signal<string>;
     protected readonly showPlaceholder: _angular_core.Signal<boolean>;
@@ -144,6 +157,7 @@ declare class UiSelectComponent<T = unknown> extends UiFormFieldControl<T | T[]>
     registerOnChange(fn: (value: T | T[] | null) => void): void;
     registerOnTouched(fn: () => void): void;
     setDisabledState(isDisabled: boolean): void;
+    setDescribedByIds(ids: string[]): void;
     setOpen(open: boolean): void;
     clear(): void;
     protected onFocusIn(): void;
@@ -165,7 +179,7 @@ declare class UiSelectComponent<T = unknown> extends UiFormFieldControl<T | T[]>
     private _eq;
     private _resetSearch;
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiSelectComponent<any>, never>;
-    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiSelectComponent<any>, "ui-select", never, { "value": { "alias": "value"; "required": false; "isSignal": true; }; "placeholder": { "alias": "placeholder"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; "appearance": { "alias": "appearance"; "required": false; "isSignal": true; }; "searchable": { "alias": "searchable"; "required": false; "isSignal": true; }; "filterFn": { "alias": "filterFn"; "required": false; "isSignal": true; }; "searchDebounce": { "alias": "searchDebounce"; "required": false; "isSignal": true; }; "serverSearch": { "alias": "serverSearch"; "required": false; "isSignal": true; }; "loading": { "alias": "loading"; "required": false; "isSignal": true; }; "multiple": { "alias": "multiple"; "required": false; "isSignal": true; }; "compareWith": { "alias": "compareWith"; "required": false; "isSignal": true; }; "maxTagCount": { "alias": "maxTagCount"; "required": false; "isSignal": true; }; "allowClear": { "alias": "allowClear"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; "search": "search"; "openedChange": "openedChange"; }, ["options", "emptyTemplate"], never, true, never>;
+    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiSelectComponent<any>, "ui-select", never, { "value": { "alias": "value"; "required": false; "isSignal": true; }; "placeholder": { "alias": "placeholder"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; "appearance": { "alias": "appearance"; "required": false; "isSignal": true; }; "searchable": { "alias": "searchable"; "required": false; "isSignal": true; }; "filterFn": { "alias": "filterFn"; "required": false; "isSignal": true; }; "searchDebounce": { "alias": "searchDebounce"; "required": false; "isSignal": true; }; "serverSearch": { "alias": "serverSearch"; "required": false; "isSignal": true; }; "loading": { "alias": "loading"; "required": false; "isSignal": true; }; "multiple": { "alias": "multiple"; "required": false; "isSignal": true; }; "compareWith": { "alias": "compareWith"; "required": false; "isSignal": true; }; "maxTagCount": { "alias": "maxTagCount"; "required": false; "isSignal": true; }; "allowClear": { "alias": "allowClear"; "required": false; "isSignal": true; }; "ariaLabel": { "alias": "ariaLabel"; "required": false; "isSignal": true; }; "ariaLabelledby": { "alias": "ariaLabelledby"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; "search": "search"; "openedChange": "openedChange"; }, ["options", "emptyTemplate"], never, true, never>;
 }
 
 export { UI_SELECT, UiHighlightDirective, UiOptionComponent, UiSelectComponent, UiSelectEmptyDirective, uiDefaultFilter };

@@ -140,6 +140,41 @@
     </div>
   </div>
 
+  <!-- Form field -->
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">In a form field</h2>
+    <p class="text-muted-foreground text-sm">
+      <code>ui-select</code> is a form control: the label, hint and error of <code>ui-form-field</code> are wired to its
+      combobox input.
+    </p>
+    <div class="max-w-sm">
+      <ui-form-field>
+        <!-- ui-form-field sets `for` to the select's combobox input at runtime -->
+        <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+        <label uiLabel>Owner</label>
+        <ui-select
+          searchable
+          allowClear
+          placeholder="Pick an owner"
+          [formControl]="owner"
+          [compareWith]="byId"
+        >
+          @for (p of people; track p.id) {
+            <ui-option
+              [value]="p"
+              [label]="p.name"
+            />
+          }
+        </ui-select>
+        <span uiHint>Who is responsible for this project.</span>
+        @if (owner.invalid && owner.touched) {
+          <span uiError>An owner is required.</span>
+        }
+      </ui-form-field>
+    </div>
+    <doc-code-block [code]="formFieldCode" />
+  </section>
+
   <!-- Custom content -->
   <section class="space-y-4">
     <h2 class="text-foreground text-xl font-bold tracking-tight">Custom option content</h2>

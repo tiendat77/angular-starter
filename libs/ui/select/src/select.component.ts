@@ -74,7 +74,7 @@ function toOptionRef<T>(option: UiOptionComponent<T>): UiSelectOptionRef<T> {
     { provide: UI_SELECT, useExisting: forwardRef(() => UiSelectComponent) },
   ],
   host: {
-    class: 'block',
+    class: 'block w-full min-w-0',
     '(focusin)': 'onFocusIn()',
     '(focusout)': 'onFocusOut($event)',
   },
@@ -112,6 +112,9 @@ export class UiSelectComponent<T = unknown>
   readonly maxTagCount = input<number | null>(null);
 
   readonly allowClear = input(false, { transform: booleanAttribute });
+  /** Accessible name when the select isn't labelled by a `ui-form-field` label. */
+  readonly ariaLabel = input<string | null>(null);
+  readonly ariaLabelledby = input<string | null>(null);
   readonly disabled = input(false, { transform: booleanAttribute });
 
   /** Debounced search term, emitted whenever `searchable` is on. */
@@ -132,6 +135,8 @@ export class UiSelectComponent<T = unknown>
   protected readonly positions = PANEL_POSITIONS;
   protected readonly open = signal(false);
   readonly searchTerm = signal('');
+  protected readonly valueId = `${this.id}-value`;
+  private readonly _externalDescribedBy = signal<string[]>([]);
   private readonly _cvaDisabled = signal(false);
   private readonly _focused = signal(false);
   private readonly _invalid = signal(false);
@@ -151,7 +156,9 @@ export class UiSelectComponent<T = unknown>
   protected readonly selectedValues = computed<T[]>(() => {
     const value = this.value();
     if (value == null) return [];
-    return this.multiple() ? (value as T[]) : [value as T];
+    if (!this.multiple()) return [value as T];
+    // Tolerate a single value written into a multiple select (misconfigured form / runtime toggle)
+    return Array.isArray(value) ? (value as T[]) : [value as T];
   });
 
   protected readonly visibleOptions = computed(() => {
@@ -162,12 +169,18 @@ export class UiSelectComponent<T = unknown>
     return all.filter((o) => matches(term, toOptionRef(o)));
   });
 
-  /** Selected values mapped onto the rendered option values, so aria sees the same references. */
+  /**
+   * The selected values that are rendered, as the rendered option references. Only rendered values
+   * are given to aria (it would prune the rest), and the array is rebuilt whenever the rendered set
+   * changes, so aria's selection re-syncs after a search is cleared. Hidden selected values are
+   * kept by `onListboxChange`.
+   */
   protected readonly listboxValue = computed<T[]>(() => {
-    const options = this.options();
-    return this.selectedValues().map(
-      (v) => options.find((o) => this._eq(o.value(), v))?.value() ?? v
-    );
+    const rendered = this.visibleOptions();
+    return this.selectedValues().flatMap((v) => {
+      const option = rendered.find((o) => this._eq(o.value(), v));
+      return option ? [option.value()] : [];
+    });
   });
 
   protected readonly tags = computed(() =>
@@ -185,6 +198,19 @@ export class UiSelectComponent<T = unknown>
   );
 
   protected readonly hasValue = computed(() => this.selectedValues().length > 0);
+
+  /** Selected label(s) for assistive tech: the input itself never holds the selection. */
+  protected readonly valueText = computed(() =>
+    this.selectedValues()
+      .map((v) => this._labels.get(v) ?? '')
+      .filter(Boolean)
+      .join(', ')
+  );
+
+  protected readonly describedBy = computed(() => {
+    const ids = [...this._externalDescribedBy(), ...(this.valueText() ? [this.valueId] : [])];
+    return ids.length ? ids.join(' ') : null;
+  });
 
   protected readonly showClear = computed(
     () => this.allowClear() && this.hasValue() && !this.$disabled()
@@ -229,6 +255,11 @@ export class UiSelectComponent<T = unknown>
         if (!isOpen) this._resetSearch();
         this.openedChange.emit(isOpen);
       });
+    });
+
+    // A non-searchable input may still receive text (IME composition can't be cancelled): drop it
+    effect(() => {
+      if (!this.searchable() && this.searchTerm()) untracked(() => this._resetSearch());
     });
 
     // Disabling while open closes the panel
@@ -287,6 +318,10 @@ export class UiSelectComponent<T = unknown>
 
   setDisabledState(isDisabled: boolean): void {
     this._cvaDisabled.set(isDisabled);
+  }
+
+  override setDescribedByIds(ids: string[]): void {
+    this._externalDescribedBy.set(ids);
   }
 
   // -----------------------------------------------------------------------------------------------------

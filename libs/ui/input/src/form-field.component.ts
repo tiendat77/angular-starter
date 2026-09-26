@@ -94,7 +94,9 @@ export class UiFormFieldComponent implements UiFormFieldContext {
       }
 
       const describedByIds = [this.hint()?.id, this.error()?.id].filter((id): id is string => !!id);
-      if (describedByIds.length > 0) {
+      if (control.setDescribedByIds) {
+        control.setDescribedByIds(describedByIds);
+      } else if (describedByIds.length > 0) {
         this._renderer.setAttribute(controlEl, 'aria-describedby', describedByIds.join(' '));
       } else {
         this._renderer.removeAttribute(controlEl, 'aria-describedby');

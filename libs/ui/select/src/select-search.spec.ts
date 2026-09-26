@@ -9,7 +9,16 @@ import {
   UiSelectFilterFn,
   UiSelectOptionRef,
 } from './public-api';
-import { key, listbox, options, settle, trigger, triggerBox, type } from './select.testing';
+import {
+  key,
+  listbox,
+  optionByText,
+  options,
+  settle,
+  trigger,
+  triggerBox,
+  type,
+} from './select.testing';
 
 interface Fruit {
   id: string;
@@ -147,6 +156,17 @@ describe('UiSelectComponent (search)', () => {
 
     expect(listbox()).not.toBeNull();
     expect(fixture.componentInstance.value()).toBe('apple');
+  });
+
+  it('shows the selected option as selected again after a search is cleared', async () => {
+    fixture.componentInstance.value.set('cherry');
+    await settle(fixture);
+    type(trigger(), 'an');
+    await settle(fixture);
+    type(trigger(), '');
+    await settle(fixture);
+
+    expect(optionByText('Cherry').getAttribute('aria-selected')).toBe('true');
   });
 
   it('clears the term when the panel closes without a pick', async () => {

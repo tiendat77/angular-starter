@@ -12,4 +12,10 @@ export abstract class UiFormFieldControl<T> {
    * Omit it when that element is the control's host (e.g. `input[uiInput]`).
    */
   readonly ariaTarget?: Signal<HTMLElement | undefined>;
+
+  /**
+   * When implemented, `ui-form-field` hands its hint/error ids to the control instead of writing
+   * `aria-describedby` itself, so the control can merge them with ids of its own.
+   */
+  setDescribedByIds?(ids: string[]): void;
 }

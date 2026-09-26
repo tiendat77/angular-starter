@@ -41,6 +41,10 @@
     [disabled]="$disabled()"
     [softDisabled]="false"
     [attr.aria-invalid]="$invalid() || null"
+    [attr.aria-describedby]="describedBy()"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-labelledby]="ariaLabelledby()"
+    [attr.inputmode]="searchable() ? null : 'none'"
     [attr.placeholder]="showPlaceholder() ? placeholder() : null"
     [attr.data-readonly]="searchable() ? null : ''"
     (beforeinput)="onTriggerBeforeInput($event)"
@@ -64,6 +68,14 @@
     aria-hidden="true"
   ></span>
 </div>
+
+@if (valueText()) {
+  <span
+    class="sr-only"
+    [id]="valueId"
+    >{{ valueText() }}</span
+  >
+}
 
 <ng-template
   ngComboboxPopup
