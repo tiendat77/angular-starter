@@ -3,8 +3,8 @@ import { Injectable, inject, ChangeDetectorRef, Input, ChangeDetectionStrategy, 
 import { Subject, takeUntil, ReplaySubject, filter } from 'rxjs';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
-import * as i1 from '@libs/svg-icon';
-import { SvgIconModule } from '@libs/svg-icon';
+import * as i1 from '@libs/ui/svg-icon';
+import { SvgIconModule } from '@libs/ui/svg-icon';
 import { trigger, state, style, transition, animate, AnimationBuilder } from '@angular/animations';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ScrollStrategyOptions } from '@angular/cdk/overlay';

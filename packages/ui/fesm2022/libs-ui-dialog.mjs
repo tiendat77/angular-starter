@@ -1,0 +1,268 @@
+import * as i1 from '@angular/cdk/portal';
+import { CdkPortal, PortalModule } from '@angular/cdk/portal';
+import * as i0 from '@angular/core';
+import { Directive, inject, ElementRef, DestroyRef, ViewChild, ContentChild, Input, ChangeDetectionStrategy, ViewEncapsulation, Component, Injectable, NgModule } from '@angular/core';
+import { DialogRef, DIALOG_DATA, Dialog, DialogConfig, DialogModule as DialogModule$1 } from '@angular/cdk/dialog';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { fromEvent } from 'rxjs';
+import { Overlay } from '@angular/cdk/overlay';
+import { merge } from 'es-toolkit';
+import { NgClass } from '@angular/common';
+
+class DialogActionsDirective extends CdkPortal {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogActionsDirective, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: DialogActionsDirective, isStandalone: true, selector: "[dialog-actions], [dialogActions]", usesInheritance: true, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogActionsDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[dialog-actions], [dialogActions]',
+                }]
+        }] });
+
+class DialogBodyDirective extends CdkPortal {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogBodyDirective, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: DialogBodyDirective, isStandalone: true, selector: "[dialog-body], [dialogBody]", usesInheritance: true, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogBodyDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[dialog-body], [dialogBody]',
+                }]
+        }] });
+
+class DialogDismissDirective {
+    _dialogRef = inject(DialogRef);
+    _onButtonClick() {
+        this._dialogRef.close();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogDismissDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: DialogDismissDirective, isStandalone: true, selector: "[dialog-dismiss], [dialogDismiss]", host: { listeners: { "click": "_onButtonClick()" } }, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogDismissDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[dialog-dismiss], [dialogDismiss]',
+                    host: {
+                        '(click)': '_onButtonClick()',
+                    },
+                }]
+        }] });
+
+class DialogHeaderDirective {
+    _element = inject(ElementRef);
+    get element() {
+        return this._element.nativeElement;
+    }
+    ngOnInit() {
+        this.element.classList.add('hidden');
+    }
+    visibility(enable) {
+        if (enable) {
+            this.element.classList.remove('hidden');
+        }
+        else {
+            this.element.classList.add('hidden');
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogHeaderDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: DialogHeaderDirective, isStandalone: true, selector: "[dialog-header], [dialogHeader]", ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogHeaderDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[dialog-header], [dialogHeader]',
+                }]
+        }] });
+
+class DialogTitleDirective extends CdkPortal {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogTitleDirective, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: DialogTitleDirective, isStandalone: true, selector: "[dialog-title], [dialogTitle]", usesInheritance: true, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogTitleDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[dialog-title], [dialogTitle]',
+                }]
+        }] });
+
+class DialogLayoutComponent {
+    /**
+     * Input
+     */
+    get alert() {
+        return this._alert;
+    }
+    set alert(value) {
+        this._alert = coerceBooleanProperty(value);
+    }
+    _alert = false;
+    get fullscreen() {
+        return this._fullscreen;
+    }
+    set fullscreen(value) {
+        this._fullscreen = coerceBooleanProperty(value);
+    }
+    _fullscreen = false;
+    /**
+     * Content children
+     */
+    /** Content for the dialog title given by `<ng-template dialog-title>`. */
+    _titleTemplate;
+    /** Content for the dialog title given by `<ng-template dialog-actions>`. */
+    _actionTemplate;
+    /** Content for the dialog title given by `<ng-template dialog-body>`. */
+    _bodyTemplate;
+    _headerRef;
+    _hasTitle = false;
+    /**
+     * Private properties
+     */
+    _element = inject(ElementRef);
+    _destroyRef = inject(DestroyRef);
+    // -----------------------------------------------------------------------------------------------------
+    // @ Lifecycle hooks
+    // -----------------------------------------------------------------------------------------------------
+    ngAfterContentInit() {
+        this._checkTitleTypes();
+    }
+    ngAfterViewInit() {
+        /**
+         * Watch scroll event to slide the header up
+         */
+        fromEvent(this._element?.nativeElement, 'scroll')
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe((event) => {
+            this._onScroll(event);
+        });
+    }
+    // -----------------------------------------------------------------------------------------------------
+    // @ Private methods
+    // -----------------------------------------------------------------------------------------------------
+    _checkTitleTypes() {
+        this._hasTitle = !!this._titleTemplate;
+    }
+    _onScroll(event) {
+        if (this._getScrollTop(event) > 35) {
+            this._headerRef?.visibility(true);
+        }
+        else {
+            this._headerRef?.visibility(false);
+        }
+    }
+    _getScrollTop(event) {
+        return event?.target.scrollTop || event?.target?.documentElement?.scrollTop || 0;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogLayoutComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.5", type: DialogLayoutComponent, isStandalone: true, selector: "dialog-layout", inputs: { alert: "alert", fullscreen: "fullscreen" }, host: { properties: { "class.just-dialog": "!alert", "class.alert-dialog": "alert", "class.full-screen-dialog": "fullscreen" }, classAttribute: "animate__fadeInUp animate__animated animate__faster" }, queries: [{ propertyName: "_titleTemplate", first: true, predicate: DialogTitleDirective, descendants: true }, { propertyName: "_actionTemplate", first: true, predicate: DialogActionsDirective, descendants: true }, { propertyName: "_bodyTemplate", first: true, predicate: DialogBodyDirective, descendants: true }], viewQueries: [{ propertyName: "_headerRef", first: true, predicate: DialogHeaderDirective, descendants: true }], ngImport: i0, template: "<!-- Header -->\n<div\n  class=\"bg-base-200 sticky top-0 z-10 flex min-h-18 w-full items-center justify-center p-3 transition duration-300 lg:px-4\"\n>\n  <div class=\"flex-auto overflow-hidden\">\n    @if (_hasTitle) {\n      <h2\n        dialogHeader\n        class=\"animate__animated animate__faster animate__slideInUp truncate text-lg font-semibold sm:text-xl\"\n      >\n        <ng-template [cdkPortalOutlet]=\"_titleTemplate\" />\n      </h2>\n    }\n  </div>\n\n  <div class=\"relative flex-shrink-0\">\n    <button\n      dialogDismiss\n      class=\"group btn btn-circle btn-ghost btn-sm\"\n    >\n      <svg\n        fill=\"currentColor\"\n        viewBox=\"0 0 20 20\"\n        xmlns=\"http://www.w3.org/2000/svg\"\n        class=\"h-6 w-6 transition duration-500 group-hover:rotate-90\"\n      >\n        <path\n          d=\"M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z\"\n        />\n      </svg>\n    </button>\n  </div>\n</div>\n\n<div class=\"mb-3 w-full px-3 lg:px-4\">\n  @if (_hasTitle) {\n    <h2 class=\"truncate text-2xl font-semibold\">\n      <ng-template [cdkPortalOutlet]=\"_titleTemplate\" />\n    </h2>\n  }\n</div>\n\n<!-- Body -->\n<div class=\"flex w-full flex-auto flex-col px-3 py-4 lg:px-4\">\n  <ng-template [cdkPortalOutlet]=\"_bodyTemplate\" />\n</div>\n\n<!-- Footer -->\n<div class=\"dialog-actions bg-base-200 sticky bottom-0 z-10 flex w-full items-center gap-4 p-3 sm:justify-end lg:px-4\">\n  <ng-template [cdkPortalOutlet]=\"_actionTemplate\" />\n</div>\n", styles: ["dialog-layout{position:relative;z-index:0;display:flex;flex-direction:column;overflow-x:hidden;overflow-y:hidden;transition:.2s;background-color:var(--color-base-200)}dialog-layout.just-dialog{width:100vw;height:100vh}@media screen and (min-width:640px){dialog-layout.just-dialog{border-radius:.375rem;width:100%;height:100%;max-width:95vw;max-height:95vh}}dialog-layout.alert-dialog{border-radius:.375rem;width:auto;height:auto;max-width:90vw;max-height:90vh}@media screen and (min-width:640px){dialog-layout.alert-dialog{max-width:40rem}}dialog-layout.full-screen-dialog{width:100vw;height:100vh}\n"], dependencies: [{ kind: "ngmodule", type: PortalModule }, { kind: "directive", type: i1.CdkPortalOutlet, selector: "[cdkPortalOutlet]", inputs: ["cdkPortalOutlet"], outputs: ["attached"], exportAs: ["cdkPortalOutlet"] }, { kind: "directive", type: DialogDismissDirective, selector: "[dialog-dismiss], [dialogDismiss]" }, { kind: "directive", type: DialogHeaderDirective, selector: "[dialog-header], [dialogHeader]" }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogLayoutComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'dialog-layout', encapsulation: ViewEncapsulation.None, changeDetection: ChangeDetectionStrategy.OnPush, imports: [PortalModule, DialogDismissDirective, DialogHeaderDirective], host: {
+                        '[class.just-dialog]': '!alert',
+                        '[class.alert-dialog]': 'alert',
+                        '[class.full-screen-dialog]': 'fullscreen',
+                        class: 'animate__fadeInUp animate__animated animate__faster',
+                    }, template: "<!-- Header -->\n<div\n  class=\"bg-base-200 sticky top-0 z-10 flex min-h-18 w-full items-center justify-center p-3 transition duration-300 lg:px-4\"\n>\n  <div class=\"flex-auto overflow-hidden\">\n    @if (_hasTitle) {\n      <h2\n        dialogHeader\n        class=\"animate__animated animate__faster animate__slideInUp truncate text-lg font-semibold sm:text-xl\"\n      >\n        <ng-template [cdkPortalOutlet]=\"_titleTemplate\" />\n      </h2>\n    }\n  </div>\n\n  <div class=\"relative flex-shrink-0\">\n    <button\n      dialogDismiss\n      class=\"group btn btn-circle btn-ghost btn-sm\"\n    >\n      <svg\n        fill=\"currentColor\"\n        viewBox=\"0 0 20 20\"\n        xmlns=\"http://www.w3.org/2000/svg\"\n        class=\"h-6 w-6 transition duration-500 group-hover:rotate-90\"\n      >\n        <path\n          d=\"M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z\"\n        />\n      </svg>\n    </button>\n  </div>\n</div>\n\n<div class=\"mb-3 w-full px-3 lg:px-4\">\n  @if (_hasTitle) {\n    <h2 class=\"truncate text-2xl font-semibold\">\n      <ng-template [cdkPortalOutlet]=\"_titleTemplate\" />\n    </h2>\n  }\n</div>\n\n<!-- Body -->\n<div class=\"flex w-full flex-auto flex-col px-3 py-4 lg:px-4\">\n  <ng-template [cdkPortalOutlet]=\"_bodyTemplate\" />\n</div>\n\n<!-- Footer -->\n<div class=\"dialog-actions bg-base-200 sticky bottom-0 z-10 flex w-full items-center gap-4 p-3 sm:justify-end lg:px-4\">\n  <ng-template [cdkPortalOutlet]=\"_actionTemplate\" />\n</div>\n", styles: ["dialog-layout{position:relative;z-index:0;display:flex;flex-direction:column;overflow-x:hidden;overflow-y:hidden;transition:.2s;background-color:var(--color-base-200)}dialog-layout.just-dialog{width:100vw;height:100vh}@media screen and (min-width:640px){dialog-layout.just-dialog{border-radius:.375rem;width:100%;height:100%;max-width:95vw;max-height:95vh}}dialog-layout.alert-dialog{border-radius:.375rem;width:auto;height:auto;max-width:90vw;max-height:90vh}@media screen and (min-width:640px){dialog-layout.alert-dialog{max-width:40rem}}dialog-layout.full-screen-dialog{width:100vw;height:100vh}\n"] }]
+        }], propDecorators: { alert: [{
+                type: Input
+            }], fullscreen: [{
+                type: Input
+            }], _titleTemplate: [{
+                type: ContentChild,
+                args: [DialogTitleDirective]
+            }], _actionTemplate: [{
+                type: ContentChild,
+                args: [DialogActionsDirective]
+            }], _bodyTemplate: [{
+                type: ContentChild,
+                args: [DialogBodyDirective]
+            }], _headerRef: [{
+                type: ViewChild,
+                args: [DialogHeaderDirective]
+            }] } });
+
+class DialogConfirmComponent {
+    data = inject(DIALOG_DATA);
+    dialogRef = inject((DialogRef));
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogConfirmComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.5", type: DialogConfirmComponent, isStandalone: true, selector: "dialog-confirm", ngImport: i0, template: "<div\n  class=\"bg-base-200 relative z-0 flex h-auto max-h-[90vh] w-auto max-w-[90vw] flex-col overflow-x-hidden overflow-y-auto rounded-md transition duration-200 md:max-w-[700px]\"\n>\n  <!-- Indicator -->\n  <div\n    class=\"bg-red absolute top-0 z-[11] h-1 w-full\"\n    [ngClass]=\"{\n      'bg-info': data.type === 'info',\n      'bg-success': data.type === 'success',\n      'bg-warning': data.type === 'warning',\n      'bg-error': data.type === 'error',\n    }\"\n  ></div>\n\n  <!-- Body -->\n  <div class=\"flex w-full flex-auto flex-col space-y-3 px-3 py-6 lg:px-4\">\n    <h2\n      class=\"truncate text-lg font-semibold sm:text-xl\"\n      [innerHTML]=\"data.title\"\n    ></h2>\n\n    <p\n      class=\"text-base-content text-opacity-80\"\n      [innerHTML]=\"data.message\"\n    ></p>\n  </div>\n\n  <!-- Footer -->\n  <div\n    class=\"dialog-actions bg-base-200 sticky bottom-0 z-10 flex w-full items-center gap-4 p-3 sm:justify-end lg:px-4\"\n  >\n    <button\n      class=\"btn btn-outline\"\n      (click)=\"dialogRef.close()\"\n    >\n      Close\n    </button>\n\n    <button\n      class=\"btn btn-primary\"\n      [ngClass]=\"{\n        'btn-info': data.type === 'info',\n        'btn-success': data.type === 'success',\n        'btn-warning': data.type === 'warning',\n        'btn-error': data.type === 'error',\n      }\"\n      (click)=\"dialogRef.close(true)\"\n    >\n      Confirm\n    </button>\n  </div>\n</div>\n", dependencies: [{ kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }], changeDetection: i0.ChangeDetectionStrategy.Eager });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogConfirmComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'dialog-confirm', changeDetection: ChangeDetectionStrategy.Eager, imports: [NgClass], template: "<div\n  class=\"bg-base-200 relative z-0 flex h-auto max-h-[90vh] w-auto max-w-[90vw] flex-col overflow-x-hidden overflow-y-auto rounded-md transition duration-200 md:max-w-[700px]\"\n>\n  <!-- Indicator -->\n  <div\n    class=\"bg-red absolute top-0 z-[11] h-1 w-full\"\n    [ngClass]=\"{\n      'bg-info': data.type === 'info',\n      'bg-success': data.type === 'success',\n      'bg-warning': data.type === 'warning',\n      'bg-error': data.type === 'error',\n    }\"\n  ></div>\n\n  <!-- Body -->\n  <div class=\"flex w-full flex-auto flex-col space-y-3 px-3 py-6 lg:px-4\">\n    <h2\n      class=\"truncate text-lg font-semibold sm:text-xl\"\n      [innerHTML]=\"data.title\"\n    ></h2>\n\n    <p\n      class=\"text-base-content text-opacity-80\"\n      [innerHTML]=\"data.message\"\n    ></p>\n  </div>\n\n  <!-- Footer -->\n  <div\n    class=\"dialog-actions bg-base-200 sticky bottom-0 z-10 flex w-full items-center gap-4 p-3 sm:justify-end lg:px-4\"\n  >\n    <button\n      class=\"btn btn-outline\"\n      (click)=\"dialogRef.close()\"\n    >\n      Close\n    </button>\n\n    <button\n      class=\"btn btn-primary\"\n      [ngClass]=\"{\n        'btn-info': data.type === 'info',\n        'btn-success': data.type === 'success',\n        'btn-warning': data.type === 'warning',\n        'btn-error': data.type === 'error',\n      }\"\n      (click)=\"dialogRef.close(true)\"\n    >\n      Confirm\n    </button>\n  </div>\n</div>\n" }]
+        }] });
+
+class DialogService {
+    _dialog = inject(Dialog);
+    _overlay = inject(Overlay);
+    open(componentOrTemplateRef, config) {
+        config = {
+            ...new DialogConfig(),
+            ...config,
+        };
+        const cdkRef = this._dialog.open(componentOrTemplateRef, config);
+        return cdkRef;
+    }
+    confirm(config) {
+        return this.open(DialogConfirmComponent, {
+            minWidth: '400px',
+            data: merge({ type: 'info' }, config),
+        });
+    }
+    closeAll() {
+        this._dialog.closeAll();
+    }
+    ngOnDestroy() {
+        this.closeAll();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
+
+const DIRECTIVES = [
+    DialogActionsDirective,
+    DialogBodyDirective,
+    DialogDismissDirective,
+    DialogHeaderDirective,
+    DialogTitleDirective,
+];
+class DialogModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "22.0.5", ngImport: i0, type: DialogModule, imports: [DialogModule$1, DialogLayoutComponent, DialogActionsDirective,
+            DialogBodyDirective,
+            DialogDismissDirective,
+            DialogHeaderDirective,
+            DialogTitleDirective], exports: [DialogLayoutComponent, DialogActionsDirective,
+            DialogBodyDirective,
+            DialogDismissDirective,
+            DialogHeaderDirective,
+            DialogTitleDirective] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogModule, providers: [DialogService], imports: [DialogModule$1, DialogLayoutComponent] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: DialogModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [DialogModule$1, DialogLayoutComponent, ...DIRECTIVES],
+                    exports: [DialogLayoutComponent, ...DIRECTIVES],
+                    providers: [DialogService],
+                }]
+        }] });
+
+/*
+ * Public API Surface of dialog
+ */
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { DialogActionsDirective, DialogBodyDirective, DialogDismissDirective, DialogHeaderDirective, DialogLayoutComponent, DialogModule, DialogService, DialogTitleDirective };
+//# sourceMappingURL=libs-ui-dialog.mjs.map

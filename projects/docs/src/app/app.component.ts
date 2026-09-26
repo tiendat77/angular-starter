@@ -5,6 +5,6 @@ import { DocsLayoutComponent } from './layout/docs-layout.component';
   selector: 'doc-root',
   imports: [DocsLayoutComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: '<doc-layout />',
+  templateUrl: './app.component.html',
 })
 export class AppComponent {}

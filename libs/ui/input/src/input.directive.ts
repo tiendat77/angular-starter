@@ -12,7 +12,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
 import { UI_CONFIG, UiFormFieldControl, UiSize } from '@libs/ui/core';
-import { inputVariants, UiFormFieldAppearance } from './input.variants';
+import { UI_FORM_FIELD } from './form-field.token';
+import { inputAffixedClass, inputVariants, UiFormFieldAppearance } from './input.variants';
 
 let nextInputId = 0;
 
@@ -47,6 +48,7 @@ export class UiInputDirective
   private readonly _uiConfig = inject(UI_CONFIG, { optional: true });
   private readonly _injector = inject(Injector);
   private readonly _destroyRef = inject(DestroyRef);
+  private readonly _formField = inject(UI_FORM_FIELD, { optional: true });
 
   /**
    * Resolved lazily in `ngOnInit` rather than injected at field/constructor
@@ -87,7 +89,9 @@ export class UiInputDirective
   readonly $invalid = this._invalid.asReadonly();
 
   protected readonly hostClass = computed(() =>
-    inputVariants({ appearance: this.appearance(), size: this.size() })
+    this._formField?.$hasAffix()
+      ? inputAffixedClass
+      : inputVariants({ appearance: this.appearance(), size: this.size() })
   );
 
   private _onChange: (value: string) => void = () => undefined;

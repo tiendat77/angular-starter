@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
-import { Directive, inject, Renderer2, contentChild, ElementRef, effect, ChangeDetectionStrategy, Component, Injector, DestroyRef, input, signal, computed, forwardRef } from '@angular/core';
-import { UiFormFieldControl, cva, UI_CONFIG } from '@libs/ui/core';
+import { Directive, InjectionToken, inject, Injector, DestroyRef, input, signal, computed, forwardRef, Renderer2, contentChild, ElementRef, effect, ChangeDetectionStrategy, Component } from '@angular/core';
+import { cva, UiFormFieldControl, UI_CONFIG } from '@libs/ui/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -27,6 +27,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
                 }]
         }] });
 
+const UI_FORM_FIELD = new InjectionToken('UI_FORM_FIELD');
+
 let nextHintId = 0;
 /**
  * Applies hint styling to a projected `<span uiHint>` and exposes a unique
@@ -48,118 +50,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
                     },
                 }]
         }] });
-
-/**
- * Applies the design system's label styling to a native `<label>` projected
- * into a `UiFormFieldComponent`.
- *
- * `UiFormFieldComponent` links this label to its control by writing the
- * control's generated `id` onto this element's `for` attribute, so no input
- * is needed here to configure that relationship manually.
- */
-class UiLabelDirective {
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiLabelDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: UiLabelDirective, isStandalone: true, selector: "label[uiLabel]", host: { classAttribute: "block text-sm font-medium text-foreground" }, ngImport: i0 });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiLabelDirective, decorators: [{
-            type: Directive,
-            args: [{
-                    selector: 'label[uiLabel]',
-                    host: {
-                        class: 'block text-sm font-medium text-foreground',
-                    },
-                }]
-        }] });
-
-/**
- * Lays out a label, a control (`uiInput`/`uiTextarea`, optionally flanked
- * by `uiPrefix`/`uiSuffix`), and hint/error text, then wires the
- * accessibility relationships between them:
- *
- * - The projected `uiLabel`'s `for` attribute is set to the control's `id`.
- * - The control's `aria-describedby` is set to the id(s) of whichever of
- *   the projected `uiHint`/`uiError` are currently present in content.
- * - The control's `aria-invalid` is set to `"true"` whenever the bound
- *   `UiFormFieldControl.$invalid` signal is `true`, and removed otherwise.
- *
- * The control is discovered via `contentChild(UiFormFieldControl)` — the
- * shared abstract base that `UiInputDirective`/`UiTextareaDirective`
- * provide themselves as — so this component works with either without
- * knowing which one is projected.
- */
-class UiFormFieldComponent {
-    _renderer = inject(Renderer2);
-    control = contentChild(UiFormFieldControl, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "control" }] : /* istanbul ignore next */ []));
-    _controlElementRef = contentChild(UiFormFieldControl, { ...(ngDevMode ? { debugName: "_controlElementRef" } : /* istanbul ignore next */ {}), read: ElementRef });
-    _labelElementRef = contentChild(UiLabelDirective, { ...(ngDevMode ? { debugName: "_labelElementRef" } : /* istanbul ignore next */ {}), read: ElementRef });
-    hint = contentChild(UiHintDirective, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "hint" }] : /* istanbul ignore next */ []));
-    error = contentChild(UiErrorDirective, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "error" }] : /* istanbul ignore next */ []));
-    constructor() {
-        effect(() => {
-            const control = this.control();
-            const controlElementRef = this._controlElementRef();
-            if (!control || !controlElementRef) {
-                return;
-            }
-            const controlEl = controlElementRef.nativeElement;
-            const labelElementRef = this._labelElementRef();
-            if (labelElementRef) {
-                this._renderer.setAttribute(labelElementRef.nativeElement, 'for', control.id);
-            }
-            const describedByIds = [this.hint()?.id, this.error()?.id].filter((id) => !!id);
-            if (describedByIds.length > 0) {
-                this._renderer.setAttribute(controlEl, 'aria-describedby', describedByIds.join(' '));
-            }
-            else {
-                this._renderer.removeAttribute(controlEl, 'aria-describedby');
-            }
-            if (control.$invalid()) {
-                this._renderer.setAttribute(controlEl, 'aria-invalid', 'true');
-            }
-            else {
-                this._renderer.removeAttribute(controlEl, 'aria-invalid');
-            }
-        });
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiFormFieldComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.2.0", version: "22.0.5", type: UiFormFieldComponent, isStandalone: true, selector: "ui-form-field", host: { classAttribute: "flex flex-col gap-1.5" }, queries: [{ propertyName: "control", first: true, predicate: UiFormFieldControl, descendants: true, isSignal: true }, { propertyName: "_controlElementRef", first: true, predicate: UiFormFieldControl, descendants: true, read: ElementRef, isSignal: true }, { propertyName: "_labelElementRef", first: true, predicate: UiLabelDirective, descendants: true, read: ElementRef, isSignal: true }, { propertyName: "hint", first: true, predicate: UiHintDirective, descendants: true, isSignal: true }, { propertyName: "error", first: true, predicate: UiErrorDirective, descendants: true, isSignal: true }], ngImport: i0, template: `
-    <ng-content select="[uiLabel]" />
-    <div
-      class="focus-within:outline-primary relative flex items-center gap-2 rounded-lg focus-within:outline-2 focus-within:outline-offset-2"
-    >
-      <ng-content select="[uiPrefix]" />
-      <ng-content select="[uiInput], [uiTextarea]" />
-      <ng-content select="[uiSuffix]" />
-    </div>
-    <ng-content select="[uiHint]" />
-    <ng-content select="[uiError]" />
-  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiFormFieldComponent, decorators: [{
-            type: Component,
-            args: [{
-                    selector: 'ui-form-field',
-                    changeDetection: ChangeDetectionStrategy.OnPush,
-                    host: {
-                        class: 'flex flex-col gap-1.5',
-                    },
-                    template: `
-    <ng-content select="[uiLabel]" />
-    <div
-      class="focus-within:outline-primary relative flex items-center gap-2 rounded-lg focus-within:outline-2 focus-within:outline-offset-2"
-    >
-      <ng-content select="[uiPrefix]" />
-      <ng-content select="[uiInput], [uiTextarea]" />
-      <ng-content select="[uiSuffix]" />
-    </div>
-    <ng-content select="[uiHint]" />
-    <ng-content select="[uiError]" />
-  `,
-                }]
-        }], ctorParameters: () => [], propDecorators: { control: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiFormFieldControl), { isSignal: true }] }], _controlElementRef: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiFormFieldControl), { ...{ read: ElementRef }, isSignal: true }] }], _labelElementRef: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiLabelDirective), { ...{ read: ElementRef }, isSignal: true }] }], hint: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiHintDirective), { isSignal: true }] }], error: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiErrorDirective), { isSignal: true }] }] } });
 
 const sharedBase = 'flex w-full min-w-0 text-foreground transition-colors placeholder:text-foreground/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-error aria-invalid:focus-visible:outline-error';
 const sharedAppearance = {
@@ -183,6 +73,31 @@ const inputVariants = cva({
         size: 'md',
     },
 });
+/**
+ * Bordered box drawn by `UiFormFieldComponent` around a `uiInput` plus its
+ * `uiPrefix`/`uiSuffix`, so the affixes sit inside the field. Mirrors the
+ * sizing of `inputVariants`; focus, disabled and invalid states are derived
+ * from the inner input via `:focus-within`/`:has()`.
+ */
+const inputAffixBoxVariants = cva({
+    base: 'flex w-full min-w-0 items-center text-foreground transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary has-disabled:cursor-not-allowed has-disabled:opacity-50 has-[[aria-invalid=true]]:border-error has-[[aria-invalid=true]]:focus-within:outline-error',
+    variants: {
+        appearance: sharedAppearance,
+        size: {
+            xs: 'h-7 gap-1.5 px-2 text-xs rounded-md',
+            sm: 'h-8 gap-1.5 px-2.5 text-xs rounded-md',
+            md: 'h-10 gap-2 px-3 text-sm rounded-lg',
+            lg: 'h-12 gap-2 px-4 text-base rounded-lg',
+            xl: 'h-14 gap-2.5 px-5 text-lg rounded-xl',
+        },
+    },
+    defaultVariants: {
+        appearance: 'outline',
+        size: 'md',
+    },
+});
+/** Borderless `uiInput` used inside `inputAffixBoxVariants`, which owns the border and padding. */
+const inputAffixedClass = 'h-full w-full min-w-0 flex-1 bg-transparent text-inherit outline-none placeholder:text-foreground/50 disabled:cursor-not-allowed';
 const textareaVariants = cva({
     base: `${sharedBase} resize-y rounded-lg`,
     variants: {
@@ -215,6 +130,7 @@ class UiInputDirective extends UiFormFieldControl {
     _uiConfig = inject(UI_CONFIG, { optional: true });
     _injector = inject(Injector);
     _destroyRef = inject(DestroyRef);
+    _formField = inject(UI_FORM_FIELD, { optional: true });
     /**
      * Resolved lazily in `ngOnInit` rather than injected at field/constructor
      * time: this directive is itself the `NG_VALUE_ACCESSOR` for the host
@@ -251,7 +167,9 @@ class UiInputDirective extends UiFormFieldControl {
     _invalid = signal(false, /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "_invalid" }] : /* istanbul ignore next */ []));
     $invalid = this._invalid.asReadonly();
-    hostClass = computed(() => inputVariants({ appearance: this.appearance(), size: this.size() }), /* @ts-ignore */
+    hostClass = computed(() => this._formField?.$hasAffix()
+        ? inputAffixedClass
+        : inputVariants({ appearance: this.appearance(), size: this.size() }), /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "hostClass" }] : /* istanbul ignore next */ []));
     _onChange = () => undefined;
     _onTouched = () => undefined;
@@ -320,20 +238,42 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
         }], propDecorators: { appearance: [{ type: i0.Input, args: [{ isSignal: true, alias: "appearance", required: false }] }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }] } });
 
 /**
+ * Applies the design system's label styling to a native `<label>` projected
+ * into a `UiFormFieldComponent`.
+ *
+ * `UiFormFieldComponent` links this label to its control by writing the
+ * control's generated `id` onto this element's `for` attribute, so no input
+ * is needed here to configure that relationship manually.
+ */
+class UiLabelDirective {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiLabelDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: UiLabelDirective, isStandalone: true, selector: "label[uiLabel]", host: { classAttribute: "block text-sm font-medium text-foreground" }, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiLabelDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: 'label[uiLabel]',
+                    host: {
+                        class: 'block text-sm font-medium text-foreground',
+                    },
+                }]
+        }] });
+
+/**
  * Marks projected content (an icon, a unit label, an action button, etc.)
  * to render before the control inside a `UiFormFieldComponent`'s control
  * row.
  */
 class UiPrefixDirective {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiPrefixDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: UiPrefixDirective, isStandalone: true, selector: "[uiPrefix]", host: { classAttribute: "flex items-center text-foreground/60" }, ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: UiPrefixDirective, isStandalone: true, selector: "[uiPrefix]", host: { classAttribute: "flex shrink-0 items-center text-foreground/60" }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiPrefixDirective, decorators: [{
             type: Directive,
             args: [{
                     selector: '[uiPrefix]',
                     host: {
-                        class: 'flex items-center text-foreground/60',
+                        class: 'flex shrink-0 items-center text-foreground/60',
                     },
                 }]
         }] });
@@ -343,17 +283,124 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
  */
 class UiSuffixDirective {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiSuffixDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: UiSuffixDirective, isStandalone: true, selector: "[uiSuffix]", host: { classAttribute: "flex items-center text-foreground/60" }, ngImport: i0 });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.5", type: UiSuffixDirective, isStandalone: true, selector: "[uiSuffix]", host: { classAttribute: "flex shrink-0 items-center text-foreground/60" }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiSuffixDirective, decorators: [{
             type: Directive,
             args: [{
                     selector: '[uiSuffix]',
                     host: {
-                        class: 'flex items-center text-foreground/60',
+                        class: 'flex shrink-0 items-center text-foreground/60',
                     },
                 }]
         }] });
+
+/**
+ * Lays out a label, a control (`uiInput`/`uiTextarea`, optionally flanked
+ * by `uiPrefix`/`uiSuffix`), and hint/error text, then wires the
+ * accessibility relationships between them:
+ *
+ * - The projected `uiLabel`'s `for` attribute is set to the control's `id`.
+ * - The control's `aria-describedby` is set to the id(s) of whichever of
+ *   the projected `uiHint`/`uiError` are currently present in content.
+ * - The control's `aria-invalid` is set to `"true"` whenever the bound
+ *   `UiFormFieldControl.$invalid` signal is `true`, and removed otherwise.
+ *
+ * When a `uiPrefix`/`uiSuffix` is projected next to a `uiInput`, the control
+ * row becomes the bordered box (using the input's `appearance`/`size`) and
+ * the input renders borderless inside it, so the affixes sit within the field.
+ *
+ * The control is discovered via `contentChild(UiFormFieldControl)` — the
+ * shared abstract base that `UiInputDirective`/`UiTextareaDirective`
+ * provide themselves as — so this component works with either without
+ * knowing which one is projected.
+ */
+class UiFormFieldComponent {
+    _renderer = inject(Renderer2);
+    control = contentChild(UiFormFieldControl, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "control" }] : /* istanbul ignore next */ []));
+    _controlElementRef = contentChild(UiFormFieldControl, { ...(ngDevMode ? { debugName: "_controlElementRef" } : /* istanbul ignore next */ {}), read: ElementRef });
+    _labelElementRef = contentChild(UiLabelDirective, { ...(ngDevMode ? { debugName: "_labelElementRef" } : /* istanbul ignore next */ {}), read: ElementRef });
+    hint = contentChild(UiHintDirective, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "hint" }] : /* istanbul ignore next */ []));
+    error = contentChild(UiErrorDirective, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "error" }] : /* istanbul ignore next */ []));
+    _input = contentChild(UiInputDirective, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "_input" }] : /* istanbul ignore next */ []));
+    _prefix = contentChild(UiPrefixDirective, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "_prefix" }] : /* istanbul ignore next */ []));
+    _suffix = contentChild(UiSuffixDirective, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "_suffix" }] : /* istanbul ignore next */ []));
+    /** Affixes are drawn inside the box only for `uiInput`; a `uiTextarea` keeps them alongside. */
+    $hasAffix = computed(() => !!this._input() && !!(this._prefix() || this._suffix()), /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "$hasAffix" }] : /* istanbul ignore next */ []));
+    $controlRowClass = computed(() => {
+        const input = this._input();
+        return this.$hasAffix() && input
+            ? inputAffixBoxVariants({ appearance: input.appearance(), size: input.size() })
+            : 'relative flex items-center gap-2';
+    }, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "$controlRowClass" }] : /* istanbul ignore next */ []));
+    constructor() {
+        effect(() => {
+            const control = this.control();
+            const controlElementRef = this._controlElementRef();
+            if (!control || !controlElementRef) {
+                return;
+            }
+            const controlEl = controlElementRef.nativeElement;
+            const labelElementRef = this._labelElementRef();
+            if (labelElementRef) {
+                this._renderer.setAttribute(labelElementRef.nativeElement, 'for', control.id);
+            }
+            const describedByIds = [this.hint()?.id, this.error()?.id].filter((id) => !!id);
+            if (describedByIds.length > 0) {
+                this._renderer.setAttribute(controlEl, 'aria-describedby', describedByIds.join(' '));
+            }
+            else {
+                this._renderer.removeAttribute(controlEl, 'aria-describedby');
+            }
+            if (control.$invalid()) {
+                this._renderer.setAttribute(controlEl, 'aria-invalid', 'true');
+            }
+            else {
+                this._renderer.removeAttribute(controlEl, 'aria-invalid');
+            }
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiFormFieldComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.2.0", version: "22.0.5", type: UiFormFieldComponent, isStandalone: true, selector: "ui-form-field", host: { classAttribute: "flex flex-col gap-1.5" }, providers: [{ provide: UI_FORM_FIELD, useExisting: forwardRef(() => UiFormFieldComponent) }], queries: [{ propertyName: "control", first: true, predicate: UiFormFieldControl, descendants: true, isSignal: true }, { propertyName: "_controlElementRef", first: true, predicate: UiFormFieldControl, descendants: true, read: ElementRef, isSignal: true }, { propertyName: "_labelElementRef", first: true, predicate: UiLabelDirective, descendants: true, read: ElementRef, isSignal: true }, { propertyName: "hint", first: true, predicate: UiHintDirective, descendants: true, isSignal: true }, { propertyName: "error", first: true, predicate: UiErrorDirective, descendants: true, isSignal: true }, { propertyName: "_input", first: true, predicate: UiInputDirective, descendants: true, isSignal: true }, { propertyName: "_prefix", first: true, predicate: UiPrefixDirective, descendants: true, isSignal: true }, { propertyName: "_suffix", first: true, predicate: UiSuffixDirective, descendants: true, isSignal: true }], ngImport: i0, template: `
+    <ng-content select="[uiLabel]" />
+    <div [class]="$controlRowClass()">
+      <ng-content select="[uiPrefix]" />
+      <ng-content select="[uiInput], [uiTextarea]" />
+      <ng-content select="[uiSuffix]" />
+    </div>
+    <ng-content select="[uiHint]" />
+    <ng-content select="[uiError]" />
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiFormFieldComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'ui-form-field',
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    providers: [{ provide: UI_FORM_FIELD, useExisting: forwardRef(() => UiFormFieldComponent) }],
+                    host: {
+                        class: 'flex flex-col gap-1.5',
+                    },
+                    template: `
+    <ng-content select="[uiLabel]" />
+    <div [class]="$controlRowClass()">
+      <ng-content select="[uiPrefix]" />
+      <ng-content select="[uiInput], [uiTextarea]" />
+      <ng-content select="[uiSuffix]" />
+    </div>
+    <ng-content select="[uiHint]" />
+    <ng-content select="[uiError]" />
+  `,
+                }]
+        }], ctorParameters: () => [], propDecorators: { control: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiFormFieldControl), { isSignal: true }] }], _controlElementRef: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiFormFieldControl), { ...{ read: ElementRef }, isSignal: true }] }], _labelElementRef: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiLabelDirective), { ...{ read: ElementRef }, isSignal: true }] }], hint: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiHintDirective), { isSignal: true }] }], error: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiErrorDirective), { isSignal: true }] }], _input: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiInputDirective), { isSignal: true }] }], _prefix: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiPrefixDirective), { isSignal: true }] }], _suffix: [{ type: i0.ContentChild, args: [i0.forwardRef(() => UiSuffixDirective), { isSignal: true }] }] } });
 
 let nextTextareaId = 0;
 /**
@@ -484,5 +531,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
  * Generated bundle index. Do not edit.
  */
 
-export { UiErrorDirective, UiFormFieldComponent, UiHintDirective, UiInputDirective, UiLabelDirective, UiPrefixDirective, UiSuffixDirective, UiTextareaDirective, inputVariants, textareaVariants };
+export { UI_FORM_FIELD, UiErrorDirective, UiFormFieldComponent, UiHintDirective, UiInputDirective, UiLabelDirective, UiPrefixDirective, UiSuffixDirective, UiTextareaDirective, inputAffixBoxVariants, inputAffixedClass, inputVariants, textareaVariants };
 //# sourceMappingURL=libs-ui-input.mjs.map

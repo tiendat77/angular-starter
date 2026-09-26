@@ -4,7 +4,7 @@
   "peerDependencies": {
     "@angular/common": "^22.0.0",
     "@angular/core": "^22.0.0",
-    "@libs/svg-icon": "file:../../packages/svg-icon"
+    "@libs/ui": "file:../../packages/ui"
   },
   "dependencies": {
     "tslib": "^2.3.0"

@@ -19,12 +19,15 @@ type UiButtonSize = 'sm' | 'md' | 'lg' | 'icon';
  * Applies the design system's button visual treatment and accessible
  * disabled/loading behavior to a native `<button>` or `<a>` element.
  *
- * `<a>` elements have no native `disabled` DOM property, so this directive
+ * While `loading()` is true a spinner is rendered before the content and the
+ * button is treated exactly like `disabled()`.
+ *
+ * `<a>` elements have no native `disabled` DOM property, so this component
  * also intercepts the host `click` event and prevents/stops it while
- * `disabled()` is true — covering both button-inside-form submission and
+ * disabled or loading — covering both button-inside-form submission and
  * anchor navigation.
  */
-declare class UiButtonDirective {
+declare class UiButtonComponent {
     private readonly _uiConfig;
     private readonly _elementRef;
     /** Only `<button>` supports the native `disabled` DOM property/attribute. */
@@ -34,10 +37,11 @@ declare class UiButtonDirective {
     readonly loading: _angular_core.InputSignalWithTransform<boolean, unknown>;
     readonly disabled: _angular_core.InputSignalWithTransform<boolean, unknown>;
     readonly fullWidth: _angular_core.InputSignalWithTransform<boolean, unknown>;
+    protected readonly isDisabled: _angular_core.Signal<boolean>;
     protected readonly hostClass: _angular_core.Signal<string>;
     protected onHostClick(event: Event): void;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiButtonDirective, never>;
-    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<UiButtonDirective, "button[uiButton], a[uiButton]", never, { "variant": { "alias": "variant"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; "loading": { "alias": "loading"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "fullWidth": { "alias": "fullWidth"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiButtonComponent, never>;
+    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiButtonComponent, "button[uiButton], a[uiButton]", never, { "variant": { "alias": "variant"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; "loading": { "alias": "loading"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "fullWidth": { "alias": "fullWidth"; "required": false; "isSignal": true; }; }, {}, never, ["*"], true, never>;
 }
 
 declare const buttonVariants: (props?: {
@@ -46,5 +50,5 @@ declare const buttonVariants: (props?: {
     fullWidth?: "true" | "false" | undefined;
 } | undefined, extraClass?: string) => string;
 
-export { UiButtonDirective, UiButtonGroupComponent, buttonVariants };
+export { UiButtonComponent, UiButtonGroupComponent, buttonVariants };
 export type { UiButtonSize, UiButtonVariant };

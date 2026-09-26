@@ -85,12 +85,12 @@ Reusable UI components, directives, and pipes used across multiple feature modul
 
 Internal shared libraries mapped via TypeScript path aliases:
 
-- `@libs/toast`: Toast notification service (`ToastService`).
-- `@libs/dialog`: Dialog and modal management (`DialogService`).
-- `@libs/loader`: Global and overlay loaders (`LoaderService`).
-- `@libs/svg-icon`: SVG icon renderer (`SvgIcon`).
-- `@libs/date-picker`: Date picker components and adapters (`DatepickerModule`).
-- `@libs/paginator`: Table and list pagination component.
+- `@libs/ui/toast`: Toast notification service (`ToastService`).
+- `@libs/ui/dialog`: Dialog and modal management (`DialogService`).
+- `@libs/ui/loader`: Global and overlay loaders (`LoaderService`).
+- `@libs/ui/svg-icon`: SVG icon renderer (`SvgIcon`).
+- `@libs/ui/date-picker`: Date picker components and adapters (`DatepickerModule`).
+- `@libs/ui/paginator`: Table and list pagination component.
 - `@libs/hotkeys`: Keyboard shortcut bindings.
 - `@libs/storage`: Local/session storage abstractions.
 - `@libs/navigation`: Navigation menu and sidebar controls.

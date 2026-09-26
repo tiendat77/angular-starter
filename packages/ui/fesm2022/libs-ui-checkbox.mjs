@@ -4,14 +4,22 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { cva, UI_CONFIG, cn } from '@libs/ui/core';
 
 const checkboxVariants = cva({
-    base: 'inline-flex items-center gap-2 select-none cursor-pointer group',
+    base: 'relative flex items-start gap-2 text-foreground select-none cursor-pointer group',
     variants: {
+        size: {
+            xs: 'text-xs',
+            sm: 'text-xs',
+            md: 'text-sm',
+            lg: 'text-base',
+            xl: 'text-lg',
+        },
         disabled: {
             true: 'cursor-not-allowed opacity-50 pointer-events-none',
             false: '',
         },
     },
     defaultVariants: {
+        size: 'md',
         disabled: 'false',
     },
 });
@@ -19,11 +27,11 @@ const checkboxBoxVariants = cva({
     base: 'inline-flex items-center justify-center shrink-0 border border-border transition-colors duration-150 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary',
     variants: {
         size: {
-            xs: 'h-3.5 w-3.5 rounded text-xs',
-            sm: 'h-4 w-4 rounded text-xs',
-            md: 'h-5 w-5 rounded-md text-sm',
-            lg: 'h-6 w-6 rounded-md text-base',
-            xl: 'h-7 w-7 rounded-lg text-lg',
+            xs: 'h-3.5 w-3.5 rounded',
+            sm: 'h-4 w-4 rounded',
+            md: 'h-5 w-5 rounded-md',
+            lg: 'h-6 w-6 rounded-md',
+            xl: 'h-7 w-7 rounded-lg',
         },
         checked: {
             true: 'bg-primary border-primary text-primary-content',
@@ -128,6 +136,7 @@ class UiCheckboxComponent {
     $effectiveSize = computed(() => this.size() ?? this._uiConfig?.defaultSize ?? 'md', /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$effectiveSize" }] : /* istanbul ignore next */ []));
     $rootClass = computed(() => checkboxVariants({
+        size: this.$effectiveSize(),
         disabled: this.$effectiveDisabled() ? 'true' : 'false',
     }), /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$rootClass" }] : /* istanbul ignore next */ []));
@@ -136,8 +145,6 @@ class UiCheckboxComponent {
         checked: this.checked() || this.indeterminate() ? 'true' : 'false',
     }), /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$boxClass" }] : /* istanbul ignore next */ []));
-    $labelClass = computed(() => cn('text-foreground', this.$effectiveSize() === 'xs' && 'text-xs', this.$effectiveSize() === 'sm' && 'text-xs', this.$effectiveSize() === 'md' && 'text-sm', this.$effectiveSize() === 'lg' && 'text-base', this.$effectiveSize() === 'xl' && 'text-lg'), /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "$labelClass" }] : /* istanbul ignore next */ []));
     constructor() {
         effect(() => {
             const isIndeterminate = this.indeterminate();
@@ -179,7 +186,7 @@ class UiCheckboxComponent {
         this._onTouched();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiCheckboxComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.5", type: UiCheckboxComponent, isStandalone: true, selector: "ui-checkbox", inputs: { checked: { classPropertyName: "checked", publicName: "checked", isSignal: true, isRequired: false, transformFunction: null }, indeterminate: { classPropertyName: "indeterminate", publicName: "indeterminate", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null }, id: { classPropertyName: "id", publicName: "id", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { checked: "checkedChange" }, providers: [
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.5", type: UiCheckboxComponent, isStandalone: true, selector: "ui-checkbox", inputs: { checked: { classPropertyName: "checked", publicName: "checked", isSignal: true, isRequired: false, transformFunction: null }, indeterminate: { classPropertyName: "indeterminate", publicName: "indeterminate", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null }, id: { classPropertyName: "id", publicName: "id", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { checked: "checkedChange" }, host: { classAttribute: "inline-flex align-top" }, providers: [
             {
                 provide: NG_VALUE_ACCESSOR,
                 useExisting: forwardRef(() => UiCheckboxComponent),
@@ -200,35 +207,32 @@ class UiCheckboxComponent {
         (change)="onInputChange($event)"
         (blur)="onBlur()"
       />
+      <!-- One text line tall, so the box stays centered on the first line of the label -->
       <span
         aria-hidden="true"
-        [class]="$boxClass()"
+        class="flex h-lh shrink-0 items-center"
       >
-        @if (indeterminate()) {
+        <span [class]="$boxClass()">
           <svg
             class="h-3/4 w-3/4 stroke-current stroke-3"
             viewBox="0 0 24 24"
             fill="none"
           >
-            <line
-              x1="5"
-              y1="12"
-              x2="19"
-              y2="12"
-            />
+            @if (indeterminate()) {
+              <line
+                x1="5"
+                y1="12"
+                x2="19"
+                y2="12"
+              />
+            } @else {
+              <polyline points="20 6 9 17 4 12" />
+            }
           </svg>
-        } @else if (checked()) {
-          <svg
-            class="h-3/4 w-3/4 stroke-current stroke-3"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        }
+        </span>
       </span>
       @if (label()) {
-        <span [class]="$labelClass()">{{ label() }}</span>
+        <span>{{ label() }}</span>
       } @else {
         <ng-content />
       }
@@ -240,6 +244,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
             args: [{
                     selector: 'ui-checkbox',
                     changeDetection: ChangeDetectionStrategy.OnPush,
+                    host: {
+                        class: 'inline-flex align-top',
+                    },
                     providers: [
                         {
                             provide: NG_VALUE_ACCESSOR,
@@ -262,35 +269,32 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
         (change)="onInputChange($event)"
         (blur)="onBlur()"
       />
+      <!-- One text line tall, so the box stays centered on the first line of the label -->
       <span
         aria-hidden="true"
-        [class]="$boxClass()"
+        class="flex h-lh shrink-0 items-center"
       >
-        @if (indeterminate()) {
+        <span [class]="$boxClass()">
           <svg
             class="h-3/4 w-3/4 stroke-current stroke-3"
             viewBox="0 0 24 24"
             fill="none"
           >
-            <line
-              x1="5"
-              y1="12"
-              x2="19"
-              y2="12"
-            />
+            @if (indeterminate()) {
+              <line
+                x1="5"
+                y1="12"
+                x2="19"
+                y2="12"
+              />
+            } @else {
+              <polyline points="20 6 9 17 4 12" />
+            }
           </svg>
-        } @else if (checked()) {
-          <svg
-            class="h-3/4 w-3/4 stroke-current stroke-3"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        }
+        </span>
       </span>
       @if (label()) {
-        <span [class]="$labelClass()">{{ label() }}</span>
+        <span>{{ label() }}</span>
       } @else {
         <ng-content />
       }

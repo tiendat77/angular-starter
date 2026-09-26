@@ -13,7 +13,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cn, UI_CONFIG, UiSize } from '@libs/ui/core';
+import { UI_CONFIG, UiSize } from '@libs/ui/core';
 import { checkboxBoxVariants, checkboxVariants } from './checkbox.variants';
 
 let nextCheckboxId = 0;
@@ -21,6 +21,9 @@ let nextCheckboxId = 0;
 @Component({
   selector: 'ui-checkbox',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'inline-flex align-top',
+  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -43,35 +46,32 @@ let nextCheckboxId = 0;
         (change)="onInputChange($event)"
         (blur)="onBlur()"
       />
+      <!-- One text line tall, so the box stays centered on the first line of the label -->
       <span
         aria-hidden="true"
-        [class]="$boxClass()"
+        class="flex h-lh shrink-0 items-center"
       >
-        @if (indeterminate()) {
+        <span [class]="$boxClass()">
           <svg
             class="h-3/4 w-3/4 stroke-current stroke-3"
             viewBox="0 0 24 24"
             fill="none"
           >
-            <line
-              x1="5"
-              y1="12"
-              x2="19"
-              y2="12"
-            />
+            @if (indeterminate()) {
+              <line
+                x1="5"
+                y1="12"
+                x2="19"
+                y2="12"
+              />
+            } @else {
+              <polyline points="20 6 9 17 4 12" />
+            }
           </svg>
-        } @else if (checked()) {
-          <svg
-            class="h-3/4 w-3/4 stroke-current stroke-3"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        }
+        </span>
       </span>
       @if (label()) {
-        <span [class]="$labelClass()">{{ label() }}</span>
+        <span>{{ label() }}</span>
       } @else {
         <ng-content />
       }
@@ -108,6 +108,7 @@ export class UiCheckboxComponent implements ControlValueAccessor {
 
   protected readonly $rootClass = computed(() =>
     checkboxVariants({
+      size: this.$effectiveSize(),
       disabled: this.$effectiveDisabled() ? 'true' : 'false',
     })
   );
@@ -117,17 +118,6 @@ export class UiCheckboxComponent implements ControlValueAccessor {
       size: this.$effectiveSize(),
       checked: this.checked() || this.indeterminate() ? 'true' : 'false',
     })
-  );
-
-  protected readonly $labelClass = computed(() =>
-    cn(
-      'text-foreground',
-      this.$effectiveSize() === 'xs' && 'text-xs',
-      this.$effectiveSize() === 'sm' && 'text-xs',
-      this.$effectiveSize() === 'md' && 'text-sm',
-      this.$effectiveSize() === 'lg' && 'text-base',
-      this.$effectiveSize() === 'xl' && 'text-lg'
-    )
   );
 
   constructor() {

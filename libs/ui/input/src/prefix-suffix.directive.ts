@@ -8,7 +8,7 @@ import { Directive } from '@angular/core';
 @Directive({
   selector: '[uiPrefix]',
   host: {
-    class: 'flex items-center text-foreground/60',
+    class: 'flex shrink-0 items-center text-foreground/60',
   },
 })
 export class UiPrefixDirective {}
@@ -20,7 +20,7 @@ export class UiPrefixDirective {}
 @Directive({
   selector: '[uiSuffix]',
   host: {
-    class: 'flex items-center text-foreground/60',
+    class: 'flex shrink-0 items-center text-foreground/60',
   },
 })
 export class UiSuffixDirective {}

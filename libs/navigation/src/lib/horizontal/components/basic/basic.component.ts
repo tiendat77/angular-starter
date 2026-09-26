@@ -9,7 +9,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { IsActiveMatchOptions, RouterLink, RouterLinkActive } from '@angular/router';
-import { SvgIconModule } from '@libs/svg-icon';
+import { SvgIconModule } from '@libs/ui/svg-icon';
 
 import { Subject, takeUntil } from 'rxjs';
 import { NavigationService } from '../../../navigation.service';

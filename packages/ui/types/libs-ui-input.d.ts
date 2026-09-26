@@ -1,5 +1,5 @@
 import * as _angular_core from '@angular/core';
-import { OnInit } from '@angular/core';
+import { InjectionToken, Signal, OnInit } from '@angular/core';
 import { UiFormFieldControl, UiSize } from '@libs/ui/core';
 import { ControlValueAccessor } from '@angular/forms';
 
@@ -13,6 +13,16 @@ declare class UiErrorDirective {
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiErrorDirective, never>;
     static ɵdir: _angular_core.ɵɵDirectiveDeclaration<UiErrorDirective, "span[uiError]", never, {}, {}, never, never, true, never>;
 }
+
+/**
+ * Lets a projected control read state from its wrapping `UiFormFieldComponent`
+ * without importing the component (which already imports the control).
+ */
+interface UiFormFieldContext {
+    /** True when a `uiPrefix` or `uiSuffix` is projected next to the control. */
+    readonly $hasAffix: Signal<boolean>;
+}
+declare const UI_FORM_FIELD: InjectionToken<UiFormFieldContext>;
 
 /**
  * Applies hint styling to a projected `<span uiHint>` and exposes a unique
@@ -36,21 +46,31 @@ declare class UiHintDirective {
  * - The control's `aria-invalid` is set to `"true"` whenever the bound
  *   `UiFormFieldControl.$invalid` signal is `true`, and removed otherwise.
  *
+ * When a `uiPrefix`/`uiSuffix` is projected next to a `uiInput`, the control
+ * row becomes the bordered box (using the input's `appearance`/`size`) and
+ * the input renders borderless inside it, so the affixes sit within the field.
+ *
  * The control is discovered via `contentChild(UiFormFieldControl)` — the
  * shared abstract base that `UiInputDirective`/`UiTextareaDirective`
  * provide themselves as — so this component works with either without
  * knowing which one is projected.
  */
-declare class UiFormFieldComponent {
+declare class UiFormFieldComponent implements UiFormFieldContext {
     private readonly _renderer;
     protected readonly control: _angular_core.Signal<UiFormFieldControl<any> | undefined>;
     private readonly _controlElementRef;
     private readonly _labelElementRef;
     protected readonly hint: _angular_core.Signal<UiHintDirective | undefined>;
     protected readonly error: _angular_core.Signal<UiErrorDirective | undefined>;
+    private readonly _input;
+    private readonly _prefix;
+    private readonly _suffix;
+    /** Affixes are drawn inside the box only for `uiInput`; a `uiTextarea` keeps them alongside. */
+    readonly $hasAffix: _angular_core.Signal<boolean>;
+    protected readonly $controlRowClass: _angular_core.Signal<string>;
     constructor();
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiFormFieldComponent, never>;
-    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiFormFieldComponent, "ui-form-field", never, {}, {}, ["control", "_controlElementRef", "_labelElementRef", "hint", "error"], ["[uiLabel]", "[uiPrefix]", "[uiInput], [uiTextarea]", "[uiSuffix]", "[uiHint]", "[uiError]"], true, never>;
+    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiFormFieldComponent, "ui-form-field", never, {}, {}, ["control", "_controlElementRef", "_labelElementRef", "hint", "error", "_input", "_prefix", "_suffix"], ["[uiLabel]", "[uiPrefix]", "[uiInput], [uiTextarea]", "[uiSuffix]", "[uiHint]", "[uiError]"], true, never>;
 }
 
 /**
@@ -64,6 +84,18 @@ declare const inputVariants: (props?: {
     appearance?: "outline" | "filled" | undefined;
     size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
 } | undefined, extraClass?: string) => string;
+/**
+ * Bordered box drawn by `UiFormFieldComponent` around a `uiInput` plus its
+ * `uiPrefix`/`uiSuffix`, so the affixes sit inside the field. Mirrors the
+ * sizing of `inputVariants`; focus, disabled and invalid states are derived
+ * from the inner input via `:focus-within`/`:has()`.
+ */
+declare const inputAffixBoxVariants: (props?: {
+    appearance?: "outline" | "filled" | undefined;
+    size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
+} | undefined, extraClass?: string) => string;
+/** Borderless `uiInput` used inside `inputAffixBoxVariants`, which owns the border and padding. */
+declare const inputAffixedClass = "h-full w-full min-w-0 flex-1 bg-transparent text-inherit outline-none placeholder:text-foreground/50 disabled:cursor-not-allowed";
 declare const textareaVariants: (props?: {
     appearance?: "outline" | "filled" | undefined;
     size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
@@ -82,6 +114,7 @@ declare class UiInputDirective extends UiFormFieldControl<string> implements Con
     private readonly _uiConfig;
     private readonly _injector;
     private readonly _destroyRef;
+    private readonly _formField;
     /**
      * Resolved lazily in `ngOnInit` rather than injected at field/constructor
      * time: this directive is itself the `NG_VALUE_ACCESSOR` for the host
@@ -217,5 +250,5 @@ declare class UiTextareaDirective extends UiFormFieldControl<string> implements 
     static ɵdir: _angular_core.ɵɵDirectiveDeclaration<UiTextareaDirective, "textarea[uiTextarea]", never, { "appearance": { "alias": "appearance"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
 }
 
-export { UiErrorDirective, UiFormFieldComponent, UiHintDirective, UiInputDirective, UiLabelDirective, UiPrefixDirective, UiSuffixDirective, UiTextareaDirective, inputVariants, textareaVariants };
-export type { UiFormFieldAppearance };
+export { UI_FORM_FIELD, UiErrorDirective, UiFormFieldComponent, UiHintDirective, UiInputDirective, UiLabelDirective, UiPrefixDirective, UiSuffixDirective, UiTextareaDirective, inputAffixBoxVariants, inputAffixedClass, inputVariants, textareaVariants };
+export type { UiFormFieldAppearance, UiFormFieldContext };

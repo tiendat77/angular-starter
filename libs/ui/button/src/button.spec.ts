@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, expect, it, vi } from 'vitest';
-import { UiButtonDirective } from './button.directive';
+import { UiButtonComponent } from './button.component';
 
 @Component({
   standalone: true,
-  imports: [UiButtonDirective],
+  imports: [UiButtonComponent],
   template: `
     <button
       uiButton
@@ -25,7 +25,7 @@ class TestHostComponent {
   readonly disabled = signal(false);
 }
 
-describe('UiButtonDirective', () => {
+describe('UiButtonComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let buttonEl: HTMLButtonElement;
 
@@ -56,6 +56,21 @@ describe('UiButtonDirective', () => {
     expect(buttonEl.getAttribute('aria-busy')).toBe('true');
   });
 
+  it('should render a spinner and disable the button while loading', () => {
+    expect(buttonEl.querySelector('.animate-spin')).toBeNull();
+
+    fixture.componentInstance.loading.set(true);
+    fixture.detectChanges();
+    expect(buttonEl.querySelector('.animate-spin')).not.toBeNull();
+    expect(buttonEl.disabled).toBe(true);
+    expect(buttonEl.getAttribute('aria-disabled')).toBe('true');
+
+    fixture.componentInstance.loading.set(false);
+    fixture.detectChanges();
+    expect(buttonEl.querySelector('.animate-spin')).toBeNull();
+    expect(buttonEl.disabled).toBe(false);
+  });
+
   it('should disable button when disabled signal is true', () => {
     fixture.componentInstance.disabled.set(true);
     fixture.detectChanges();
@@ -71,7 +86,7 @@ describe('UiButtonDirective', () => {
 // review focus, and is exercised separately from the `<button>` case above.
 @Component({
   standalone: true,
-  imports: [UiButtonDirective],
+  imports: [UiButtonComponent],
   template: `
     <a
       uiButton
@@ -85,7 +100,7 @@ class AnchorTestHostComponent {
   readonly disabled = signal(true);
 }
 
-describe('UiButtonDirective (anchor)', () => {
+describe('UiButtonComponent (anchor)', () => {
   let fixture: ComponentFixture<AnchorTestHostComponent>;
   let anchorEl: HTMLAnchorElement;
 

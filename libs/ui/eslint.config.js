@@ -26,6 +26,24 @@ module.exports = tseslint.config(
     },
   },
   {
+    // Entry points moved in from standalone libs keep their original selectors and class names
+    // (`svg-icon`, `dialog`, `DatepickerInput`, ...) for backward compatibility
+    files: [
+      'svg-icon/**/*.ts',
+      'dialog/**/*.ts',
+      'loader/**/*.ts',
+      'toast/**/*.ts',
+      'date-picker/**/*.ts',
+      'paginator/**/*.ts',
+    ],
+    rules: {
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
+      '@angular-eslint/component-class-suffix': 'off',
+      '@angular-eslint/directive-selector': 'off',
+      '@angular-eslint/component-selector': 'off',
+    },
+  },
+  {
     files: ['**/*.html'],
     rules: {},
   }

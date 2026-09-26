@@ -16,7 +16,7 @@ import {
   NavigationService,
   VerticalNavigationComponent,
 } from '@libs/navigation';
-import { SvgIconModule } from '@libs/svg-icon';
+import { SvgIconModule } from '@libs/ui/svg-icon';
 
 @Component({
   selector: 'modern-layout',

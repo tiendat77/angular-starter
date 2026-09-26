@@ -14,7 +14,7 @@ import { ThemeTogglerComponent } from '../../commons/theme-toggler';
 import { LayoutService } from '../layout.service';
 
 import { NavigationService, VerticalNavigationComponent } from '@libs/navigation';
-import { SvgIcon } from '@libs/svg-icon';
+import { SvgIcon } from '@libs/ui/svg-icon';
 
 @Component({
   selector: 'dense-layout',

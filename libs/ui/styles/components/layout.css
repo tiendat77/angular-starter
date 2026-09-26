@@ -1,0 +1,144 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Divider
+/*
+/*  Default: horizontal line between stacked content.
+/*  `divider-horizontal`: vertical line between side-by-side content.
+/* ----------------------------------------------------------------------------------------------------- */
+@utility divider {
+  display: flex;
+  flex-direction: var(--divider-dir, row);
+  align-items: center;
+  align-self: stretch;
+  width: var(--divider-w, auto);
+  height: var(--divider-h, 1rem);
+  margin-block: var(--divider-mb, 1rem);
+  margin-inline: var(--divider-mi, 0);
+  white-space: nowrap;
+  font-size: 0.875rem;
+  color: var(--color-muted-foreground);
+
+  &::before,
+  &::after {
+    content: '';
+    flex-grow: 1;
+    width: var(--divider-line-w, 100%);
+    height: var(--divider-line-h, 1px);
+    background-color: var(--divider-color, var(--color-border));
+  }
+
+  &:not(:empty) {
+    gap: 1rem;
+  }
+
+  &.divider-start::before,
+  &.divider-end::after {
+    display: none;
+  }
+}
+
+@utility divider-vertical {
+  --divider-dir: row;
+  --divider-w: auto;
+  --divider-h: 1rem;
+  --divider-mb: 1rem;
+  --divider-mi: 0;
+  --divider-line-w: 100%;
+  --divider-line-h: 1px;
+}
+
+@utility divider-horizontal {
+  --divider-dir: column;
+  --divider-w: 1rem;
+  --divider-h: auto;
+  --divider-mb: 0;
+  --divider-mi: 1rem;
+  --divider-line-w: 1px;
+  --divider-line-h: 100%;
+}
+
+/* `divider-start` / `divider-end` hide the leading / trailing line (handled in `divider`) */
+
+@utility divider-neutral {
+  --divider-color: var(--color-foreground);
+}
+
+@utility divider-primary {
+  --divider-color: var(--color-primary);
+}
+
+@utility divider-secondary {
+  --divider-color: var(--color-secondary);
+}
+
+@utility divider-info {
+  --divider-color: var(--color-info);
+}
+
+@utility divider-success {
+  --divider-color: var(--color-success);
+}
+
+@utility divider-warning {
+  --divider-color: var(--color-warning);
+}
+
+@utility divider-error {
+  --divider-color: var(--color-error);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Join
+/*
+/*  Groups `.join-item` children into one control: inner corners are squared and
+/*  adjacent borders overlap. Add `join-vertical` to stack items.
+/* ----------------------------------------------------------------------------------------------------- */
+@utility join {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: 0.5rem;
+
+  & > .join-item {
+    border-radius: 0;
+  }
+
+  & > .join-item:focus-visible {
+    isolation: isolate;
+    z-index: 1;
+  }
+
+  &:not(.join-vertical) > .join-item:not(:first-child) {
+    margin-inline-start: -1px;
+  }
+
+  &:not(.join-vertical) > .join-item:first-child {
+    border-start-start-radius: inherit;
+    border-end-start-radius: inherit;
+  }
+
+  &:not(.join-vertical) > .join-item:last-child {
+    border-start-end-radius: inherit;
+    border-end-end-radius: inherit;
+  }
+
+  &.join-vertical > .join-item:not(:first-child) {
+    margin-block-start: -1px;
+  }
+
+  &.join-vertical > .join-item:first-child {
+    border-start-start-radius: inherit;
+    border-start-end-radius: inherit;
+  }
+
+  &.join-vertical > .join-item:last-child {
+    border-end-start-radius: inherit;
+    border-end-end-radius: inherit;
+  }
+}
+
+@utility join-vertical {
+  flex-direction: column;
+}
+
+@utility join-horizontal {
+  flex-direction: row;
+}

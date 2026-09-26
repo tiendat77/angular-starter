@@ -19,7 +19,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SvgIcon } from '@libs/svg-icon';
+import { SvgIcon } from '@libs/ui/svg-icon';
 import { of, switchMap, throwError } from 'rxjs';
 
 import { ResponseModel } from '@/api/models';

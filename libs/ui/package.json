@@ -8,5 +8,14 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
-  "sideEffects": false
+  "exports": {
+    "./styles": {
+      "style": "./styles/index.css",
+      "default": "./styles/index.css"
+    },
+    "./styles/*": "./styles/*"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
 }

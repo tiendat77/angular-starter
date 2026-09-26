@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
-import { SvgIconModule } from '@libs/svg-icon';
+import { SvgIconModule } from '@libs/ui/svg-icon';
 
 import { filter, Subject, takeUntil } from 'rxjs';
 import { expandCollapse } from '../../../animations/expand-collapse';

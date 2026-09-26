@@ -1,0 +1,153 @@
+<doc-playground
+  title="Checkbox & Switch"
+  description="Accessible toggle components supporting two-way model binding, indeterminate state, custom sizing, and keyboard control."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex flex-col items-start gap-6 p-4"
+  >
+    <ui-checkbox
+      [indeterminate]="indeterminate()"
+      [disabled]="disabled()"
+      [size]="size()"
+      [label]="checkboxLabel()"
+      [(checked)]="checkboxChecked"
+    />
+
+    <ui-switch
+      [disabled]="disabled()"
+      [size]="size()"
+      [label]="switchLabel()"
+      [(checked)]="switchChecked"
+    />
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="chk-size"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Size
+      </label>
+      <select
+        id="chk-size"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="size()"
+        (ngModelChange)="size.set($event)"
+      >
+        <option value="xs">xs</option>
+        <option value="sm">sm</option>
+        <option value="md">md</option>
+        <option value="lg">lg</option>
+        <option value="xl">xl</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="chk-label"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Checkbox Label</label
+      >
+      <input
+        id="chk-label"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="checkboxLabel()"
+        (ngModelChange)="checkboxLabel.set($event)"
+      />
+    </div>
+
+    <div>
+      <label
+        for="sw-label"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Switch Label</label
+      >
+      <input
+        id="sw-label"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="switchLabel()"
+        (ngModelChange)="switchLabel.set($event)"
+      />
+    </div>
+
+    <div class="border-border/50 space-y-2 border-t pt-2">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="disabled()"
+          (ngModelChange)="disabled.set($event)"
+        />
+        <span>Disabled</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="indeterminate()"
+          (ngModelChange)="indeterminate.set($event)"
+        />
+        <span>Indeterminate (Checkbox)</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- API Reference -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">API Reference</h2>
+    <div class="border-border overflow-hidden rounded-xl border">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-muted/50 border-border text-muted-foreground border-b text-xs uppercase">
+          <tr>
+            <th class="px-4 py-3">Property</th>
+            <th class="px-4 py-3">Type</th>
+            <th class="px-4 py-3">Default</th>
+            <th class="px-4 py-3">Description</th>
+          </tr>
+        </thead>
+        <tbody class="divide-border divide-y font-mono text-xs">
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">[(checked)]</td>
+            <td class="text-muted-foreground px-4 py-3">model&lt;boolean&gt;</td>
+            <td class="px-4 py-3">false</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">Two-way model signal for checked state.</td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">indeterminate</td>
+            <td class="text-muted-foreground px-4 py-3">boolean</td>
+            <td class="px-4 py-3">false</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">
+              Renders a dash icon when partially selected (checkbox only).
+            </td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">size</td>
+            <td class="text-muted-foreground px-4 py-3">'xs' | 'sm' | 'md' | 'lg' | 'xl'</td>
+            <td class="px-4 py-3">'md'</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">
+              Controls box/track dimensions and label typography.
+            </td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">disabled</td>
+            <td class="text-muted-foreground px-4 py-3">boolean</td>
+            <td class="px-4 py-3">false</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">
+              Prevents user toggling and dims component visually.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</doc-playground>

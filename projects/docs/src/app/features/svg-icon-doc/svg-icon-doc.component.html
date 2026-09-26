@@ -1,0 +1,188 @@
+<doc-playground
+  title="SVG Icon"
+  description="Renders icons from registered SVG sprite sets. Icons inherit the current text color and are sized with the icon-size-* utilities."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full items-center justify-center p-4"
+  >
+    <svg-icon
+      [class]="iconClass()"
+      [name]="fullName()"
+    />
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="icon-namespace"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Icon Set
+      </label>
+      <select
+        id="icon-namespace"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="namespace()"
+        (ngModelChange)="namespace.set($event)"
+      >
+        <option value="heroicons_outline">heroicons_outline</option>
+        <option value="heroicons_solid">heroicons_solid</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="icon-name"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Name
+      </label>
+      <select
+        id="icon-name"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="iconName()"
+        (ngModelChange)="iconName.set($event)"
+      >
+        @for (name of iconNames; track name) {
+          <option [value]="name">{{ name }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="icon-size"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Size
+      </label>
+      <select
+        id="icon-size"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="size()"
+        (ngModelChange)="size.set($event)"
+      >
+        @for (size of sizes; track size) {
+          <option [value]="size">icon-size-{{ size }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="icon-color"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Color
+      </label>
+      <select
+        id="icon-color"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="color()"
+        (ngModelChange)="color.set($event)"
+      >
+        @for (color of colors; track color) {
+          <option [value]="color">{{ color }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Icon Gallery -->
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Gallery</h2>
+    <p class="text-muted-foreground text-sm">Click an icon to preview it in the playground.</p>
+    <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+      @for (name of iconNames; track name) {
+        <button
+          type="button"
+          class="border-border hover:bg-muted text-muted-foreground hover:text-foreground flex cursor-pointer flex-col items-center gap-2 rounded-xl border p-4 transition-colors"
+          [class.bg-muted]="name === iconName()"
+          [class.text-foreground]="name === iconName()"
+          (click)="iconName.set(name)"
+        >
+          <svg-icon
+            class="icon-size-6"
+            [name]="namespace() + ':' + name"
+          />
+          <span class="font-mono text-xs">{{ name }}</span>
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- Setup -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Setup</h2>
+    <p class="text-muted-foreground text-sm">
+      Register each SVG sprite as a namespace once, then reference icons as
+      <code class="font-mono">namespace:icon-id</code>.
+    </p>
+    <doc-code-block
+      language="ts"
+      [code]="setupCode"
+    />
+  </section>
+
+  <!-- API Reference -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">API Reference</h2>
+    <div class="border-border overflow-hidden rounded-xl border">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-muted/50 border-border text-muted-foreground border-b text-xs uppercase">
+          <tr>
+            <th class="px-4 py-3">Property</th>
+            <th class="px-4 py-3">Type</th>
+            <th class="px-4 py-3">Default</th>
+            <th class="px-4 py-3">Description</th>
+          </tr>
+        </thead>
+        <tbody class="divide-border divide-y font-mono text-xs">
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">name</td>
+            <td class="text-muted-foreground px-4 py-3">string</td>
+            <td class="px-4 py-3">undefined</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">
+              Icon to render, as <code>namespace:icon-id</code> from a registered SVG set.
+            </td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">inline</td>
+            <td class="text-muted-foreground px-4 py-3">boolean</td>
+            <td class="px-4 py-3">false</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">
+              Sizes the icon to inherit the surrounding font size and line height.
+            </td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">fontSet</td>
+            <td class="text-muted-foreground px-4 py-3">string</td>
+            <td class="px-4 py-3">undefined</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">Font set class for font-based icons.</td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">fontIcon</td>
+            <td class="text-muted-foreground px-4 py-3">string</td>
+            <td class="px-4 py-3">undefined</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">Glyph name within the font set.</td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">provideIcons()</td>
+            <td class="text-muted-foreground px-4 py-3">IconNamespace[]</td>
+            <td class="px-4 py-3">[]</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">
+              Registers SVG sprite URLs under namespace names at app bootstrap.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</doc-playground>

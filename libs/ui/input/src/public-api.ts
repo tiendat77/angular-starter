@@ -1,5 +1,6 @@
 export * from './error.directive';
 export * from './form-field.component';
+export * from './form-field.token';
 export * from './hint.directive';
 export * from './input.directive';
 export * from './input.variants';

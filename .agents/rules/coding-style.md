@@ -79,9 +79,9 @@ import dayjs from 'dayjs';
 import { z } from 'zod';
 
 // Internal Libraries (@libs/*)
-import { DialogService } from '@libs/dialog';
-import { SvgIcon } from '@libs/svg-icon';
-import { ToastService } from '@libs/toast';
+import { DialogService } from '@libs/ui/dialog';
+import { SvgIcon } from '@libs/ui/svg-icon';
+import { ToastService } from '@libs/ui/toast';
 
 // Core & Services (@/core/*, @/services/*)
 import { AuthGuard } from '@/core/guard';
@@ -217,12 +217,12 @@ Always order template attributes and bindings predictably:
 
 ### 4. Internal Shared Libraries (`@libs/*`)
 
-- Icons: `SvgIcon` from `@libs/svg-icon`.
-- Notifications: `ToastService` from `@libs/toast` (`this._toast.success(...)`, `this._toast.error(...)`, `this._toast.warning(...)`).
-- Dialogs/Modals: `DialogService` from `@libs/dialog`.
-- Loaders: `LoaderService` from `@libs/loader`.
-- Date Picker: `DatepickerModule` and `provideNativeDateAdapter()` from `@libs/date-picker`.
-- Paginator: Table/list pagination from `@libs/paginator`.
+- Icons: `SvgIcon` from `@libs/ui/svg-icon`.
+- Notifications: `ToastService` from `@libs/ui/toast` (`this._toast.success(...)`, `this._toast.error(...)`, `this._toast.warning(...)`).
+- Dialogs/Modals: `DialogService` from `@libs/ui/dialog`.
+- Loaders: `LoaderService` from `@libs/ui/loader`.
+- Date Picker: `DatepickerModule` and `provideNativeDateAdapter()` from `@libs/ui/date-picker`.
+- Paginator: Table/list pagination from `@libs/ui/paginator`.
 
 ---
 
@@ -275,7 +275,7 @@ Always order template attributes and bindings predictably:
 
 - Never swallow errors silently.
 - Log error details with `console.error`.
-- Notify users with `ToastService` from `@libs/toast`:
+- Notify users with `ToastService` from `@libs/ui/toast`:
   ```typescript
   this._toast.error(error?.message || ERROR_MESSAGES.DEFAULT, ERROR_MESSAGES.ERROR_TITLE);
   ```

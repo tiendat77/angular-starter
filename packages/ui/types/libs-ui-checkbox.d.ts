@@ -21,7 +21,6 @@ declare class UiCheckboxComponent implements ControlValueAccessor {
     protected readonly $effectiveSize: _angular_core.Signal<UiSize>;
     protected readonly $rootClass: _angular_core.Signal<string>;
     protected readonly $boxClass: _angular_core.Signal<string>;
-    protected readonly $labelClass: _angular_core.Signal<string>;
     constructor();
     writeValue(value: boolean): void;
     registerOnChange(fn: (value: boolean) => void): void;
@@ -34,6 +33,7 @@ declare class UiCheckboxComponent implements ControlValueAccessor {
 }
 
 declare const checkboxVariants: (props?: {
+    size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
     disabled?: "true" | "false" | undefined;
 } | undefined, extraClass?: string) => string;
 declare const checkboxBoxVariants: (props?: {

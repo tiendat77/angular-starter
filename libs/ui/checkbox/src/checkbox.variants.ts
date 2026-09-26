@@ -1,14 +1,22 @@
 import { cva, UiSize } from '@libs/ui/core';
 
 export const checkboxVariants = cva({
-  base: 'inline-flex items-center gap-2 select-none cursor-pointer group',
+  base: 'relative flex items-start gap-2 text-foreground select-none cursor-pointer group',
   variants: {
+    size: {
+      xs: 'text-xs',
+      sm: 'text-xs',
+      md: 'text-sm',
+      lg: 'text-base',
+      xl: 'text-lg',
+    },
     disabled: {
       true: 'cursor-not-allowed opacity-50 pointer-events-none',
       false: '',
     },
   },
   defaultVariants: {
+    size: 'md',
     disabled: 'false',
   },
 });
@@ -17,11 +25,11 @@ export const checkboxBoxVariants = cva({
   base: 'inline-flex items-center justify-center shrink-0 border border-border transition-colors duration-150 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary',
   variants: {
     size: {
-      xs: 'h-3.5 w-3.5 rounded text-xs',
-      sm: 'h-4 w-4 rounded text-xs',
-      md: 'h-5 w-5 rounded-md text-sm',
-      lg: 'h-6 w-6 rounded-md text-base',
-      xl: 'h-7 w-7 rounded-lg text-lg',
+      xs: 'h-3.5 w-3.5 rounded',
+      sm: 'h-4 w-4 rounded',
+      md: 'h-5 w-5 rounded-md',
+      lg: 'h-6 w-6 rounded-md',
+      xl: 'h-7 w-7 rounded-lg',
     },
     checked: {
       true: 'bg-primary border-primary text-primary-content',

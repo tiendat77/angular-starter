@@ -27,6 +27,11 @@ export const routes: Routes = [
       import('./features/radio-doc/radio-doc.component').then((m) => m.RadioDocComponent),
   },
   {
+    path: 'svg-icon',
+    loadComponent: () =>
+      import('./features/svg-icon-doc/svg-icon-doc.component').then((m) => m.SvgIconDocComponent),
+  },
+  {
     path: '**',
     redirectTo: 'button',
   },

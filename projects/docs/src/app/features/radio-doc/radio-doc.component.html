@@ -1,0 +1,124 @@
+<doc-playground
+  title="Radio Group"
+  description="Accessible single-select group with roving tabindex and Arrow keys navigation (Up/Down/Left/Right)."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="p-4"
+  >
+    <ui-radio-group
+      [size]="size()"
+      [disabled]="disabled()"
+      [(value)]="selected"
+    >
+      <ui-radio
+        value="starter"
+        label="Starter Plan (Free)"
+      />
+      <ui-radio
+        value="pro"
+        label="Pro Plan ($19/mo)"
+      />
+      <ui-radio
+        value="enterprise"
+        label="Enterprise Plan (Custom)"
+      />
+    </ui-radio-group>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="rad-size"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Size
+      </label>
+      <select
+        id="rad-size"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="size()"
+        (ngModelChange)="size.set($event)"
+      >
+        <option value="xs">xs</option>
+        <option value="sm">sm</option>
+        <option value="md">md</option>
+        <option value="lg">lg</option>
+        <option value="xl">xl</option>
+      </select>
+    </div>
+
+    <div>
+      <span class="text-muted-foreground mb-1 block font-medium">Selected Value</span>
+      <div class="border-border bg-background text-foreground rounded-lg border px-3 py-1.5 font-mono">
+        {{ selected() }}
+      </div>
+    </div>
+
+    <div class="border-border/50 space-y-2 border-t pt-2">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="disabled()"
+          (ngModelChange)="disabled.set($event)"
+        />
+        <span>Disabled Group</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- API Reference -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">API Reference</h2>
+    <div class="border-border overflow-hidden rounded-xl border">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-muted/50 border-border text-muted-foreground border-b text-xs uppercase">
+          <tr>
+            <th class="px-4 py-3">Component</th>
+            <th class="px-4 py-3">Property</th>
+            <th class="px-4 py-3">Type</th>
+            <th class="px-4 py-3">Default</th>
+            <th class="px-4 py-3">Description</th>
+          </tr>
+        </thead>
+        <tbody class="divide-border divide-y font-mono text-xs">
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">UiRadioGroupComponent</td>
+            <td class="px-4 py-3">[(value)]</td>
+            <td class="text-muted-foreground px-4 py-3">model&lt;any&gt;</td>
+            <td class="px-4 py-3">null</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">Two-way value signal bound to the selected radio.</td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">UiRadioGroupComponent</td>
+            <td class="px-4 py-3">size</td>
+            <td class="text-muted-foreground px-4 py-3">'xs' | 'sm' | 'md' | 'lg' | 'xl'</td>
+            <td class="px-4 py-3">'md'</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">Sets sizing for child radios.</td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">UiRadioComponent</td>
+            <td class="px-4 py-3">value</td>
+            <td class="text-muted-foreground px-4 py-3">any</td>
+            <td class="px-4 py-3">required</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">The value emitted when this radio is checked.</td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">UiRadioComponent</td>
+            <td class="px-4 py-3">label</td>
+            <td class="text-muted-foreground px-4 py-3">string</td>
+            <td class="px-4 py-3">undefined</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">Text label displayed beside the radio circle.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</doc-playground>

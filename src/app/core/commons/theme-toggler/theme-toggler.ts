@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, viewChild } from 
 import { ThemeService } from '@/services/theme.service';
 import { Menu, MenuItem, MenuTrigger } from '@angular/aria/menu';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { SvgIconModule } from '@libs/svg-icon';
+import { SvgIconModule } from '@libs/ui/svg-icon';
 import { ColorSchemeType } from '@models';
 
 @Component({

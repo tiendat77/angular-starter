@@ -1,0 +1,102 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Alert
+/*
+/*  Colors set `--alert-color` (and clear `--alert-surface`); styles (soft/outline/dash) decide
+/*  how it is applied. Without a style modifier, a colored alert uses the soft look and an
+/*  uncolored alert keeps a solid muted surface (mixing a token with itself is a no-op).
+/* ----------------------------------------------------------------------------------------------------- */
+@utility alert {
+  display: grid;
+  width: 100%;
+  grid-auto-flow: var(--alert-flow, row);
+  grid-template-columns: var(--alert-cols, none);
+  align-content: center;
+  align-items: center;
+  justify-items: var(--alert-justify, start);
+  gap: 0.75rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  text-align: var(--alert-align, start);
+  color: var(--alert-fg, var(--alert-color, var(--color-foreground)));
+  background-color: var(
+    --alert-bg,
+    color-mix(
+      in oklab,
+      var(--alert-color, var(--color-muted)) var(--alert-bg-mix, 12%),
+      var(--alert-surface, var(--color-muted))
+    )
+  );
+  border-width: 1px;
+  border-style: var(--alert-border-style, solid);
+  border-color: var(
+    --alert-border,
+    color-mix(
+      in oklab,
+      var(--alert-color, var(--color-border)) var(--alert-border-mix, 25%),
+      var(--alert-surface, var(--color-border))
+    )
+  );
+  border-radius: 0.75rem;
+
+  & svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke-width: 2;
+    flex-shrink: 0;
+  }
+}
+
+@utility alert-neutral {
+  --alert-color: var(--color-foreground);
+  --alert-surface: transparent;
+}
+
+@utility alert-info {
+  --alert-color: var(--color-info);
+  --alert-surface: transparent;
+}
+
+@utility alert-success {
+  --alert-color: var(--color-success);
+  --alert-surface: transparent;
+}
+
+@utility alert-warning {
+  --alert-color: var(--color-warning);
+  --alert-surface: transparent;
+}
+
+@utility alert-error {
+  --alert-color: var(--color-error);
+  --alert-surface: transparent;
+}
+
+@utility alert-soft {
+  --alert-bg-mix: 12%;
+  --alert-border-mix: 25%;
+}
+
+@utility alert-outline {
+  --alert-bg: transparent;
+  --alert-border-mix: 100%;
+}
+
+@utility alert-dash {
+  --alert-bg: transparent;
+  --alert-border-mix: 100%;
+  --alert-border-style: dashed;
+}
+
+@utility alert-vertical {
+  --alert-flow: row;
+  --alert-cols: none;
+  --alert-justify: center;
+  --alert-align: center;
+}
+
+@utility alert-horizontal {
+  --alert-flow: column;
+  --alert-cols: auto minmax(auto, 1fr);
+  --alert-justify: start;
+  --alert-align: start;
+}

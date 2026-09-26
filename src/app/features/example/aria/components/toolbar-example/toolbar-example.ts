@@ -1,6 +1,6 @@
 import { Toolbar, ToolbarWidget, ToolbarWidgetGroup } from '@angular/aria/toolbar';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SvgIcon } from '@libs/svg-icon';
+import { SvgIcon } from '@libs/ui/svg-icon';
 
 @Component({
   selector: 'toolbar-example',
