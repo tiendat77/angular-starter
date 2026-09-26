@@ -6,6 +6,11 @@ interface NavItem {
   path: string;
 }
 
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
 @Component({
   selector: 'doc-sidebar',
   imports: [RouterLink, RouterLinkActive],
@@ -13,11 +18,31 @@ interface NavItem {
   templateUrl: './docs-sidebar.component.html',
 })
 export class DocsSidebarComponent {
-  readonly componentItems: NavItem[] = [
-    { label: 'Button', path: '/button' },
-    { label: 'Form Field & Input', path: '/input' },
-    { label: 'Checkbox & Switch', path: '/checkbox' },
-    { label: 'Radio Group', path: '/radio' },
-    { label: 'SVG Icon', path: '/svg-icon' },
+  readonly navGroups: NavGroup[] = [
+    {
+      title: 'Forms',
+      items: [
+        { label: 'Button', path: '/button' },
+        { label: 'Form Field & Input', path: '/input' },
+        { label: 'Checkbox & Switch', path: '/checkbox' },
+        { label: 'Radio Group', path: '/radio' },
+        { label: 'Date Picker', path: '/date-picker' },
+      ],
+    },
+    {
+      title: 'Overlays & Feedback',
+      items: [
+        { label: 'Dialog', path: '/dialog' },
+        { label: 'Toast', path: '/toast' },
+        { label: 'Loader', path: '/loader' },
+      ],
+    },
+    {
+      title: 'Data & Media',
+      items: [
+        { label: 'Paginator', path: '/paginator' },
+        { label: 'SVG Icon', path: '/svg-icon' },
+      ],
+    },
   ];
 }

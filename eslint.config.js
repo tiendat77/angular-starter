@@ -95,14 +95,7 @@ module.exports = tseslint.config(
       '@angular-eslint/template/use-track-by-function': 'warn',
       '@angular-eslint/template/conditional-complexity': ['warn', { maxComplexity: 3 }],
       '@angular-eslint/template/eqeqeq': ['warn', { allowNullOrUndefined: true }],
-      '@angular-eslint/template/no-call-expression': [
-        'warn',
-        {
-          allowList: ['get', 'hasError'],
-          allowPrefix: '$',
-          allowSuffix: '$',
-        },
-      ],
+      '@angular-eslint/template/no-call-expression': 'warn',
     },
   },
   {

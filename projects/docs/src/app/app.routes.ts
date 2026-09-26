@@ -32,6 +32,35 @@ export const routes: Routes = [
       import('./features/svg-icon-doc/svg-icon-doc.component').then((m) => m.SvgIconDocComponent),
   },
   {
+    path: 'dialog',
+    loadComponent: () =>
+      import('./features/dialog-doc/dialog-doc.component').then((m) => m.DialogDocComponent),
+  },
+  {
+    path: 'toast',
+    loadComponent: () =>
+      import('./features/toast-doc/toast-doc.component').then((m) => m.ToastDocComponent),
+  },
+  {
+    path: 'loader',
+    loadComponent: () =>
+      import('./features/loader-doc/loader-doc.component').then((m) => m.LoaderDocComponent),
+  },
+  {
+    path: 'date-picker',
+    loadComponent: () =>
+      import('./features/date-picker-doc/date-picker-doc.component').then(
+        (m) => m.DatePickerDocComponent
+      ),
+  },
+  {
+    path: 'paginator',
+    loadComponent: () =>
+      import('./features/paginator-doc/paginator-doc.component').then(
+        (m) => m.PaginatorDocComponent
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'button',
   },

@@ -1,0 +1,29 @@
+<dialog-layout
+  [alert]="data.alert"
+  [fullscreen]="data.fullscreen"
+>
+  <ng-template dialog-title>Edit profile</ng-template>
+
+  <ng-template dialog-body>
+    <p class="text-muted-foreground text-sm">
+      Everything inside <code>dialog-body</code> scrolls, while the header and the <code>dialog-actions</code> footer
+      stay pinned.
+    </p>
+  </ng-template>
+
+  <ng-template dialog-actions>
+    <button
+      uiButton
+      dialog-dismiss
+      variant="outline"
+    >
+      Cancel
+    </button>
+    <button
+      uiButton
+      dialog-dismiss
+    >
+      Save
+    </button>
+  </ng-template>
+</dialog-layout>
