@@ -23,6 +23,10 @@
       "types": "./types/libs-ui-button.d.ts",
       "default": "./fesm2022/libs-ui-button.mjs"
     },
+    "./checkbox": {
+      "types": "./types/libs-ui-checkbox.d.ts",
+      "default": "./fesm2022/libs-ui-checkbox.mjs"
+    },
     "./core": {
       "types": "./types/libs-ui-core.d.ts",
       "default": "./fesm2022/libs-ui-core.mjs"
