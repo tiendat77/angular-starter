@@ -26,6 +26,10 @@
     "./core": {
       "types": "./types/libs-ui-core.d.ts",
       "default": "./fesm2022/libs-ui-core.mjs"
+    },
+    "./input": {
+      "types": "./types/libs-ui-input.d.ts",
+      "default": "./fesm2022/libs-ui-input.mjs"
     }
   },
   "type": "module"
