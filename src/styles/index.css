@@ -1,7 +1,6 @@
 @import 'tailwindcss';
 
 @import './_colors.css';
-@import './_daisyui.css';
 @import './_themes.css';
 @import './_components.css';
 @import './_vendors.css';
