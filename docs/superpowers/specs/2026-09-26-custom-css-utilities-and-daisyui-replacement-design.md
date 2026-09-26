@@ -22,7 +22,42 @@
 
 ## 2. Architecture & Design
 
-### 2.1 CSS Layer: Tailwind CSS 4 Utilities (`src/styles/_components.css`)
+### 2.1 Foundation: Fix Missing Color Tokens (`src/styles/_themes.css`)
+
+Previously, `--color-primary-content` and related content tokens were only injected into the page via the DaisyUI theme plugin in `src/styles/_daisyui.css` (`--color-primary-content: #ffffff`). With DaisyUI being removed, these tokens must be formally declared in the Tailwind 4 `@theme` block in `src/styles/_themes.css`:
+
+```css
+@theme {
+  /* Primary & Contrast Content */
+  --color-on-primary: var(--on-primary);
+  --color-primary-content: var(--on-primary, #ffffff);
+  --color-primary: var(--primary-500);
+  
+  /* Secondary & Contrast Content */
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-content: var(--on-secondary, #ffffff);
+  --color-secondary: var(--secondary-500);
+
+  /* Semantic State Colors */
+  --color-error: #ef4444;
+  --color-error-content: #ffffff;
+  --color-success: #10b981;
+  --color-success-content: #ffffff;
+  --color-warning: #f59e0b;
+  --color-warning-content: #ffffff;
+  --color-info: #3b82f6;
+  --color-info-content: #ffffff;
+
+  /* Surfaces & Borders */
+  --color-border: #e4e4e7;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+}
+```
+
+This guarantees that `var(--color-primary-content)` resolves properly across light/dark themes and works with native CSS `color-mix()` and background declarations without any dependency on DaisyUI.
+
+### 2.2 CSS Layer: Tailwind CSS 4 Utilities (`src/styles/_components.css`)
 
 We define native Tailwind 4 `@utility` blocks in `src/styles/_components.css` (imported by `src/styles/index.css` and `projects/docs/src/styles.css`):
 
@@ -169,7 +204,7 @@ We define native Tailwind 4 `@utility` blocks in `src/styles/_components.css` (i
 
 ---
 
-### 2.2 TypeScript Layer: Simplified `@libs/ui/button`
+### 2.3 TypeScript Layer: Simplified `@libs/ui/button`
 
 In `libs/ui/button/src/button.variants.ts`, the recipe becomes a simple, maintainable mapping:
 
@@ -205,7 +240,7 @@ export const buttonVariants = cva({
 });
 ```
 
-### 2.3 Directive Responsibilities (`UiButtonDirective`)
+### 2.4 Directive Responsibilities (`UiButtonDirective`)
 `UiButtonDirective` (`button[uiButton]`, `a[uiButton]`) retains its exact responsibility boundaries:
 1. Computes host class string via `buttonVariants(...)`.
 2. Intercepts and suppresses click events when `disabled()` is true on both `<button>` and `<a>` elements (`stopImmediatePropagation()` and `preventDefault()`).
