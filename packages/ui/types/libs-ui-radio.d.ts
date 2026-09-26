@@ -2,12 +2,17 @@ import * as _angular_core from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { UiSize } from '@libs/ui/core';
 
+/**
+ * Maps inputs onto the `radio` CSS utilities (`@libs/ui/styles`). `ui-radio` is an ARIA radio
+ * (roving tabindex), not a native input, so the checked look is driven by `data-checked`.
+ */
 declare const radioCircleVariants: (props?: {
     size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
-    checked?: "true" | "false" | undefined;
 } | undefined, extraClass?: string) => string;
-declare const radioDotVariants: (props?: {
+/** Host layout, label typography and disabled state of `ui-radio`. */
+declare const radioVariants: (props?: {
     size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
+    disabled?: "true" | "false" | undefined;
 } | undefined, extraClass?: string) => string;
 declare class UiRadioComponent {
     readonly value: _angular_core.InputSignal<any>;
@@ -21,8 +26,6 @@ declare class UiRadioComponent {
     readonly tabIndex: _angular_core.Signal<-1 | 0>;
     protected readonly $hostClass: _angular_core.Signal<string>;
     protected readonly $circleClass: _angular_core.Signal<string>;
-    protected readonly $dotClass: _angular_core.Signal<string>;
-    protected readonly $labelClass: _angular_core.Signal<string>;
     select(): void;
     focus(): void;
     protected onKeyDown(event: KeyboardEvent): void;
@@ -56,4 +59,4 @@ declare class UiRadioGroupComponent implements ControlValueAccessor {
     static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiRadioGroupComponent, "ui-radio-group", never, { "value": { "alias": "value"; "required": false; "isSignal": true; }; "name": { "alias": "name"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; }, { "value": "valueChange"; }, ["radios"], ["*"], true, never>;
 }
 
-export { UiRadioComponent, UiRadioGroupComponent, radioCircleVariants, radioDotVariants };
+export { UiRadioComponent, UiRadioGroupComponent, radioCircleVariants, radioVariants };

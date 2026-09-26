@@ -87,6 +87,7 @@
   &[aria-invalid='true'],
   &:has(> input[aria-invalid='true']) {
     --input-color: var(--color-error);
+    --input-border: var(--color-error);
   }
 
   &:disabled,
@@ -105,6 +106,13 @@
 
 @utility input-ghost {
   --input-bg: transparent;
+  --input-border: transparent;
+  --input-focus-bg: var(--color-background);
+}
+
+/* Muted surface without a visible border until focused (used by `appearance="filled"`) */
+@utility input-filled {
+  --input-bg: var(--color-muted);
   --input-border: transparent;
   --input-focus-bg: var(--color-background);
 }
@@ -212,6 +220,7 @@
 
   &[aria-invalid='true'] {
     --textarea-color: var(--color-error);
+    --textarea-border: var(--color-error);
   }
 
   &:disabled,
@@ -228,6 +237,13 @@
 
 @utility textarea-ghost {
   --textarea-bg: transparent;
+  --textarea-border: transparent;
+  --textarea-focus-bg: var(--color-background);
+}
+
+/* Muted surface without a visible border until focused (used by `appearance="filled"`) */
+@utility textarea-filled {
+  --textarea-bg: var(--color-muted);
   --textarea-border: transparent;
   --textarea-focus-bg: var(--color-background);
 }

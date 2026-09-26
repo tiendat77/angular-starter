@@ -1,10 +1,11 @@
 import * as i0 from '@angular/core';
 import { model, input, booleanAttribute, viewChild, signal, inject, computed, effect, forwardRef, ChangeDetectionStrategy, Component } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cva, UI_CONFIG, cn } from '@libs/ui/core';
+import { cva, UI_CONFIG } from '@libs/ui/core';
 
+/** Root `<label>` shared by checkbox and switch: layout, label typography and disabled state. */
 const checkboxVariants = cva({
-    base: 'relative flex items-start gap-2 text-foreground select-none cursor-pointer group',
+    base: 'relative flex items-start gap-2 select-none',
     variants: {
         size: {
             xs: 'text-xs',
@@ -14,8 +15,8 @@ const checkboxVariants = cva({
             xl: 'text-lg',
         },
         disabled: {
-            true: 'cursor-not-allowed opacity-50 pointer-events-none',
-            false: '',
+            true: 'cursor-not-allowed text-muted-foreground',
+            false: 'cursor-pointer text-foreground',
         },
     },
     defaultVariants: {
@@ -23,85 +24,38 @@ const checkboxVariants = cva({
         disabled: 'false',
     },
 });
+/** Maps inputs onto the `checkbox` CSS utilities (`@libs/ui/styles`). */
 const checkboxBoxVariants = cva({
-    base: 'inline-flex items-center justify-center shrink-0 border border-border transition-colors duration-150 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary',
+    base: 'checkbox',
     variants: {
         size: {
-            xs: 'h-3.5 w-3.5 rounded',
-            sm: 'h-4 w-4 rounded',
-            md: 'h-5 w-5 rounded-md',
-            lg: 'h-6 w-6 rounded-md',
-            xl: 'h-7 w-7 rounded-lg',
-        },
-        checked: {
-            true: 'bg-primary border-primary text-primary-content',
-            false: 'bg-background hover:bg-muted text-transparent',
+            xs: 'checkbox-xs',
+            sm: 'checkbox-sm',
+            md: 'checkbox-md',
+            lg: 'checkbox-lg',
+            xl: 'checkbox-xl',
         },
     },
     defaultVariants: {
         size: 'md',
-        checked: 'false',
     },
 });
-const switchVariants = cva({
-    base: 'inline-flex items-center gap-2 select-none cursor-pointer',
-    variants: {
-        disabled: {
-            true: 'cursor-not-allowed opacity-50 pointer-events-none',
-            false: '',
-        },
-    },
-    defaultVariants: {
-        disabled: 'false',
-    },
-});
+/** Maps inputs onto the `toggle` CSS utilities (`@libs/ui/styles`). */
 const switchTrackVariants = cva({
-    base: 'inline-flex shrink-0 items-center rounded-full p-0.5 border border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+    base: 'toggle',
     variants: {
         size: {
-            xs: 'h-4 w-7',
-            sm: 'h-5 w-9',
-            md: 'h-6 w-11',
-            lg: 'h-7 w-14',
-            xl: 'h-8 w-16',
-        },
-        checked: {
-            true: 'bg-primary border-primary',
-            false: 'bg-muted border-border',
+            xs: 'toggle-xs',
+            sm: 'toggle-sm',
+            md: 'toggle-md',
+            lg: 'toggle-lg',
+            xl: 'toggle-xl',
         },
     },
     defaultVariants: {
         size: 'md',
-        checked: 'false',
     },
 });
-const switchThumbVariants = cva({
-    base: 'pointer-events-none block rounded-full bg-background shadow-xs transition-transform duration-200 ease-in-out',
-    variants: {
-        size: {
-            xs: 'h-3 w-3',
-            sm: 'h-4 w-4',
-            md: 'h-5 w-5',
-            lg: 'h-6 w-6',
-            xl: 'h-7 w-7',
-        },
-        checked: {
-            true: '',
-            false: 'translate-x-0',
-        },
-    },
-    defaultVariants: {
-        size: 'md',
-        checked: 'false',
-    },
-});
-const switchThumbTranslateMap = {
-    xs: 'translate-x-3',
-    sm: 'translate-x-4',
-    md: 'translate-x-5',
-    lg: 'translate-x-7',
-    xl: 'translate-x-8',
-};
 
 let nextCheckboxId = 0;
 class UiCheckboxComponent {
@@ -140,10 +94,7 @@ class UiCheckboxComponent {
         disabled: this.$effectiveDisabled() ? 'true' : 'false',
     }), /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$rootClass" }] : /* istanbul ignore next */ []));
-    $boxClass = computed(() => checkboxBoxVariants({
-        size: this.$effectiveSize(),
-        checked: this.checked() || this.indeterminate() ? 'true' : 'false',
-    }), /* @ts-ignore */
+    $boxClass = computed(() => checkboxBoxVariants({ size: this.$effectiveSize() }), /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$boxClass" }] : /* istanbul ignore next */ []));
     constructor() {
         effect(() => {
@@ -197,39 +148,18 @@ class UiCheckboxComponent {
       [class]="$rootClass()"
       [attr.for]="$effectiveId()"
     >
-      <input
-        #inputRef
-        type="checkbox"
-        class="peer sr-only"
-        [id]="$effectiveId()"
-        [checked]="checked()"
-        [disabled]="$effectiveDisabled()"
-        (change)="onInputChange($event)"
-        (blur)="onBlur()"
-      />
       <!-- One text line tall, so the box stays centered on the first line of the label -->
-      <span
-        aria-hidden="true"
-        class="flex h-lh shrink-0 items-center"
-      >
-        <span [class]="$boxClass()">
-          <svg
-            class="h-3/4 w-3/4 stroke-current stroke-3"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            @if (indeterminate()) {
-              <line
-                x1="5"
-                y1="12"
-                x2="19"
-                y2="12"
-              />
-            } @else {
-              <polyline points="20 6 9 17 4 12" />
-            }
-          </svg>
-        </span>
+      <span class="flex h-lh shrink-0 items-center">
+        <input
+          #inputRef
+          type="checkbox"
+          [class]="$boxClass()"
+          [id]="$effectiveId()"
+          [checked]="checked()"
+          [disabled]="$effectiveDisabled()"
+          (change)="onInputChange($event)"
+          (blur)="onBlur()"
+        />
       </span>
       @if (label()) {
         <span>{{ label() }}</span>
@@ -259,39 +189,18 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
       [class]="$rootClass()"
       [attr.for]="$effectiveId()"
     >
-      <input
-        #inputRef
-        type="checkbox"
-        class="peer sr-only"
-        [id]="$effectiveId()"
-        [checked]="checked()"
-        [disabled]="$effectiveDisabled()"
-        (change)="onInputChange($event)"
-        (blur)="onBlur()"
-      />
       <!-- One text line tall, so the box stays centered on the first line of the label -->
-      <span
-        aria-hidden="true"
-        class="flex h-lh shrink-0 items-center"
-      >
-        <span [class]="$boxClass()">
-          <svg
-            class="h-3/4 w-3/4 stroke-current stroke-3"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            @if (indeterminate()) {
-              <line
-                x1="5"
-                y1="12"
-                x2="19"
-                y2="12"
-              />
-            } @else {
-              <polyline points="20 6 9 17 4 12" />
-            }
-          </svg>
-        </span>
+      <span class="flex h-lh shrink-0 items-center">
+        <input
+          #inputRef
+          type="checkbox"
+          [class]="$boxClass()"
+          [id]="$effectiveId()"
+          [checked]="checked()"
+          [disabled]="$effectiveDisabled()"
+          (change)="onInputChange($event)"
+          (blur)="onBlur()"
+        />
       </span>
       @if (label()) {
         <span>{{ label() }}</span>
@@ -332,22 +241,13 @@ class UiSwitchComponent {
     ...(ngDevMode ? [{ debugName: "$effectiveId" }] : /* istanbul ignore next */ []));
     $effectiveSize = computed(() => this.size() ?? this._uiConfig?.defaultSize ?? 'md', /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$effectiveSize" }] : /* istanbul ignore next */ []));
-    $rootClass = computed(() => switchVariants({
+    $rootClass = computed(() => checkboxVariants({
+        size: this.$effectiveSize(),
         disabled: this.$effectiveDisabled() ? 'true' : 'false',
     }), /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$rootClass" }] : /* istanbul ignore next */ []));
-    $trackClass = computed(() => switchTrackVariants({
-        size: this.$effectiveSize(),
-        checked: this.checked() ? 'true' : 'false',
-    }), /* @ts-ignore */
+    $trackClass = computed(() => switchTrackVariants({ size: this.$effectiveSize() }), /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$trackClass" }] : /* istanbul ignore next */ []));
-    $thumbClass = computed(() => cn(switchThumbVariants({
-        size: this.$effectiveSize(),
-        checked: this.checked() ? 'true' : 'false',
-    }), this.checked() && switchThumbTranslateMap[this.$effectiveSize()]), /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "$thumbClass" }] : /* istanbul ignore next */ []));
-    $labelClass = computed(() => cn('cursor-pointer text-foreground select-none', this.$effectiveSize() === 'xs' && 'text-xs', this.$effectiveSize() === 'sm' && 'text-xs', this.$effectiveSize() === 'md' && 'text-sm', this.$effectiveSize() === 'lg' && 'text-base', this.$effectiveSize() === 'xl' && 'text-lg'), /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "$labelClass" }] : /* istanbul ignore next */ []));
     // -----------------------------------------------------------------------------------------------------
     // @ ControlValueAccessor
     // -----------------------------------------------------------------------------------------------------
@@ -378,45 +278,49 @@ class UiSwitchComponent {
     // -----------------------------------------------------------------------------------------------------
     // @ Protected methods
     // -----------------------------------------------------------------------------------------------------
+    onInputChange(event) {
+        if (this.$effectiveDisabled()) {
+            return;
+        }
+        const isChecked = event.target.checked;
+        this.checked.set(isChecked);
+        this._onChange(isChecked);
+        this._onTouched();
+    }
     onBlur() {
         this._onTouched();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiSwitchComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.5", type: UiSwitchComponent, isStandalone: true, selector: "ui-switch", inputs: { checked: { classPropertyName: "checked", publicName: "checked", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null }, id: { classPropertyName: "id", publicName: "id", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { checked: "checkedChange" }, providers: [
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.5", type: UiSwitchComponent, isStandalone: true, selector: "ui-switch", inputs: { checked: { classPropertyName: "checked", publicName: "checked", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null }, id: { classPropertyName: "id", publicName: "id", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { checked: "checkedChange" }, host: { classAttribute: "inline-flex align-top" }, providers: [
             {
                 provide: NG_VALUE_ACCESSOR,
                 useExisting: forwardRef(() => UiSwitchComponent),
                 multi: true,
             },
         ], ngImport: i0, template: `
-    <div [class]="$rootClass()">
-      <button
-        type="button"
-        role="switch"
-        [id]="$effectiveId()"
-        [attr.aria-checked]="checked() ? 'true' : 'false'"
-        [attr.aria-disabled]="$effectiveDisabled() ? 'true' : null"
-        [disabled]="$effectiveDisabled()"
-        [class]="$trackClass()"
-        (click)="toggle()"
-        (blur)="onBlur()"
-      >
-        <span
-          aria-hidden="true"
-          [class]="$thumbClass()"
-        ></span>
-      </button>
+    <label
+      [class]="$rootClass()"
+      [attr.for]="$effectiveId()"
+    >
+      <!-- One text line tall, so the track stays centered on the first line of the label -->
+      <span class="flex h-lh shrink-0 items-center">
+        <input
+          type="checkbox"
+          role="switch"
+          [class]="$trackClass()"
+          [id]="$effectiveId()"
+          [checked]="checked()"
+          [disabled]="$effectiveDisabled()"
+          (change)="onInputChange($event)"
+          (blur)="onBlur()"
+        />
+      </span>
       @if (label()) {
-        <label
-          [attr.for]="$effectiveId()"
-          [class]="$labelClass()"
-        >
-          {{ label() }}
-        </label>
+        <span>{{ label() }}</span>
       } @else {
         <ng-content />
       }
-    </div>
+    </label>
   `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiSwitchComponent, decorators: [{
@@ -424,6 +328,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
             args: [{
                     selector: 'ui-switch',
                     changeDetection: ChangeDetectionStrategy.OnPush,
+                    host: {
+                        class: 'inline-flex align-top',
+                    },
                     providers: [
                         {
                             provide: NG_VALUE_ACCESSOR,
@@ -432,34 +339,29 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
                         },
                     ],
                     template: `
-    <div [class]="$rootClass()">
-      <button
-        type="button"
-        role="switch"
-        [id]="$effectiveId()"
-        [attr.aria-checked]="checked() ? 'true' : 'false'"
-        [attr.aria-disabled]="$effectiveDisabled() ? 'true' : null"
-        [disabled]="$effectiveDisabled()"
-        [class]="$trackClass()"
-        (click)="toggle()"
-        (blur)="onBlur()"
-      >
-        <span
-          aria-hidden="true"
-          [class]="$thumbClass()"
-        ></span>
-      </button>
+    <label
+      [class]="$rootClass()"
+      [attr.for]="$effectiveId()"
+    >
+      <!-- One text line tall, so the track stays centered on the first line of the label -->
+      <span class="flex h-lh shrink-0 items-center">
+        <input
+          type="checkbox"
+          role="switch"
+          [class]="$trackClass()"
+          [id]="$effectiveId()"
+          [checked]="checked()"
+          [disabled]="$effectiveDisabled()"
+          (change)="onInputChange($event)"
+          (blur)="onBlur()"
+        />
+      </span>
       @if (label()) {
-        <label
-          [attr.for]="$effectiveId()"
-          [class]="$labelClass()"
-        >
-          {{ label() }}
-        </label>
+        <span>{{ label() }}</span>
       } @else {
         <ng-content />
       }
-    </div>
+    </label>
   `,
                 }]
         }], propDecorators: { checked: [{ type: i0.Input, args: [{ isSignal: true, alias: "checked", required: false }] }, { type: i0.Output, args: ["checkedChange"] }], disabled: [{ type: i0.Input, args: [{ isSignal: true, alias: "disabled", required: false }] }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }], label: [{ type: i0.Input, args: [{ isSignal: true, alias: "label", required: false }] }], id: [{ type: i0.Input, args: [{ isSignal: true, alias: "id", required: false }] }] } });
@@ -468,5 +370,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
  * Generated bundle index. Do not edit.
  */
 
-export { UiCheckboxComponent, UiSwitchComponent, checkboxBoxVariants, checkboxVariants, switchThumbTranslateMap, switchThumbVariants, switchTrackVariants, switchVariants };
+export { UiCheckboxComponent, UiSwitchComponent, checkboxBoxVariants, checkboxVariants, switchTrackVariants };
 //# sourceMappingURL=libs-ui-checkbox.mjs.map

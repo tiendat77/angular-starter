@@ -96,8 +96,8 @@ describe('UiFormFieldComponent (prefix/suffix)', () => {
 
     expect(box.querySelector('[uiPrefix]')?.textContent).toBe('$');
     expect(box.querySelector('[uiSuffix]')?.textContent).toBe('USD');
-    expect(box.className).toContain('border');
-    expect(inputEl.className).not.toContain('border');
+    expect(box.classList).toContain('input');
+    expect(inputEl.classList).not.toContain('input');
   });
 
   it('should keep the box while only a suffix is projected', () => {
@@ -106,6 +106,6 @@ describe('UiFormFieldComponent (prefix/suffix)', () => {
 
     const inputEl: HTMLInputElement = fixture.nativeElement.querySelector('input');
     expect(fixture.nativeElement.querySelector('[uiPrefix]')).toBeNull();
-    expect(inputEl.parentElement?.className).toContain('border');
+    expect(inputEl.parentElement?.classList).toContain('input');
   });
 });

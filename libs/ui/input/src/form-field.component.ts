@@ -14,7 +14,7 @@ import { UiErrorDirective } from './error.directive';
 import { UI_FORM_FIELD, UiFormFieldContext } from './form-field.token';
 import { UiHintDirective } from './hint.directive';
 import { UiInputDirective } from './input.directive';
-import { inputAffixBoxVariants } from './input.variants';
+import { inputVariants } from './input.variants';
 import { UiLabelDirective } from './label.directive';
 import { UiPrefixDirective, UiSuffixDirective } from './prefix-suffix.directive';
 
@@ -74,7 +74,7 @@ export class UiFormFieldComponent implements UiFormFieldContext {
   protected readonly $controlRowClass = computed(() => {
     const input = this._input();
     return this.$hasAffix() && input
-      ? inputAffixBoxVariants({ appearance: input.appearance(), size: input.size() })
+      ? inputVariants({ appearance: input.appearance(), size: input.size() })
       : 'relative flex items-center gap-2';
   });
 

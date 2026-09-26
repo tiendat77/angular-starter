@@ -40,12 +40,21 @@ describe('UiCheckboxComponent and UiSwitchComponent', () => {
     expect(fixture.componentInstance.checked()).toBe(true);
   });
 
-  it('should have role="switch" and toggle aria-checked on switch', () => {
-    const switchEl = fixture.nativeElement.querySelector('ui-switch button');
+  it('should render a native role="switch" checkbox and toggle it on click', () => {
+    const switchEl: HTMLInputElement = fixture.nativeElement.querySelector('ui-switch input');
+    expect(switchEl.type).toBe('checkbox');
     expect(switchEl.getAttribute('role')).toBe('switch');
+    expect(switchEl.classList).toContain('toggle');
+
     switchEl.click();
     fixture.detectChanges();
-    expect(switchEl.getAttribute('aria-checked')).toBe('true');
+    expect(switchEl.checked).toBe(true);
     expect(fixture.componentInstance.switchChecked()).toBe(true);
+  });
+
+  it('should style the checkbox with the shared checkbox utility', () => {
+    const checkboxEl: HTMLInputElement = fixture.nativeElement.querySelector('ui-checkbox input');
+    expect(checkboxEl.classList).toContain('checkbox');
+    expect(checkboxEl.classList).toContain('checkbox-md');
   });
 });

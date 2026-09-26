@@ -80,22 +80,18 @@ declare class UiFormFieldComponent implements UiFormFieldContext {
  * default can be set once via `provideUiConfig(...)`.
  */
 type UiFormFieldAppearance = 'outline' | 'filled';
+/**
+ * Maps inputs onto the `input` CSS utilities (`@libs/ui/styles`), so
+ * `class="input input-md"` and `uiInput` render identically.
+ *
+ * Also used by `UiFormFieldComponent` for the box it draws around a `uiInput`
+ * plus `uiPrefix`/`uiSuffix` (the utility styles a nested `<input>` as bare).
+ */
 declare const inputVariants: (props?: {
     appearance?: "outline" | "filled" | undefined;
     size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
 } | undefined, extraClass?: string) => string;
-/**
- * Bordered box drawn by `UiFormFieldComponent` around a `uiInput` plus its
- * `uiPrefix`/`uiSuffix`, so the affixes sit inside the field. Mirrors the
- * sizing of `inputVariants`; focus, disabled and invalid states are derived
- * from the inner input via `:focus-within`/`:has()`.
- */
-declare const inputAffixBoxVariants: (props?: {
-    appearance?: "outline" | "filled" | undefined;
-    size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
-} | undefined, extraClass?: string) => string;
-/** Borderless `uiInput` used inside `inputAffixBoxVariants`, which owns the border and padding. */
-declare const inputAffixedClass = "h-full w-full min-w-0 flex-1 bg-transparent text-inherit outline-none placeholder:text-foreground/50 disabled:cursor-not-allowed";
+/** Maps inputs onto the `textarea` CSS utilities (`@libs/ui/styles`). */
 declare const textareaVariants: (props?: {
     appearance?: "outline" | "filled" | undefined;
     size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
@@ -250,5 +246,5 @@ declare class UiTextareaDirective extends UiFormFieldControl<string> implements 
     static ɵdir: _angular_core.ɵɵDirectiveDeclaration<UiTextareaDirective, "textarea[uiTextarea]", never, { "appearance": { "alias": "appearance"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
 }
 
-export { UI_FORM_FIELD, UiErrorDirective, UiFormFieldComponent, UiHintDirective, UiInputDirective, UiLabelDirective, UiPrefixDirective, UiSuffixDirective, UiTextareaDirective, inputAffixBoxVariants, inputAffixedClass, inputVariants, textareaVariants };
+export { UI_FORM_FIELD, UiErrorDirective, UiFormFieldComponent, UiHintDirective, UiInputDirective, UiLabelDirective, UiPrefixDirective, UiSuffixDirective, UiTextareaDirective, inputVariants, textareaVariants };
 export type { UiFormFieldAppearance, UiFormFieldContext };

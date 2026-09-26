@@ -1,41 +1,46 @@
 import * as i0 from '@angular/core';
 import { input, booleanAttribute, inject, ElementRef, computed, ChangeDetectionStrategy, Component, model, signal, contentChildren, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cva, cn, UI_CONFIG } from '@libs/ui/core';
+import { cva, UI_CONFIG, cn } from '@libs/ui/core';
 
+/**
+ * Maps inputs onto the `radio` CSS utilities (`@libs/ui/styles`). `ui-radio` is an ARIA radio
+ * (roving tabindex), not a native input, so the checked look is driven by `data-checked`.
+ */
 const radioCircleVariants = cva({
-    base: 'inline-flex items-center justify-center shrink-0 rounded-full border border-border transition-colors duration-150',
+    base: 'radio',
     variants: {
         size: {
-            xs: 'h-3.5 w-3.5',
-            sm: 'h-4 w-4',
-            md: 'h-5 w-5',
-            lg: 'h-6 w-6',
-            xl: 'h-7 w-7',
-        },
-        checked: {
-            true: 'border-primary bg-primary text-primary-content',
-            false: 'bg-background hover:bg-muted',
+            xs: 'radio-xs',
+            sm: 'radio-sm',
+            md: 'radio-md',
+            lg: 'radio-lg',
+            xl: 'radio-xl',
         },
     },
     defaultVariants: {
         size: 'md',
-        checked: 'false',
     },
 });
-const radioDotVariants = cva({
-    base: 'rounded-full bg-background',
+/** Host layout, label typography and disabled state of `ui-radio`. */
+const radioVariants = cva({
+    base: 'inline-flex items-start gap-2 select-none rounded-md p-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
     variants: {
         size: {
-            xs: 'h-1.5 w-1.5',
-            sm: 'h-1.5 w-1.5',
-            md: 'h-2 w-2',
-            lg: 'h-2.5 w-2.5',
-            xl: 'h-3 w-3',
+            xs: 'text-xs',
+            sm: 'text-xs',
+            md: 'text-sm',
+            lg: 'text-base',
+            xl: 'text-lg',
+        },
+        disabled: {
+            true: 'cursor-not-allowed text-muted-foreground opacity-50 pointer-events-none',
+            false: 'cursor-pointer text-foreground',
         },
     },
     defaultVariants: {
         size: 'md',
+        disabled: 'false',
     },
 });
 class UiRadioComponent {
@@ -79,22 +84,13 @@ class UiRadioComponent {
         return -1;
     }, /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "tabIndex" }] : /* istanbul ignore next */ []));
-    $hostClass = computed(() => cn('inline-flex items-center gap-2 select-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-md p-0.5', this.isDisabled() && 'cursor-not-allowed opacity-50 pointer-events-none'), /* @ts-ignore */
+    $hostClass = computed(() => radioVariants({
+        size: this.effectiveSize(),
+        disabled: this.isDisabled() ? 'true' : 'false',
+    }), /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$hostClass" }] : /* istanbul ignore next */ []));
-    $circleClass = computed(() => radioCircleVariants({
-        size: this.effectiveSize(),
-        checked: this.isChecked() ? 'true' : 'false',
-    }), /* @ts-ignore */
+    $circleClass = computed(() => radioCircleVariants({ size: this.effectiveSize() }), /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "$circleClass" }] : /* istanbul ignore next */ []));
-    $dotClass = computed(() => radioDotVariants({
-        size: this.effectiveSize(),
-    }), /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "$dotClass" }] : /* istanbul ignore next */ []));
-    $labelClass = computed(() => cn('text-foreground', this.effectiveSize() === 'xs' && 'text-xs', this.effectiveSize() === 'sm' && 'text-xs', this.effectiveSize() === 'md' && 'text-sm', this.effectiveSize() === 'lg' && 'text-base', this.effectiveSize() === 'xl' && 'text-lg'), /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "$labelClass" }] : /* istanbul ignore next */ []));
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
     select() {
         if (this.isDisabled() || !this._group) {
             return;
@@ -130,16 +126,16 @@ class UiRadioComponent {
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiRadioComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.5", type: UiRadioComponent, isStandalone: true, selector: "ui-radio", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "radio" }, listeners: { "click": "select()", "keydown": "onKeyDown($event)" }, properties: { "attr.aria-checked": "isChecked() ? \"true\" : \"false\"", "attr.aria-disabled": "isDisabled() ? \"true\" : null", "attr.tabindex": "tabIndex()", "class": "$hostClass()" } }, ngImport: i0, template: `
-    <span
-      aria-hidden="true"
-      [class]="$circleClass()"
-    >
-      @if (isChecked()) {
-        <span [class]="$dotClass()"></span>
-      }
+    <!-- One text line tall, so the circle stays centered on the first line of the label -->
+    <span class="flex h-lh shrink-0 items-center">
+      <span
+        aria-hidden="true"
+        [class]="$circleClass()"
+        [attr.data-checked]="isChecked() ? '' : null"
+      ></span>
     </span>
     @if (label()) {
-      <span [class]="$labelClass()">{{ label() }}</span>
+      <span>{{ label() }}</span>
     } @else {
       <ng-content />
     }
@@ -160,16 +156,16 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
                         '(keydown)': 'onKeyDown($event)',
                     },
                     template: `
-    <span
-      aria-hidden="true"
-      [class]="$circleClass()"
-    >
-      @if (isChecked()) {
-        <span [class]="$dotClass()"></span>
-      }
+    <!-- One text line tall, so the circle stays centered on the first line of the label -->
+    <span class="flex h-lh shrink-0 items-center">
+      <span
+        aria-hidden="true"
+        [class]="$circleClass()"
+        [attr.data-checked]="isChecked() ? '' : null"
+      ></span>
     </span>
     @if (label()) {
-      <span [class]="$labelClass()">{{ label() }}</span>
+      <span>{{ label() }}</span>
     } @else {
       <ng-content />
     }
@@ -293,5 +289,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
  * Generated bundle index. Do not edit.
  */
 
-export { UiRadioComponent, UiRadioGroupComponent, radioCircleVariants, radioDotVariants };
+export { UiRadioComponent, UiRadioGroupComponent, radioCircleVariants, radioVariants };
 //# sourceMappingURL=libs-ui-radio.mjs.map

@@ -58,4 +58,11 @@ describe('UiRadioGroupComponent', () => {
     expect(fixture.componentInstance.selected()).toBe('option1');
     expect(radios[0].getAttribute('aria-checked')).toBe('true');
   });
+
+  it('should drive the radio utility through data-checked', () => {
+    const circles = fixture.nativeElement.querySelectorAll('ui-radio .radio');
+    expect(circles.length).toBe(2);
+    expect(circles[0].hasAttribute('data-checked')).toBe(true);
+    expect(circles[1].hasAttribute('data-checked')).toBe(false);
+  });
 });

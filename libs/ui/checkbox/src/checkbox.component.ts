@@ -36,39 +36,18 @@ let nextCheckboxId = 0;
       [class]="$rootClass()"
       [attr.for]="$effectiveId()"
     >
-      <input
-        #inputRef
-        type="checkbox"
-        class="peer sr-only"
-        [id]="$effectiveId()"
-        [checked]="checked()"
-        [disabled]="$effectiveDisabled()"
-        (change)="onInputChange($event)"
-        (blur)="onBlur()"
-      />
       <!-- One text line tall, so the box stays centered on the first line of the label -->
-      <span
-        aria-hidden="true"
-        class="flex h-lh shrink-0 items-center"
-      >
-        <span [class]="$boxClass()">
-          <svg
-            class="h-3/4 w-3/4 stroke-current stroke-3"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            @if (indeterminate()) {
-              <line
-                x1="5"
-                y1="12"
-                x2="19"
-                y2="12"
-              />
-            } @else {
-              <polyline points="20 6 9 17 4 12" />
-            }
-          </svg>
-        </span>
+      <span class="flex h-lh shrink-0 items-center">
+        <input
+          #inputRef
+          type="checkbox"
+          [class]="$boxClass()"
+          [id]="$effectiveId()"
+          [checked]="checked()"
+          [disabled]="$effectiveDisabled()"
+          (change)="onInputChange($event)"
+          (blur)="onBlur()"
+        />
       </span>
       @if (label()) {
         <span>{{ label() }}</span>
@@ -114,10 +93,7 @@ export class UiCheckboxComponent implements ControlValueAccessor {
   );
 
   protected readonly $boxClass = computed(() =>
-    checkboxBoxVariants({
-      size: this.$effectiveSize(),
-      checked: this.checked() || this.indeterminate() ? 'true' : 'false',
-    })
+    checkboxBoxVariants({ size: this.$effectiveSize() })
   );
 
   constructor() {

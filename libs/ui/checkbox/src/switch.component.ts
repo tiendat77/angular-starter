@@ -10,19 +10,17 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { cn, UI_CONFIG, UiSize } from '@libs/ui/core';
-import {
-  switchThumbTranslateMap,
-  switchThumbVariants,
-  switchTrackVariants,
-  switchVariants,
-} from './checkbox.variants';
+import { UI_CONFIG, UiSize } from '@libs/ui/core';
+import { checkboxVariants, switchTrackVariants } from './checkbox.variants';
 
 let nextSwitchId = 0;
 
 @Component({
   selector: 'ui-switch',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'inline-flex align-top',
+  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -31,34 +29,29 @@ let nextSwitchId = 0;
     },
   ],
   template: `
-    <div [class]="$rootClass()">
-      <button
-        type="button"
-        role="switch"
-        [id]="$effectiveId()"
-        [attr.aria-checked]="checked() ? 'true' : 'false'"
-        [attr.aria-disabled]="$effectiveDisabled() ? 'true' : null"
-        [disabled]="$effectiveDisabled()"
-        [class]="$trackClass()"
-        (click)="toggle()"
-        (blur)="onBlur()"
-      >
-        <span
-          aria-hidden="true"
-          [class]="$thumbClass()"
-        ></span>
-      </button>
+    <label
+      [class]="$rootClass()"
+      [attr.for]="$effectiveId()"
+    >
+      <!-- One text line tall, so the track stays centered on the first line of the label -->
+      <span class="flex h-lh shrink-0 items-center">
+        <input
+          type="checkbox"
+          role="switch"
+          [class]="$trackClass()"
+          [id]="$effectiveId()"
+          [checked]="checked()"
+          [disabled]="$effectiveDisabled()"
+          (change)="onInputChange($event)"
+          (blur)="onBlur()"
+        />
+      </span>
       @if (label()) {
-        <label
-          [attr.for]="$effectiveId()"
-          [class]="$labelClass()"
-        >
-          {{ label() }}
-        </label>
+        <span>{{ label() }}</span>
       } @else {
         <ng-content />
       }
-    </div>
+    </label>
   `,
 })
 export class UiSwitchComponent implements ControlValueAccessor {
@@ -88,37 +81,14 @@ export class UiSwitchComponent implements ControlValueAccessor {
   );
 
   protected readonly $rootClass = computed(() =>
-    switchVariants({
+    checkboxVariants({
+      size: this.$effectiveSize(),
       disabled: this.$effectiveDisabled() ? 'true' : 'false',
     })
   );
 
   protected readonly $trackClass = computed(() =>
-    switchTrackVariants({
-      size: this.$effectiveSize(),
-      checked: this.checked() ? 'true' : 'false',
-    })
-  );
-
-  protected readonly $thumbClass = computed(() =>
-    cn(
-      switchThumbVariants({
-        size: this.$effectiveSize(),
-        checked: this.checked() ? 'true' : 'false',
-      }),
-      this.checked() && switchThumbTranslateMap[this.$effectiveSize()]
-    )
-  );
-
-  protected readonly $labelClass = computed(() =>
-    cn(
-      'cursor-pointer text-foreground select-none',
-      this.$effectiveSize() === 'xs' && 'text-xs',
-      this.$effectiveSize() === 'sm' && 'text-xs',
-      this.$effectiveSize() === 'md' && 'text-sm',
-      this.$effectiveSize() === 'lg' && 'text-base',
-      this.$effectiveSize() === 'xl' && 'text-lg'
-    )
+    switchTrackVariants({ size: this.$effectiveSize() })
   );
 
   // -----------------------------------------------------------------------------------------------------
@@ -156,6 +126,16 @@ export class UiSwitchComponent implements ControlValueAccessor {
   // -----------------------------------------------------------------------------------------------------
   // @ Protected methods
   // -----------------------------------------------------------------------------------------------------
+  protected onInputChange(event: Event): void {
+    if (this.$effectiveDisabled()) {
+      return;
+    }
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.checked.set(isChecked);
+    this._onChange(isChecked);
+    this._onTouched();
+  }
+
   protected onBlur(): void {
     this._onTouched();
   }

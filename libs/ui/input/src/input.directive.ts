@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
 import { UI_CONFIG, UiFormFieldControl, UiSize } from '@libs/ui/core';
 import { UI_FORM_FIELD } from './form-field.token';
-import { inputAffixedClass, inputVariants, UiFormFieldAppearance } from './input.variants';
+import { inputVariants, UiFormFieldAppearance } from './input.variants';
 
 let nextInputId = 0;
 
@@ -89,8 +89,9 @@ export class UiInputDirective
   readonly $invalid = this._invalid.asReadonly();
 
   protected readonly hostClass = computed(() =>
+    // Inside a prefix/suffix box the wrapper carries the `input` utility and styles this element
     this._formField?.$hasAffix()
-      ? inputAffixedClass
+      ? ''
       : inputVariants({ appearance: this.appearance(), size: this.size() })
   );
 

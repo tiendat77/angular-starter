@@ -32,26 +32,19 @@ declare class UiCheckboxComponent implements ControlValueAccessor {
     static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiCheckboxComponent, "ui-checkbox", never, { "checked": { "alias": "checked"; "required": false; "isSignal": true; }; "indeterminate": { "alias": "indeterminate"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; "label": { "alias": "label"; "required": false; "isSignal": true; }; "id": { "alias": "id"; "required": false; "isSignal": true; }; }, { "checked": "checkedChange"; }, never, ["*"], true, never>;
 }
 
+/** Root `<label>` shared by checkbox and switch: layout, label typography and disabled state. */
 declare const checkboxVariants: (props?: {
     size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
     disabled?: "true" | "false" | undefined;
 } | undefined, extraClass?: string) => string;
+/** Maps inputs onto the `checkbox` CSS utilities (`@libs/ui/styles`). */
 declare const checkboxBoxVariants: (props?: {
     size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
-    checked?: "true" | "false" | undefined;
 } | undefined, extraClass?: string) => string;
-declare const switchVariants: (props?: {
-    disabled?: "true" | "false" | undefined;
-} | undefined, extraClass?: string) => string;
+/** Maps inputs onto the `toggle` CSS utilities (`@libs/ui/styles`). */
 declare const switchTrackVariants: (props?: {
     size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
-    checked?: "true" | "false" | undefined;
 } | undefined, extraClass?: string) => string;
-declare const switchThumbVariants: (props?: {
-    size?: "xs" | "sm" | "md" | "lg" | "xl" | undefined;
-    checked?: "true" | "false" | undefined;
-} | undefined, extraClass?: string) => string;
-declare const switchThumbTranslateMap: Record<UiSize, string>;
 
 declare class UiSwitchComponent implements ControlValueAccessor {
     readonly checked: _angular_core.ModelSignal<boolean>;
@@ -69,16 +62,15 @@ declare class UiSwitchComponent implements ControlValueAccessor {
     protected readonly $effectiveSize: _angular_core.Signal<UiSize>;
     protected readonly $rootClass: _angular_core.Signal<string>;
     protected readonly $trackClass: _angular_core.Signal<string>;
-    protected readonly $thumbClass: _angular_core.Signal<string>;
-    protected readonly $labelClass: _angular_core.Signal<string>;
     writeValue(value: boolean): void;
     registerOnChange(fn: (value: boolean) => void): void;
     registerOnTouched(fn: () => void): void;
     setDisabledState(isDisabled: boolean): void;
     toggle(): void;
+    protected onInputChange(event: Event): void;
     protected onBlur(): void;
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiSwitchComponent, never>;
     static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiSwitchComponent, "ui-switch", never, { "checked": { "alias": "checked"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; "label": { "alias": "label"; "required": false; "isSignal": true; }; "id": { "alias": "id"; "required": false; "isSignal": true; }; }, { "checked": "checkedChange"; }, never, ["*"], true, never>;
 }
 
-export { UiCheckboxComponent, UiSwitchComponent, checkboxBoxVariants, checkboxVariants, switchThumbTranslateMap, switchThumbVariants, switchTrackVariants, switchVariants };
+export { UiCheckboxComponent, UiSwitchComponent, checkboxBoxVariants, checkboxVariants, switchTrackVariants };
