@@ -1,8 +1,205 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { UiButtonDirective, UiButtonSize, UiButtonVariant } from '@libs/ui/button';
+import { PlaygroundComponent } from '../../shared/playground/playground.component';
 
 @Component({
   selector: 'doc-button',
+  imports: [FormsModule, UiButtonDirective, PlaygroundComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: '<div><h1 class="text-2xl font-bold">Button</h1></div>',
+  template: `
+    <doc-playground
+      title="Button"
+      description="Interactive button directive supporting multiple visual variants, sizes, loading states, and accessible keyboard navigation."
+      [code]="generatedCode()"
+    >
+      <!-- Live Preview -->
+      <div
+        preview
+        class="flex w-full items-center justify-center p-4"
+      >
+        <button
+          uiButton
+          [variant]="variant()"
+          [size]="size()"
+          [disabled]="disabled()"
+          [loading]="loading()"
+          [fullWidth]="fullWidth()"
+        >
+          {{ label() }}
+        </button>
+      </div>
+
+      <!-- Controls -->
+      <div
+        controls
+        class="space-y-4 text-xs"
+      >
+        <div>
+          <label
+            for="btn-variant"
+            class="text-muted-foreground mb-1 block font-medium"
+            >Variant</label
+          >
+          <select
+            id="btn-variant"
+            class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+            [ngModel]="variant()"
+            (ngModelChange)="variant.set($event)"
+          >
+            <option value="primary">primary</option>
+            <option value="secondary">secondary</option>
+            <option value="outline">outline</option>
+            <option value="ghost">ghost</option>
+            <option value="danger">danger</option>
+          </select>
+        </div>
+
+        <div>
+          <label
+            for="btn-size"
+            class="text-muted-foreground mb-1 block font-medium"
+            >Size</label
+          >
+          <select
+            id="btn-size"
+            class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+            [ngModel]="size()"
+            (ngModelChange)="size.set($event)"
+          >
+            <option value="sm">sm</option>
+            <option value="md">md</option>
+            <option value="lg">lg</option>
+            <option value="icon">icon</option>
+          </select>
+        </div>
+
+        <div>
+          <label
+            for="btn-label"
+            class="text-muted-foreground mb-1 block font-medium"
+            >Label</label
+          >
+          <input
+            id="btn-label"
+            type="text"
+            class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+            [ngModel]="label()"
+            (ngModelChange)="label.set($event)"
+          />
+        </div>
+
+        <div class="border-border/50 space-y-2 border-t pt-2">
+          <label class="flex cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              class="border-border rounded"
+              [ngModel]="disabled()"
+              (ngModelChange)="disabled.set($event)"
+            />
+            <span>Disabled</span>
+          </label>
+          <label class="flex cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              class="border-border rounded"
+              [ngModel]="loading()"
+              (ngModelChange)="loading.set($event)"
+            />
+            <span>Loading</span>
+          </label>
+          <label class="flex cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              class="border-border rounded"
+              [ngModel]="fullWidth()"
+              (ngModelChange)="fullWidth.set($event)"
+            />
+            <span>Full Width</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- API Reference -->
+      <section class="mt-8 space-y-4">
+        <h2 class="text-foreground text-xl font-bold tracking-tight">API Reference</h2>
+        <div class="border-border overflow-hidden rounded-xl border">
+          <table class="w-full text-left text-sm">
+            <thead
+              class="bg-muted/50 border-border text-muted-foreground border-b text-xs uppercase"
+            >
+              <tr>
+                <th class="px-4 py-3">Property</th>
+                <th class="px-4 py-3">Type</th>
+                <th class="px-4 py-3">Default</th>
+                <th class="px-4 py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody class="divide-border divide-y font-mono text-xs">
+              <tr>
+                <td class="text-primary px-4 py-3 font-semibold">variant</td>
+                <td class="text-muted-foreground px-4 py-3">
+                  'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
+                </td>
+                <td class="px-4 py-3">'primary'</td>
+                <td class="text-muted-foreground px-4 py-3 font-sans">
+                  The visual style variant of the button.
+                </td>
+              </tr>
+              <tr>
+                <td class="text-primary px-4 py-3 font-semibold">size</td>
+                <td class="text-muted-foreground px-4 py-3">'sm' | 'md' | 'lg' | 'icon'</td>
+                <td class="px-4 py-3">'md'</td>
+                <td class="text-muted-foreground px-4 py-3 font-sans">
+                  The sizing dimensions and padding.
+                </td>
+              </tr>
+              <tr>
+                <td class="text-primary px-4 py-3 font-semibold">loading</td>
+                <td class="text-muted-foreground px-4 py-3">boolean</td>
+                <td class="px-4 py-3">false</td>
+                <td class="text-muted-foreground px-4 py-3 font-sans">
+                  Sets aria-busy="true" and prevents actions.
+                </td>
+              </tr>
+              <tr>
+                <td class="text-primary px-4 py-3 font-semibold">disabled</td>
+                <td class="text-muted-foreground px-4 py-3">boolean</td>
+                <td class="px-4 py-3">false</td>
+                <td class="text-muted-foreground px-4 py-3 font-sans">
+                  Disables user interaction and sets aria-disabled.
+                </td>
+              </tr>
+              <tr>
+                <td class="text-primary px-4 py-3 font-semibold">fullWidth</td>
+                <td class="text-muted-foreground px-4 py-3">boolean</td>
+                <td class="px-4 py-3">false</td>
+                <td class="text-muted-foreground px-4 py-3 font-sans">
+                  Stretches the button to fill 100% of container width.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </doc-playground>
+  `,
 })
-export class ButtonDocComponent {}
+export class ButtonDocComponent {
+  readonly variant = signal<UiButtonVariant>('primary');
+  readonly size = signal<UiButtonSize>('md');
+  readonly disabled = signal(false);
+  readonly loading = signal(false);
+  readonly fullWidth = signal(false);
+  readonly label = signal('Click me');
+
+  readonly generatedCode = computed(() => {
+    const parts = ['<button uiButton'];
+    if (this.variant() !== 'primary') parts.push(`variant="${this.variant()}"`);
+    if (this.size() !== 'md') parts.push(`size="${this.size()}"`);
+    if (this.loading()) parts.push('loading');
+    if (this.disabled()) parts.push('disabled');
+    if (this.fullWidth()) parts.push('fullWidth');
+    return `${parts.join(' ')}>\n  ${this.label()}\n</button>`;
+  });
+}

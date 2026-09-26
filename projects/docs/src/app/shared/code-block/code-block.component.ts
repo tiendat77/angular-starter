@@ -1,0 +1,68 @@
+import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
+
+@Component({
+  selector: 'doc-code-block',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <div class="group border-border bg-muted/40 relative overflow-hidden rounded-xl border">
+      <div
+        class="border-border/50 bg-muted/60 text-muted-foreground flex items-center justify-between border-b px-4 py-2 font-mono text-xs"
+      >
+        <span>{{ language() }}</span>
+        <button
+          type="button"
+          class="bg-background/80 hover:bg-background border-border/80 text-foreground flex cursor-pointer items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs transition-all"
+          (click)="copyCode()"
+        >
+          @if (copied()) {
+            <svg
+              class="text-success h-3.5 w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span>Copied!</span>
+          } @else {
+            <svg
+              class="h-3.5 w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
+            </svg>
+            <span>Copy</span>
+          }
+        </button>
+      </div>
+      <pre
+        class="text-foreground overflow-x-auto p-4 font-mono text-xs leading-relaxed"
+      ><code>{{ code() }}</code></pre>
+    </div>
+  `,
+})
+export class CodeBlockComponent {
+  readonly code = input<string>('');
+  readonly language = input<string>('html');
+  readonly copied = signal(false);
+
+  copyCode(): void {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(this.code());
+      this.copied.set(true);
+      setTimeout(() => this.copied.set(false), 2000);
+    }
+  }
+}

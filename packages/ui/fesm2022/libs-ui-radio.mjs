@@ -131,8 +131,8 @@ class UiRadioComponent {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiRadioComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.5", type: UiRadioComponent, isStandalone: true, selector: "ui-radio", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: true, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null } }, host: { attributes: { "role": "radio" }, listeners: { "click": "select()", "keydown": "onKeyDown($event)" }, properties: { "attr.aria-checked": "isChecked() ? \"true\" : \"false\"", "attr.aria-disabled": "isDisabled() ? \"true\" : null", "attr.tabindex": "tabIndex()", "class": "$hostClass()" } }, ngImport: i0, template: `
     <span
-      [class]="$circleClass()"
       aria-hidden="true"
+      [class]="$circleClass()"
     >
       @if (isChecked()) {
         <span [class]="$dotClass()"></span>
@@ -161,8 +161,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
                     },
                     template: `
     <span
-      [class]="$circleClass()"
       aria-hidden="true"
+      [class]="$circleClass()"
     >
       @if (isChecked()) {
         <span [class]="$dotClass()"></span>
@@ -264,7 +264,7 @@ class UiRadioGroupComponent {
                 useExisting: forwardRef(() => UiRadioGroupComponent),
                 multi: true,
             },
-        ], queries: [{ propertyName: "radios", predicate: i0.forwardRef(() => UiRadioComponent), descendants: true, isSignal: true }], ngImport: i0, template: `<ng-content />`, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+        ], queries: [{ propertyName: "radios", predicate: i0.forwardRef(() => UiRadioComponent), descendants: true, isSignal: true }], ngImport: i0, template: '<ng-content />', isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiRadioGroupComponent, decorators: [{
             type: Component,
@@ -283,7 +283,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
                         '[class]': 'hostClass()',
                         '[attr.aria-disabled]': 'effectiveDisabled() ? "true" : null',
                     },
-                    template: `<ng-content />`,
+                    template: '<ng-content />',
                 }]
         }], propDecorators: { value: [{ type: i0.Input, args: [{ isSignal: true, alias: "value", required: false }] }, { type: i0.Output, args: ["valueChange"] }], name: [{ type: i0.Input, args: [{ isSignal: true, alias: "name", required: false }] }], disabled: [{ type: i0.Input, args: [{ isSignal: true, alias: "disabled", required: false }] }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }], radios: [{ type: i0.ContentChildren, args: [forwardRef(() => UiRadioComponent), { ...{
                             descendants: true,
