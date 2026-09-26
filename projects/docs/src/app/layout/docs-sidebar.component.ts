@@ -26,6 +26,7 @@ export class DocsSidebarComponent {
         { label: 'Form Field & Input', path: '/input' },
         { label: 'Checkbox & Switch', path: '/checkbox' },
         { label: 'Radio Group', path: '/radio' },
+        { label: 'Select', path: '/select' },
         { label: 'Date Picker', path: '/date-picker' },
       ],
     },

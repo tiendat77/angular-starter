@@ -7,6 +7,8 @@
 @import './components/button.css';
 @import './components/form.css';
 @import './components/controls.css';
+@import './components/select.css';
+@import './components/tag.css';
 @import './components/alert.css';
 @import './components/layout.css';
 @import './components/navigation.css';

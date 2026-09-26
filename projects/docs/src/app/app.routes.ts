@@ -32,6 +32,11 @@ export const routes: Routes = [
       import('./features/svg-icon-doc/svg-icon-doc.component').then((m) => m.SvgIconDocComponent),
   },
   {
+    path: 'select',
+    loadComponent: () =>
+      import('./features/select-doc/select-doc.component').then((m) => m.SelectDocComponent),
+  },
+  {
     path: 'dialog',
     loadComponent: () =>
       import('./features/dialog-doc/dialog-doc.component').then((m) => m.DialogDocComponent),

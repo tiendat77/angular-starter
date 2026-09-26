@@ -43,7 +43,7 @@
     [attr.aria-invalid]="$invalid() || null"
     [attr.placeholder]="showPlaceholder() ? placeholder() : null"
     [attr.data-readonly]="searchable() ? null : ''"
-    (beforeinput)="!searchable() && $event.preventDefault()"
+    (beforeinput)="onTriggerBeforeInput($event)"
     (keydown)="onTriggerKeydown($event)"
   />
 

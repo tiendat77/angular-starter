@@ -6,6 +6,11 @@ function provideUiConfig(config) {
 }
 
 class UiFormFieldControl {
+    /**
+     * Element that receives `aria-describedby` / `aria-invalid` from `ui-form-field`.
+     * Omit it when that element is the control's host (e.g. `input[uiInput]`).
+     */
+    ariaTarget;
 }
 
 function cn(...inputs) {

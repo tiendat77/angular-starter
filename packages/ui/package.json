@@ -57,6 +57,10 @@
       "types": "./types/libs-ui-radio.d.ts",
       "default": "./fesm2022/libs-ui-radio.mjs"
     },
+    "./select": {
+      "types": "./types/libs-ui-select.d.ts",
+      "default": "./fesm2022/libs-ui-select.mjs"
+    },
     "./svg-icon": {
       "types": "./types/libs-ui-svg-icon.d.ts",
       "default": "./fesm2022/libs-ui-svg-icon.mjs"

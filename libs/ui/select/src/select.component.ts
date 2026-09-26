@@ -331,6 +331,14 @@ export class UiSelectComponent<T = unknown>
     this.setOpen(this.searchable() ? true : !this.open());
   }
 
+  /**
+   * A non-searchable select keeps its input empty. (A method, not an inline `cond && preventDefault()`
+   * expression: Angular calls preventDefault() on any listener that returns `false`.)
+   */
+  protected onTriggerBeforeInput(event: Event): void {
+    if (!this.searchable()) event.preventDefault();
+  }
+
   protected onTriggerKeydown(event: KeyboardEvent): void {
     // aria only opens an editable (input) combobox with ArrowDown; a plain select also opens on Enter/Space
     if (!this.searchable() && !this.open() && (event.key === 'Enter' || event.key === ' ')) {

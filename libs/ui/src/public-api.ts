@@ -7,5 +7,6 @@ export * from '@libs/ui/input';
 export * from '@libs/ui/loader';
 export * from '@libs/ui/paginator';
 export * from '@libs/ui/radio';
+export * from '@libs/ui/select';
 export * from '@libs/ui/svg-icon';
 export * from '@libs/ui/toast';

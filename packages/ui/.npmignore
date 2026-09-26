@@ -1,5 +1,4 @@
 # Nested package.json's are only needed for development.
-button/package.json
 checkbox/package.json
 core/package.json
 date-picker/package.json
@@ -8,5 +7,7 @@ input/package.json
 loader/package.json
 paginator/package.json
 radio/package.json
+select/package.json
 svg-icon/package.json
 toast/package.json
+button/package.json

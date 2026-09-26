@@ -299,7 +299,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
  * The control is discovered via `contentChild(UiFormFieldControl)` — the
  * shared abstract base that `UiInputDirective`/`UiTextareaDirective`
  * provide themselves as — so this component works with either without
- * knowing which one is projected.
+ * knowing which one is projected. Controls whose focusable element isn't their host
+ * (e.g. `ui-select`) expose it as `ariaTarget`.
  */
 class UiFormFieldComponent {
     _renderer = inject(Renderer2);
@@ -334,7 +335,7 @@ class UiFormFieldComponent {
             if (!control || !controlElementRef) {
                 return;
             }
-            const controlEl = controlElementRef.nativeElement;
+            const controlEl = control.ariaTarget?.() ?? controlElementRef.nativeElement;
             const labelElementRef = this._labelElementRef();
             if (labelElementRef) {
                 this._renderer.setAttribute(labelElementRef.nativeElement, 'for', control.id);
@@ -359,7 +360,7 @@ class UiFormFieldComponent {
     <ng-content select="[uiLabel]" />
     <div [class]="$controlRowClass()">
       <ng-content select="[uiPrefix]" />
-      <ng-content select="[uiInput], [uiTextarea]" />
+      <ng-content select="[uiInput], [uiTextarea], ui-select" />
       <ng-content select="[uiSuffix]" />
     </div>
     <ng-content select="[uiHint]" />
@@ -379,7 +380,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
     <ng-content select="[uiLabel]" />
     <div [class]="$controlRowClass()">
       <ng-content select="[uiPrefix]" />
-      <ng-content select="[uiInput], [uiTextarea]" />
+      <ng-content select="[uiInput], [uiTextarea], ui-select" />
       <ng-content select="[uiSuffix]" />
     </div>
     <ng-content select="[uiHint]" />

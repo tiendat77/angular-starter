@@ -2,7 +2,16 @@ import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { UiOptionComponent, UiSelectComponent } from './public-api';
-import { key, listbox, optionByText, options, settle, trigger, triggerBox } from './select.testing';
+import {
+  key,
+  listbox,
+  optionByText,
+  options,
+  settle,
+  trigger,
+  triggerBox,
+  type,
+} from './select.testing';
 
 @Component({
   imports: [UiSelectComponent, UiOptionComponent],
@@ -109,5 +118,12 @@ describe('UiSelectComponent (single, aria + overlay)', () => {
     key(trigger(), ' ');
     await settle(fixture);
     expect(listbox()).not.toBeNull();
+  });
+
+  it('blocks typing when not searchable', async () => {
+    type(trigger(), 'ban');
+    await settle(fixture);
+
+    expect(trigger().value).toBe('');
   });
 });

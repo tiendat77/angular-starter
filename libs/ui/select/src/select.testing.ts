@@ -35,8 +35,16 @@ export function key(el: HTMLElement, keyName: string): void {
   el.dispatchEvent(new KeyboardEvent('keydown', { key: keyName, bubbles: true, cancelable: true }));
 }
 
+/** Types like a browser: a cancelable beforeinput first; a prevented one leaves the value alone. */
 export function type(el: HTMLInputElement, text: string): void {
   el.focus();
+  const before = new InputEvent('beforeinput', {
+    bubbles: true,
+    cancelable: true,
+    data: text,
+    inputType: 'insertText',
+  });
+  if (!el.dispatchEvent(before)) return;
   el.value = text;
   el.dispatchEvent(new InputEvent('input', { bubbles: true, data: text, inputType: 'insertText' }));
 }

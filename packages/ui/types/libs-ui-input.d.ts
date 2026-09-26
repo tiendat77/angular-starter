@@ -53,7 +53,8 @@ declare class UiHintDirective {
  * The control is discovered via `contentChild(UiFormFieldControl)` — the
  * shared abstract base that `UiInputDirective`/`UiTextareaDirective`
  * provide themselves as — so this component works with either without
- * knowing which one is projected.
+ * knowing which one is projected. Controls whose focusable element isn't their host
+ * (e.g. `ui-select`) expose it as `ariaTarget`.
  */
 declare class UiFormFieldComponent implements UiFormFieldContext {
     private readonly _renderer;
@@ -70,7 +71,7 @@ declare class UiFormFieldComponent implements UiFormFieldContext {
     protected readonly $controlRowClass: _angular_core.Signal<string>;
     constructor();
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiFormFieldComponent, never>;
-    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiFormFieldComponent, "ui-form-field", never, {}, {}, ["control", "_controlElementRef", "_labelElementRef", "hint", "error", "_input", "_prefix", "_suffix"], ["[uiLabel]", "[uiPrefix]", "[uiInput], [uiTextarea]", "[uiSuffix]", "[uiHint]", "[uiError]"], true, never>;
+    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiFormFieldComponent, "ui-form-field", never, {}, {}, ["control", "_controlElementRef", "_labelElementRef", "hint", "error", "_input", "_prefix", "_suffix"], ["[uiLabel]", "[uiPrefix]", "[uiInput], [uiTextarea], ui-select", "[uiSuffix]", "[uiHint]", "[uiError]"], true, never>;
 }
 
 /**
