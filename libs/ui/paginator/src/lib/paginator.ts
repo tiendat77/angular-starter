@@ -309,10 +309,12 @@ export class Paginator implements OnInit, OnDestroy {
 
   /** Emits an event notifying that a change of the paginator's properties has been triggered. */
   private _emitPageEvent(previousPageIndex: number) {
+    // Indexes are 1-based throughout this paginator, so no offset is applied
     this.page.emit({
-      previousPageIndex: previousPageIndex + 1,
+      previousPageIndex,
       pageIndex: this.pageIndex,
       pageSize: this.pageSize,
+      length: this.length,
     });
   }
 

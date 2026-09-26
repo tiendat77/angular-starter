@@ -2,6 +2,7 @@
  * Public API Surface of dialog
  */
 
+export * from './lib/confirm.dialog';
 export * from './lib/dialog-actions.directive';
 export * from './lib/dialog-body.directive';
 export * from './lib/dialog-dismiss.directive';

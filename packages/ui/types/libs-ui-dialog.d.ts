@@ -1,10 +1,22 @@
-import { CdkPortal } from '@angular/cdk/portal';
-import * as i0 from '@angular/core';
-import { OnInit, AfterViewInit, AfterContentInit, OnDestroy, TemplateRef } from '@angular/core';
-import { BooleanInput } from '@angular/cdk/coercion';
 import * as i1 from '@angular/cdk/dialog';
 import { DialogRef, Dialog, DialogConfig } from '@angular/cdk/dialog';
+import * as i0 from '@angular/core';
+import { OnInit, AfterViewInit, AfterContentInit, OnDestroy, TemplateRef } from '@angular/core';
+import { CdkPortal } from '@angular/cdk/portal';
+import { BooleanInput } from '@angular/cdk/coercion';
 import { Overlay, ComponentType } from '@angular/cdk/overlay';
+
+interface DialogConfirmConfig {
+    type?: 'info' | 'success' | 'warning' | 'error';
+    title?: string;
+    message?: string;
+}
+declare class DialogConfirmComponent {
+    data: DialogConfirmConfig;
+    dialogRef: DialogRef<boolean, unknown>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DialogConfirmComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<DialogConfirmComponent, "dialog-confirm", never, {}, {}, never, never, true, never>;
+}
 
 declare class DialogActionsDirective extends CdkPortal {
     static ɵfac: i0.ɵɵFactoryDeclaration<DialogActionsDirective, never>;
@@ -78,18 +90,6 @@ declare class DialogModule {
     static ɵinj: i0.ɵɵInjectorDeclaration<DialogModule>;
 }
 
-interface DialogConfirmConfig {
-    type?: 'info' | 'success' | 'warning' | 'error';
-    title?: string;
-    message?: string;
-}
-declare class DialogConfirmComponent {
-    data: DialogConfirmConfig;
-    dialogRef: DialogRef<boolean, unknown>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<DialogConfirmComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<DialogConfirmComponent, "dialog-confirm", never, {}, {}, never, never, true, never>;
-}
-
 declare class DialogService implements OnDestroy {
     protected _dialog: Dialog;
     protected _overlay: Overlay;
@@ -101,4 +101,5 @@ declare class DialogService implements OnDestroy {
     static ɵprov: i0.ɵɵInjectableDeclaration<DialogService>;
 }
 
-export { DialogActionsDirective, DialogBodyDirective, DialogDismissDirective, DialogHeaderDirective, DialogLayoutComponent, DialogModule, DialogService, DialogTitleDirective };
+export { DialogActionsDirective, DialogBodyDirective, DialogConfirmComponent, DialogDismissDirective, DialogHeaderDirective, DialogLayoutComponent, DialogModule, DialogService, DialogTitleDirective };
+export type { DialogConfirmConfig };

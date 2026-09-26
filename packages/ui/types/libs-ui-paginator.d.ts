@@ -142,4 +142,5 @@ declare class PaginatorModule {
     static ɵinj: i0.ɵɵInjectorDeclaration<PaginatorModule>;
 }
 
-export { PAGINATOR_DEFAULT_OPTIONS, Paginator, PaginatorModule };
+export { PAGINATOR_DEFAULT_OPTIONS, PageEvent, Paginator, PaginatorModule };
+export type { Pager, PaginatorDefaultOptions };
