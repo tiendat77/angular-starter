@@ -40,6 +40,7 @@
     [(expanded)]="open"
     [disabled]="$disabled()"
     [softDisabled]="false"
+    [attr.aria-invalid]="$invalid() || null"
     [attr.placeholder]="showPlaceholder() ? placeholder() : null"
     [attr.data-readonly]="searchable() ? null : ''"
     (beforeinput)="!searchable() && $event.preventDefault()"

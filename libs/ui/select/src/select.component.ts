@@ -10,20 +10,24 @@ import {
   computed,
   contentChild,
   contentChildren,
+  DestroyRef,
   effect,
   ElementRef,
   forwardRef,
   inject,
+  Injector,
   input,
   model,
   numberAttribute,
+  OnInit,
   output,
   signal,
   untracked,
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { cn, UI_CONFIG, UiSize } from '@libs/ui/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
+import { cn, UI_CONFIG, UiFormFieldControl, UiSize } from '@libs/ui/core';
 import { inputVariants, UiFormFieldAppearance } from '@libs/ui/input';
 import { debounce, distinctUntilChanged, filter, skip, timer } from 'rxjs';
 import { UiHighlightDirective } from './highlight.directive';
@@ -64,13 +68,25 @@ function toOptionRef<T>(option: UiOptionComponent<T>): UiSelectOptionRef<T> {
   ],
   templateUrl: './select.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [{ provide: UI_SELECT, useExisting: forwardRef(() => UiSelectComponent) }],
+  providers: [
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiSelectComponent), multi: true },
+    { provide: UiFormFieldControl, useExisting: forwardRef(() => UiSelectComponent) },
+    { provide: UI_SELECT, useExisting: forwardRef(() => UiSelectComponent) },
+  ],
   host: {
     class: 'block',
+    '(focusin)': 'onFocusIn()',
+    '(focusout)': 'onFocusOut($event)',
   },
 })
-export class UiSelectComponent<T = unknown> implements UiSelectContext {
+export class UiSelectComponent<T = unknown>
+  extends UiFormFieldControl<T | T[]>
+  implements ControlValueAccessor, UiSelectContext, OnInit
+{
   private readonly _uiConfig = inject(UI_CONFIG, { optional: true });
+  private readonly _injector = inject(Injector);
+  private readonly _destroyRef = inject(DestroyRef);
+  private readonly _host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly id = `ui-select-${nextSelectId++}`;
 
@@ -108,6 +124,7 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   protected readonly options = contentChildren<UiOptionComponent<T>>(UiOptionComponent);
   protected readonly emptyTemplate = contentChild(UiSelectEmptyDirective);
   private readonly _input = viewChild<ElementRef<HTMLInputElement>>('trigger');
+  private readonly _panel = viewChild<ElementRef<HTMLElement>>('panel');
 
   // -----------------------------------------------------------------------------------------------------
   // @ State
@@ -115,10 +132,20 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   protected readonly positions = PANEL_POSITIONS;
   protected readonly open = signal(false);
   readonly searchTerm = signal('');
-  protected readonly _cvaDisabled = signal(false);
+  private readonly _cvaDisabled = signal(false);
+  private readonly _focused = signal(false);
+  private readonly _invalid = signal(false);
   private _wasOpen = false;
+  private _ngControl: NgControl | null = null;
+  private _onChange: (value: T | T[] | null) => void = () => undefined;
+  private _onTouched: () => void = () => undefined;
 
-  protected readonly $disabled = computed(() => this.disabled() || this._cvaDisabled());
+  // UiFormFieldControl
+  readonly $value = this.value.asReadonly();
+  readonly $disabled = computed(() => this.disabled() || this._cvaDisabled());
+  readonly $focused = this._focused.asReadonly();
+  readonly $invalid = this._invalid.asReadonly();
+  override readonly ariaTarget = computed(() => this._input()?.nativeElement);
   private readonly _labels = new SelectLabelCache<T>(() => this.compareWith());
 
   protected readonly selectedValues = computed<T[]>(() => {
@@ -184,6 +211,8 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   );
 
   constructor() {
+    super();
+
     // aria's `value` input owns [value] on the trigger, so the DOM text is written here
     effect(() => {
       const term = this.searchTerm();
@@ -229,6 +258,38 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   }
 
   // -----------------------------------------------------------------------------------------------------
+  // @ Lifecycle / ControlValueAccessor
+  // -----------------------------------------------------------------------------------------------------
+  ngOnInit(): void {
+    // Resolved lazily: this component is its own NG_VALUE_ACCESSOR, so injecting NgControl in
+    // the constructor would be circular (NG0200)
+    this._ngControl = this._injector.get(NgControl, null, { optional: true, self: true });
+    const control = this._ngControl?.control;
+    if (!control) return;
+
+    this._updateInvalid();
+    control.events
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe(() => this._updateInvalid());
+  }
+
+  writeValue(value: T | T[] | null): void {
+    this.value.set(value);
+  }
+
+  registerOnChange(fn: (value: T | T[] | null) => void): void {
+    this._onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this._onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this._cvaDisabled.set(isDisabled);
+  }
+
+  // -----------------------------------------------------------------------------------------------------
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
   setOpen(open: boolean): void {
@@ -243,6 +304,20 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   // -----------------------------------------------------------------------------------------------------
   // @ Template handlers
   // -----------------------------------------------------------------------------------------------------
+  protected onFocusIn(): void {
+    this._focused.set(true);
+  }
+
+  protected onFocusOut(event: FocusEvent): void {
+    const next = event.relatedTarget as Node | null;
+    const inside =
+      !!next &&
+      (this._host.nativeElement.contains(next) || !!this._panel()?.nativeElement.contains(next));
+    if (inside) return;
+    this._focused.set(false);
+    this._onTouched();
+  }
+
   /** Keeps focus in the input when the non-input parts of the trigger are pressed. */
   protected onTriggerMousedown(event: MouseEvent): void {
     if (event.target !== this._input()?.nativeElement) {
@@ -317,6 +392,12 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
 
   private _commit(value: T | T[] | null): void {
     this.value.set(value);
+    this._onChange(value);
+  }
+
+  private _updateInvalid(): void {
+    const ngControl = this._ngControl;
+    this._invalid.set(!!ngControl?.invalid && !!(ngControl.touched || ngControl.dirty));
   }
 
   private _eq(a: T, b: T): boolean {
