@@ -7,7 +7,7 @@
   (mousedown)="onTriggerMousedown($event)"
   (click)="onTriggerClick()"
 >
-  @if (hasValue()) {
+  @if (hasValue() && !searchTerm()) {
     <span class="select-value">{{ selectedLabel() }}</span>
   }
 
@@ -17,6 +17,7 @@
     #combobox="ngCombobox"
     autocomplete="off"
     [id]="id"
+    [(value)]="searchTerm"
     [(expanded)]="open"
     [attr.placeholder]="showPlaceholder() ? placeholder() : null"
     [attr.data-readonly]="searchable() ? null : ''"
@@ -66,7 +67,18 @@
           @if (opt.hasContent()) {
             <ng-container [ngTemplateOutlet]="opt.content()" />
           } @else {
-            {{ opt.label() }}
+            <span [uiHighlight]="opt.label()"></span>
+          }
+        </div>
+      } @empty {
+        <div class="select-empty">
+          @if (emptyTemplate(); as empty) {
+            <ng-container
+              [ngTemplateOutlet]="empty.template"
+              [ngTemplateOutletContext]="{ $implicit: searchTerm() }"
+            />
+          } @else {
+            {{ emptyText() }}
           }
         </div>
       }
