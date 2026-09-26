@@ -7,7 +7,25 @@
   (mousedown)="onTriggerMousedown($event)"
   (click)="onTriggerClick()"
 >
-  @if (hasValue() && !searchTerm()) {
+  @if (multiple()) {
+    @for (tag of visibleTags(); track $index) {
+      <span class="tag tag-sm">
+        {{ tag.label }}
+        <button
+          type="button"
+          class="tag-remove"
+          tabindex="-1"
+          [attr.aria-label]="'Remove ' + tag.label"
+          (click)="$event.stopPropagation(); removeValue(tag.value)"
+        >
+          ×
+        </button>
+      </span>
+    }
+    @if (hiddenTagCount() > 0) {
+      <span class="tag tag-sm">+{{ hiddenTagCount() }}</span>
+    }
+  } @else if (hasValue() && !searchTerm()) {
     <span class="select-value">{{ selectedLabel() }}</span>
   }
 
@@ -51,6 +69,7 @@
       #listbox="ngListbox"
       focusMode="activedescendant"
       selectionMode="explicit"
+      [multi]="multiple()"
       [value]="listboxValue()"
       [activeDescendant]="listbox.activeDescendant()"
       (valueChange)="onListboxChange($event)"

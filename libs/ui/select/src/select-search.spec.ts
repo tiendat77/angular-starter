@@ -139,6 +139,16 @@ describe('UiSelectComponent (search)', () => {
     expect(triggerBox().querySelector('.select-value')?.textContent?.trim()).toBe('Banana');
   });
 
+  it('keeps the panel open and the value when the term hides the selected option', async () => {
+    fixture.componentInstance.value.set('apple');
+    await settle(fixture);
+    type(trigger(), 'ban');
+    await settle(fixture);
+
+    expect(listbox()).not.toBeNull();
+    expect(fixture.componentInstance.value()).toBe('apple');
+  });
+
   it('clears the term when the panel closes without a pick', async () => {
     type(trigger(), 'ban');
     await settle(fixture);

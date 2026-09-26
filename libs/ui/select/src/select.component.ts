@@ -88,6 +88,10 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   readonly filterFn = input<UiSelectFilterFn<T> | null | undefined>(uiDefaultFilter);
   readonly searchDebounce = input(300, { transform: numberAttribute });
 
+  readonly multiple = input(false, { transform: booleanAttribute });
+  readonly compareWith = input<(a: T, b: T) => boolean>((a, b) => a === b);
+  readonly maxTagCount = input<number | null>(null);
+
   /** Debounced search term, emitted whenever `searchable` is on. */
   readonly search = output<string>();
 
@@ -104,11 +108,12 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   protected readonly positions = PANEL_POSITIONS;
   protected readonly open = signal(false);
   readonly searchTerm = signal('');
-  private readonly _labels = new SelectLabelCache<T>(() => (a: T, b: T) => a === b);
+  private readonly _labels = new SelectLabelCache<T>(() => this.compareWith());
 
   protected readonly selectedValues = computed<T[]>(() => {
     const value = this.value();
-    return value == null ? [] : [value as T];
+    if (value == null) return [];
+    return this.multiple() ? (value as T[]) : [value as T];
   });
 
   protected readonly visibleOptions = computed(() => {
@@ -122,8 +127,24 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   /** Selected values mapped onto the rendered option values, so aria sees the same references. */
   protected readonly listboxValue = computed<T[]>(() => {
     const options = this.options();
-    return this.selectedValues().map((v) => options.find((o) => o.value() === v)?.value() ?? v);
+    return this.selectedValues().map(
+      (v) => options.find((o) => this._eq(o.value(), v))?.value() ?? v
+    );
   });
+
+  protected readonly tags = computed(() =>
+    this.selectedValues().map((value) => ({ value, label: this._labels.get(value) ?? '' }))
+  );
+
+  protected readonly visibleTags = computed(() => {
+    const max = this.maxTagCount();
+    const tags = this.tags();
+    return max == null ? tags : tags.slice(0, max);
+  });
+
+  protected readonly hiddenTagCount = computed(
+    () => this.tags().length - this.visibleTags().length
+  );
 
   protected readonly hasValue = computed(() => this.selectedValues().length > 0);
 
@@ -140,7 +161,11 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   });
 
   protected readonly triggerClass = computed(() =>
-    cn(inputVariants({ appearance: this.appearance(), size: this.size() }), 'select-trigger')
+    cn(
+      inputVariants({ appearance: this.appearance(), size: this.size() }),
+      'select-trigger',
+      this.multiple() && 'select-multiple'
+    )
   );
 
   constructor() {
@@ -162,7 +187,7 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
       const selected = this.selectedValues();
       for (const option of this.options()) {
         const value = option.value();
-        if (selected.includes(value)) this._labels.set(value, option.label());
+        if (selected.some((s) => this._eq(s, value))) this._labels.set(value, option.label());
       }
     });
 
@@ -204,18 +229,48 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
     if (!this.searchable() && !this.open() && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
       this.setOpen(true);
+      return;
+    }
+    if (event.key === 'Backspace' && this.multiple() && !this.searchTerm() && this.hasValue()) {
+      this.removeValue(this.selectedValues()[this.selectedValues().length - 1]);
     }
   }
 
   protected onListboxChange(next: T[]): void {
     const current = this.selectedValues();
-    const picked = next.find((n) => !current.includes(n));
-    // Re-picking the selected option makes aria deselect it (explicit + single): keep the value
+
+    // aria only knows the rendered rows and drops selected values that aren't among them
+    // (filtered out by the term, or swapped away by server search)
+    const isRendered = (v: T) => this.visibleOptions().some((o) => this._eq(o.value(), v));
+
+    if (this.multiple()) {
+      const added = next.filter((n) => !current.some((v) => this._eq(v, n)));
+      const removedByUser = current.some((v) => isRendered(v) && !next.some((n) => this._eq(n, v)));
+      // Pure pruning (nothing added, nothing rendered removed) is not a user change
+      if (!added.length && !removedByUser) return;
+
+      const kept = current.filter((v) => next.some((n) => this._eq(n, v)) || !isRendered(v));
+      this._remember(added);
+      this._commit([...kept, ...added]);
+      this._resetSearch();
+      return;
+    }
+
+    const picked = next.find((n) => !current.some((v) => this._eq(v, n)));
     if (picked !== undefined) {
       this._remember([picked]);
-      this.value.set(picked);
+      this._commit(picked);
+      this.setOpen(false);
+      return;
     }
-    this.setOpen(false);
+    // Empty result: either the user re-picked the selected (rendered) option, which aria toggles
+    // off in explicit single mode, or aria pruned a value that isn't rendered. Keep the value;
+    // only a real re-pick closes the panel.
+    if (current.some(isRendered)) this.setOpen(false);
+  }
+
+  protected removeValue(value: T): void {
+    this._commit(this.selectedValues().filter((v) => !this._eq(v, value)));
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -223,9 +278,17 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   // -----------------------------------------------------------------------------------------------------
   private _remember(values: T[]): void {
     for (const value of values) {
-      const option = this.options().find((o) => o.value() === value);
+      const option = this.options().find((o) => this._eq(o.value(), value));
       if (option) this._labels.set(value, option.label());
     }
+  }
+
+  private _commit(value: T | T[] | null): void {
+    this.value.set(value);
+  }
+
+  private _eq(a: T, b: T): boolean {
+    return this.compareWith()(a, b);
   }
 
   private _resetSearch(): void {
