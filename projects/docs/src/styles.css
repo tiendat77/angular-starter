@@ -2,6 +2,7 @@
 
 @import '../../../src/styles/_colors.css';
 @import '../../../src/styles/_themes.css';
+@import '../../../src/styles/_components.css';
 
 :root {
   --color-background: #ffffff;
