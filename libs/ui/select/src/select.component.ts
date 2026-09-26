@@ -95,8 +95,12 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   readonly compareWith = input<(a: T, b: T) => boolean>((a, b) => a === b);
   readonly maxTagCount = input<number | null>(null);
 
+  readonly allowClear = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+
   /** Debounced search term, emitted whenever `searchable` is on. */
   readonly search = output<string>();
+  readonly openedChange = output<boolean>();
 
   // -----------------------------------------------------------------------------------------------------
   // @ Content / view
@@ -111,6 +115,10 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   protected readonly positions = PANEL_POSITIONS;
   protected readonly open = signal(false);
   readonly searchTerm = signal('');
+  protected readonly _cvaDisabled = signal(false);
+  private _wasOpen = false;
+
+  protected readonly $disabled = computed(() => this.disabled() || this._cvaDisabled());
   private readonly _labels = new SelectLabelCache<T>(() => this.compareWith());
 
   protected readonly selectedValues = computed<T[]>(() => {
@@ -151,6 +159,10 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
 
   protected readonly hasValue = computed(() => this.selectedValues().length > 0);
 
+  protected readonly showClear = computed(
+    () => this.allowClear() && this.hasValue() && !this.$disabled()
+  );
+
   protected readonly selectedLabel = computed(() => {
     const value = this.selectedValues()[0];
     return value === undefined ? '' : (this._labels.get(value) ?? '');
@@ -179,9 +191,20 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
       if (el && el.value !== term) el.value = term;
     });
 
-    // Closing the panel discards an unfinished search
+    // Emit openedChange on real transitions; closing discards an unfinished search
     effect(() => {
-      if (!this.open()) untracked(() => this._resetSearch());
+      const isOpen = this.open();
+      untracked(() => {
+        if (isOpen === this._wasOpen) return;
+        this._wasOpen = isOpen;
+        if (!isOpen) this._resetSearch();
+        this.openedChange.emit(isOpen);
+      });
+    });
+
+    // Disabling while open closes the panel
+    effect(() => {
+      if (this.$disabled()) untracked(() => this.open.set(false));
     });
 
     // Labels of the current value, whenever a matching option is declared. After render, because
@@ -209,7 +232,12 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
   setOpen(open: boolean): void {
+    if (open && this.$disabled()) return;
     this.open.set(open);
+  }
+
+  clear(): void {
+    this._commit(this.multiple() ? [] : null);
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -223,6 +251,7 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   }
 
   protected onTriggerClick(): void {
+    if (this.$disabled()) return;
     this._input()?.nativeElement.focus();
     this.setOpen(this.searchable() ? true : !this.open());
   }

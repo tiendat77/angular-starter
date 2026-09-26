@@ -15,6 +15,7 @@
           type="button"
           class="tag-remove"
           tabindex="-1"
+          [disabled]="$disabled()"
           [attr.aria-label]="'Remove ' + tag.label"
           (click)="$event.stopPropagation(); removeValue(tag.value)"
         >
@@ -37,11 +38,25 @@
     [id]="id"
     [(value)]="searchTerm"
     [(expanded)]="open"
+    [disabled]="$disabled()"
+    [softDisabled]="false"
     [attr.placeholder]="showPlaceholder() ? placeholder() : null"
     [attr.data-readonly]="searchable() ? null : ''"
     (beforeinput)="!searchable() && $event.preventDefault()"
     (keydown)="onTriggerKeydown($event)"
   />
+
+  @if (showClear()) {
+    <button
+      type="button"
+      class="select-clear"
+      tabindex="-1"
+      aria-label="Clear"
+      (click)="$event.stopPropagation(); clear()"
+    >
+      ×
+    </button>
+  }
 
   <span
     class="select-arrow"
@@ -70,6 +85,7 @@
       focusMode="activedescendant"
       selectionMode="explicit"
       [multi]="multiple()"
+      [softDisabled]="false"
       [value]="listboxValue()"
       [activeDescendant]="listbox.activeDescendant()"
       (valueChange)="onListboxChange($event)"
