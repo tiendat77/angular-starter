@@ -75,31 +75,40 @@
       (valueChange)="onListboxChange($event)"
       (mousedown)="$event.preventDefault()"
     >
-      @for (opt of visibleOptions(); track opt) {
+      @if (loading()) {
         <div
-          class="select-option"
-          ngOption
-          [value]="opt.value()"
-          [label]="opt.label()"
-          [disabled]="opt.disabled()"
+          class="select-loading"
+          role="status"
         >
-          @if (opt.hasContent()) {
-            <ng-container [ngTemplateOutlet]="opt.content()" />
-          } @else {
-            <span [uiHighlight]="opt.label()"></span>
-          }
+          Loading…
         </div>
-      } @empty {
-        <div class="select-empty">
-          @if (emptyTemplate(); as empty) {
-            <ng-container
-              [ngTemplateOutlet]="empty.template"
-              [ngTemplateOutletContext]="{ $implicit: searchTerm() }"
-            />
-          } @else {
-            {{ emptyText() }}
-          }
-        </div>
+      } @else {
+        @for (opt of visibleOptions(); track opt) {
+          <div
+            class="select-option"
+            ngOption
+            [value]="opt.value()"
+            [label]="opt.label()"
+            [disabled]="opt.disabled()"
+          >
+            @if (opt.hasContent()) {
+              <ng-container [ngTemplateOutlet]="opt.content()" />
+            } @else {
+              <span [uiHighlight]="opt.label()"></span>
+            }
+          </div>
+        } @empty {
+          <div class="select-empty">
+            @if (emptyTemplate(); as empty) {
+              <ng-container
+                [ngTemplateOutlet]="empty.template"
+                [ngTemplateOutletContext]="{ $implicit: searchTerm() }"
+              />
+            } @else {
+              {{ emptyText() }}
+            }
+          </div>
+        }
       }
     </div>
   </ng-template>

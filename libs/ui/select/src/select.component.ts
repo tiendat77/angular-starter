@@ -88,6 +88,9 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   readonly filterFn = input<UiSelectFilterFn<T> | null | undefined>(uiDefaultFilter);
   readonly searchDebounce = input(300, { transform: numberAttribute });
 
+  /** The consumer filters (usually remotely, via `(search)`); the select renders options as given. */
+  readonly serverSearch = input(false, { transform: booleanAttribute });
+  readonly loading = input(false, { transform: booleanAttribute });
   readonly multiple = input(false, { transform: booleanAttribute });
   readonly compareWith = input<(a: T, b: T) => boolean>((a, b) => a === b);
   readonly maxTagCount = input<number | null>(null);
@@ -119,7 +122,7 @@ export class UiSelectComponent<T = unknown> implements UiSelectContext {
   protected readonly visibleOptions = computed(() => {
     const all = this.options();
     const term = this.searchTerm();
-    if (!this.searchable() || !term.trim()) return all;
+    if (!this.searchable() || this.serverSearch() || !term.trim()) return all;
     const matches = this.filterFn() ?? uiDefaultFilter;
     return all.filter((o) => matches(term, toOptionRef(o)));
   });
