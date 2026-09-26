@@ -17,8 +17,8 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
   min-width: $calendar-body-min-size;
 }
 
-.calendar-body-today {
-  border-color: rgb(var(--border-default-rgb)) !important;
+.calendar-body-today:not(.calendar-body-selected) {
+  border-color: var(--color-border) !important;
 }
 
 .calendar-body-label {
@@ -82,9 +82,50 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
   }
 }
 
-.calendar-body-active {
-  .calendar-body-cell-content {
-    background-color: var(--primary-500);
-    color: var(--on-primary);
+// Hover / keyboard-active cell
+.calendar-body-cell:not(.calendar-body-disabled):hover
+  > .calendar-body-cell-content:not(.calendar-body-selected),
+.calendar-body-active > .calendar-body-cell-content:not(.calendar-body-selected) {
+  background-color: var(--color-muted);
+}
+
+.calendar-body-selected {
+  background-color: var(--color-primary);
+  color: var(--color-primary-content);
+}
+
+.calendar-body-disabled {
+  cursor: default;
+
+  > .calendar-body-cell-content {
+    color: var(--color-muted-foreground);
+    opacity: 0.5;
   }
+}
+
+// Date range
+.calendar-body-in-range::before,
+.calendar-body-in-comparison-range::before {
+  content: '';
+  position: absolute;
+  inset: 5% 0;
+  z-index: 0;
+  background-color: color-mix(in oklab, var(--color-primary) 12%, transparent);
+}
+
+.calendar-body-range-start::before {
+  left: 5%;
+  border-start-start-radius: 999px;
+  border-end-start-radius: 999px;
+}
+
+.calendar-body-range-end::before {
+  right: 5%;
+  border-start-end-radius: 999px;
+  border-end-end-radius: 999px;
+}
+
+.calendar-body-in-preview > .calendar-body-cell-content {
+  border-style: dashed;
+  border-color: var(--color-border);
 }

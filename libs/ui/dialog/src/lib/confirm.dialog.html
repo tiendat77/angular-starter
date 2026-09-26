@@ -3,7 +3,7 @@
 >
   <!-- Indicator -->
   <div
-    class="bg-red absolute top-0 z-[11] h-1 w-full"
+    class="bg-primary absolute top-0 z-[11] h-1 w-full"
     [ngClass]="{
       'bg-info': data.type === 'info',
       'bg-success': data.type === 'success',
@@ -20,7 +20,7 @@
     ></h2>
 
     <p
-      class="text-foreground text-opacity-80"
+      class="text-foreground/80"
       [innerHTML]="data.message"
     ></p>
   </div>

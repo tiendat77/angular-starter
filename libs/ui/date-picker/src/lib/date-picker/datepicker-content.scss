@@ -10,11 +10,10 @@ $non-touch-calendar-height: 24rem; // 384px
   display: flex;
   flex-direction: column;
   border-radius: 0.5rem; // 8px
-  background-color: rgba(var(--background-card-rgb), 1);
-  box-shadow:
-    0 0 #0000,
-    0 0 #0000,
-    rgba(var(--shadow-card-rgb), 0.2) 0px 8px 24px;
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 24px color-mix(in oklab, var(--color-foreground) 12%, transparent);
 
   .calendar {
     width: $non-touch-calendar-width;

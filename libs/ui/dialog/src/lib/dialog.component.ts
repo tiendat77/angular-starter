@@ -34,7 +34,6 @@ import { DialogTitleDirective } from './dialog-title.directive';
     '[class.just-dialog]': '!alert',
     '[class.alert-dialog]': 'alert',
     '[class.full-screen-dialog]': 'fullscreen',
-    class: 'animate__fadeInUp animate__animated animate__faster',
   },
 })
 export class DialogLayoutComponent implements AfterViewInit, AfterContentInit {

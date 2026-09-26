@@ -7,6 +7,35 @@ dialog-layout {
   overflow-y: hidden;
   transition: 200ms;
   background-color: var(--color-muted);
+  animation: ui-dialog-enter 300ms ease-out both;
+}
+
+/**
+ * Enter animations (self-contained, no animate.css dependency)
+ */
+.dialog-title-enter {
+  animation: ui-dialog-title-enter 300ms ease-out both;
+}
+
+@keyframes ui-dialog-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.5rem, 0);
+  }
+}
+
+@keyframes ui-dialog-title-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog-layout,
+  .dialog-title-enter {
+    animation: none;
+  }
 }
 
 /**
