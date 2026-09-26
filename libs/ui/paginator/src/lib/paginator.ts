@@ -52,7 +52,7 @@ let nextUniqueId = 0;
   host: {
     role: 'group',
     '[class.hidden]': 'autoHide && _pages.length < 1',
-    class: 'pl-4 pr-4 pt-3 pb-3 flex items-center justify-end border-t',
+    class: 'pl-4 pr-4 pt-3 pb-3 flex items-center justify-end border-t border-border',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,

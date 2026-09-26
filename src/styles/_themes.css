@@ -1,9 +1,5 @@
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-
 @theme {
   --color-on-primary: var(--on-primary);
-  --color-primary-content: var(--color-primary-content, var(--on-primary, #ffffff));
-  --color-primary: var(--primary-500);
   --color-primary-50: var(--primary-50);
   --color-primary-100: var(--primary-100);
   --color-primary-200: var(--primary-200);
@@ -17,8 +13,6 @@
   --color-primary-950: var(--primary-950);
 
   --color-on-secondary: var(--on-secondary);
-  --color-secondary-content: var(--color-secondary-content, var(--on-secondary, #18181b));
-  --color-secondary: var(--secondary-500);
   --color-secondary-50: var(--secondary-50);
   --color-secondary-100: var(--secondary-100);
   --color-secondary-200: var(--secondary-200);
@@ -31,39 +25,10 @@
   --color-secondary-900: var(--secondary-900);
   --color-secondary-950: var(--secondary-950);
 
-  --color-error: var(--color-error, #ef4444);
-  --color-error-content: var(--color-error-content, #ffffff);
-  --color-warning: var(--color-warning, #f59e0b);
-  --color-warning-content: var(--color-warning-content, #ffffff);
-  --color-success: var(--color-success, #10b981);
-  --color-success-content: var(--color-success-content, #ffffff);
-  --color-info: var(--color-info, #3b82f6);
-  --color-info-content: var(--color-info-content, #ffffff);
-  --color-muted: var(--color-muted, #f4f4f5);
-  --color-muted-foreground: var(--color-muted-foreground, #71717a);
-  --color-border: var(--color-border, #e4e4e7);
-  --color-background: var(--color-background, #ffffff);
-  --color-foreground: var(--color-foreground, #09090b);
-
   --safe-area-top: env(safe-area-inset-top);
   --safe-area-right: env(safe-area-inset-right);
   --safe-area-bottom: env(safe-area-inset-bottom);
   --safe-area-left: env(safe-area-inset-left);
-
-  --icon-size-3: 0.75rem !important;
-  --icon-size-4: 1rem !important;
-  --icon-size-5: 1.25rem !important;
-  --icon-size-6: 1.5rem !important;
-  --icon-size-7: 1.75rem !important;
-  --icon-size-8: 2rem !important;
-  --icon-size-10: 2.5rem !important;
-  --icon-size-12: 3rem !important;
-  --icon-size-14: 3.5rem !important;
-  --icon-size-16: 4rem !important;
-  --icon-size-18: 4.5rem !important;
-  --icon-size-20: 5rem !important;
-  --icon-size-22: 5.5rem !important;
-  --icon-size-24: 6rem !important;
 
   --scale-96: 0.96;
   --scale-97: 0.97;
@@ -182,22 +147,6 @@
   bottom: var(--safe-area-bottom);
 }
 
-/* Icon size */
-@utility icon-size-* {
-  width: --value(--icon-size- *) !important;
-  height: --value(--icon-size- *) !important;
-  min-width: --value(--icon-size- *) !important;
-  min-height: --value(--icon-size- *) !important;
-
-  svg {
-    size: --value(--icon-size- *);
-    min-width: --value(--icon-size- *);
-    min-height: --value(--icon-size- *);
-    font-size: --value(--icon-size- *);
-    line-height: --value(--icon-size- *);
-  }
-}
-
 /* Components */
 @utility scrollbar-none {
   -ms-overflow-style: none;
@@ -243,43 +192,4 @@
       --border-opacity: 0.12;
     }
   }
-
-  :root {
-    --color-background: #ffffff;
-    --color-foreground: #09090b;
-    --color-muted: #f4f4f5;
-    --color-muted-foreground: #71717a;
-    --color-border: #e4e4e7;
-    --color-input: #e4e4e7;
-    --color-primary-content: #ffffff;
-    --color-secondary-content: #18181b;
-    --color-error: #ef4444;
-    --color-error-content: #ffffff;
-    --color-warning: #f59e0b;
-    --color-warning-content: #ffffff;
-    --color-success: #10b981;
-    --color-success-content: #ffffff;
-    --color-info: #3b82f6;
-    --color-info-content: #ffffff;
-  }
-
-  [data-theme='dark'] {
-    --color-background: #09090b;
-    --color-foreground: #fafafa;
-    --color-muted: #27272a;
-    --color-muted-foreground: #a1a1aa;
-    --color-border: #27272a;
-    --color-input: #27272a;
-    --color-primary-content: #ffffff;
-    --color-secondary-content: #fafafa;
-    --color-error: #ef4444;
-    --color-error-content: #ffffff;
-    --color-warning: #f59e0b;
-    --color-warning-content: #ffffff;
-    --color-success: #10b981;
-    --color-success-content: #ffffff;
-    --color-info: #3b82f6;
-    --color-info-content: #ffffff;
-  }
 }
-
