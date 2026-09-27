@@ -51,7 +51,8 @@ declare class UiBadgeComponent {
 
 /**
  * Text shown in a badge. Numbers above `max` become "{max}+"; 0 is hidden unless `showZero`;
- * strings pass through; null, '', negative and non-finite numbers give ''.
+ * digit-only strings (e.g. `uiBadge="{{ unread }}"`) count as numbers; other strings pass through;
+ * null, '', negative and non-finite numbers give ''.
  */
 declare function formatBadgeCount(count: number | string | null | undefined, max?: number, showZero?: boolean): string;
 

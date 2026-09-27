@@ -50,15 +50,15 @@
   padding: 0;
   font-size: 0.875rem;
   line-height: 1;
-  color: var(--color-muted-foreground);
+  color: var(--tag-remove-fg, var(--color-muted-foreground));
   background: transparent;
   border: 0;
   border-radius: 9999px;
   cursor: pointer;
 
   &:hover {
-    color: var(--color-foreground);
-    background-color: color-mix(in oklab, var(--color-foreground) 10%, transparent);
+    color: var(--tag-remove-hover-fg, var(--color-foreground));
+    background-color: color-mix(in oklab, currentColor 10%, transparent);
   }
 
   &:disabled {
@@ -117,6 +117,9 @@
   --tag-bg: var(--tag-color, var(--color-foreground));
   --tag-fg: var(--tag-content, var(--color-background));
   --tag-border: transparent;
+  /* The muted × would vanish on a saturated fill: draw it in the tag's own text color */
+  --tag-remove-fg: currentColor;
+  --tag-remove-hover-fg: currentColor;
 }
 
 @utility tag-checkable {

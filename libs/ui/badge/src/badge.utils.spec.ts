@@ -14,9 +14,9 @@ describe('formatBadgeCount', () => {
     expect(formatBadgeCount(0, 99, true)).toBe('0');
   });
 
-  it('passes strings through', () => {
+  it('passes text strings through', () => {
     expect(formatBadgeCount('new')).toBe('new');
-    expect(formatBadgeCount('0')).toBe('0');
+    expect(formatBadgeCount('1.5k')).toBe('1.5k');
   });
 
   it('returns empty for null, empty, negative and non-finite values', () => {
@@ -29,5 +29,12 @@ describe('formatBadgeCount', () => {
 
   it('drops fractions', () => {
     expect(formatBadgeCount(4.7)).toBe('4');
+  });
+
+  it('treats digit-only strings as numbers (e.g. interpolated counts)', () => {
+    expect(formatBadgeCount('0')).toBe('');
+    expect(formatBadgeCount('0', 99, true)).toBe('0');
+    expect(formatBadgeCount('150')).toBe('99+');
+    expect(formatBadgeCount('7')).toBe('7');
   });
 });

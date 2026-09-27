@@ -28,17 +28,24 @@
   }
 }
 
+/* Each appearance sets all three variables: custom properties inherit, so a nested card would
+   otherwise pick up its parent's background, border or (hover) shadow. */
 @utility card-outline {
+  --card-bg: var(--color-background);
   --card-border: var(--color-border);
+  --card-shadow: none;
 }
 
 @utility card-elevated {
+  --card-bg: var(--color-background);
+  --card-border: var(--color-border);
   --card-shadow: 0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
 
 @utility card-filled {
   --card-bg: var(--color-muted);
   --card-border: transparent;
+  --card-shadow: none;
 }
 
 @utility card-p-none {
