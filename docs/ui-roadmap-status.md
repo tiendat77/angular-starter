@@ -83,12 +83,12 @@ Earlier on this branch: highlight.js code blocks, separate `.html` / `.ts` per d
 | Button (variants, icon, loading) | ✅ | The CSS also supports `soft`, `dash`, `link`, `xs`, `xl`, `circle`, but `UiButtonVariant`/`UiButtonSize` don't expose them yet |
 | Input, Textarea, Form Field (label/error/hint/prefix/suffix) | ✅ | |
 | Checkbox, Radio, Switch | ✅ | |
-| **Select (single)** | ❌ | Only a native `select` utility |
-| **Multi-select** | ❌ | |
+| **Select (single)** | ✅ | `ui-select` on `@angular/aria` combobox + listbox and a CDK overlay |
+| **Multi-select** | ✅ | `ui-select multiple` with removable tags |
 | Toast | ✅ | Works, on tokens, documented. Uses `@angular/animations`, so apps need an animations provider |
-| Alert / Banner | 🟡 | `alert` utility only, no component |
-| Spinner / Progress | 🟡 | The spinner is inline in button, and loader is full-screen only. No standalone `ui-spinner` or progress bar |
-| Card, Badge, Avatar, Tag | ❌ | |
+| Alert / Banner | ✅ | `ui-alert` (soft/outline/dash/solid, banner, actions, dismiss) |
+| Spinner / Progress | ✅ | `ui-spinner` (circular, determinate or not) and `ui-progress-bar`; button uses the shared `spinner` utility |
+| Card, Badge, Avatar, Tag | ✅ | `ui-card` + parts, `ui-badge` / `[uiBadge]`, `ui-avatar` / `ui-avatar-group`, `ui-tag` (removable, checkable) |
 | Dialog / Modal | ✅ | CDK Dialog, confirm + layout, documented |
 | **Tooltip** | ❌ | |
 | **Popover** | ❌ | |
@@ -97,7 +97,7 @@ Earlier on this branch: highlight.js code blocks, separate `.html` / `.ts` per d
 | Divider / Space | 🟡 | `divider` utility only |
 | Icon | ✅ | |
 
-**Phase 1: 6 done · 4 partial · 6 missing.**
+**Phase 1: 11 done · 2 partial · 3 missing.**
 
 ### Phase 2 — High priority (already available)
 
