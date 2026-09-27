@@ -69,6 +69,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'card',
+    loadComponent: () =>
+      import('./features/card-doc/card-doc.component').then((m) => m.CardDocComponent),
+  },
+  {
     path: 'paginator',
     loadComponent: () =>
       import('./features/paginator-doc/paginator-doc.component').then(

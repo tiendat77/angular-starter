@@ -27,3 +27,243 @@
     animation-duration: 2s;
   }
 }
+
+/* ------------------------------------------------------------------------------------------------- */
+/*  ui-spinner (SVG ring, r = 10 in a 24×24 viewBox → circumference ≈ 62.83)
+/* ------------------------------------------------------------------------------------------------- */
+@keyframes ui-spinner-dash {
+  0% {
+    stroke-dasharray: 1 63;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 45 63;
+    stroke-dashoffset: -15;
+  }
+  100% {
+    stroke-dasharray: 45 63;
+    stroke-dashoffset: -62;
+  }
+}
+
+@utility spinner-ring {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--spinner-size, 1em);
+  height: var(--spinner-size, 1em);
+  vertical-align: middle;
+  color: var(--spinner-color, currentColor);
+
+  & .spinner-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  & .spinner-track {
+    stroke: color-mix(in oklab, currentColor 20%, transparent);
+  }
+
+  & .spinner-indicator {
+    stroke: currentColor;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 300ms ease;
+  }
+
+  & .spinner-value {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: calc(var(--spinner-size, 1em) * 0.26);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--color-foreground);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .spinner-indicator {
+      transition: none;
+    }
+  }
+}
+
+@utility spinner-xs {
+  --spinner-size: 0.75rem;
+}
+
+@utility spinner-sm {
+  --spinner-size: 1rem;
+}
+
+@utility spinner-md {
+  --spinner-size: 1.5rem;
+}
+
+@utility spinner-lg {
+  --spinner-size: 2rem;
+}
+
+@utility spinner-xl {
+  --spinner-size: 3rem;
+}
+
+@utility spinner-neutral {
+  --spinner-color: var(--color-foreground);
+}
+
+@utility spinner-primary {
+  --spinner-color: var(--color-primary);
+}
+
+@utility spinner-info {
+  --spinner-color: var(--color-info);
+}
+
+@utility spinner-success {
+  --spinner-color: var(--color-success);
+}
+
+@utility spinner-warning {
+  --spinner-color: var(--color-warning);
+}
+
+@utility spinner-error {
+  --spinner-color: var(--color-error);
+}
+
+/* Start the determinate ring at 12 o'clock */
+@utility spinner-determinate {
+  & .spinner-svg {
+    transform: rotate(-90deg);
+  }
+}
+
+@utility spinner-indeterminate {
+  & .spinner-svg {
+    animation: ui-spin 1.4s linear infinite;
+  }
+
+  & .spinner-indicator {
+    stroke-dasharray: 1 63;
+    animation: ui-spinner-dash 1.4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .spinner-svg {
+      animation-duration: 3s;
+    }
+
+    & .spinner-indicator {
+      stroke-dasharray: 16 63;
+      animation: none;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------- */
+/*  ui-progress-bar
+/* ------------------------------------------------------------------------------------------------- */
+@keyframes ui-progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+@keyframes ui-progress-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@utility progress-bar {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--progress-h, 0.5rem);
+  overflow: hidden;
+  border-radius: 9999px;
+  background-color: color-mix(in oklab, var(--progress-color, var(--color-primary)) 20%, transparent);
+
+  & .progress-bar-fill {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--progress-color, var(--color-primary));
+    transform-origin: left;
+    transition: transform 300ms ease;
+  }
+
+  &:dir(rtl) .progress-bar-fill {
+    transform-origin: right;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .progress-bar-fill {
+      transition: none;
+    }
+  }
+}
+
+@utility progress-bar-sm {
+  --progress-h: 0.25rem;
+}
+
+@utility progress-bar-md {
+  --progress-h: 0.5rem;
+}
+
+@utility progress-bar-lg {
+  --progress-h: 0.75rem;
+}
+
+@utility progress-bar-neutral {
+  --progress-color: var(--color-foreground);
+}
+
+@utility progress-bar-primary {
+  --progress-color: var(--color-primary);
+}
+
+@utility progress-bar-info {
+  --progress-color: var(--color-info);
+}
+
+@utility progress-bar-success {
+  --progress-color: var(--color-success);
+}
+
+@utility progress-bar-warning {
+  --progress-color: var(--color-warning);
+}
+
+@utility progress-bar-error {
+  --progress-color: var(--color-error);
+}
+
+@utility progress-bar-indeterminate {
+  & .progress-bar-fill {
+    width: 40%;
+    animation: ui-progress-indeterminate 1.5s ease-in-out infinite;
+  }
+
+  &:dir(rtl) .progress-bar-fill {
+    animation-direction: reverse;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .progress-bar-fill {
+      margin-inline-start: 30%;
+      animation: ui-progress-pulse 2s ease-in-out infinite;
+    }
+  }
+}

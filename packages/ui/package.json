@@ -21,9 +21,25 @@
       "types": "./types/libs-ui.d.ts",
       "default": "./fesm2022/libs-ui.mjs"
     },
+    "./alert": {
+      "types": "./types/libs-ui-alert.d.ts",
+      "default": "./fesm2022/libs-ui-alert.mjs"
+    },
+    "./avatar": {
+      "types": "./types/libs-ui-avatar.d.ts",
+      "default": "./fesm2022/libs-ui-avatar.mjs"
+    },
+    "./badge": {
+      "types": "./types/libs-ui-badge.d.ts",
+      "default": "./fesm2022/libs-ui-badge.mjs"
+    },
     "./button": {
       "types": "./types/libs-ui-button.d.ts",
       "default": "./fesm2022/libs-ui-button.mjs"
+    },
+    "./card": {
+      "types": "./types/libs-ui-card.d.ts",
+      "default": "./fesm2022/libs-ui-card.mjs"
     },
     "./checkbox": {
       "types": "./types/libs-ui-checkbox.d.ts",
@@ -53,6 +69,10 @@
       "types": "./types/libs-ui-paginator.d.ts",
       "default": "./fesm2022/libs-ui-paginator.mjs"
     },
+    "./progress": {
+      "types": "./types/libs-ui-progress.d.ts",
+      "default": "./fesm2022/libs-ui-progress.mjs"
+    },
     "./radio": {
       "types": "./types/libs-ui-radio.d.ts",
       "default": "./fesm2022/libs-ui-radio.mjs"
@@ -64,6 +84,10 @@
     "./svg-icon": {
       "types": "./types/libs-ui-svg-icon.d.ts",
       "default": "./fesm2022/libs-ui-svg-icon.mjs"
+    },
+    "./tag": {
+      "types": "./types/libs-ui-tag.d.ts",
+      "default": "./fesm2022/libs-ui-tag.mjs"
     },
     "./toast": {
       "types": "./types/libs-ui-toast.d.ts",
