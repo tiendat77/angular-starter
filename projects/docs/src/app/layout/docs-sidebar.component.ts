@@ -36,6 +36,7 @@ export class DocsSidebarComponent {
         { label: 'Dialog', path: '/dialog' },
         { label: 'Toast', path: '/toast' },
         { label: 'Loader', path: '/loader' },
+        { label: 'Spinner & Progress', path: '/progress' },
       ],
     },
     {

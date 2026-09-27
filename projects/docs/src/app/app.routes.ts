@@ -52,6 +52,11 @@ export const routes: Routes = [
       import('./features/loader-doc/loader-doc.component').then((m) => m.LoaderDocComponent),
   },
   {
+    path: 'progress',
+    loadComponent: () =>
+      import('./features/progress-doc/progress-doc.component').then((m) => m.ProgressDocComponent),
+  },
+  {
     path: 'date-picker',
     loadComponent: () =>
       import('./features/date-picker-doc/date-picker-doc.component').then(
