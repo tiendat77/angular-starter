@@ -1,0 +1,117 @@
+<doc-playground
+  title="Dialog"
+  description="Modal dialogs built on @angular/cdk/dialog: a ready-made confirm dialog plus a layout component with title, body and action slots for custom dialogs."
+  codeLanguage="ts"
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full flex-col items-center gap-4 p-4"
+  >
+    <div class="flex flex-wrap justify-center gap-3">
+      <button
+        uiButton
+        (click)="openConfirm()"
+      >
+        Open confirm dialog
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        (click)="openCustom()"
+      >
+        Open custom dialog
+      </button>
+    </div>
+    @if (lastResult()) {
+      <p class="text-muted-foreground text-sm">
+        Last confirm result: <span class="text-foreground font-mono">{{ lastResult() }}</span>
+      </p>
+    }
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="dlg-type"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Confirm type</label
+      >
+      <select
+        id="dlg-type"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="type()"
+        (ngModelChange)="type.set($event)"
+      >
+        <option value="info">info</option>
+        <option value="success">success</option>
+        <option value="warning">warning</option>
+        <option value="error">error</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="dlg-title"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Title</label
+      >
+      <input
+        id="dlg-title"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="title()"
+        (ngModelChange)="title.set($event)"
+      />
+    </div>
+
+    <div>
+      <label
+        for="dlg-message"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Message</label
+      >
+      <input
+        id="dlg-message"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="message()"
+        (ngModelChange)="message.set($event)"
+      />
+    </div>
+
+    <div class="border-border/50 space-y-2 border-t pt-2">
+      <span class="text-muted-foreground block font-medium">Custom dialog</span>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="alert()"
+          (ngModelChange)="alert.set($event)"
+        />
+        <span>Alert (compact)</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="fullscreen()"
+          (ngModelChange)="fullscreen.set($event)"
+        />
+        <span>Fullscreen</span>
+      </label>
+    </div>
+  </div>
+
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Custom dialog</h2>
+    <doc-code-block [code]="customCode" />
+  </section>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

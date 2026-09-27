@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
-import { provideIcons } from '@libs/svg-icon';
+import { provideIcons } from '@libs/ui/svg-icon';
 
 import { provideAuth } from './core/auth';
 import { ThemeService } from './services/theme.service';

@@ -1,0 +1,45 @@
+<doc-playground
+  title="Loader"
+  description="Blocking, full-screen loading overlay for work the user must wait on. Rendered through a CDK overlay with a backdrop."
+  codeLanguage="ts"
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full items-center justify-center p-4"
+  >
+    <button
+      uiButton
+      [loading]="loading()"
+      (click)="show()"
+    >
+      Show loader for {{ duration() / 1000 }}s
+    </button>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="ldr-duration"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Duration (ms)</label
+      >
+      <input
+        id="ldr-duration"
+        type="number"
+        min="500"
+        step="500"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="duration()"
+        (ngModelChange)="duration.set($event)"
+      />
+    </div>
+  </div>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

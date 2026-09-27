@@ -234,9 +234,9 @@ export class ExcelHelper {
 
   static createWorkbook(): Workbook {
     const workbook = new Workbook();
-    workbook.creator = 'dev@dss.vn';
-    workbook.lastModifiedBy = 'dev@dss.vn';
-    workbook.title = 'DSS Export';
+    workbook.creator = 'dev@angular-starter';
+    workbook.lastModifiedBy = 'dev@angular-starter';
+    workbook.title = 'Export';
     workbook.created = new Date();
     return workbook;
   }

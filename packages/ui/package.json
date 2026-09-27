@@ -1,0 +1,79 @@
+{
+  "name": "@libs/ui",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^22.0.0",
+    "@angular/core": "^22.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "exports": {
+    "./styles": {
+      "style": "./styles/index.css",
+      "default": "./styles/index.css"
+    },
+    "./styles/*": "./styles/*",
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./types/libs-ui.d.ts",
+      "default": "./fesm2022/libs-ui.mjs"
+    },
+    "./button": {
+      "types": "./types/libs-ui-button.d.ts",
+      "default": "./fesm2022/libs-ui-button.mjs"
+    },
+    "./checkbox": {
+      "types": "./types/libs-ui-checkbox.d.ts",
+      "default": "./fesm2022/libs-ui-checkbox.mjs"
+    },
+    "./core": {
+      "types": "./types/libs-ui-core.d.ts",
+      "default": "./fesm2022/libs-ui-core.mjs"
+    },
+    "./date-picker": {
+      "types": "./types/libs-ui-date-picker.d.ts",
+      "default": "./fesm2022/libs-ui-date-picker.mjs"
+    },
+    "./dialog": {
+      "types": "./types/libs-ui-dialog.d.ts",
+      "default": "./fesm2022/libs-ui-dialog.mjs"
+    },
+    "./input": {
+      "types": "./types/libs-ui-input.d.ts",
+      "default": "./fesm2022/libs-ui-input.mjs"
+    },
+    "./loader": {
+      "types": "./types/libs-ui-loader.d.ts",
+      "default": "./fesm2022/libs-ui-loader.mjs"
+    },
+    "./paginator": {
+      "types": "./types/libs-ui-paginator.d.ts",
+      "default": "./fesm2022/libs-ui-paginator.mjs"
+    },
+    "./radio": {
+      "types": "./types/libs-ui-radio.d.ts",
+      "default": "./fesm2022/libs-ui-radio.mjs"
+    },
+    "./select": {
+      "types": "./types/libs-ui-select.d.ts",
+      "default": "./fesm2022/libs-ui-select.mjs"
+    },
+    "./svg-icon": {
+      "types": "./types/libs-ui-svg-icon.d.ts",
+      "default": "./fesm2022/libs-ui-svg-icon.mjs"
+    },
+    "./toast": {
+      "types": "./types/libs-ui-toast.d.ts",
+      "default": "./fesm2022/libs-ui-toast.mjs"
+    }
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "module": "fesm2022/libs-ui.mjs",
+  "typings": "types/libs-ui.d.ts",
+  "type": "module"
+}

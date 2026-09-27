@@ -28,6 +28,18 @@
   --secondary-950: #461704;
 }
 
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Brand overrides for @libs/ui tokens
+/*
+/*  Must stay UNLAYERED: that is what lets a single `:root` rule beat the library's layered light
+/*  and dark defaults (libs/ui/styles/tokens.css). Only override what the brand changes.
+/* ----------------------------------------------------------------------------------------------------- */
+:root {
+  --color-primary: var(--primary-500);
+  --color-primary-content: var(--on-primary);
+  --color-secondary: var(--secondary-500);
+}
+
 [data-theme='light'] {
   --background-card-rgb: 255, 255, 255;
   --background-default-rgb: 248, 250, 252;

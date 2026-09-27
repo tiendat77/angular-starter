@@ -1,18 +1,18 @@
-# Project Architecture - DSS Admin
+# Project Architecture - Angular Starter
 
-This document provides a comprehensive overview of the architecture and technical foundation of the **DSS Admin** project.
+This document provides a comprehensive overview of the architecture and technical foundation of the **Angular Starter** project.
 
 ## 🏗️ Core Technology Stack
 
-- **Framework**: [Angular 21](https://angular.dev/) (Standalone Components, v21+ Best Practices)
-- **Primary Language**: [TypeScript 5.8+](https://www.typescriptlang.org/)
-- **UI Framework**: [DaisyUI](https://daisyui.com/)
-- **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/)
+- **Framework**: [Angular 22](https://angular.dev/) (Standalone Components by default, Modern Control Flow, Signals)
+- **Primary Language**: [TypeScript 6.0+](https://www.typescriptlang.org/)
+- **UI Framework**: [DaisyUI 5](https://daisyui.com/)
+- **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/) (with `@tailwindcss/postcss`)
 - **State Management**: [Angular Signals](https://angular.dev/guide/signals) & [RxJS](https://rxjs.dev/)
-- **Validation**: [Zod](https://zod.dev/)
-- **Real-time**: [ASP.NET Core SignalR](https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction)
-- **Observability**: [OpenTelemetry](https://opentelemetry.io/)
-- **Utilities**: `es-toolkit`, `date-fns`, `dayjs`, `nanoid`, `exceljs`
+- **Validation**: [Zod 4](https://zod.dev/)
+- **Testing**: [Vitest](https://vitest.dev/) & [jsdom](https://github.com/jsdom/jsdom)
+- **Core Utilities**: `es-toolkit`, `dayjs`, `exceljs`, `swiper`, `@lottiefiles/dotlottie-wc`, `@angular/aria`, `@angular/cdk`, `ngx-permissions`
+- **Code Quality**: ESLint 10, Prettier 3, Husky 9, lint-staged 16
 
 ---
 
@@ -22,7 +22,7 @@ The project follows a modular, feature-based architecture with separated core an
 
 ```mermaid
 graph TD
-    Root[dss-admin/] --> Src[src/]
+    Root[angular-starter/] --> Src[src/]
     Root --> Libs[libs/]
     Root --> Packages[packages/]
 
@@ -32,43 +32,68 @@ graph TD
     Src --> Styles[styles/]
 
     App --> Core[core/]
-    App --> Modules[modules/]
+    App --> Features[features/]
     App --> Api[api/]
-    App --> Shared[shared/]
     App --> Services[services/]
+    App --> Shared[shared/]
 
-    Libs --> Loading[loading]
+    Libs --> DatePicker[date-picker]
+    Libs --> Dialog[dialog]
+    Libs --> Hotkeys[hotkeys]
+    Libs --> Loader[loader]
     Libs --> Navigation[navigation]
+    Libs --> Paginator[paginator]
+    Libs --> Storage[storage]
     Libs --> SVGIcon[svg-icon]
+    Libs --> Toast[toast]
 ```
 
 ### 1. `src/app/core/`
 
 The backbone of the application. Contains singleton services, global guards, interceptors, and the layout system.
 
-- **`auth/`**: Authentication logic, token management.
+- **`auth/`**: Authentication logic, token management, session handling.
 - **`guard/`**: `AuthGuard` and `NoAuthGuard` for route protection.
-- **`layouts/`**: Multi-layout system (Dense, Empty, Modern).
-- **`error-tracking/`**: Integration with OpenTelemetry for global error monitoring.
+- **`layouts/`**: Multi-layout system (`dense`, `empty`, `modern`).
+- **`commons/`**: Core utilities, base classes, and interceptors.
 
-### 2. `src/app/modules/`
+### 2. `src/app/features/`
 
 Feature-based modules. Each feature is encapsulated within its own directory and uses **lazy loading** via `routes.ts` files.
 
-- `auth/`: Login, password recovery.
-- `example/`: Example module for demonstration purposes.
+- `auth/`: Sign-in, sign-up, forgot-password, reset-password, access-denied.
+- `example/`: Example feature demonstrating dialogs, datepickers, loaders, toasts, and icons.
+- `not-found/`: 404 handler page.
 
 ### 3. `src/app/api/`
 
-Centralized API layer. Contains service definitions and data models for communicating with backend services.
+Centralized API layer. Contains base classes, operators, helpers, data models, and API resources for backend communication.
 
-### 4. `src/app/shared/`
+- `base/`: `BaseApiService`, API list interfaces, response operators.
+- `resources/`: Dedicated services per entity (e.g., `ExampleAPIService`).
+- `models/`: API data models and Zod schemas.
 
-Reusable components, directives, and pipes used across multiple feature modules.
+### 4. `src/app/services/`
 
-### 5. `libs/`
+Cross-cutting application-level services (e.g., `UserService`).
 
-Internal shared libraries that are independent of the main app logic (e.g., SVG icon handler, loading overlay).
+### 5. `src/app/shared/`
+
+Reusable UI components, directives, and pipes used across multiple feature modules.
+
+### 6. `libs/` & `packages/` (`@libs/*`)
+
+Internal shared libraries mapped via TypeScript path aliases:
+
+- `@libs/ui/toast`: Toast notification service (`ToastService`).
+- `@libs/ui/dialog`: Dialog and modal management (`DialogService`).
+- `@libs/ui/loader`: Global and overlay loaders (`LoaderService`).
+- `@libs/ui/svg-icon`: SVG icon renderer (`SvgIcon`).
+- `@libs/ui/date-picker`: Date picker components and adapters (`DatepickerModule`).
+- `@libs/ui/paginator`: Table and list pagination component.
+- `@libs/hotkeys`: Keyboard shortcut bindings.
+- `@libs/storage`: Local/session storage abstractions.
+- `@libs/navigation`: Navigation menu and sidebar controls.
 
 ---
 
@@ -76,41 +101,48 @@ Internal shared libraries that are independent of the main app logic (e.g., SVG 
 
 ### 1. Standalone First
 
-The project is built entirely using **Angular Standalone Components**. There are no `NgModules`, simplify dependency management and improving tree-shaking.
+The project is built entirely using **Angular Standalone Components**. In Angular 22, components are standalone by default, eliminating `NgModules`, simplifying dependency graphs, and enhancing tree-shaking.
 
-### 2. Signal-Based Reactivity
+### 2. Modern Control Flow
 
-Leverages **Angular Signals** (`signal`, `computed`, `effect`) for state management, providing a more granular and efficient change detection mechanism than traditional zone-based approaches.
+Templates leverage built-in control flow syntax:
 
-### 3. Multi-Layout System
+- `@if` / `@else`
+- `@for` with mandatory `track`
+- `@switch` / `@case` / `@default`
+
+### 3. Signal-Based Reactivity
+
+Leverages **Angular Signals** (`signal`, `computed`, `effect`) for granular, high-performance state management alongside `ChangeDetectionStrategy.OnPush`.
+
+### 4. Multi-Layout System
 
 Managed by `LayoutComponent` in `core/layouts`. The layout is dynamically selected based on route data:
 
-- `layout: 'dense'`: Standard admin dashboard layout.
-- `layout: 'empty'`: Full-page layout for auth or error pages.
+- `layout: 'dense'`: Standard dashboard layout with sidebar and header.
+- `layout: 'modern'`: Modern dashboard layout.
+- `layout: 'empty'`: Full-page layout for auth or standalone pages.
 
-### 4. Permission-Based Access Control (RBAC)
+### 5. Permission-Based Access Control (RBAC)
 
-Uses `ngx-permissions` integrated with functional guards. Permissions are defined centrally in `src/configs/permissions.ts` and checked during route activation.
+Uses `ngx-permissions` integrated with functional guards (`ngxPermissionsGuard`). Permissions are defined in `src/configs/permission.config.ts` and evaluated during route navigation.
 
-### 5. Modern Component Styling
+### 6. Modern Component Styling
 
-Combines the power of **DaisyUI** for base components and **Tailwind CSS 4.0** for utility-first layout and fine-tuned styling.
+Combines **DaisyUI 5** component classes with **Tailwind CSS 4.0** utility classes and CSS theme variables defined in `src/styles/` (`_colors.css`, `_themes.css`, `_daisyui.css`).
 
 ---
 
-## 🔍 Observability & Monitoring
+## 🧪 Testing & Code Quality
 
-The application includes a robust monitoring system using **OpenTelemetry**:
-
-- **Tracing**: Captures user interactions and API call chains.
-- **Logging**: Captures global errors and performance metrics via `provideErrorTracking`.
-- **Metrics**: Tracks web vitals and custom application metrics.
+- **Unit Testing**: Powered by **Vitest** and **jsdom** via `ng test` for lightning-fast testing.
+- **Linting & Formatting**: Automated via **ESLint 10** (`angular-eslint`) and **Prettier 3** with Tailwind and organize-imports plugins.
+- **Git Hooks**: Managed by **Husky** and **lint-staged** to ensure clean commits adhering to Conventional Commits.
 
 ---
 
 ## 🚀 Build & Deployment
 
-- **Environment Config**: Uses standard Angular `environments/` for staging and production.
-- **CI/CD**: Build scripts located in `.ci/build.sh`.
-- **Containerization**: `Dockerfile` and `nginx.conf` provided for Docker-based deployments.
+- **Environment Config**: Uses `src/environments/` for staging and production configurations.
+- **CI Scripts**: Build helpers located in `.ci/build-libs.js`.
+- **Production Build**: Output via `@angular/build` (`ng build --configuration production`).

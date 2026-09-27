@@ -1,0 +1,136 @@
+<doc-playground
+  title="Toast"
+  description="Short, non-blocking notifications rendered in a CDK overlay. Four semantic types, configurable position and auto-dismiss."
+  codeLanguage="ts"
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full flex-wrap items-center justify-center gap-3 p-4"
+  >
+    <button
+      uiButton
+      (click)="show()"
+    >
+      Show toast
+    </button>
+    <button
+      uiButton
+      variant="outline"
+      (click)="dismiss()"
+    >
+      Dismiss
+    </button>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="tst-type"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Type</label
+      >
+      <select
+        id="tst-type"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="type()"
+        (ngModelChange)="type.set($event)"
+      >
+        <option value="success">success</option>
+        <option value="info">info</option>
+        <option value="warning">warning</option>
+        <option value="error">error</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="tst-title"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Title</label
+      >
+      <input
+        id="tst-title"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="title()"
+        (ngModelChange)="title.set($event)"
+      />
+    </div>
+
+    <div>
+      <label
+        for="tst-message"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Message</label
+      >
+      <input
+        id="tst-message"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="message()"
+        (ngModelChange)="message.set($event)"
+      />
+    </div>
+
+    <div>
+      <label
+        for="tst-duration"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Duration (ms)</label
+      >
+      <input
+        id="tst-duration"
+        type="number"
+        min="0"
+        step="500"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="duration()"
+        (ngModelChange)="duration.set($event)"
+      />
+    </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <label
+          for="tst-h"
+          class="text-muted-foreground mb-1 block font-medium"
+          >Horizontal</label
+        >
+        <select
+          id="tst-h"
+          class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+          [ngModel]="horizontalPosition()"
+          (ngModelChange)="horizontalPosition.set($event)"
+        >
+          <option value="start">start</option>
+          <option value="center">center</option>
+          <option value="end">end</option>
+        </select>
+      </div>
+      <div>
+        <label
+          for="tst-v"
+          class="text-muted-foreground mb-1 block font-medium"
+          >Vertical</label
+        >
+        <select
+          id="tst-v"
+          class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+          [ngModel]="verticalPosition()"
+          (ngModelChange)="verticalPosition.set($event)"
+        >
+          <option value="top">top</option>
+          <option value="bottom">bottom</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

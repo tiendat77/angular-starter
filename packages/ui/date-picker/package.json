@@ -1,0 +1,4 @@
+{
+  "module": "../fesm2022/libs-ui-date-picker.mjs",
+  "typings": "../types/libs-ui-date-picker.d.ts"
+}

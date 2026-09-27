@@ -1,0 +1,85 @@
+<doc-playground
+  title="Paginator"
+  description="Page navigation for tables and lists, with an optional page size select and first/last buttons."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full flex-col gap-4 p-4"
+  >
+    <paginator
+      class="bg-background border-border rounded-xl border"
+      [length]="length()"
+      [pageIndex]="pageIndex()"
+      [pageSize]="pageSize()"
+      [showFirstLastButtons]="showFirstLastButtons()"
+      [hidePageSize]="hidePageSize()"
+      [disabled]="disabled()"
+      (page)="onPage($event)"
+    />
+    <p class="text-muted-foreground text-center text-sm">
+      @if (lastEvent(); as event) {
+        (page) → pageIndex <span class="text-foreground font-mono">{{ event.pageIndex }}</span
+        >, pageSize
+        <span class="text-foreground font-mono">{{ event.pageSize }}</span>
+      } @else {
+        Change the page to see the emitted event.
+      }
+    </p>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="pg-length"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Length</label
+      >
+      <input
+        id="pg-length"
+        type="number"
+        min="0"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="length()"
+        (ngModelChange)="length.set($event)"
+      />
+    </div>
+
+    <div class="border-border/50 space-y-2 border-t pt-2">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="showFirstLastButtons()"
+          (ngModelChange)="showFirstLastButtons.set($event)"
+        />
+        <span>First / last buttons</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="hidePageSize()"
+          (ngModelChange)="hidePageSize.set($event)"
+        />
+        <span>Hide page size</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="disabled()"
+          (ngModelChange)="disabled.set($event)"
+        />
+        <span>Disabled</span>
+      </label>
+    </div>
+  </div>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

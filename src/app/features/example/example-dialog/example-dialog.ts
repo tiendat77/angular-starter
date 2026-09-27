@@ -1,6 +1,6 @@
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DialogModule } from '@libs/dialog';
+import { DialogModule } from '@libs/ui/dialog';
 
 @Component({
   selector: 'app-example-dialog',

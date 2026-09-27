@@ -1,6 +1,6 @@
 @if ($isScreenSmall()) {
   <vertical-navigation
-    class="bg-base-100 print:hidden"
+    class="bg-background print:hidden"
     [mode]="'over'"
     [name]="'mainNavigation'"
     [navigation]="$navigation()"
@@ -16,7 +16,7 @@
 
 <div class="flex w-full min-w-0 flex-auto flex-col">
   <div
-    class="bg-base-100 relative z-49 flex h-16 w-full flex-0 items-center px-4 shadow sm:h-20 md:px-6 dark:border-b dark:bg-transparent dark:shadow-none print:hidden"
+    class="bg-background relative z-49 flex h-16 w-full flex-0 items-center px-4 shadow sm:h-20 md:px-6 dark:border-b dark:bg-transparent dark:shadow-none print:hidden"
   >
     @if (!$isScreenSmall()) {
       <div class="mx-2 flex items-center lg:mr-8">

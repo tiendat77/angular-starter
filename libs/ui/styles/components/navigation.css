@@ -1,0 +1,277 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Menu
+/* ----------------------------------------------------------------------------------------------------- */
+@utility menu {
+  display: flex;
+  flex-direction: var(--menu-dir, column);
+  flex-wrap: wrap;
+  gap: 0.125rem;
+  padding: 0.5rem;
+  font-size: var(--menu-fs, 0.875rem);
+
+  & li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+
+  & li > a,
+  & li > button,
+  & li > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: var(--menu-py, 0.5rem) var(--menu-px, 0.75rem);
+    border-radius: var(--menu-radius, 0.375rem);
+    color: var(--color-foreground);
+    text-align: start;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    transition: background-color 150ms ease;
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--color-muted);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: -2px;
+    }
+
+    &:active:not(.menu-active, .active) {
+      background-color: color-mix(in oklab, var(--color-muted) 88%, black);
+    }
+  }
+
+  & li > :is(a, button, summary):is(.menu-active, .active) {
+    color: var(--color-background);
+    background-color: var(--color-foreground);
+
+    &:hover {
+      background-color: color-mix(in oklab, var(--color-foreground) 90%, var(--color-background));
+    }
+  }
+
+  & li.menu-disabled > *,
+  & li.disabled > *,
+  & li > .menu-disabled,
+  & li > :disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  & li > summary {
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  /* Nested sub-menu */
+  & li ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin-inline-start: 1rem;
+    padding-inline-start: 0.5rem;
+    border-inline-start: 1px solid var(--color-border);
+  }
+
+  & li details:not([open]) > ul {
+    display: none;
+  }
+}
+
+@utility menu-title {
+  padding: var(--menu-py, 0.5rem) var(--menu-px, 0.75rem);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+}
+
+@utility menu-vertical {
+  --menu-dir: column;
+}
+
+@utility menu-horizontal {
+  --menu-dir: row;
+}
+
+@utility menu-xs {
+  --menu-fs: 0.6875rem;
+  --menu-py: 0.25rem;
+  --menu-px: 0.5rem;
+  --menu-radius: 0.25rem;
+}
+
+@utility menu-sm {
+  --menu-fs: 0.75rem;
+  --menu-py: 0.25rem;
+  --menu-px: 0.625rem;
+  --menu-radius: 0.375rem;
+}
+
+@utility menu-md {
+  --menu-fs: 0.875rem;
+  --menu-py: 0.5rem;
+  --menu-px: 0.75rem;
+  --menu-radius: 0.375rem;
+}
+
+@utility menu-lg {
+  --menu-fs: 1rem;
+  --menu-py: 0.625rem;
+  --menu-px: 1rem;
+  --menu-radius: 0.5rem;
+}
+
+@utility menu-xl {
+  --menu-fs: 1.125rem;
+  --menu-py: 0.75rem;
+  --menu-px: 1.25rem;
+  --menu-radius: 0.625rem;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Dropdown
+/*
+/*  CSS-only, like daisyUI: `.dropdown-content` is hidden until the dropdown has focus
+/*  (focusable trigger with tabindex), is hovered (`dropdown-hover`), is forced open
+/*  (`dropdown-open`) or is an open <details>.
+/* ----------------------------------------------------------------------------------------------------- */
+@utility dropdown {
+  position: relative;
+  display: inline-block;
+
+  & > :not(summary):focus {
+    outline: none;
+  }
+
+  & > summary {
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &:not(details) .dropdown-content {
+    visibility: hidden;
+    opacity: 0;
+    scale: 0.95;
+    transition-property: visibility, opacity, scale;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &.dropdown-open .dropdown-content,
+  &:not(.dropdown-hover):focus .dropdown-content,
+  &:focus-within .dropdown-content,
+  &.dropdown-hover:hover .dropdown-content {
+    visibility: visible;
+    opacity: 1;
+    scale: 1;
+  }
+
+  &:is(details):not([open]) .dropdown-content {
+    display: none;
+  }
+
+  /* Placement */
+  & .dropdown-content {
+    top: 100%;
+    transform-origin: top;
+  }
+
+  &.dropdown-top .dropdown-content {
+    top: auto;
+    bottom: 100%;
+    transform-origin: bottom;
+  }
+
+  &.dropdown-left .dropdown-content {
+    top: 0;
+    bottom: auto;
+    inset-inline-end: 100%;
+    transform-origin: right;
+  }
+
+  &.dropdown-right .dropdown-content {
+    top: 0;
+    bottom: auto;
+    inset-inline-start: 100%;
+    transform-origin: left;
+  }
+
+  &.dropdown-end .dropdown-content {
+    inset-inline-end: 0;
+  }
+
+  &.dropdown-center .dropdown-content {
+    inset-inline-start: 50%;
+    translate: -50% 0;
+  }
+
+  &.dropdown-end:is(.dropdown-left, .dropdown-right) .dropdown-content {
+    top: auto;
+    bottom: 0;
+  }
+
+  &.dropdown-center:is(.dropdown-left, .dropdown-right) .dropdown-content {
+    inset-inline-start: auto;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  &.dropdown-left.dropdown-center .dropdown-content {
+    inset-inline-end: 100%;
+  }
+
+  &.dropdown-right.dropdown-center .dropdown-content {
+    inset-inline-start: 100%;
+  }
+}
+
+@utility dropdown-content {
+  position: absolute;
+  z-index: 50;
+}
+
+/* Placement modifiers (`dropdown-top|bottom|left|right|end|center`) and
+   state modifiers (`dropdown-hover|open`) are handled inside `dropdown`. */
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Modal (content parts only — overlay/backdrop are handled by @libs/ui/dialog via CDK)
+/* ----------------------------------------------------------------------------------------------------- */
+@utility modal-box {
+  width: 91.666667%;
+  max-width: 32rem;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+@utility modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+@utility modal-body {
+  padding: 1.5rem;
+}
+
+@utility modal-action {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}

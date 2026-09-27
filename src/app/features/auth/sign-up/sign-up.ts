@@ -5,7 +5,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '@/core/auth';
-import { SvgIcon } from '@libs/svg-icon';
+import { SvgIcon } from '@libs/ui/svg-icon';
 import { BaseComponent } from '@models';
 import { PasswordValidators } from './validators';
 

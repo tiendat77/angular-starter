@@ -99,23 +99,23 @@
         }
       }
     },
-    "dialog": {
+    "ui": {
       "projectType": "library",
-      "root": "libs/dialog",
-      "sourceRoot": "libs/dialog/src",
-      "prefix": "lib",
+      "root": "libs/ui",
+      "sourceRoot": "libs/ui/src",
+      "prefix": "ui",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "options": {
-            "project": "libs/dialog/ng-package.json"
+            "project": "libs/ui/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "libs/dialog/tsconfig.lib.prod.json"
+              "tsConfig": "libs/ui/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "libs/dialog/tsconfig.lib.json"
+              "tsConfig": "libs/ui/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -123,98 +123,16 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["libs/dialog/**/*.ts", "libs/dialog/**/*.html"],
-            "eslintConfig": "libs/dialog/eslint.config.js"
+            "lintFilePatterns": ["libs/ui/**/*.ts", "libs/ui/**/*.html"],
+            "eslintConfig": "libs/ui/eslint.config.js"
           }
-        }
-      }
-    },
-    "loader": {
-      "projectType": "library",
-      "root": "libs/loader",
-      "sourceRoot": "libs/loader/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "libs/loader/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "libs/loader/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "libs/loader/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
         },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
+        "test": {
+          "builder": "@angular/build:unit-test",
           "options": {
-            "lintFilePatterns": ["libs/loader/**/*.ts", "libs/loader/**/*.html"],
-            "eslintConfig": "libs/loader/eslint.config.js"
-          }
-        }
-      }
-    },
-    "toast": {
-      "projectType": "library",
-      "root": "libs/toast",
-      "sourceRoot": "libs/toast/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "libs/toast/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "libs/toast/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "libs/toast/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["libs/toast/**/*.ts", "libs/toast/**/*.html"],
-            "eslintConfig": "libs/toast/eslint.config.js"
-          }
-        }
-      }
-    },
-    "svg-icon": {
-      "projectType": "library",
-      "root": "libs/svg-icon",
-      "sourceRoot": "libs/svg-icon/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "libs/svg-icon/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "libs/svg-icon/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "libs/svg-icon/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["libs/svg-icon/**/*.ts", "libs/svg-icon/**/*.html"],
-            "eslintConfig": "libs/svg-icon/eslint.config.js"
+            "tsConfig": "libs/ui/tsconfig.spec.json",
+            "buildTarget": "ui:build:development",
+            "include": ["../**/*.spec.ts"]
           }
         }
       }
@@ -249,63 +167,67 @@
         }
       }
     },
-    "paginator": {
-      "projectType": "library",
-      "root": "libs/paginator",
-      "sourceRoot": "libs/paginator/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "libs/paginator/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "libs/paginator/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "libs/paginator/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["libs/paginator/**/*.ts", "libs/paginator/**/*.html"],
-            "eslintConfig": "libs/paginator/eslint.config.js"
-          }
+    "docs": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "changeDetection": "OnPush",
+          "inlineStyle": true,
+          "skipTests": true,
+          "standalone": true,
+          "style": "scss"
         }
-      }
-    },
-    "date-picker": {
-      "projectType": "library",
-      "root": "libs/date-picker",
-      "sourceRoot": "libs/date-picker/src",
-      "prefix": "lib",
+      },
+      "root": "projects/docs",
+      "sourceRoot": "projects/docs/src",
+      "prefix": "doc",
       "architect": {
         "build": {
-          "builder": "@angular/build:ng-packagr",
+          "builder": "@angular/build:application",
           "options": {
-            "project": "libs/date-picker/ng-package.json"
+            "outputPath": "dist/docs",
+            "index": "projects/docs/src/index.html",
+            "browser": "projects/docs/src/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "projects/docs/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public/icons",
+                "output": "icons"
+              }
+            ],
+            "inlineStyleLanguage": "scss",
+            "styles": ["projects/docs/src/styles.css"],
+            "scripts": []
           },
           "configurations": {
             "production": {
-              "tsConfig": "libs/date-picker/tsconfig.lib.prod.json"
+              "outputHashing": "all"
             },
             "development": {
-              "tsConfig": "libs/date-picker/tsconfig.lib.json"
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
         },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
+        "serve": {
+          "builder": "@angular/build:dev-server",
           "options": {
-            "lintFilePatterns": ["libs/date-picker/**/*.ts", "libs/date-picker/**/*.html"],
-            "eslintConfig": "libs/date-picker/eslint.config.js"
-          }
+            "port": 4300,
+            "host": "0.0.0.0"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "docs:build:production"
+            },
+            "development": {
+              "buildTarget": "docs:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }

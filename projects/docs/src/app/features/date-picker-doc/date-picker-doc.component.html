@@ -1,0 +1,76 @@
+<doc-playground
+  title="Date Picker"
+  description="Calendar date picker connected to a text input and Angular forms. Opens in a CDK overlay; supports min/max, date filters and month/year views."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full max-w-xs flex-col gap-3 p-4"
+  >
+    <label class="input w-full">
+      <datepicker-toggle [for]="picker" />
+      <input
+        placeholder="Pick a date"
+        [datepicker]="picker"
+        [formControl]="control"
+        [datepickerFilter]="dateFilter"
+      />
+    </label>
+    <date-picker
+      #picker
+      [startView]="startView()"
+    />
+    <p class="text-muted-foreground text-sm">
+      Value:
+      <span class="text-foreground font-mono">{{ control.value ? (control.value | date: 'yyyy-MM-dd') : 'null' }}</span>
+    </p>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="dp-view"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Start view</label
+      >
+      <select
+        id="dp-view"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="startView()"
+        (ngModelChange)="startView.set($event)"
+      >
+        <option value="month">month</option>
+        <option value="year">year</option>
+        <option value="multi-year">multi-year</option>
+      </select>
+    </div>
+
+    <div class="border-border/50 space-y-2 border-t pt-2">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="weekdaysOnly()"
+          (ngModelChange)="weekdaysOnly.set($event)"
+        />
+        <span>Weekdays only (filter)</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="disabled()"
+          (ngModelChange)="toggleDisabled($event)"
+        />
+        <span>Disabled</span>
+      </label>
+    </div>
+  </div>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

@@ -1,0 +1,144 @@
+<!-- Pointer convenience only: keyboard users focus the inner combobox input -->
+<!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus, @angular-eslint/template/click-events-have-key-events -->
+<div
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  [class]="triggerClass()"
+  (mousedown)="onTriggerMousedown($event)"
+  (click)="onTriggerClick()"
+>
+  @if (multiple()) {
+    @for (tag of visibleTags(); track $index) {
+      <span class="tag tag-sm">
+        {{ tag.label }}
+        <button
+          type="button"
+          class="tag-remove"
+          tabindex="-1"
+          [disabled]="$disabled()"
+          [attr.aria-label]="'Remove ' + tag.label"
+          (click)="$event.stopPropagation(); removeValue(tag.value)"
+        >
+          ×
+        </button>
+      </span>
+    }
+    @if (hiddenTagCount() > 0) {
+      <span class="tag tag-sm">+{{ hiddenTagCount() }}</span>
+    }
+  } @else if (hasValue() && !searchTerm()) {
+    <span class="select-value">{{ selectedLabel() }}</span>
+  }
+
+  <input
+    #trigger
+    ngCombobox
+    #combobox="ngCombobox"
+    autocomplete="off"
+    [id]="id"
+    [(value)]="searchTerm"
+    [(expanded)]="open"
+    [disabled]="$disabled()"
+    [softDisabled]="false"
+    [attr.aria-invalid]="$invalid() || null"
+    [attr.aria-describedby]="describedBy()"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-labelledby]="ariaLabelledby()"
+    [attr.inputmode]="searchable() ? null : 'none'"
+    [attr.placeholder]="showPlaceholder() ? placeholder() : null"
+    [attr.data-readonly]="searchable() ? null : ''"
+    (beforeinput)="onTriggerBeforeInput($event)"
+    (keydown)="onTriggerKeydown($event)"
+  />
+
+  @if (showClear()) {
+    <button
+      type="button"
+      class="select-clear"
+      tabindex="-1"
+      aria-label="Clear"
+      (click)="$event.stopPropagation(); clear()"
+    >
+      ×
+    </button>
+  }
+
+  <span
+    class="select-arrow"
+    aria-hidden="true"
+  ></span>
+</div>
+
+@if (valueText()) {
+  <span
+    class="sr-only"
+    [id]="valueId"
+    >{{ valueText() }}</span
+  >
+}
+
+<ng-template
+  ngComboboxPopup
+  [combobox]="combobox"
+>
+  <ng-template
+    cdkConnectedOverlay
+    cdkConnectedOverlayUsePopover="inline"
+    [cdkConnectedOverlayOrigin]="origin"
+    [cdkConnectedOverlayOpen]="true"
+    [cdkConnectedOverlayPositions]="positions"
+    [cdkConnectedOverlayMatchWidth]="true"
+  >
+    <div
+      #panel
+      class="select-panel"
+      ngComboboxWidget
+      ngListbox
+      #listbox="ngListbox"
+      focusMode="activedescendant"
+      selectionMode="explicit"
+      [multi]="multiple()"
+      [softDisabled]="false"
+      [value]="listboxValue()"
+      [activeDescendant]="listbox.activeDescendant()"
+      (valueChange)="onListboxChange($event)"
+      (mousedown)="$event.preventDefault()"
+    >
+      @if (loading()) {
+        <div
+          class="select-loading"
+          role="status"
+        >
+          Loading…
+        </div>
+      } @else {
+        @for (opt of visibleOptions(); track opt) {
+          <div
+            class="select-option"
+            ngOption
+            [value]="opt.value()"
+            [label]="opt.label()"
+            [disabled]="opt.disabled()"
+          >
+            @if (opt.hasContent()) {
+              <ng-container [ngTemplateOutlet]="opt.content()" />
+            } @else {
+              <span [uiHighlight]="opt.label()"></span>
+            }
+          </div>
+        } @empty {
+          <div class="select-empty">
+            @if (emptyTemplate(); as empty) {
+              <ng-container
+                [ngTemplateOutlet]="empty.template"
+                [ngTemplateOutletContext]="{ $implicit: searchTerm() }"
+              />
+            } @else {
+              {{ emptyText() }}
+            }
+          </div>
+        }
+      }
+    </div>
+  </ng-template>
+</ng-template>
