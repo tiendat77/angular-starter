@@ -9,6 +9,10 @@
 @import './components/controls.css';
 @import './components/select.css';
 @import './components/tag.css';
+@import './components/badge.css';
+@import './components/avatar.css';
+@import './components/card.css';
 @import './components/alert.css';
+@import './components/progress.css';
 @import './components/layout.css';
 @import './components/navigation.css';

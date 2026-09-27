@@ -33,16 +33,22 @@ export class DocsSidebarComponent {
     {
       title: 'Overlays & Feedback',
       items: [
+        { label: 'Alert', path: '/alert' },
         { label: 'Dialog', path: '/dialog' },
         { label: 'Toast', path: '/toast' },
         { label: 'Loader', path: '/loader' },
+        { label: 'Spinner & Progress', path: '/progress' },
       ],
     },
     {
       title: 'Data & Media',
       items: [
+        { label: 'Avatar', path: '/avatar' },
+        { label: 'Badge', path: '/badge' },
+        { label: 'Card', path: '/card' },
         { label: 'Paginator', path: '/paginator' },
         { label: 'SVG Icon', path: '/svg-icon' },
+        { label: 'Tag', path: '/tag' },
       ],
     },
   ];

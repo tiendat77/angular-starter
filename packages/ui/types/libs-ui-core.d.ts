@@ -34,6 +34,9 @@ declare abstract class UiFormFieldControl<T> {
     setDescribedByIds?(ids: string[]): void;
 }
 
+/** Semantic color scale shared by alert, progress, badge and tag. Maps to the `--color-*` tokens. */
+type UiColor = 'neutral' | 'primary' | 'info' | 'success' | 'warning' | 'error';
+
 type UiVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 
 declare function cn(...inputs: (string | undefined | null | false)[]): string;
@@ -48,4 +51,4 @@ interface CvaConfig<T extends Record<string, Record<string, string>>> {
 declare function cva<T extends Record<string, Record<string, string>>>(config: CvaConfig<T>): (props?: { [K in keyof T]?: keyof T[K]; }, extraClass?: string) => string;
 
 export { UI_CONFIG, UiFormFieldControl, cn, cva, provideUiConfig };
-export type { CvaConfig, UiConfig, UiSize, UiVariant };
+export type { CvaConfig, UiColor, UiConfig, UiSize, UiVariant };

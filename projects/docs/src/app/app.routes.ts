@@ -52,6 +52,16 @@ export const routes: Routes = [
       import('./features/loader-doc/loader-doc.component').then((m) => m.LoaderDocComponent),
   },
   {
+    path: 'alert',
+    loadComponent: () =>
+      import('./features/alert-doc/alert-doc.component').then((m) => m.AlertDocComponent),
+  },
+  {
+    path: 'progress',
+    loadComponent: () =>
+      import('./features/progress-doc/progress-doc.component').then((m) => m.ProgressDocComponent),
+  },
+  {
     path: 'date-picker',
     loadComponent: () =>
       import('./features/date-picker-doc/date-picker-doc.component').then(
@@ -59,11 +69,31 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'card',
+    loadComponent: () =>
+      import('./features/card-doc/card-doc.component').then((m) => m.CardDocComponent),
+  },
+  {
     path: 'paginator',
     loadComponent: () =>
       import('./features/paginator-doc/paginator-doc.component').then(
         (m) => m.PaginatorDocComponent
       ),
+  },
+  {
+    path: 'avatar',
+    loadComponent: () =>
+      import('./features/avatar-doc/avatar-doc.component').then((m) => m.AvatarDocComponent),
+  },
+  {
+    path: 'badge',
+    loadComponent: () =>
+      import('./features/badge-doc/badge-doc.component').then((m) => m.BadgeDocComponent),
+  },
+  {
+    path: 'tag',
+    loadComponent: () =>
+      import('./features/tag-doc/tag-doc.component').then((m) => m.TagDocComponent),
   },
   {
     path: '**',

@@ -1,13 +1,19 @@
 # Nested package.json's are only needed for development.
+avatar/package.json
+badge/package.json
+button/package.json
+alert/package.json
+card/package.json
 checkbox/package.json
 core/package.json
 date-picker/package.json
 dialog/package.json
-button/package.json
 input/package.json
 loader/package.json
 paginator/package.json
+progress/package.json
 radio/package.json
 select/package.json
 svg-icon/package.json
 toast/package.json
+tag/package.json

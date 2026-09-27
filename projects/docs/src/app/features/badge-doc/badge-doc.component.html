@@ -1,0 +1,177 @@
+<doc-playground
+  title="Badge"
+  description="Counts and status dots, inline or overlaid on another element with [uiBadge]."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full items-center justify-center gap-10 p-4"
+  >
+    <button
+      uiButton
+      variant="ghost"
+      size="icon"
+      aria-label="Notifications"
+      [uiBadge]="count()"
+      [uiBadgeMax]="max()"
+      [uiBadgeDot]="dot()"
+      [uiBadgeShowZero]="showZero()"
+      [uiBadgeColor]="color()"
+      [uiBadgeSize]="size()"
+      [uiBadgePosition]="position()"
+      [uiBadgeOverlap]="overlap()"
+      [uiBadgeDescription]="description()"
+    >
+      <svg
+        class="size-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+        />
+      </svg>
+    </button>
+
+    <span class="flex items-center gap-2 text-sm">
+      Inbox
+      <ui-badge
+        [count]="count()"
+        [max]="max()"
+        [dot]="dot()"
+        [showZero]="showZero()"
+        [color]="color()"
+        [size]="size()"
+      />
+    </span>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="bdg-count"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Count</label
+      >
+      <input
+        id="bdg-count"
+        type="number"
+        min="0"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="count()"
+        (ngModelChange)="count.set($event ?? 0)"
+      />
+    </div>
+    <div>
+      <label
+        for="bdg-max"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Max</label
+      >
+      <input
+        id="bdg-max"
+        type="number"
+        min="1"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="max()"
+        (ngModelChange)="max.set($event ?? 99)"
+      />
+    </div>
+    <div>
+      <label
+        for="bdg-color"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Color</label
+      >
+      <select
+        id="bdg-color"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="color()"
+        (ngModelChange)="color.set($event)"
+      >
+        @for (c of colors; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label
+        for="bdg-size"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Size</label
+      >
+      <select
+        id="bdg-size"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="size()"
+        (ngModelChange)="size.set($event)"
+      >
+        <option value="sm">sm</option>
+        <option value="md">md</option>
+      </select>
+    </div>
+    <div>
+      <label
+        for="bdg-position"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Position</label
+      >
+      <select
+        id="bdg-position"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="position()"
+        (ngModelChange)="position.set($event)"
+      >
+        @for (p of positions; track p) {
+          <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label
+        for="bdg-overlap"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Overlap</label
+      >
+      <select
+        id="bdg-overlap"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="overlap()"
+        (ngModelChange)="overlap.set($event)"
+      >
+        <option value="rectangular">rectangular</option>
+        <option value="circular">circular</option>
+      </select>
+    </div>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="dot()"
+        (ngModelChange)="dot.set($event)"
+      />
+      <span>Dot</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="showZero()"
+        (ngModelChange)="showZero.set($event)"
+      />
+      <span>Show zero</span>
+    </label>
+  </div>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

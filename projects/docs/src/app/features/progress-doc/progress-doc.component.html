@@ -1,0 +1,184 @@
+<doc-playground
+  title="Spinner & Progress"
+  description="Circular and linear progress indicators, indeterminate or determinate. Both are role=progressbar with aria-valuenow in determinate mode."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full max-w-md items-center justify-center p-4"
+  >
+    @if (kind() === 'spinner') {
+      <ui-spinner
+        [value]="currentValue()"
+        [size]="spinnerSize()"
+        [color]="color()"
+        [showValue]="showValue()"
+      />
+    } @else {
+      <ui-progress-bar
+        [value]="currentValue()"
+        [size]="barSize()"
+        [color]="color()"
+      />
+    }
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="prg-kind"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Kind</label
+      >
+      <select
+        id="prg-kind"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="kind()"
+        (ngModelChange)="kind.set($event)"
+      >
+        <option value="spinner">ui-spinner</option>
+        <option value="bar">ui-progress-bar</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="prg-size"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Size</label
+      >
+      @if (kind() === 'spinner') {
+        <select
+          id="prg-size"
+          class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+          [ngModel]="spinnerSize()"
+          (ngModelChange)="spinnerSize.set($event)"
+        >
+          @for (s of spinnerSizes; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+      } @else {
+        <select
+          id="prg-size"
+          class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+          [ngModel]="barSize()"
+          (ngModelChange)="barSize.set($event)"
+        >
+          @for (s of barSizes; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+      }
+    </div>
+
+    <div>
+      <label
+        for="prg-color"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Color</label
+      >
+      <select
+        id="prg-color"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="color()"
+        (ngModelChange)="color.set($event)"
+      >
+        @for (c of colors; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="determinate()"
+        (ngModelChange)="determinate.set($event)"
+      />
+      <span>Determinate</span>
+    </label>
+
+    <div>
+      <label
+        for="prg-value"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Value: {{ value() }}</label
+      >
+      <input
+        id="prg-value"
+        type="range"
+        min="0"
+        max="100"
+        class="w-full"
+        [disabled]="!determinate()"
+        [ngModel]="value()"
+        (ngModelChange)="value.set($event)"
+      />
+    </div>
+
+    @if (kind() === 'spinner') {
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="showValue()"
+          (ngModelChange)="showValue.set($event)"
+        />
+        <span>Show value (lg / xl)</span>
+      </label>
+    }
+  </div>
+
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">In buttons and text</h2>
+    <p class="text-muted-foreground text-sm">
+      <code>uiButton</code>'s <code>loading</code> state uses the same <code>spinner</code> CSS utility. An inline
+      <code>ui-spinner</code> defaults to <code>1em</code> and the text color.
+    </p>
+    <div class="flex items-center gap-6">
+      <button
+        uiButton
+        loading
+      >
+        Saving
+      </button>
+      <p class="text-sm">Syncing <ui-spinner /></p>
+    </div>
+    <doc-code-block [code]="buttonCode" />
+  </section>
+
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Labelled progress bar</h2>
+    <p class="text-muted-foreground text-sm">
+      The bar is a single element; put the visible label and percentage around it, and pass the same text to
+      <code>label</code>.
+    </p>
+    <div class="max-w-md space-y-2">
+      <div class="flex justify-between text-sm">
+        <span>Uploading report.pdf</span>
+        <span>{{ value() }}%</span>
+      </div>
+      <ui-progress-bar
+        label="Uploading report.pdf"
+        [value]="value()"
+      />
+    </div>
+    <doc-code-block [code]="labelledBarCode" />
+  </section>
+
+  <doc-api-table
+    title="ui-spinner"
+    [rows]="spinnerRows"
+  />
+  <doc-api-table
+    title="ui-progress-bar"
+    [rows]="barRows"
+  />
+</doc-playground>

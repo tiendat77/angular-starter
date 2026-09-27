@@ -149,4 +149,14 @@ describe('UiSelectComponent (clear, disabled, openedChange)', () => {
     );
     expect(tags).toEqual(['Apple']);
   });
+
+  it('renders the clear button as an accessible svg icon, not text', async () => {
+    host.value.set('apple');
+    await settle(fixture);
+
+    const button = clearButton()!;
+    expect(button.getAttribute('aria-label')).toBe('Clear');
+    expect(button.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
+    expect(button.textContent?.trim()).toBe('');
+  });
 });

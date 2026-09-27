@@ -1,0 +1,4 @@
+{
+  "module": "../fesm2022/libs-ui-badge.mjs",
+  "typings": "../types/libs-ui-badge.d.ts"
+}

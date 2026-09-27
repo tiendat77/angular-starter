@@ -1,0 +1,138 @@
+<doc-playground
+  title="Card"
+  description="Surface for grouped content with header, content, footer and media parts. Works as an element or on a semantic host."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full justify-center p-4"
+  >
+    <ui-card
+      class="w-full max-w-sm"
+      [appearance]="appearance()"
+      [padding]="padding()"
+      [interactive]="interactive()"
+    >
+      @if (media()) {
+        <img
+          uiCardMedia
+          alt=""
+          class="h-32"
+          [src]="cover"
+        />
+      }
+      <div uiCardHeader>
+        <h3 uiCardTitle>Project Alpha</h3>
+        <p uiCardDescription>Updated 2 hours ago</p>
+        <button
+          uiButton
+          uiCardAction
+          variant="ghost"
+          size="icon"
+          aria-label="More"
+        >
+          ⋯
+        </button>
+      </div>
+      <div
+        uiCardContent
+        class="text-sm"
+      >
+        A shared component library for every product surface.
+      </div>
+      <div uiCardFooter>
+        <button
+          uiButton
+          variant="outline"
+        >
+          Cancel
+        </button>
+        <button uiButton>Open</button>
+      </div>
+    </ui-card>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="crd-appearance"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Appearance</label
+      >
+      <select
+        id="crd-appearance"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="appearance()"
+        (ngModelChange)="appearance.set($event)"
+      >
+        @for (a of appearances; track a) {
+          <option [value]="a">{{ a }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label
+        for="crd-padding"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Padding</label
+      >
+      <select
+        id="crd-padding"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="padding()"
+        (ngModelChange)="padding.set($event)"
+      >
+        @for (p of paddings; track p) {
+          <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="interactive()"
+        (ngModelChange)="interactive.set($event)"
+      />
+      <span>Interactive</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="media()"
+        (ngModelChange)="media.set($event)"
+      />
+      <span>Media</span>
+    </label>
+  </div>
+
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Cards as links</h2>
+    <p class="text-muted-foreground text-sm">
+      On <code>&lt;a&gt;</code> and <code>&lt;button&gt;</code> hosts the card keeps native semantics and gets hover and
+      focus styles automatically.
+    </p>
+    <div class="grid gap-4 sm:grid-cols-3">
+      @for (p of projects; track p.name) {
+        <a
+          uiCard
+          href="/card"
+        >
+          <div uiCardHeader>
+            <h3 uiCardTitle>{{ p.name }}</h3>
+            <p uiCardDescription>{{ p.description }}</p>
+          </div>
+        </a>
+      }
+    </div>
+    <doc-code-block [code]="linkCode" />
+  </section>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>
