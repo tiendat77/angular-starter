@@ -43,6 +43,7 @@ export class DocsSidebarComponent {
     {
       title: 'Data & Media',
       items: [
+        { label: 'Badge', path: '/badge' },
         { label: 'Paginator', path: '/paginator' },
         { label: 'SVG Icon', path: '/svg-icon' },
         { label: 'Tag', path: '/tag' },

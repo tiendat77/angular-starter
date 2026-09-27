@@ -76,6 +76,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'badge',
+    loadComponent: () =>
+      import('./features/badge-doc/badge-doc.component').then((m) => m.BadgeDocComponent),
+  },
+  {
     path: 'tag',
     loadComponent: () =>
       import('./features/tag-doc/tag-doc.component').then((m) => m.TagDocComponent),
