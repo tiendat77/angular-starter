@@ -33,6 +33,7 @@ export class DocsSidebarComponent {
     {
       title: 'Overlays & Feedback',
       items: [
+        { label: 'Alert', path: '/alert' },
         { label: 'Dialog', path: '/dialog' },
         { label: 'Toast', path: '/toast' },
         { label: 'Loader', path: '/loader' },

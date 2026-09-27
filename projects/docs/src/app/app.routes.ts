@@ -52,6 +52,11 @@ export const routes: Routes = [
       import('./features/loader-doc/loader-doc.component').then((m) => m.LoaderDocComponent),
   },
   {
+    path: 'alert',
+    loadComponent: () =>
+      import('./features/alert-doc/alert-doc.component').then((m) => m.AlertDocComponent),
+  },
+  {
     path: 'progress',
     loadComponent: () =>
       import('./features/progress-doc/progress-doc.component').then((m) => m.ProgressDocComponent),

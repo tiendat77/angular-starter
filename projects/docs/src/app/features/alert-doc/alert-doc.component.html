@@ -1,0 +1,160 @@
+<doc-playground
+  title="Alert"
+  description="Inline messages and page banners with semantic colors, default icons, actions and an optional close button."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full max-w-xl flex-col items-stretch gap-3 p-4"
+  >
+    <ui-alert
+      [color]="color()"
+      [appearance]="appearance()"
+      [icon]="icon()"
+      [banner]="banner()"
+      [dismissible]="dismissible()"
+      [(open)]="open"
+    >
+      @if (withTitle()) {
+        <span uiAlertTitle>Scheduled maintenance</span>
+      }
+      The service will be unavailable on Sunday from 02:00 to 04:00 UTC.
+      @if (withActions()) {
+        <div uiAlertActions>
+          <button
+            uiButton
+            size="sm"
+          >
+            View details
+          </button>
+          <button
+            uiButton
+            size="sm"
+            variant="ghost"
+          >
+            Remind me
+          </button>
+        </div>
+      }
+    </ui-alert>
+    @if (!open()) {
+      <button
+        uiButton
+        variant="outline"
+        size="sm"
+        class="self-center"
+        (click)="open.set(true)"
+      >
+        Show the alert again
+      </button>
+    }
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="alr-color"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Color</label
+      >
+      <select
+        id="alr-color"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="color()"
+        (ngModelChange)="color.set($event)"
+      >
+        @for (c of colors; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label
+        for="alr-appearance"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Appearance</label
+      >
+      <select
+        id="alr-appearance"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="appearance()"
+        (ngModelChange)="appearance.set($event)"
+      >
+        @for (a of appearances; track a) {
+          <option [value]="a">{{ a }}</option>
+        }
+      </select>
+    </div>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="icon()"
+        (ngModelChange)="icon.set($event)"
+      />
+      <span>Icon</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="withTitle()"
+        (ngModelChange)="withTitle.set($event)"
+      />
+      <span>Title</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="withActions()"
+        (ngModelChange)="withActions.set($event)"
+      />
+      <span>Actions</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="dismissible()"
+        (ngModelChange)="dismissible.set($event)"
+      />
+      <span>Dismissible</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="banner()"
+        (ngModelChange)="banner.set($event)"
+      />
+      <span>Banner</span>
+    </label>
+  </div>
+
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Banner</h2>
+    <p class="text-muted-foreground text-sm">
+      <code>banner</code> removes the rounded corners and side borders so the alert can span the top of a page or panel.
+      Placement (sticky, fixed, …) is up to the layout.
+    </p>
+    <div class="border-border overflow-hidden rounded-lg border">
+      <ui-alert
+        banner
+        color="warning"
+        dismissible
+      >
+        Your trial ends in 3 days.
+      </ui-alert>
+      <div class="text-muted-foreground p-6 text-sm">Page content</div>
+    </div>
+    <doc-code-block [code]="bannerCode" />
+  </section>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

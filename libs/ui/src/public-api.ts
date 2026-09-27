@@ -1,3 +1,4 @@
+export * from '@libs/ui/alert';
 export * from '@libs/ui/button';
 export * from '@libs/ui/checkbox';
 export * from '@libs/ui/core';
