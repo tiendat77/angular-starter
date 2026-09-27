@@ -1,0 +1,29 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Progress
+/*
+/*  `spinner`       minimal border spinner, used by the uiButton loading state
+/*  `spinner-ring`  ui-spinner: SVG ring, indeterminate or determinate
+/*  `progress-bar`  ui-progress-bar: linear track + `.progress-bar-fill`
+/*
+/*  Colors set `--spinner-color` / `--progress-color`; sizes set `--spinner-size` / `--progress-h`.
+/* ----------------------------------------------------------------------------------------------------- */
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@utility spinner {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 9999px;
+  animation: ui-spin 1s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 2s;
+  }
+}

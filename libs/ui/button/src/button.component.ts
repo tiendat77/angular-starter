@@ -39,7 +39,7 @@ import { UiButtonSize, UiButtonVariant } from './types';
     @if (loading()) {
       <span
         aria-hidden="true"
-        class="size-[1em] animate-spin rounded-full border-2 border-current border-r-transparent"
+        class="spinner"
       ></span>
     }
     <ng-content />

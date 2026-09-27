@@ -97,7 +97,7 @@ class UiButtonComponent {
     @if (loading()) {
       <span
         aria-hidden="true"
-        class="size-[1em] animate-spin rounded-full border-2 border-current border-r-transparent"
+        class="spinner"
       ></span>
     }
     <ng-content />
@@ -121,7 +121,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
     @if (loading()) {
       <span
         aria-hidden="true"
-        class="size-[1em] animate-spin rounded-full border-2 border-current border-r-transparent"
+        class="spinner"
       ></span>
     }
     <ng-content />

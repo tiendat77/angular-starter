@@ -57,17 +57,19 @@ describe('UiButtonComponent', () => {
   });
 
   it('should render a spinner and disable the button while loading', () => {
-    expect(buttonEl.querySelector('.animate-spin')).toBeNull();
+    expect(buttonEl.querySelector('.spinner')).toBeNull();
 
     fixture.componentInstance.loading.set(true);
     fixture.detectChanges();
-    expect(buttonEl.querySelector('.animate-spin')).not.toBeNull();
+    const spinner = buttonEl.querySelector('.spinner');
+    expect(spinner).not.toBeNull();
+    expect(spinner!.getAttribute('aria-hidden')).toBe('true');
     expect(buttonEl.disabled).toBe(true);
     expect(buttonEl.getAttribute('aria-disabled')).toBe('true');
 
     fixture.componentInstance.loading.set(false);
     fixture.detectChanges();
-    expect(buttonEl.querySelector('.animate-spin')).toBeNull();
+    expect(buttonEl.querySelector('.spinner')).toBeNull();
     expect(buttonEl.disabled).toBe(false);
   });
 
