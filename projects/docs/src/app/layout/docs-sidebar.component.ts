@@ -45,6 +45,7 @@ export class DocsSidebarComponent {
       items: [
         { label: 'Paginator', path: '/paginator' },
         { label: 'SVG Icon', path: '/svg-icon' },
+        { label: 'Tag', path: '/tag' },
       ],
     },
   ];

@@ -1,0 +1,167 @@
+<doc-playground
+  title="Tag"
+  description="Text labels and chips: semantic colors, three appearances, removable and checkable (toggle) modes."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full flex-col items-center gap-3 p-4"
+  >
+    <!-- The toggles keep removable and checkable exclusive; ui-tag checks it once at init -->
+    @if (checkable()) {
+      <ui-tag
+        checkable
+        [color]="color()"
+        [size]="size()"
+        [disabled]="disabled()"
+        [(checked)]="checked"
+      >
+        Design
+      </ui-tag>
+    } @else {
+      <ui-tag
+        [color]="color()"
+        [appearance]="appearance()"
+        [size]="size()"
+        [removable]="removable()"
+        [disabled]="disabled()"
+        (removed)="onRemoved()"
+      >
+        Design
+      </ui-tag>
+    }
+    @if (removable()) {
+      <span class="text-muted-foreground text-xs">removed emitted {{ removedCount() }}×</span>
+    }
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="tag-color"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Color</label
+      >
+      <select
+        id="tag-color"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="color()"
+        (ngModelChange)="color.set($event)"
+      >
+        @for (c of colors; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label
+        for="tag-appearance"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Appearance</label
+      >
+      <select
+        id="tag-appearance"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [disabled]="checkable()"
+        [ngModel]="appearance()"
+        (ngModelChange)="appearance.set($event)"
+      >
+        @for (a of appearances; track a) {
+          <option [value]="a">{{ a }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label
+        for="tag-size"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Size</label
+      >
+      <select
+        id="tag-size"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="size()"
+        (ngModelChange)="size.set($event)"
+      >
+        @for (s of sizes; track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+    </div>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="removable()"
+        (ngModelChange)="setRemovable($event)"
+      />
+      <span>Removable</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="checkable()"
+        (ngModelChange)="setCheckable($event)"
+      />
+      <span>Checkable</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="disabled()"
+        (ngModelChange)="disabled.set($event)"
+      />
+      <span>Disabled</span>
+    </label>
+  </div>
+
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Removable filters</h2>
+    <div class="flex flex-wrap items-center gap-2">
+      @for (f of filters(); track f) {
+        <ui-tag
+          removable
+          (removed)="removeFilter(f)"
+          >{{ f }}</ui-tag
+        >
+      } @empty {
+        <span class="text-muted-foreground text-sm">No filters.</span>
+      }
+      <button
+        uiButton
+        variant="ghost"
+        size="sm"
+        (click)="resetFilters()"
+      >
+        Reset
+      </button>
+    </div>
+    <doc-code-block [code]="filtersCode" />
+  </section>
+
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Checkable chips</h2>
+    <div class="flex flex-wrap gap-2">
+      @for (s of statuses; track s) {
+        <ui-tag
+          checkable
+          color="primary"
+          [checked]="selectedStatuses().has(s)"
+          (checkedChange)="setSelected(s, $event)"
+        >
+          {{ s }}
+        </ui-tag>
+      }
+    </div>
+    <doc-code-block [code]="checkableCode" />
+  </section>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

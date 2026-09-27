@@ -76,6 +76,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'tag',
+    loadComponent: () =>
+      import('./features/tag-doc/tag-doc.component').then((m) => m.TagDocComponent),
+  },
+  {
     path: '**',
     redirectTo: 'button',
   },
