@@ -1,0 +1,130 @@
+<doc-playground
+  title="Avatar"
+  description="User pictures with an initials and icon fallback, two shapes, five sizes, and overlapping groups."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full items-center justify-center p-4"
+  >
+    <ui-avatar
+      [src]="src()"
+      [name]="name()"
+      [size]="size()"
+      [shape]="shape()"
+    />
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="avt-photo"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Image</label
+      >
+      <select
+        id="avt-photo"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="photo()"
+        (ngModelChange)="photo.set($event)"
+      >
+        <option value="photo">valid</option>
+        <option value="broken">broken URL</option>
+        <option value="none">none</option>
+      </select>
+    </div>
+    <div>
+      <label
+        for="avt-name"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Name</label
+      >
+      <input
+        id="avt-name"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="name()"
+        (ngModelChange)="name.set($event)"
+      />
+    </div>
+    <div>
+      <label
+        for="avt-size"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Size</label
+      >
+      <select
+        id="avt-size"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="size()"
+        (ngModelChange)="size.set($event)"
+      >
+        @for (s of sizes; track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label
+        for="avt-shape"
+        class="text-muted-foreground mb-1 block font-medium"
+        >Shape</label
+      >
+      <select
+        id="avt-shape"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="shape()"
+        (ngModelChange)="shape.set($event)"
+      >
+        <option value="circle">circle</option>
+        <option value="square">square</option>
+      </select>
+    </div>
+  </div>
+
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Group</h2>
+    <div class="flex items-center gap-4">
+      <ui-avatar-group
+        size="sm"
+        [max]="max()"
+      >
+        @for (m of members; track m) {
+          <ui-avatar [name]="m" />
+        }
+      </ui-avatar-group>
+      <label class="text-muted-foreground flex items-center gap-2 text-xs">
+        max
+        <input
+          type="number"
+          min="1"
+          class="border-border bg-background text-foreground w-16 rounded-lg border px-2 py-1"
+          [ngModel]="max()"
+          (ngModelChange)="max.set($event ?? 1)"
+        />
+      </label>
+    </div>
+    <doc-code-block [code]="groupCode()" />
+  </section>
+
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Status dot</h2>
+    <p class="text-muted-foreground text-sm">Compose with <code>[uiBadge]</code> for presence.</p>
+    <ui-avatar
+      name="Linh Tran"
+      uiBadge
+      uiBadgeDot
+      uiBadgeColor="success"
+      uiBadgePosition="bottom-end"
+      uiBadgeOverlap="circular"
+      uiBadgeDescription="Online"
+    />
+    <doc-code-block [code]="statusCode" />
+  </section>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

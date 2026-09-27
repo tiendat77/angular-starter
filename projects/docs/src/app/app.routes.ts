@@ -76,6 +76,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'avatar',
+    loadComponent: () =>
+      import('./features/avatar-doc/avatar-doc.component').then((m) => m.AvatarDocComponent),
+  },
+  {
     path: 'badge',
     loadComponent: () =>
       import('./features/badge-doc/badge-doc.component').then((m) => m.BadgeDocComponent),
