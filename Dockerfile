@@ -25,7 +25,7 @@ RUN yarn run build
 FROM nginx:alpine
 
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /workspace/dist/browser /usr/share/nginx/html
+COPY --from=build /workspace/dist/main/browser /usr/share/nginx/html
 
 EXPOSE 80
 

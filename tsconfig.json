@@ -3,6 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "rootDir": ".",
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
@@ -21,10 +22,10 @@
     "target": "ES2022",
     "module": "ES2022",
     "paths": {
-      "@/*": ["./src/app/*"],
-      "@configs/*": ["./src/configs/*"],
-      "@models": ["./src/models/index"],
-      "@environment": ["./src/environments/environment"],
+      "@/*": ["./apps/main/src/app/*"],
+      "@configs/*": ["./apps/main/src/configs/*"],
+      "@models": ["./apps/main/src/models/index"],
+      "@environment": ["./apps/main/src/environments/environment"],
       "@libs/hotkeys": ["./packages/hotkeys", "./libs/hotkeys/src/public-api"],
       "@libs/navigation": ["./packages/navigation", "./libs/navigation/src/public-api"],
       "@libs/ui": ["./packages/ui", "./libs/ui/src/public-api"],

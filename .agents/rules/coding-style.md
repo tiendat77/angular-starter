@@ -213,7 +213,7 @@ Always order template attributes and bindings predictably:
 
 ### 3. Design System & CSS Variables
 
-- Use predefined CSS variables and themes in `src/styles/` (`_colors.css`, `_themes.css`, `_daisyui.css`).
+- Use predefined CSS variables and themes in `apps/main/src/styles/` (`_colors.css`, `_themes.css`, `_daisyui.css`).
 
 ### 4. Internal Shared Libraries (`@libs/*`)
 
@@ -230,7 +230,7 @@ Always order template attributes and bindings predictably:
 
 ### 1. Folder Structure
 
-- Feature modules are located in `src/app/features/`.
+- Feature modules are located in `apps/main/src/app/features/`.
 - Structure per feature:
   - `routes.ts`: Lazy-loaded route definitions.
   - `feature-name.ts`: Main component logic.
@@ -252,7 +252,7 @@ Always order template attributes and bindings predictably:
 
 ### 1. Service Structure
 
-- Location: `src/app/api/resources/`.
+- Location: `apps/main/src/app/api/resources/`.
 - Services must extend `BaseApiService<T>` and implement standard API interfaces (e.g., `ApiList`).
 - Specify `override _baseUrl`.
 - Validate API responses with Zod schemas using `BaseAPIOperator.responseHandler(Schema)`.
@@ -267,7 +267,7 @@ Always order template attributes and bindings predictably:
 
 - **Models**: Suffix with `Model` (e.g., `UserModel`, `ExampleModel`).
 - **Zod Schemas**: Suffix with `Schema` (e.g., `UserSchema`, `ExampleSchema`).
-- Centralized data transfer models in `src/models/` or `src/app/api/models/`.
+- Centralized data transfer models in `apps/main/src/models/` or `apps/main/src/app/api/models/`.
 
 ---
 

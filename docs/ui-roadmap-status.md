@@ -90,9 +90,9 @@ Phase 1 navigation components are now completed: **Tooltip**, **Tabs**, and **Me
 | `components/layout.css` | `divider-*`, `join-*` |
 | `components/navigation.css` | `menu-*`, `dropdown`, `modal-*` |
 
-**Theming contract:** override tokens in an **unlayered** `:root` rule. That single rule wins in both light and dark mode. The app does this in `src/styles/_colors.css`, overriding only `--color-primary`, `--color-primary-content` and `--color-secondary`.
+**Theming contract:** override tokens in an **unlayered** `:root` rule. That single rule wins in both light and dark mode. The app does this in `apps/main/src/styles/_colors.css`, overriding only `--color-primary`, `--color-primary-content` and `--color-secondary`.
 
-### 3.3 Docs app (`projects/docs`)
+### 3.3 Docs app (`apps/docs`)
 
 - 21 pages in 4 groups: Navigation (Tabs, Menu / Dropdown); Forms (Button, Form Field & Input, Checkbox & Switch, Radio Group, Select, Date Picker); Overlays & Feedback (Alert, Dialog, Toast, Loader, Spinner & Progress, Tooltip); Data & Media (Avatar, Badge, Card, Paginator, SVG Icon, Table, Tag).
 - Each page has a live playground, generated usage code (highlighted html/ts/css/scss/json) and an API table.
@@ -182,4 +182,4 @@ Once steps 4–5 are done, **Roadmap Phase 1 is complete** (except Popover). Pha
 
 - **Rebuild before checking the docs.** The docs app and the host app resolve `@libs/ui/*` to the prebuilt `packages/ui` first. After changing library TS or templates, run `ng build ui` (and `ng build navigation`), then restart `ng serve`. A running dev server can keep serving stale code.
 - **Build order.** `yarn build:libs` builds `ui` before `navigation`, because navigation depends on `@libs/ui/svg-icon`.
-- **Where to theme.** Brand changes go in `src/styles/_colors.css` (unlayered `:root`), never in `libs/ui/styles/tokens.css`.
+- **Where to theme.** Brand changes go in `apps/main/src/styles/_colors.css` (unlayered `:root`), never in `libs/ui/styles/tokens.css`.

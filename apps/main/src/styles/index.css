@@ -2,7 +2,7 @@
 
 @import './_colors.css';
 @import './_themes.css';
-@import '../../libs/ui/styles/index.css';
+@import '../../../../libs/ui/styles/index.css';
 @import './_vendors.css';
 
 @plugin '@tailwindcss/typography';

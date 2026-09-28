@@ -22,10 +22,14 @@ The project follows a modular, feature-based architecture with separated core an
 
 ```mermaid
 graph TD
-    Root[angular-starter/] --> Src[src/]
+    Root[angular-starter/] --> Apps[apps/]
     Root --> Libs[libs/]
-    Root --> Packages[packages/]
+    Root --> Public[public/]
 
+    Apps --> Main[main/]
+    Apps --> Docs[docs/]
+
+    Main --> Src[src/]
     Src --> App[app/]
     Src --> Configs[configs/]
     Src --> Models[models/]
@@ -48,7 +52,7 @@ graph TD
     Libs --> Toast[toast]
 ```
 
-### 1. `src/app/core/`
+### 1. `apps/main/src/app/core/`
 
 The backbone of the application. Contains singleton services, global guards, interceptors, and the layout system.
 
@@ -57,7 +61,7 @@ The backbone of the application. Contains singleton services, global guards, int
 - **`layouts/`**: Multi-layout system (`dense`, `empty`, `modern`).
 - **`commons/`**: Core utilities, base classes, and interceptors.
 
-### 2. `src/app/features/`
+### 2. `apps/main/src/app/features/`
 
 Feature-based modules. Each feature is encapsulated within its own directory and uses **lazy loading** via `routes.ts` files.
 
@@ -65,7 +69,7 @@ Feature-based modules. Each feature is encapsulated within its own directory and
 - `example/`: Example feature demonstrating dialogs, datepickers, loaders, toasts, and icons.
 - `not-found/`: 404 handler page.
 
-### 3. `src/app/api/`
+### 3. `apps/main/src/app/api/`
 
 Centralized API layer. Contains base classes, operators, helpers, data models, and API resources for backend communication.
 
@@ -73,15 +77,19 @@ Centralized API layer. Contains base classes, operators, helpers, data models, a
 - `resources/`: Dedicated services per entity (e.g., `ExampleAPIService`).
 - `models/`: API data models and Zod schemas.
 
-### 4. `src/app/services/`
+### 4. `apps/main/src/app/services/`
 
 Cross-cutting application-level services (e.g., `UserService`).
 
-### 5. `src/app/shared/`
+### 5. `apps/main/src/app/shared/`
 
 Reusable UI components, directives, and pipes used across multiple feature modules.
 
-### 6. `libs/` & `packages/` (`@libs/*`)
+### 6. `apps/docs/`
+
+Showcase and documentation application for all `@libs/*` UI components and modules.
+
+### 7. `libs/` (`@libs/*`)
 
 Internal shared libraries mapped via TypeScript path aliases:
 
@@ -125,11 +133,11 @@ Managed by `LayoutComponent` in `core/layouts`. The layout is dynamically select
 
 ### 5. Permission-Based Access Control (RBAC)
 
-Uses `ngx-permissions` integrated with functional guards (`ngxPermissionsGuard`). Permissions are defined in `src/configs/permission.config.ts` and evaluated during route navigation.
+Uses `ngx-permissions` integrated with functional guards (`ngxPermissionsGuard`). Permissions are defined in `apps/main/src/configs/permission.config.ts` and evaluated during route navigation.
 
 ### 6. Modern Component Styling
 
-Combines **DaisyUI 5** component classes with **Tailwind CSS 4.0** utility classes and CSS theme variables defined in `src/styles/` (`_colors.css`, `_themes.css`, `_daisyui.css`).
+Combines **DaisyUI 5** component classes with **Tailwind CSS 4.0** utility classes and CSS theme variables defined in `apps/main/src/styles/` (`_colors.css`, `_themes.css`, `_daisyui.css`).
 
 ---
 
@@ -143,6 +151,6 @@ Combines **DaisyUI 5** component classes with **Tailwind CSS 4.0** utility class
 
 ## 🚀 Build & Deployment
 
-- **Environment Config**: Uses `src/environments/` for staging and production configurations.
+- **Environment Config**: Uses `apps/main/src/environments/` for staging and production configurations.
 - **CI Scripts**: Build helpers located in `.ci/build-libs.js`.
 - **Production Build**: Output via `@angular/build` (`ng build --configuration production`).

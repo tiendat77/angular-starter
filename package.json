@@ -3,18 +3,18 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --open",
-    "dev": "ng serve --open",
-    "build": "ng build",
+    "start": "ng serve main --open",
+    "dev": "ng serve main --open",
+    "build": "ng build main",
     "build:libs": "node .ci/build-libs.js",
-    "build:staging": "ng build --configuration staging",
-    "build:prod": "ng build --configuration production",
+    "build:staging": "ng build main --configuration staging",
+    "build:prod": "ng build main --configuration production",
     "docs:dev": "ng serve docs",
     "docs:build": "ng build docs",
     "lint": "npx eslint . --fix",
     "prepare": "husky",
     "lint-staged": "lint-staged",
-    "test": "ng test"
+    "test": "ng test main"
   },
   "private": true,
   "dependencies": {
