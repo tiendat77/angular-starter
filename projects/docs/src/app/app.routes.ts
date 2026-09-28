@@ -81,6 +81,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'table',
+    loadComponent: () =>
+      import('./features/table-doc/table-doc.component').then((m) => m.TableDocComponent),
+  },
+  {
     path: 'avatar',
     loadComponent: () =>
       import('./features/avatar-doc/avatar-doc.component').then((m) => m.AvatarDocComponent),

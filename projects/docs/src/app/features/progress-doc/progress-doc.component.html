@@ -33,8 +33,9 @@
       <label
         for="prg-kind"
         class="text-muted-foreground mb-1 block font-medium"
-        >Kind</label
       >
+        Kind
+      </label>
       <select
         id="prg-kind"
         class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
@@ -50,8 +51,9 @@
       <label
         for="prg-size"
         class="text-muted-foreground mb-1 block font-medium"
-        >Size</label
       >
+        Size
+      </label>
       @if (kind() === 'spinner') {
         <select
           id="prg-size"
@@ -81,8 +83,9 @@
       <label
         for="prg-color"
         class="text-muted-foreground mb-1 block font-medium"
-        >Color</label
       >
+        Color
+      </label>
       <select
         id="prg-color"
         class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
@@ -109,8 +112,9 @@
       <label
         for="prg-value"
         class="text-muted-foreground mb-1 block font-medium"
-        >Value: {{ value() }}</label
       >
+        Value: {{ value() }}
+      </label>
       <input
         id="prg-value"
         type="range"
@@ -139,8 +143,16 @@
   <section class="space-y-4">
     <h2 class="text-foreground text-xl font-bold tracking-tight">In buttons and text</h2>
     <p class="text-muted-foreground text-sm">
-      <code>uiButton</code>'s <code>loading</code> state uses the same <code>spinner</code> CSS utility. An inline
-      <code>ui-spinner</code> defaults to <code>1em</code> and the text color.
+      <code>uiButton</code>
+      's
+      <code>loading</code>
+      state uses the same
+      <code>spinner</code>
+      CSS utility. An inline
+      <code>ui-spinner</code>
+      defaults to
+      <code>1em</code>
+      and the text color.
     </p>
     <div class="flex items-center gap-6">
       <button
@@ -149,7 +161,10 @@
       >
         Saving
       </button>
-      <p class="text-sm">Syncing <ui-spinner /></p>
+      <p class="text-sm">
+        Syncing
+        <ui-spinner />
+      </p>
     </div>
     <doc-code-block [code]="buttonCode" />
   </section>
@@ -158,7 +173,8 @@
     <h2 class="text-foreground text-xl font-bold tracking-tight">Labelled progress bar</h2>
     <p class="text-muted-foreground text-sm">
       The bar is a single element; put the visible label and percentage around it, and pass the same text to
-      <code>label</code>.
+      <code>label</code>
+      .
     </p>
     <div class="max-w-md space-y-2">
       <div class="flex justify-between text-sm">

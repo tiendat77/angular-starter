@@ -38,6 +38,7 @@ module.exports = tseslint.config(
     ],
     rules: {
       '@angular-eslint/prefer-on-push-component-change-detection': 'off',
+      '@angular-eslint/template/no-call-expression': 'off',
       '@angular-eslint/component-class-suffix': 'off',
       '@angular-eslint/directive-selector': 'off',
       '@angular-eslint/component-selector': 'off',

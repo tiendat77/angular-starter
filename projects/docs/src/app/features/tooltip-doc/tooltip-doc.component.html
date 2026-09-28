@@ -34,8 +34,9 @@
       <label
         for="tooltip-content"
         class="block font-medium text-gray-700 dark:text-gray-300"
-        >Content</label
       >
+        Content
+      </label>
       <input
         id="tooltip-content"
         type="text"
@@ -53,10 +54,10 @@
             <input
               type="radio"
               name="position"
+              class="radio radio-xs"
               [value]="pos"
               [checked]="position() === pos"
               (change)="position.set(pos)"
-              class="radio radio-xs"
             />
             <span class="capitalize">{{ pos }}</span>
           </label>
@@ -68,8 +69,9 @@
       <label
         for="tooltip-color"
         class="block font-medium text-gray-700 dark:text-gray-300"
-        >Color</label
       >
+        Color
+      </label>
       <select
         id="tooltip-color"
         class="select select-sm mt-1 w-full"
@@ -90,10 +92,10 @@
             <input
               type="radio"
               name="size"
+              class="radio radio-xs"
               [value]="s"
               [checked]="size() === s"
               (change)="size.set(s)"
-              class="radio radio-xs"
             />
             <span>{{ s }}</span>
           </label>
@@ -264,8 +266,10 @@
   <section class="space-y-4">
     <h3 class="text-lg font-semibold">Rich Templates & Shortcuts</h3>
     <p class="text-sm text-gray-600 dark:text-gray-400">
-      Pass an <code>&lt;ng-template&gt;</code> reference to render rich content, keyboard shortcuts, or icons. Rich
-      templates automatically allow interactive hover.
+      Pass an
+      <code>&lt;ng-template&gt;</code>
+      reference to render rich content, keyboard shortcuts, or icons. Rich templates automatically allow interactive
+      hover.
     </p>
 
     <ng-template #shortcutTpl>

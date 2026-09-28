@@ -72,6 +72,9 @@ class UiCheckboxComponent {
     ...(ngDevMode ? [undefined, { debugName: "label" }] : /* istanbul ignore next */ []));
     id = input(/* @ts-ignore */
     ...(ngDevMode ? [undefined, { debugName: "id" }] : /* istanbul ignore next */ []));
+    /** Accessible name when there is no visible label (e.g. table selection cells). */
+    ariaLabel = input(/* @ts-ignore */
+    ...(ngDevMode ? [undefined, { debugName: "ariaLabel" }] : /* istanbul ignore next */ []));
     // -----------------------------------------------------------------------------------------------------
     // @ Private / Protected properties
     // -----------------------------------------------------------------------------------------------------
@@ -137,7 +140,7 @@ class UiCheckboxComponent {
         this._onTouched();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.5", ngImport: i0, type: UiCheckboxComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.5", type: UiCheckboxComponent, isStandalone: true, selector: "ui-checkbox", inputs: { checked: { classPropertyName: "checked", publicName: "checked", isSignal: true, isRequired: false, transformFunction: null }, indeterminate: { classPropertyName: "indeterminate", publicName: "indeterminate", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null }, id: { classPropertyName: "id", publicName: "id", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { checked: "checkedChange" }, host: { classAttribute: "inline-flex align-top" }, providers: [
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.5", type: UiCheckboxComponent, isStandalone: true, selector: "ui-checkbox", inputs: { checked: { classPropertyName: "checked", publicName: "checked", isSignal: true, isRequired: false, transformFunction: null }, indeterminate: { classPropertyName: "indeterminate", publicName: "indeterminate", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, label: { classPropertyName: "label", publicName: "label", isSignal: true, isRequired: false, transformFunction: null }, id: { classPropertyName: "id", publicName: "id", isSignal: true, isRequired: false, transformFunction: null }, ariaLabel: { classPropertyName: "ariaLabel", publicName: "ariaLabel", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { checked: "checkedChange" }, host: { classAttribute: "inline-flex align-top" }, providers: [
             {
                 provide: NG_VALUE_ACCESSOR,
                 useExisting: forwardRef(() => UiCheckboxComponent),
@@ -157,6 +160,7 @@ class UiCheckboxComponent {
           [id]="$effectiveId()"
           [checked]="checked()"
           [disabled]="$effectiveDisabled()"
+          [attr.aria-label]="ariaLabel() ?? null"
           (change)="onInputChange($event)"
           (blur)="onBlur()"
         />
@@ -198,6 +202,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
           [id]="$effectiveId()"
           [checked]="checked()"
           [disabled]="$effectiveDisabled()"
+          [attr.aria-label]="ariaLabel() ?? null"
           (change)="onInputChange($event)"
           (blur)="onBlur()"
         />
@@ -210,7 +215,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.5", ngImpor
     </label>
   `,
                 }]
-        }], ctorParameters: () => [], propDecorators: { checked: [{ type: i0.Input, args: [{ isSignal: true, alias: "checked", required: false }] }, { type: i0.Output, args: ["checkedChange"] }], indeterminate: [{ type: i0.Input, args: [{ isSignal: true, alias: "indeterminate", required: false }] }], disabled: [{ type: i0.Input, args: [{ isSignal: true, alias: "disabled", required: false }] }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }], label: [{ type: i0.Input, args: [{ isSignal: true, alias: "label", required: false }] }], id: [{ type: i0.Input, args: [{ isSignal: true, alias: "id", required: false }] }], _inputRef: [{ type: i0.ViewChild, args: ['inputRef', { isSignal: true }] }] } });
+        }], ctorParameters: () => [], propDecorators: { checked: [{ type: i0.Input, args: [{ isSignal: true, alias: "checked", required: false }] }, { type: i0.Output, args: ["checkedChange"] }], indeterminate: [{ type: i0.Input, args: [{ isSignal: true, alias: "indeterminate", required: false }] }], disabled: [{ type: i0.Input, args: [{ isSignal: true, alias: "disabled", required: false }] }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }], label: [{ type: i0.Input, args: [{ isSignal: true, alias: "label", required: false }] }], id: [{ type: i0.Input, args: [{ isSignal: true, alias: "id", required: false }] }], ariaLabel: [{ type: i0.Input, args: [{ isSignal: true, alias: "ariaLabel", required: false }] }], _inputRef: [{ type: i0.ViewChild, args: ['inputRef', { isSignal: true }] }] } });
 
 let nextSwitchId = 0;
 class UiSwitchComponent {

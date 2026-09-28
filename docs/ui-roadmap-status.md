@@ -34,6 +34,7 @@ Phase 1 navigation components are now completed: **Tooltip**, **Tabs**, and **Me
 | `5cfb49c` | Tooltip feature package: `[uiTooltip]` directive on CDK Overlay, auto-flip collision detection, rich templates, interactive transit buffer, pointer arrow, docs playground, and 203 passing tests. |
 | `478143a` | Tabs feature package: compound directives on `@angular/aria/tabs` (`[uiTabs]`, `[uiTabList]`, `[uiTab]`, `[uiTabPanel]`, `[uiTabContent]`), CVA variants (`bordered`, `lift`, `pill`), responsive sizes, vertical layouts, lazy content deferral, docs playground, and 223 passing tests. |
 | `06d6a60` | Menu / Dropdown feature package: compound directives on CDK Overlay (`[uiMenuTriggerFor]`, `[uiMenu]`, `[uiMenuItem]`, `[uiMenuDivider]`, `[uiMenuLabel]`), auto-flipping, WAI-ARIA roving tabindex, focus management, danger/disabled items, docs playground, and 247 passing tests. |
+| _(feat/table)_ | Table feature package: `ui-table` with a headless signal store, sorting, list/custom filters, key-based selection kept across pages, pagination, sticky header, fixed columns, density, loading/empty states, and a docs page with full and server-mode examples. |
 
 
 ---
@@ -65,6 +66,7 @@ Phase 1 navigation components are now completed: **Tooltip**, **Tabs**, and **Me
 | `@libs/ui/loader` | CDK Overlay + SCSS on tokens | ✅ | ✅ |
 | `@libs/ui/date-picker` | Material port, SCSS on tokens | ✅ | ✅ |
 | `@libs/ui/paginator` | `join`/`btn`/`select` | ✅ | ✅ |
+| `@libs/ui/table` | `data-table-*` + CDK Overlay/A11y | ✅ | ✅ |
 
 
 ### 3.2 Styling system (`@libs/ui/styles`)
@@ -84,6 +86,7 @@ Phase 1 navigation components are now completed: **Tooltip**, **Tabs**, and **Me
 | `components/tag.css` | `tag` + colors, removable, checkable |
 | `components/tooltip.css` | `tooltip` container, sizes, arrow, interactive, placement offsets |
 | `components/tabs.css` | `tabs` base, variants (`bordered`, `lift`, `pill`), items, sizing, orientation, panel |
+| `components/table.css` | `data-table` container, densities, bordered/striped, row states, sort/filter header, fixed columns, loading mask, skeleton, empty state |
 | `components/layout.css` | `divider-*`, `join-*` |
 | `components/navigation.css` | `menu-*`, `dropdown`, `modal-*` |
 
@@ -91,7 +94,7 @@ Phase 1 navigation components are now completed: **Tooltip**, **Tabs**, and **Me
 
 ### 3.3 Docs app (`projects/docs`)
 
-- 20 pages in 4 groups: Navigation (Tabs, Menu / Dropdown); Forms (Button, Form Field & Input, Checkbox & Switch, Radio Group, Select, Date Picker); Overlays & Feedback (Alert, Dialog, Toast, Loader, Spinner & Progress, Tooltip); Data & Media (Avatar, Badge, Card, Paginator, SVG Icon, Tag).
+- 21 pages in 4 groups: Navigation (Tabs, Menu / Dropdown); Forms (Button, Form Field & Input, Checkbox & Switch, Radio Group, Select, Date Picker); Overlays & Feedback (Alert, Dialog, Toast, Loader, Spinner & Progress, Tooltip); Data & Media (Avatar, Badge, Card, Paginator, SVG Icon, Table, Tag).
 - Each page has a live playground, generated usage code (highlighted html/ts/css/scss/json) and an API table.
 - The docs render the **library's neutral defaults**. The app's brand is not loaded there on purpose.
 
@@ -128,6 +131,7 @@ Phase 1 navigation components are now completed: **Tooltip**, **Tabs**, and **Me
 |---|---|
 | Date Picker | ✅ Works and documented. It's a Material port; no `@angular/aria` Grid review and no date range UI yet (range CSS exists) |
 | Pagination | ✅ |
+| Table | ✅ `@libs/ui/table`: sorting, filters, selection, pagination, sticky header, fixed columns |
 | Everything else in Phase 2 | ❌ |
 
 ### Foundations

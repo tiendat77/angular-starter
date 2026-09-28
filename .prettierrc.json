@@ -14,7 +14,8 @@
       "files": "*.html",
       "options": {
         "parser": "angular",
-        "printWidth": 120
+        "printWidth": 120,
+        "htmlWhitespaceSensitivity": "ignore"
       }
     },
     {

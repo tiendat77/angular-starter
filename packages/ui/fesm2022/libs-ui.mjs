@@ -15,6 +15,7 @@ export * from '@libs/ui/progress';
 export * from '@libs/ui/radio';
 export * from '@libs/ui/select';
 export * from '@libs/ui/svg-icon';
+export * from '@libs/ui/table';
 export * from '@libs/ui/tabs';
 export * from '@libs/ui/tag';
 export * from '@libs/ui/toast';

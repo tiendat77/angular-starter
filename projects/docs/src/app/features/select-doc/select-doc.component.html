@@ -32,7 +32,8 @@
       }
     </ui-select>
     <p class="text-muted-foreground text-sm">
-      Value: <span class="text-foreground font-mono">{{ displayValue() }}</span>
+      Value:
+      <span class="text-foreground font-mono">{{ displayValue() }}</span>
     </p>
   </div>
 
@@ -46,8 +47,9 @@
         <label
           for="sel-size"
           class="text-muted-foreground mb-1 block font-medium"
-          >Size</label
         >
+          Size
+        </label>
         <select
           id="sel-size"
           class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
@@ -65,8 +67,9 @@
         <label
           for="sel-appearance"
           class="text-muted-foreground mb-1 block font-medium"
-          >Appearance</label
         >
+          Appearance
+        </label>
         <select
           id="sel-appearance"
           class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
@@ -83,8 +86,9 @@
       <label
         for="sel-max-tags"
         class="text-muted-foreground mb-1 block font-medium"
-        >Max tag count (multiple)</label
       >
+        Max tag count (multiple)
+      </label>
       <input
         id="sel-max-tags"
         type="number"
@@ -144,8 +148,10 @@
   <section class="space-y-4">
     <h2 class="text-foreground text-xl font-bold tracking-tight">In a form field</h2>
     <p class="text-muted-foreground text-sm">
-      <code>ui-select</code> is a form control: the label, hint and error of <code>ui-form-field</code> are wired to its
-      combobox input.
+      <code>ui-select</code>
+      is a form control: the label, hint and error of
+      <code>ui-form-field</code>
+      are wired to its combobox input.
     </p>
     <div class="max-w-sm">
       <ui-form-field>
@@ -179,8 +185,13 @@
   <section class="space-y-4">
     <h2 class="text-foreground text-xl font-bold tracking-tight">Custom option content</h2>
     <p class="text-muted-foreground text-sm">
-      Project any content into <code>ui-option</code>. Use <code>[uiHighlight]</code> to keep the match highlight, and
-      <code>uiSelectEmpty</code> for a custom empty state. Try "tran", "le duc" or "zzz".
+      Project any content into
+      <code>ui-option</code>
+      . Use
+      <code>[uiHighlight]</code>
+      to keep the match highlight, and
+      <code>uiSelectEmpty</code>
+      for a custom empty state. Try "tran", "le duc" or "zzz".
     </p>
     <div class="max-w-sm">
       <ui-select
@@ -201,8 +212,9 @@
         <ng-template
           uiSelectEmpty
           let-term
-          >No person matches "{{ term }}"</ng-template
         >
+          No person matches "{{ term }}"
+        </ng-template>
       </ui-select>
     </div>
     <doc-code-block [code]="customCode" />

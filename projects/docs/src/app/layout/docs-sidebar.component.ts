@@ -56,6 +56,7 @@ export class DocsSidebarComponent {
         { label: 'Card', path: '/card' },
         { label: 'Paginator', path: '/paginator' },
         { label: 'SVG Icon', path: '/svg-icon' },
+        { label: 'Table', path: '/table' },
         { label: 'Tag', path: '/tag' },
       ],
     },

@@ -330,8 +330,10 @@ class UiMenuDirective {
     config = inject(UI_MENU_CONFIG, { optional: true });
     trigger = inject(UI_MENU_TRIGGER, { optional: true });
     elementRef = inject(ElementRef);
-    id = input('', { ...(ngDevMode ? { debugName: "id" } : /* istanbul ignore next */ {}), alias: 'id' });
-    class = input('', { ...(ngDevMode ? { debugName: "class" } : /* istanbul ignore next */ {}), alias: 'class' });
+    id = input('', /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "id" }] : /* istanbul ignore next */ []));
+    class = input('', /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "class" }] : /* istanbul ignore next */ []));
     uiMenuSize = input(undefined, /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "uiMenuSize" }] : /* istanbul ignore next */ []));
     closeRequested = output();

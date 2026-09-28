@@ -20,8 +20,9 @@
     />
     <p class="text-muted-foreground text-center text-sm">
       @if (lastEvent(); as event) {
-        (page) → pageIndex <span class="text-foreground font-mono">{{ event.pageIndex }}</span
-        >, pageSize
+        (page) → pageIndex
+        <span class="text-foreground font-mono">{{ event.pageIndex }}</span>
+        , pageSize
         <span class="text-foreground font-mono">{{ event.pageSize }}</span>
       } @else {
         Change the page to see the emitted event.
@@ -38,8 +39,9 @@
       <label
         for="pg-length"
         class="text-muted-foreground mb-1 block font-medium"
-        >Length</label
       >
+        Length
+      </label>
       <input
         id="pg-length"
         type="number"

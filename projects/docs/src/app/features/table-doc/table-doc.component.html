@@ -1,0 +1,194 @@
+<doc-playground
+  title="Table"
+  description="Composable data table: sorting, selection, pagination, density, loading and empty states."
+  [code]="generatedCode()"
+>
+  <div
+    preview
+    class="flex w-full flex-col gap-3 p-4"
+  >
+    <ui-table
+      #t="uiTable"
+      [data]="users()"
+      [rowKey]="byId"
+      [loading]="loading()"
+      [selectionMode]="selectionMode()"
+      [density]="density()"
+      [bordered]="bordered()"
+      [striped]="striped()"
+      [(selectedKeys)]="selected"
+      [(pageIndex)]="pageIndex"
+      [(pageSize)]="pageSize"
+      (queryParamsChange)="onQuery($event)"
+    >
+      <table uiTableElement>
+        <thead>
+          <tr>
+            <th uiTableSelectAll></th>
+            <th
+              uiTableSort="name"
+              [sortFn]="true"
+            >
+              Name
+            </th>
+            <th
+              uiTableSort="age"
+              [sortFn]="byAge"
+            >
+              Age
+            </th>
+            <th>Role</th>
+            <th>Status</th>
+            <th
+              uiTableSort="joined"
+              [sortFn]="true"
+            >
+              Joined
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of t.viewData(); track u.id) {
+            <tr
+              uiTableRow
+              [row]="u"
+            >
+              <td
+                uiTableSelect
+                [label]="'Select ' + u.name"
+              ></td>
+              <td>{{ u.name }}</td>
+              <td>{{ u.age }}</td>
+              <td>{{ u.role }}</td>
+              <td>
+                <ui-tag [color]="statusColor[u.status]">{{ u.status }}</ui-tag>
+              </td>
+              <td>{{ u.joined | date: 'mediumDate' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </ui-table>
+
+    <p class="text-muted-foreground text-sm">
+      {{ selected().size }} selected
+      @if (lastQuery(); as q) {
+        · last query: page {{ q.pageIndex }}, size {{ q.pageSize }}, sort
+        {{ q.sort ? q.sort.key + ' ' + q.sort.order : 'none' }}
+      }
+    </p>
+  </div>
+
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="tb-density"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Density
+      </label>
+      <select
+        id="tb-density"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="density()"
+        (ngModelChange)="density.set($event)"
+      >
+        <option value="default">default</option>
+        <option value="middle">middle</option>
+        <option value="compact">compact</option>
+      </select>
+    </div>
+    <div>
+      <label
+        for="tb-selection"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Selection
+      </label>
+      <select
+        id="tb-selection"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="selectionMode()"
+        (ngModelChange)="selectionMode.set($event)"
+      >
+        <option value="none">none</option>
+        <option value="single">single</option>
+        <option value="multiple">multiple</option>
+      </select>
+    </div>
+    <div class="border-border/50 space-y-2 border-t pt-2">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="bordered()"
+          (ngModelChange)="bordered.set($event)"
+        />
+        <span>Bordered</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="striped()"
+          (ngModelChange)="striped.set($event)"
+        />
+        <span>Striped</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="loading()"
+          (ngModelChange)="loading.set($event)"
+        />
+        <span>Loading</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="empty()"
+          (ngModelChange)="empty.set($event)"
+        />
+        <span>Empty data</span>
+      </label>
+    </div>
+  </div>
+</doc-playground>
+
+<section class="mt-10 space-y-3">
+  <h2 class="text-foreground text-xl font-semibold">Everything together</h2>
+  <p class="text-muted-foreground text-sm">
+    Sort and search on Name, list filters on Role (multiple) and Status (single), multi-select with a bulk action bar,
+    fixed selection/name/action columns, sticky header and pagination.
+  </p>
+  <doc-table-full-example />
+</section>
+
+<section class="mt-10 space-y-3">
+  <h2 class="text-foreground text-xl font-semibold">Server mode</h2>
+  <p class="text-muted-foreground text-sm">
+    <code>[frontPagination]="false"</code>
+    : the table emits
+    <code>queryParamsChange</code>
+    and shows
+    <code>data</code>
+    as given. The mock API answers after 600 ms.
+  </p>
+  <doc-table-server-example />
+</section>
+
+<section class="mt-10 space-y-6">
+  <doc-api-table
+    title="ui-table"
+    [rows]="tableApi"
+  />
+  <doc-api-table
+    title="Columns, rows and cells"
+    [rows]="columnApi"
+  />
+</section>

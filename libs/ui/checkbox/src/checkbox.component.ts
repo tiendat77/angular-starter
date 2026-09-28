@@ -45,6 +45,7 @@ let nextCheckboxId = 0;
           [id]="$effectiveId()"
           [checked]="checked()"
           [disabled]="$effectiveDisabled()"
+          [attr.aria-label]="ariaLabel() ?? null"
           (change)="onInputChange($event)"
           (blur)="onBlur()"
         />
@@ -67,6 +68,8 @@ export class UiCheckboxComponent implements ControlValueAccessor {
   readonly size = input<UiSize>('md');
   readonly label = input<string>();
   readonly id = input<string>();
+  /** Accessible name when there is no visible label (e.g. table selection cells). */
+  readonly ariaLabel = input<string>();
 
   // -----------------------------------------------------------------------------------------------------
   // @ Private / Protected properties

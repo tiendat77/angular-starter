@@ -57,4 +57,12 @@ describe('UiCheckboxComponent and UiSwitchComponent', () => {
     expect(checkboxEl.classList).toContain('checkbox');
     expect(checkboxEl.classList).toContain('checkbox-md');
   });
+
+  it('forwards ariaLabel to the native input', () => {
+    const labelled = TestBed.createComponent(UiCheckboxComponent);
+    labelled.componentRef.setInput('ariaLabel', 'Select row 1');
+    labelled.detectChanges();
+    const input = labelled.nativeElement.querySelector('input') as HTMLInputElement;
+    expect(input.getAttribute('aria-label')).toBe('Select row 1');
+  });
 });

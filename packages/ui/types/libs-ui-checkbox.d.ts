@@ -10,6 +10,8 @@ declare class UiCheckboxComponent implements ControlValueAccessor {
     readonly size: _angular_core.InputSignal<UiSize>;
     readonly label: _angular_core.InputSignal<string | undefined>;
     readonly id: _angular_core.InputSignal<string | undefined>;
+    /** Accessible name when there is no visible label (e.g. table selection cells). */
+    readonly ariaLabel: _angular_core.InputSignal<string | undefined>;
     protected readonly _inputRef: _angular_core.Signal<ElementRef<HTMLInputElement> | undefined>;
     private readonly _autoId;
     private readonly _cvaDisabled$;
@@ -29,7 +31,7 @@ declare class UiCheckboxComponent implements ControlValueAccessor {
     protected onInputChange(event: Event): void;
     protected onBlur(): void;
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiCheckboxComponent, never>;
-    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiCheckboxComponent, "ui-checkbox", never, { "checked": { "alias": "checked"; "required": false; "isSignal": true; }; "indeterminate": { "alias": "indeterminate"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; "label": { "alias": "label"; "required": false; "isSignal": true; }; "id": { "alias": "id"; "required": false; "isSignal": true; }; }, { "checked": "checkedChange"; }, never, ["*"], true, never>;
+    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiCheckboxComponent, "ui-checkbox", never, { "checked": { "alias": "checked"; "required": false; "isSignal": true; }; "indeterminate": { "alias": "indeterminate"; "required": false; "isSignal": true; }; "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; "label": { "alias": "label"; "required": false; "isSignal": true; }; "id": { "alias": "id"; "required": false; "isSignal": true; }; "ariaLabel": { "alias": "ariaLabel"; "required": false; "isSignal": true; }; }, { "checked": "checkedChange"; }, never, ["*"], true, never>;
 }
 
 /** Root `<label>` shared by checkbox and switch: layout, label typography and disabled state. */
