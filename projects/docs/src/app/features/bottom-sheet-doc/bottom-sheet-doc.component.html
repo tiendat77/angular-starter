@@ -1,0 +1,122 @@
+<doc-playground
+  title="Bottom Sheet"
+  description="A modal panel that slides up from the bottom of the viewport, with multi-snap drag-resize, swipe-to-dismiss, and full WAI-ARIA dialog accessibility."
+  codeLanguage="ts"
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full flex-col flex-wrap items-center justify-center gap-3 p-4"
+  >
+    <button
+      uiButton
+      (click)="open()"
+    >
+      Open bottom sheet
+    </button>
+    @if (lastResult(); as result) {
+      <span class="text-muted-foreground text-xs">Last result: {{ result }}</span>
+    }
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="bts-snap-points"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Snap points (comma-separated fractions)
+      </label>
+      <input
+        id="bts-snap-points"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="snapPointsInput()"
+        (ngModelChange)="snapPointsInput.set($event)"
+      />
+    </div>
+
+    <div>
+      <label
+        for="bts-aria-label"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        aria-label
+      </label>
+      <input
+        id="bts-aria-label"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="ariaLabel()"
+        (ngModelChange)="ariaLabel.set($event)"
+      />
+    </div>
+
+    <label class="flex items-center gap-2">
+      <input
+        type="checkbox"
+        [ngModel]="hasBackdrop()"
+        (ngModelChange)="hasBackdrop.set($event)"
+      />
+      hasBackdrop
+    </label>
+    <label class="flex items-center gap-2">
+      <input
+        type="checkbox"
+        [ngModel]="disableClose()"
+        (ngModelChange)="disableClose.set($event)"
+      />
+      disableClose
+    </label>
+    <label class="flex items-center gap-2">
+      <input
+        type="checkbox"
+        [ngModel]="disableDrag()"
+        (ngModelChange)="disableDrag.set($event)"
+      />
+      disableDrag
+    </label>
+    <label class="flex items-center gap-2">
+      <input
+        type="checkbox"
+        [ngModel]="hasDragHandle()"
+        (ngModelChange)="hasDragHandle.set($event)"
+      />
+      hasDragHandle
+    </label>
+  </div>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>
+
+<ng-template
+  #sheetContentTpl
+  let-bottomSheetRef="bottomSheetRef"
+>
+  <div class="space-y-3 p-4">
+    <h2 class="text-sm font-semibold">Filter products</h2>
+    <p class="text-muted-foreground text-xs">
+      Drag the handle to resize between snap points, or swipe down to dismiss.
+    </p>
+    <div class="flex gap-2">
+      <button
+        uiButton
+        (click)="bottomSheetRef.dismiss('applied')"
+      >
+        Apply
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        (click)="bottomSheetRef.dismiss()"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</ng-template>

@@ -27,7 +27,6 @@
       "@environment": ["./src/environments/environment"],
       "@libs/hotkeys": ["./packages/hotkeys", "./libs/hotkeys/src/public-api"],
       "@libs/navigation": ["./packages/navigation", "./libs/navigation/src/public-api"],
-      "@libs/storage": ["./packages/storage", "./libs/storage/src/public-api"],
       "@libs/ui": ["./packages/ui", "./libs/ui/src/public-api"],
       "@libs/ui/*": ["./packages/ui/*", "./libs/ui/*/src/public-api"]
     }

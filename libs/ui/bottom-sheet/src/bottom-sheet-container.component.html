@@ -1,0 +1,47 @@
+<div
+  #panel
+  class="ui-bottom-sheet-panel"
+  role="dialog"
+  aria-modal="true"
+  tabindex="-1"
+  [attr.aria-label]="config.ariaLabel"
+  [class.ui-bottom-sheet-panel-visible]="visible()"
+  [class.ui-bottom-sheet-panel-dragging]="dragging()"
+  [style.height.px]="panelHeightPx()"
+  [style.transform]="panelTransform()"
+  (transitionend)="onPanelTransitionEnd($event)"
+>
+  <!--
+    The body comes before the handle in DOM order (even though the handle renders visually on
+    top via CSS `order: -1`) so CDK's FocusTrap default first-tabbable-element walk - which
+    follows DOM order, not visual order - naturally lands on the opened content instead of the
+    handle, with no `[cdkFocusInitial]` marker needed on either. A marker on the body wrapper
+    was tried previously and had two problems: it triggered CDK's dev-mode "not focusable"
+    warning on every open (the wrapper div itself isn't focusable), and it silently shadowed any
+    `[cdkFocusInitial]` a consumer might legitimately place on their own content, since
+    `querySelector` returns the first DOM match and the wrapper's own marker always came first.
+    See the I6 finding.
+  -->
+  <div
+    #body
+    class="ui-bottom-sheet-body"
+    (pointerdown)="onBodyPointerDown($event)"
+  >
+    <ng-template cdkPortalOutlet />
+  </div>
+  @if (config.hasDragHandle) {
+    <div
+      #handle
+      class="ui-bottom-sheet-handle"
+      [attr.role]="config.disableDrag ? null : 'slider'"
+      [attr.aria-orientation]="config.disableDrag ? null : 'vertical'"
+      [attr.aria-valuemin]="config.disableDrag ? null : 0"
+      [attr.aria-valuemax]="config.disableDrag ? null : snapPixels().length - 1"
+      [attr.aria-valuenow]="config.disableDrag ? null : snapIndex()"
+      [attr.aria-label]="config.disableDrag ? null : 'Resize sheet'"
+      [attr.tabindex]="config.disableDrag ? null : 0"
+      (keydown)="onHandleKeydown($event)"
+      (pointerdown)="onHandlePointerDown($event)"
+    ></div>
+  }
+</div>

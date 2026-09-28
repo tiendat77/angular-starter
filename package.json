@@ -11,7 +11,7 @@
     "build:prod": "ng build --configuration production",
     "docs:dev": "ng serve docs",
     "docs:build": "ng build docs",
-    "lint": "npx eslint .",
+    "lint": "npx eslint . --fix",
     "prepare": "husky",
     "lint-staged": "lint-staged",
     "test": "ng test"

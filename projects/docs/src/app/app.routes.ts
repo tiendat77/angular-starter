@@ -116,6 +116,13 @@ export const routes: Routes = [
       import('./features/menu-doc/menu-doc.component').then((m) => m.MenuDocComponent),
   },
   {
+    path: 'bottom-sheet',
+    loadComponent: () =>
+      import('./features/bottom-sheet-doc/bottom-sheet-doc.component').then(
+        (m) => m.BottomSheetDocComponent
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'button',
   },

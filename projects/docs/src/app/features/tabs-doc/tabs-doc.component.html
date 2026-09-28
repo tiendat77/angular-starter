@@ -150,8 +150,9 @@
       <label
         for="tabs-color"
         class="block font-medium text-gray-700 dark:text-gray-300"
-        >Color</label
       >
+        Color
+      </label>
       <select
         id="tabs-color"
         class="select select-sm mt-1 w-full"
@@ -172,9 +173,13 @@
   <section class="space-y-4">
     <h3 class="text-lg font-semibold">Variants</h3>
     <p class="text-sm text-gray-600 dark:text-gray-400">
-      Tabs are available in three visual styles: <code>bordered</code> (underlined indicator),
-      <code>lift</code> (elevated card style with joined panel borders), and <code>pill</code> (segmented rounded
-      buttons).
+      Tabs are available in three visual styles:
+      <code>bordered</code>
+      (underlined indicator),
+      <code>lift</code>
+      (elevated card style with joined panel borders), and
+      <code>pill</code>
+      (segmented rounded buttons).
     </p>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -292,8 +297,9 @@
   <section class="space-y-4">
     <h3 class="text-lg font-semibold">Vertical Layout</h3>
     <p class="text-sm text-gray-600 dark:text-gray-400">
-      Set <code>uiTabsOrientation="vertical"</code> for vertical sidebar navigation. ArrowDown and ArrowUp keys navigate
-      between tabs automatically.
+      Set
+      <code>uiTabsOrientation="vertical"</code>
+      for vertical sidebar navigation. ArrowDown and ArrowUp keys navigate between tabs automatically.
     </p>
 
     <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
@@ -372,8 +378,9 @@
   <section class="space-y-4">
     <h3 class="text-lg font-semibold">Lazy Content Deferral</h3>
     <p class="text-sm text-gray-600 dark:text-gray-400">
-      Wrap heavy tab panel content in <code>&lt;ng-template uiTabContent&gt;</code> to defer DOM mounting, component
-      creation, and network requests until the tab is first clicked.
+      Wrap heavy tab panel content in
+      <code>&lt;ng-template uiTabContent&gt;</code>
+      to defer DOM mounting, component creation, and network requests until the tab is first clicked.
     </p>
 
     <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
@@ -427,8 +434,11 @@
   <section class="space-y-4">
     <h3 class="text-lg font-semibold">Disabled Tabs</h3>
     <p class="text-sm text-gray-600 dark:text-gray-400">
-      Bind <code>[disabled]="true"</code> on any <code>uiTab</code> button. Disabled tabs are visually muted and
-      completely skipped during keyboard arrow navigation.
+      Bind
+      <code>[disabled]="true"</code>
+      on any
+      <code>uiTab</code>
+      button. Disabled tabs are visually muted and completely skipped during keyboard arrow navigation.
     </p>
 
     <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
@@ -467,7 +477,9 @@
           value="tab-a"
           class="pt-4 text-xs text-gray-600 dark:text-gray-400"
         >
-          Active available tab. Try pressing <kbd class="kbd kbd-xs">ArrowRight</kbd> to jump straight to tab C.
+          Active available tab. Try pressing
+          <kbd class="kbd kbd-xs">ArrowRight</kbd>
+          to jump straight to tab C.
         </div>
         <div
           uiTabPanel
@@ -485,32 +497,46 @@
     <h3 class="text-lg font-semibold">API Reference</h3>
 
     <div class="space-y-3">
-      <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">UiTabsDirective (<code>[uiTabs]</code>)</h4>
+      <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+        UiTabsDirective (
+        <code>[uiTabs]</code>
+        )
+      </h4>
       <doc-api-table [rows]="tabsApi" />
     </div>
 
     <div class="space-y-3">
       <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-        UiTabListDirective (<code>[uiTabList]</code>)
+        UiTabListDirective (
+        <code>[uiTabList]</code>
+        )
       </h4>
       <doc-api-table [rows]="tabListApi" />
     </div>
 
     <div class="space-y-3">
-      <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">UiTabDirective (<code>[uiTab]</code>)</h4>
+      <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+        UiTabDirective (
+        <code>[uiTab]</code>
+        )
+      </h4>
       <doc-api-table [rows]="tabApi" />
     </div>
 
     <div class="space-y-3">
       <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-        UiTabPanelDirective (<code>[uiTabPanel]</code>)
+        UiTabPanelDirective (
+        <code>[uiTabPanel]</code>
+        )
       </h4>
       <doc-api-table [rows]="tabPanelApi" />
     </div>
 
     <div class="space-y-3">
       <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-        UiTabContentDirective (<code>[uiTabContent]</code>)
+        UiTabContentDirective (
+        <code>[uiTabContent]</code>
+        )
       </h4>
       <doc-api-table [rows]="tabContentApi" />
     </div>

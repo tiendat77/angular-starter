@@ -1,0 +1,99 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Bottom Sheet
+/*
+/*  `ui-bottom-sheet-overlay-pane` the CDK overlay pane host - forced to span the full viewport
+/*                                 width (see I4: GlobalPositionStrategy only tracks a single
+/*                                 horizontal anchor, so `.left('0').right('0')` alone does not
+/*                                 make the pane flush-width; `width: 100%` on the OverlayConfig is
+/*                                 the real fix, this is a defensive backstop for the class itself)
+/*  `ui-bottom-sheet-backdrop`  fades in/out with the CDK overlay's own showing/hidden class toggle
+/*  `ui-bottom-sheet-panel`     fixed-height panel, slides via `transform: translateY(...)`, bound inline
+/*                              by the component (translateY itself depends on both the current snap
+/*                              index AND whether the sheet is visible - see the container's
+/*                              `translateYPx` computed); this file only owns the transition timing/easing
+/*  `ui-bottom-sheet-handle`    the grabber affordance
+/* ----------------------------------------------------------------------------------------------------- */
+@utility ui-bottom-sheet-overlay-pane {
+  display: block;
+  width: 100%;
+}
+
+@utility ui-bottom-sheet-backdrop {
+  background-color: rgb(0 0 0 / 0.5);
+  opacity: 0;
+  transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.cdk-overlay-backdrop-showing {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0.01ms;
+  }
+}
+
+@utility ui-bottom-sheet-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--color-background);
+  border-radius: 0.75rem 0.75rem 0 0;
+  box-shadow: 0 -4px 24px rgb(0 0 0 / 0.12);
+  transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+
+  &.ui-bottom-sheet-panel-dragging {
+    transition: none;
+  }
+
+  /* Off-screen while not visible (enter()'s deferred flip hasn't run yet, or exit() already
+     started) - keep it out of the way of clicks/tab order rather than letting an
+     off-screen-but-still-in-the-DOM panel intercept pointer events. */
+  &:not(.ui-bottom-sheet-panel-visible) {
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0.01ms;
+  }
+}
+
+@utility ui-bottom-sheet-handle {
+  /* Rendered after the body in DOM order (see I6 in the component template) so FocusTrap's
+     default DOM-order tabbable walk finds content before the handle; `order: -1` keeps it
+     visually first/on top regardless. */
+  order: -1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.25rem;
+  cursor: grab;
+  touch-action: none;
+
+  &::before {
+    content: '';
+    width: 2.5rem;
+    height: 0.25rem;
+    border-radius: 9999px;
+    background-color: var(--color-border);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+@utility ui-bottom-sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
