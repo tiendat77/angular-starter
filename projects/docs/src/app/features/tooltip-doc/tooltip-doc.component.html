@@ -1,0 +1,296 @@
+<doc-playground
+  title="Tooltip"
+  description="Floating contextual help attached to any element via [uiTooltip] with smart collision detection and a11y."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full items-center justify-center p-8"
+  >
+    <button
+      uiButton
+      variant="outline"
+      [uiTooltip]="content()"
+      [uiTooltipPosition]="position()"
+      [uiTooltipColor]="color()"
+      [uiTooltipSize]="size()"
+      [uiTooltipArrow]="arrow()"
+      [uiTooltipDelay]="delay()"
+      [uiTooltipHideDelay]="hideDelay()"
+      [uiTooltipDisabled]="disabled()"
+      [uiTooltipInteractive]="interactive()"
+    >
+      Hover or focus me
+    </button>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="tooltip-content"
+        class="block font-medium text-gray-700 dark:text-gray-300"
+        >Content</label
+      >
+      <input
+        id="tooltip-content"
+        type="text"
+        class="input input-sm mt-1 w-full"
+        [ngModel]="content()"
+        (ngModelChange)="content.set($event)"
+      />
+    </div>
+
+    <div>
+      <span class="block font-medium text-gray-700 dark:text-gray-300">Position</span>
+      <div class="mt-1 flex flex-wrap gap-2">
+        @for (pos of positions; track pos) {
+          <label class="flex cursor-pointer items-center gap-1.5">
+            <input
+              type="radio"
+              name="position"
+              [value]="pos"
+              [checked]="position() === pos"
+              (change)="position.set(pos)"
+              class="radio radio-xs"
+            />
+            <span class="capitalize">{{ pos }}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <div>
+      <label
+        for="tooltip-color"
+        class="block font-medium text-gray-700 dark:text-gray-300"
+        >Color</label
+      >
+      <select
+        id="tooltip-color"
+        class="select select-sm mt-1 w-full"
+        [ngModel]="color()"
+        (ngModelChange)="color.set($event)"
+      >
+        @for (c of colors; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <span class="block font-medium text-gray-700 dark:text-gray-300">Size</span>
+      <div class="mt-1 flex gap-3">
+        @for (s of sizes; track s) {
+          <label class="flex cursor-pointer items-center gap-1.5">
+            <input
+              type="radio"
+              name="size"
+              [value]="s"
+              [checked]="size() === s"
+              (change)="size.set(s)"
+              class="radio radio-xs"
+            />
+            <span>{{ s }}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <div class="space-y-2 border-t pt-2 dark:border-gray-800">
+      <label class="flex cursor-pointer items-center justify-between">
+        <span class="font-medium text-gray-700 dark:text-gray-300">Show pointer arrow</span>
+        <input
+          type="checkbox"
+          class="toggle toggle-xs"
+          [checked]="arrow()"
+          (change)="arrow.set(!arrow())"
+        />
+      </label>
+
+      <label class="flex cursor-pointer items-center justify-between">
+        <span class="font-medium text-gray-700 dark:text-gray-300">Interactive</span>
+        <input
+          type="checkbox"
+          class="toggle toggle-xs"
+          [checked]="interactive()"
+          (change)="interactive.set(!interactive())"
+        />
+      </label>
+
+      <label class="flex cursor-pointer items-center justify-between">
+        <span class="font-medium text-gray-700 dark:text-gray-300">Disabled</span>
+        <input
+          type="checkbox"
+          class="toggle toggle-xs"
+          [checked]="disabled()"
+          (change)="disabled.set(!disabled())"
+        />
+      </label>
+    </div>
+
+    <div>
+      <label
+        for="tooltip-delay"
+        class="block font-medium text-gray-700 dark:text-gray-300"
+      >
+        Show Delay ({{ delay() }}ms)
+      </label>
+      <input
+        id="tooltip-delay"
+        type="range"
+        min="0"
+        max="1000"
+        step="50"
+        class="range range-xs mt-1 w-full"
+        [ngModel]="delay()"
+        (ngModelChange)="delay.set($event)"
+      />
+    </div>
+  </div>
+</doc-playground>
+
+<!-- Showcase Sections -->
+<div class="mt-12 space-y-12">
+  <section class="space-y-4">
+    <h3 class="text-lg font-semibold">Positions & Viewport Flipping</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Tooltips can be positioned relative to any side of the trigger. When placed near the boundary of the viewport, CDK
+      Overlay automatically flips the tooltip and its pointer arrow to maintain visibility.
+    </p>
+
+    <div
+      class="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+    >
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Tooltip on top"
+        uiTooltipPosition="top"
+      >
+        Top
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Tooltip on bottom"
+        uiTooltipPosition="bottom"
+      >
+        Bottom
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Tooltip on left"
+        uiTooltipPosition="left"
+      >
+        Left
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Tooltip on right"
+        uiTooltipPosition="right"
+      >
+        Right
+      </button>
+    </div>
+  </section>
+
+  <section class="space-y-4">
+    <h3 class="text-lg font-semibold">Semantic Color Variants</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Choose from standard semantic colors mapped to design tokens.
+    </p>
+
+    <div
+      class="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+    >
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Neutral tooltip"
+        uiTooltipColor="neutral"
+      >
+        Neutral
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Primary action"
+        uiTooltipColor="primary"
+      >
+        Primary
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Informational note"
+        uiTooltipColor="info"
+      >
+        Info
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Success status"
+        uiTooltipColor="success"
+      >
+        Success
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Warning notification"
+        uiTooltipColor="warning"
+      >
+        Warning
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiTooltip="Error message"
+        uiTooltipColor="error"
+      >
+        Error
+      </button>
+    </div>
+  </section>
+
+  <section class="space-y-4">
+    <h3 class="text-lg font-semibold">Rich Templates & Shortcuts</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Pass an <code>&lt;ng-template&gt;</code> reference to render rich content, keyboard shortcuts, or icons. Rich
+      templates automatically allow interactive hover.
+    </p>
+
+    <ng-template #shortcutTpl>
+      <div class="flex items-center gap-2">
+        <span>Save changes</span>
+        <kbd class="kbd kbd-xs bg-gray-700 text-gray-100">⌘S</kbd>
+      </div>
+    </ng-template>
+
+    <div
+      class="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+    >
+      <button
+        uiButton
+        variant="primary"
+        [uiTooltip]="shortcutTpl"
+      >
+        Save
+      </button>
+    </div>
+  </section>
+
+  <!-- API Table -->
+  <section class="space-y-4">
+    <h3 class="text-lg font-semibold">API Reference</h3>
+    <doc-api-table [rows]="directiveApi" />
+  </section>
+</div>

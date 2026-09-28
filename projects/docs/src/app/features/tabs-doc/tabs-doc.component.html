@@ -1,0 +1,518 @@
+<doc-playground
+  title="Tabs"
+  description="Flexible navigation tabs directive suite powered by @angular/aria/tabs with Tailwind CSS v4 styling, CVA variants, vertical layouts, and lazy content."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex min-h-64 w-full items-center justify-center p-8"
+  >
+    <div
+      uiTabs
+      class="w-full max-w-xl"
+      [uiTabsVariant]="variant()"
+      [uiTabsOrientation]="orientation()"
+      [uiTabsSize]="size()"
+      [uiTabsColor]="color()"
+      [class.flex]="orientation() === 'vertical'"
+      [class.gap-6]="orientation() === 'vertical'"
+    >
+      <div
+        uiTabList
+        [selectedTab]="selectedTab()"
+        (selectedTabChange)="selectedTab.set($event)"
+      >
+        <button
+          uiTab
+          value="account"
+        >
+          Account
+        </button>
+        <button
+          uiTab
+          value="password"
+        >
+          Password
+        </button>
+        <button
+          uiTab
+          value="settings"
+        >
+          Settings
+        </button>
+      </div>
+
+      <div
+        uiTabPanel
+        value="account"
+        class="mt-4 flex-1 rounded-xl border border-gray-200 bg-white p-6 shadow-xs dark:border-gray-800 dark:bg-gray-900"
+      >
+        <ng-template uiTabContent>
+          <h4 class="font-medium text-gray-900 dark:text-gray-100">Account Preferences</h4>
+          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            Manage your personal profile, email notifications, and communication preferences.
+          </p>
+        </ng-template>
+      </div>
+
+      <div
+        uiTabPanel
+        value="password"
+        class="mt-4 flex-1 rounded-xl border border-gray-200 bg-white p-6 shadow-xs dark:border-gray-800 dark:bg-gray-900"
+      >
+        <ng-template uiTabContent>
+          <h4 class="font-medium text-gray-900 dark:text-gray-100">Security Credentials</h4>
+          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            Change your password, generate personal access tokens, and enforce two-factor authentication.
+          </p>
+        </ng-template>
+      </div>
+
+      <div
+        uiTabPanel
+        value="settings"
+        class="mt-4 flex-1 rounded-xl border border-gray-200 bg-white p-6 shadow-xs dark:border-gray-800 dark:bg-gray-900"
+      >
+        <ng-template uiTabContent>
+          <h4 class="font-medium text-gray-900 dark:text-gray-100">Organization Settings</h4>
+          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            Configure team permissions, workspace integrations, and global billing limits.
+          </p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <span class="block font-medium text-gray-700 dark:text-gray-300">Variant</span>
+      <div class="mt-1 flex flex-wrap gap-2">
+        @for (v of variants; track v) {
+          <label class="flex cursor-pointer items-center gap-1.5">
+            <input
+              type="radio"
+              name="variant"
+              class="radio radio-xs"
+              [value]="v"
+              [checked]="variant() === v"
+              (change)="variant.set(v)"
+            />
+            <span class="capitalize">{{ v }}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <div>
+      <span class="block font-medium text-gray-700 dark:text-gray-300">Orientation</span>
+      <div class="mt-1 flex gap-3">
+        @for (o of orientations; track o) {
+          <label class="flex cursor-pointer items-center gap-1.5">
+            <input
+              type="radio"
+              name="orientation"
+              class="radio radio-xs"
+              [value]="o"
+              [checked]="orientation() === o"
+              (change)="orientation.set(o)"
+            />
+            <span class="capitalize">{{ o }}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <div>
+      <span class="block font-medium text-gray-700 dark:text-gray-300">Size</span>
+      <div class="mt-1 flex gap-3">
+        @for (s of sizes; track s) {
+          <label class="flex cursor-pointer items-center gap-1.5">
+            <input
+              type="radio"
+              name="size"
+              class="radio radio-xs"
+              [value]="s"
+              [checked]="size() === s"
+              (change)="size.set(s)"
+            />
+            <span>{{ s }}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <div>
+      <label
+        for="tabs-color"
+        class="block font-medium text-gray-700 dark:text-gray-300"
+        >Color</label
+      >
+      <select
+        id="tabs-color"
+        class="select select-sm mt-1 w-full"
+        [ngModel]="color()"
+        (ngModelChange)="color.set($event)"
+      >
+        @for (c of colors; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+  </div>
+</doc-playground>
+
+<!-- Showcase Sections -->
+<div class="mt-12 space-y-12">
+  <!-- 1. Variants Showcase -->
+  <section class="space-y-4">
+    <h3 class="text-lg font-semibold">Variants</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Tabs are available in three visual styles: <code>bordered</code> (underlined indicator),
+      <code>lift</code> (elevated card style with joined panel borders), and <code>pill</code> (segmented rounded
+      buttons).
+    </p>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <!-- Bordered -->
+      <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+        <h4 class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Bordered</h4>
+        <div
+          uiTabs="bordered"
+          class="w-full"
+        >
+          <div
+            uiTabList
+            [selectedTab]="'overview'"
+          >
+            <button
+              uiTab
+              value="overview"
+            >
+              Overview
+            </button>
+            <button
+              uiTab
+              value="metrics"
+            >
+              Metrics
+            </button>
+          </div>
+          <div
+            uiTabPanel
+            value="overview"
+            class="pt-3 text-xs text-gray-500"
+          >
+            Overview content active
+          </div>
+        </div>
+      </div>
+
+      <!-- Lift -->
+      <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+        <h4 class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Lift (Card)</h4>
+        <div
+          uiTabs="lift"
+          class="w-full"
+        >
+          <div
+            uiTabList
+            [selectedTab]="'tab1'"
+          >
+            <button
+              uiTab
+              value="tab1"
+            >
+              Tab 1
+            </button>
+            <button
+              uiTab
+              value="tab2"
+            >
+              Tab 2
+            </button>
+          </div>
+          <div
+            uiTabPanel
+            value="tab1"
+            class="rounded-b-lg border-x border-b border-gray-200 p-3 text-xs text-gray-500 dark:border-gray-700"
+          >
+            Lift card body connected to active tab
+          </div>
+        </div>
+      </div>
+
+      <!-- Pill -->
+      <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+        <h4 class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Pill</h4>
+        <div
+          uiTabs="pill"
+          class="w-full"
+        >
+          <div
+            uiTabList
+            [selectedTab]="'weekly'"
+          >
+            <button
+              uiTab
+              value="daily"
+            >
+              Daily
+            </button>
+            <button
+              uiTab
+              value="weekly"
+            >
+              Weekly
+            </button>
+            <button
+              uiTab
+              value="monthly"
+            >
+              Monthly
+            </button>
+          </div>
+          <div
+            uiTabPanel
+            value="weekly"
+            class="pt-3 text-xs text-gray-500"
+          >
+            Showing weekly aggregated statistics
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Vertical Tabs Layout -->
+  <section class="space-y-4">
+    <h3 class="text-lg font-semibold">Vertical Layout</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Set <code>uiTabsOrientation="vertical"</code> for vertical sidebar navigation. ArrowDown and ArrowUp keys navigate
+      between tabs automatically.
+    </p>
+
+    <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+      <div
+        uiTabs
+        uiTabsOrientation="vertical"
+        uiTabsVariant="pill"
+        class="flex gap-6"
+      >
+        <div
+          uiTabList
+          class="w-48 shrink-0"
+          [selectedTab]="verticalTab()"
+          (selectedTabChange)="verticalTab.set($event)"
+        >
+          <button
+            uiTab
+            value="profile"
+          >
+            Profile
+          </button>
+          <button
+            uiTab
+            value="notifications"
+          >
+            Notifications
+          </button>
+          <button
+            uiTab
+            value="billing"
+          >
+            Billing
+          </button>
+        </div>
+
+        <div class="flex-1 rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-950">
+          <div
+            uiTabPanel
+            value="profile"
+          >
+            <ng-template uiTabContent>
+              <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Public Profile</h4>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Your profile is visible to team collaborators and customers.
+              </p>
+            </ng-template>
+          </div>
+          <div
+            uiTabPanel
+            value="notifications"
+          >
+            <ng-template uiTabContent>
+              <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Notification Settings</h4>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Choose delivery channels and frequency for automated alerts.
+              </p>
+            </ng-template>
+          </div>
+          <div
+            uiTabPanel
+            value="billing"
+          >
+            <ng-template uiTabContent>
+              <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Plan & Subscription</h4>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Current tier: Enterprise. Invoices sent monthly to finance&#64;acme.com.
+              </p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Lazy Content Deferral -->
+  <section class="space-y-4">
+    <h3 class="text-lg font-semibold">Lazy Content Deferral</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Wrap heavy tab panel content in <code>&lt;ng-template uiTabContent&gt;</code> to defer DOM mounting, component
+      creation, and network requests until the tab is first clicked.
+    </p>
+
+    <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+      <div
+        uiTabs="bordered"
+        class="w-full"
+      >
+        <div
+          uiTabList
+          [selectedTab]="lazyTab()"
+          (selectedTabChange)="lazyTab.set($event)"
+        >
+          <button
+            uiTab
+            value="general"
+          >
+            Instant Content
+          </button>
+          <button
+            uiTab
+            value="analytics"
+          >
+            Lazy Analytics Panel
+          </button>
+        </div>
+
+        <div
+          uiTabPanel
+          value="general"
+          class="pt-4 text-xs text-gray-600 dark:text-gray-400"
+        >
+          This tab panel content is eager and always in the DOM.
+        </div>
+
+        <div
+          uiTabPanel
+          value="analytics"
+          class="pt-4 text-xs text-gray-600 dark:text-gray-400"
+        >
+          <ng-template uiTabContent>
+            <div class="border-info/30 bg-info/10 text-info rounded-md border p-3">
+              ⚡ This content was lazily rendered only after the tab became active!
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Disabled State -->
+  <section class="space-y-4">
+    <h3 class="text-lg font-semibold">Disabled Tabs</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Bind <code>[disabled]="true"</code> on any <code>uiTab</code> button. Disabled tabs are visually muted and
+      completely skipped during keyboard arrow navigation.
+    </p>
+
+    <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+      <div
+        uiTabs="pill"
+        class="w-full"
+      >
+        <div
+          uiTabList
+          [selectedTab]="disabledDemoTab()"
+          (selectedTabChange)="disabledDemoTab.set($event)"
+        >
+          <button
+            uiTab
+            value="tab-a"
+          >
+            Available Tab
+          </button>
+          <button
+            uiTab
+            value="tab-b"
+            [disabled]="true"
+          >
+            Locked (Disabled)
+          </button>
+          <button
+            uiTab
+            value="tab-c"
+          >
+            Another Available Tab
+          </button>
+        </div>
+
+        <div
+          uiTabPanel
+          value="tab-a"
+          class="pt-4 text-xs text-gray-600 dark:text-gray-400"
+        >
+          Active available tab. Try pressing <kbd class="kbd kbd-xs">ArrowRight</kbd> to jump straight to tab C.
+        </div>
+        <div
+          uiTabPanel
+          value="tab-c"
+          class="pt-4 text-xs text-gray-600 dark:text-gray-400"
+        >
+          Tab C content active.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. API Reference -->
+  <section class="space-y-8">
+    <h3 class="text-lg font-semibold">API Reference</h3>
+
+    <div class="space-y-3">
+      <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">UiTabsDirective (<code>[uiTabs]</code>)</h4>
+      <doc-api-table [rows]="tabsApi" />
+    </div>
+
+    <div class="space-y-3">
+      <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+        UiTabListDirective (<code>[uiTabList]</code>)
+      </h4>
+      <doc-api-table [rows]="tabListApi" />
+    </div>
+
+    <div class="space-y-3">
+      <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">UiTabDirective (<code>[uiTab]</code>)</h4>
+      <doc-api-table [rows]="tabApi" />
+    </div>
+
+    <div class="space-y-3">
+      <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+        UiTabPanelDirective (<code>[uiTabPanel]</code>)
+      </h4>
+      <doc-api-table [rows]="tabPanelApi" />
+    </div>
+
+    <div class="space-y-3">
+      <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+        UiTabContentDirective (<code>[uiTabContent]</code>)
+      </h4>
+      <doc-api-table [rows]="tabContentApi" />
+    </div>
+  </section>
+</div>

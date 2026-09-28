@@ -50,7 +50,7 @@ module.exports = tseslint.config(
       '@angular-eslint/relative-url-prefix': ['warn'],
       '@angular-eslint/sort-lifecycle-methods': ['warn'],
       '@angular-eslint/use-pipe-transform-interface': ['warn'],
-      '@angular-eslint/no-output-on-prefix': ['warn'],
+      '@angular-eslint/no-output-on-prefix': ['off'],
       '@angular-eslint/directive-selector': [
         'warn',
         {

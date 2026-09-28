@@ -1,0 +1,430 @@
+<div class="space-y-12">
+  <!-- Header -->
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Menu / Dropdown</h1>
+    <p class="mt-2 text-base text-gray-600 dark:text-gray-400">
+      Accessible floating menus and dropdown actions powered by CDK Connected Overlay, WAI-ARIA roving tabindex, and
+      Tailwind CSS design tokens.
+    </p>
+  </div>
+
+  <!-- Interactive Playground -->
+  <doc-playground [code]="generatedCode()">
+    <div
+      preview
+      class="flex min-h-64 flex-col items-center justify-center gap-4 p-8"
+    >
+      <button
+        uiButton
+        variant="primary"
+        [uiMenuTriggerFor]="playgroundMenu"
+        [uiMenuPosition]="position()"
+        [uiMenuDisabled]="disabled()"
+        [uiMenuOffsetY]="offsetY()"
+      >
+        Open Menu
+        <svg
+          class="ml-1.5 size-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+
+      <div class="text-xs text-gray-500 dark:text-gray-400">
+        Last activated action: <span class="text-primary font-semibold">{{ lastAction() }}</span>
+      </div>
+
+      <ng-template #playgroundMenu>
+        <div
+          uiMenu
+          [uiMenuSize]="size()"
+        >
+          <div uiMenuLabel>Quick Actions</div>
+          <button
+            uiMenuItem
+            (click)="onAction('New File')"
+          >
+            <span class="flex items-center gap-2">
+              <svg
+                class="size-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <span>New File</span>
+            </span>
+            <kbd class="font-mono text-[10px] text-gray-400">⌘N</kbd>
+          </button>
+          <button
+            uiMenuItem
+            (click)="onAction('Share Project')"
+          >
+            <span class="flex items-center gap-2">
+              <svg
+                class="size-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                />
+              </svg>
+              <span>Share</span>
+            </span>
+          </button>
+          <button
+            uiMenuItem
+            [disabled]="true"
+          >
+            <span class="flex items-center gap-2">
+              <svg
+                class="size-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              <span>Locked Option</span>
+            </span>
+            <span class="text-[10px] text-gray-400 italic">Pro</span>
+          </button>
+          <div uiMenuDivider></div>
+          <button
+            uiMenuItem
+            [danger]="true"
+            (click)="onAction('Delete File')"
+          >
+            <span class="flex items-center gap-2">
+              <svg
+                class="size-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              <span>Delete</span>
+            </span>
+            <kbd class="text-error/60 font-mono text-[10px]">⌘⌫</kbd>
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <div
+      controls
+      class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+    >
+      <div>
+        <label
+          for="menu-position"
+          class="block text-xs font-medium text-gray-700 dark:text-gray-300"
+          >Position</label
+        >
+        <select
+          id="menu-position"
+          class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
+          [ngModel]="position()"
+          (ngModelChange)="position.set($event)"
+        >
+          @for (pos of positions; track pos) {
+            <option [value]="pos">{{ pos }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label
+          for="menu-size"
+          class="block text-xs font-medium text-gray-700 dark:text-gray-300"
+          >Size</label
+        >
+        <select
+          id="menu-size"
+          class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
+          [ngModel]="size()"
+          (ngModelChange)="size.set($event)"
+        >
+          @for (s of sizes; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label
+          for="menu-offset"
+          class="block text-xs font-medium text-gray-700 dark:text-gray-300"
+          >Offset Y (px)</label
+        >
+        <input
+          id="menu-offset"
+          type="number"
+          class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
+          [ngModel]="offsetY()"
+          (ngModelChange)="offsetY.set($event)"
+        />
+      </div>
+
+      <div class="flex items-center gap-2 pt-6">
+        <input
+          type="checkbox"
+          id="menu-disabled"
+          class="rounded border-gray-300 dark:border-gray-700"
+          [ngModel]="disabled()"
+          (ngModelChange)="disabled.set($event)"
+        />
+        <label
+          for="menu-disabled"
+          class="text-sm text-gray-700 dark:text-gray-300"
+          >Disabled Trigger</label
+        >
+      </div>
+    </div>
+  </doc-playground>
+
+  <!-- Showcase 1: Placements -->
+  <section class="space-y-4">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Placement Showcase</h2>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Menus can be anchored around the trigger element with automatic collision-aware repositioning.
+    </p>
+
+    <div
+      class="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+    >
+      <button
+        uiButton
+        variant="outline"
+        uiMenuPosition="bottom-start"
+        [uiMenuTriggerFor]="bottomStartTpl"
+      >
+        bottom-start
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiMenuPosition="bottom-end"
+        [uiMenuTriggerFor]="bottomEndTpl"
+      >
+        bottom-end
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiMenuPosition="top-start"
+        [uiMenuTriggerFor]="topStartTpl"
+      >
+        top-start
+      </button>
+      <button
+        uiButton
+        variant="outline"
+        uiMenuPosition="right-start"
+        [uiMenuTriggerFor]="rightStartTpl"
+      >
+        right-start
+      </button>
+
+      <ng-template #bottomStartTpl>
+        <div uiMenu>
+          <button uiMenuItem>Option Alpha</button>
+          <button uiMenuItem>Option Beta</button>
+        </div>
+      </ng-template>
+
+      <ng-template #bottomEndTpl>
+        <div uiMenu>
+          <button uiMenuItem>Option Gamma</button>
+          <button uiMenuItem>Option Delta</button>
+        </div>
+      </ng-template>
+
+      <ng-template #topStartTpl>
+        <div uiMenu>
+          <button uiMenuItem>Option Epsilon</button>
+          <button uiMenuItem>Option Zeta</button>
+        </div>
+      </ng-template>
+
+      <ng-template #rightStartTpl>
+        <div uiMenu>
+          <button uiMenuItem>Option Eta</button>
+          <button uiMenuItem>Option Theta</button>
+        </div>
+      </ng-template>
+    </div>
+  </section>
+
+  <!-- Showcase 2: Sizes -->
+  <section class="space-y-4">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Density & Sizes</h2>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Available in <code>sm</code>, <code>md</code>, and <code>lg</code> scales to match various compact or roomy
+      interfaces.
+    </p>
+
+    <div
+      class="flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+    >
+      <button
+        uiButton
+        variant="secondary"
+        [uiMenuTriggerFor]="smMenu"
+      >
+        Small (sm)
+      </button>
+      <button
+        uiButton
+        variant="secondary"
+        [uiMenuTriggerFor]="mdMenu"
+      >
+        Medium (md)
+      </button>
+      <button
+        uiButton
+        variant="secondary"
+        [uiMenuTriggerFor]="lgMenu"
+      >
+        Large (lg)
+      </button>
+
+      <ng-template #smMenu>
+        <div
+          uiMenu
+          uiMenuSize="sm"
+        >
+          <div uiMenuLabel>Compact Menu</div>
+          <button uiMenuItem>Small Item 1</button>
+          <button uiMenuItem>Small Item 2</button>
+        </div>
+      </ng-template>
+
+      <ng-template #mdMenu>
+        <div
+          uiMenu
+          uiMenuSize="md"
+        >
+          <div uiMenuLabel>Default Menu</div>
+          <button uiMenuItem>Regular Item 1</button>
+          <button uiMenuItem>Regular Item 2</button>
+        </div>
+      </ng-template>
+
+      <ng-template #lgMenu>
+        <div
+          uiMenu
+          uiMenuSize="lg"
+        >
+          <div uiMenuLabel>Roomy Menu</div>
+          <button uiMenuItem>Large Item 1</button>
+          <button uiMenuItem>Large Item 2</button>
+        </div>
+      </ng-template>
+    </div>
+  </section>
+
+  <!-- Showcase 3: Complex Grouped Menu -->
+  <section class="space-y-4">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Groups, Dividers & Danger Actions</h2>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Structure complex dropdown menus with semantic group titles, separating dividers, and destructive red actions.
+    </p>
+
+    <div
+      class="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+    >
+      <button
+        uiButton
+        variant="primary"
+        [uiMenuTriggerFor]="complexMenu"
+      >
+        Manage Account
+      </button>
+
+      <ng-template #complexMenu>
+        <div
+          uiMenu
+          class="min-w-56"
+        >
+          <div uiMenuLabel>Signed in as <strong>alex&#64;example.com</strong></div>
+          <div uiMenuDivider></div>
+          <div uiMenuLabel>Account Settings</div>
+          <button uiMenuItem>Your Profile</button>
+          <button uiMenuItem>Billing & Invoices</button>
+          <button uiMenuItem>Team Members</button>
+          <div uiMenuDivider></div>
+          <div uiMenuLabel>Danger Zone</div>
+          <button
+            uiMenuItem
+            [danger]="true"
+          >
+            Delete Organization
+          </button>
+          <button
+            uiMenuItem
+            [danger]="true"
+          >
+            Sign Out
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </section>
+
+  <!-- API Reference -->
+  <section class="space-y-6">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">API Reference</h2>
+
+    <div>
+      <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
+        UiMenuTriggerDirective (<code>[uiMenuTriggerFor]</code>)
+      </h3>
+      <doc-api-table [rows]="triggerApi" />
+    </div>
+
+    <div>
+      <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
+        UiMenuDirective (<code>[uiMenu]</code>)
+      </h3>
+      <doc-api-table [rows]="menuApi" />
+    </div>
+
+    <div>
+      <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
+        UiMenuItemDirective (<code>[uiMenuItem]</code>)
+      </h3>
+      <doc-api-table [rows]="itemApi" />
+    </div>
+  </section>
+</div>

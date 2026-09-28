@@ -2,8 +2,9 @@
 <span
   class="tag-label"
   [id]="labelId"
-  ><ng-content
-/></span>
+>
+  <ng-content />
+</span>
 @if (removable()) {
   <button
     type="button"
@@ -17,8 +18,9 @@
     <span
       class="sr-only"
       [id]="removeTextId"
-      >{{ removeLabel() }}</span
     >
+      {{ removeLabel() }}
+    </span>
     <svg
       class="size-3"
       viewBox="0 0 24 24"

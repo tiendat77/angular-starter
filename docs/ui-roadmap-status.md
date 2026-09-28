@@ -1,20 +1,20 @@
 # `@libs/ui` — Roadmap Status & Next Steps
 
-_Snapshot: 2026-09-26, branch `feat/libs-ui-design-system`, after `5b01824`._
+_Snapshot: 2026-09-28, branch `feat/tooltip`, after Tooltip & Tabs implementation & review._
 _Sources: `.idea/roadmap.md` (the plan) and `.idea/ui-progress-and-next-steps.md` (the earlier review)._
 
 ---
 
 ## 1. Summary
 
-The consolidation phase ("Step 0" in the earlier review) is essentially done:
+The consolidation and presentational phases are completed:
 
-- **One package:** everything lives in `libs/ui` as secondary entry points. Nothing depends on the host app any more.
-- **One styling approach:** every component takes its look from shared CSS utilities, the way `btn` works. The daisyUI names are gone.
+- **One package:** everything lives in `libs/ui` as secondary entry points. Nothing depends on the host app.
+- **One styling approach:** every component takes its look from shared CSS utilities (CVA + tokens).
 - **Self-contained tokens:** `libs/ui` ships neutral defaults. The app overrides only its brand colors.
-- **Everything documented and tested:** all 11 entry points have a docs page and tests (36 tests, all passing).
+- **Everything documented and tested:** all 20 entry points have a docs page and tests (44 test files, 247 tests, all passing).
 
-What is still missing is **new components**. Roadmap Phase 1 is roughly half done. The next milestone is the overlay foundation, then Select.
+Phase 1 navigation components are now completed: **Tooltip**, **Tabs**, and **Menu / Dropdown**.
 
 ---
 
@@ -29,8 +29,12 @@ What is still missing is **new components**. Roadmap Phase 1 is roughly half don
 | `21401c9` | Tests for svg-icon, dialog, toast, loader, date-picker, paginator. |
 | `d406833` | Docs pages for dialog, toast, loader, date-picker, paginator. Grouped sidebar and a shared API table. |
 | `5b01824` | Two-tier tokens: `libs/ui/styles/tokens.css` holds the defaults, and the app overrides its brand in an unlayered `:root`. The docs app imports only `@libs/ui/styles`. |
+| `b2ca891` | Add basic UI components: `ui-select` (single + multi-select with search, option groups, label caching, tags, and CDK overlay). |
+| `fb1080e` | Feedback & Data Display batch: `ui-alert`, `ui-spinner`, `ui-progress-bar`, `ui-card`, `ui-badge`, `ui-avatar`, `ui-tag`, corresponding CSS utilities and docs pages. |
+| `5cfb49c` | Tooltip feature package: `[uiTooltip]` directive on CDK Overlay, auto-flip collision detection, rich templates, interactive transit buffer, pointer arrow, docs playground, and 203 passing tests. |
+| `478143a` | Tabs feature package: compound directives on `@angular/aria/tabs` (`[uiTabs]`, `[uiTabList]`, `[uiTab]`, `[uiTabPanel]`, `[uiTabContent]`), CVA variants (`bordered`, `lift`, `pill`), responsive sizes, vertical layouts, lazy content deferral, docs playground, and 223 passing tests. |
+| `06d6a60` | Menu / Dropdown feature package: compound directives on CDK Overlay (`[uiMenuTriggerFor]`, `[uiMenu]`, `[uiMenuItem]`, `[uiMenuDivider]`, `[uiMenuLabel]`), auto-flipping, WAI-ARIA roving tabindex, focus management, danger/disabled items, docs playground, and 247 passing tests. |
 
-Earlier on this branch: highlight.js code blocks, separate `.html` / `.ts` per docs component, a real button loading state, the checkbox layout-shift fix, form-field prefix/suffix, and svg-icon plus the five older libraries moved into `libs/ui`.
 
 ---
 
@@ -45,12 +49,23 @@ Earlier on this branch: highlight.js code blocks, separate `.html` / `.ts` per d
 | `@libs/ui/input` (form field, input, textarea, prefix/suffix) | `input-*`, `textarea-*` | ✅ | ✅ |
 | `@libs/ui/checkbox` (+ switch) | `checkbox-*`, `toggle-*` | ✅ | ✅ |
 | `@libs/ui/radio` | `radio-*` (+ `data-checked`) | ✅ | ✅ |
+| `@libs/ui/select` (single + multi) | `@angular/aria` + CDK Overlay + `select-*` | ✅ | ✅ |
+| `@libs/ui/alert` | `alert-*` + tokens | ✅ | ✅ |
+| `@libs/ui/progress` (spinner, progress bar) | `spinner`, `progress-bar` | ✅ | ✅ |
+| `@libs/ui/card` | `card-*` | ✅ | ✅ |
+| `@libs/ui/badge` | `badge-*` | ✅ | ✅ |
+| `@libs/ui/avatar` | `avatar-*` | ✅ | ✅ |
+| `@libs/ui/tag` | `tag-*` | ✅ | ✅ |
+| `@libs/ui/tooltip` | `tooltip`, `tooltip-*`, `tooltip-arrow` | ✅ | ✅ |
+| `@libs/ui/tabs` | `tabs`, `tabs-*`, `tab-*` | ✅ | ✅ |
+| `@libs/ui/menu` | `menu`, `menu-*` + CDK Overlay | ✅ | ✅ |
 | `@libs/ui/svg-icon` | SCSS + `icon-size-*` | ✅ | ✅ |
 | `@libs/ui/dialog` | CDK Dialog + `btn`/`alert` + own keyframes | ✅ | ✅ |
 | `@libs/ui/toast` | CDK Overlay + `alert`/`btn` | ✅ | ✅ |
 | `@libs/ui/loader` | CDK Overlay + SCSS on tokens | ✅ | ✅ |
 | `@libs/ui/date-picker` | Material port, SCSS on tokens | ✅ | ✅ |
 | `@libs/ui/paginator` | `join`/`btn`/`select` | ✅ | ✅ |
+
 
 ### 3.2 Styling system (`@libs/ui/styles`)
 
@@ -60,7 +75,15 @@ Earlier on this branch: highlight.js code blocks, separate `.html` / `.ts` per d
 | `components/button.css` | `btn` + colors, styles (outline, dash, soft, ghost, link), sizes xs–xl, shapes |
 | `components/form.css` | `form-control`, `label*`, `input-*`, `textarea-*`, `select-*` (incl. `-filled`) |
 | `components/controls.css` | `checkbox-*`, `radio-*`, `toggle-*` |
+| `components/select.css` | `select-*` container, options, search input, tag wrappers |
 | `components/alert.css` | `alert` + colors, soft/outline/dash, layouts |
+| `components/progress.css` | `spinner`, `progress-bar` determinate / indeterminate |
+| `components/card.css` | `card` + border, shadow, part directives |
+| `components/badge.css` | `badge` + colors, sizes, anchor placement |
+| `components/avatar.css` | `avatar` + shapes, sizes, initials, `avatar-group` |
+| `components/tag.css` | `tag` + colors, removable, checkable |
+| `components/tooltip.css` | `tooltip` container, sizes, arrow, interactive, placement offsets |
+| `components/tabs.css` | `tabs` base, variants (`bordered`, `lift`, `pill`), items, sizing, orientation, panel |
 | `components/layout.css` | `divider-*`, `join-*` |
 | `components/navigation.css` | `menu-*`, `dropdown`, `modal-*` |
 
@@ -68,7 +91,7 @@ Earlier on this branch: highlight.js code blocks, separate `.html` / `.ts` per d
 
 ### 3.3 Docs app (`projects/docs`)
 
-- 10 pages in 3 groups: Forms (Button, Form Field & Input, Checkbox & Switch, Radio Group, Date Picker); Overlays & Feedback (Dialog, Toast, Loader); Data & Media (Paginator, SVG Icon).
+- 20 pages in 4 groups: Navigation (Tabs, Menu / Dropdown); Forms (Button, Form Field & Input, Checkbox & Switch, Radio Group, Select, Date Picker); Overlays & Feedback (Alert, Dialog, Toast, Loader, Spinner & Progress, Tooltip); Data & Media (Avatar, Badge, Card, Paginator, SVG Icon, Tag).
 - Each page has a live playground, generated usage code (highlighted html/ts/css/scss/json) and an API table.
 - The docs render the **library's neutral defaults**. The app's brand is not loaded there on purpose.
 
@@ -90,14 +113,14 @@ Earlier on this branch: highlight.js code blocks, separate `.html` / `.ts` per d
 | Spinner / Progress | ✅ | `ui-spinner` (circular, determinate or not) and `ui-progress-bar`; button uses the shared `spinner` utility |
 | Card, Badge, Avatar, Tag | ✅ | `ui-card` + parts, `ui-badge` / `[uiBadge]`, `ui-avatar` / `ui-avatar-group`, `ui-tag` (removable, checkable) |
 | Dialog / Modal | ✅ | CDK Dialog, confirm + layout, documented |
-| **Tooltip** | ❌ | |
+| **Tooltip** | ✅ | `[uiTooltip]` directive on CDK Overlay, auto-flip collision detection, rich templates, interactive transit buffer, pointer arrow |
 | **Popover** | ❌ | |
-| Tabs | ❌ | An `@angular/aria` tabs example exists in the app, not in the library |
-| **Menu / Dropdown** | 🟡 | `menu-*` / `dropdown` utilities only |
+| Tabs | ✅ | Compound directives on `@angular/aria/tabs` (`uiTabs`, `uiTabList`, `uiTab`, `uiTabPanel`, `uiTabContent`), CVA variants (`bordered`, `lift`, `pill`), vertical layout, lazy content deferral |
+| **Menu / Dropdown** | ✅ | Compound directives on CDK Overlay (`uiMenuTriggerFor`, `uiMenu`, `uiMenuItem`, `uiMenuDivider`, `uiMenuLabel`), WAI-ARIA roving tabindex, focus management, danger/disabled items |
 | Divider / Space | 🟡 | `divider` utility only |
 | Icon | ✅ | |
 
-**Phase 1: 11 done · 2 partial · 3 missing.**
+**Phase 1: 14 done · 1 partial · 1 missing.**
 
 ### Phase 2 — High priority (already available)
 
@@ -116,10 +139,10 @@ Earlier on this branch: highlight.js code blocks, separate `.html` / `.ts` per d
 | Icon system | ✅ |
 | Typography utilities | ❌ |
 | Focus / a11y helpers | 🟡 Per component; CDK a11y CSS is shipped |
-| **Centralized Overlay service** | ❌ **This blocks the next four components** |
+| Centralized Overlay foundation | 🟡 In progress / used in `ui-select`, `dialog`, `toast`, `loader`, `ui-tooltip` |
 | Form utilities | ✅ `UiFormFieldControl` |
 | Responsive utilities | ❌ |
-| `@angular/aria` in the library | ❌ Installed, but no `libs/ui` component uses it yet |
+| `@angular/aria` in the library | ✅ Used in `ui-select` (Combobox + Listbox) and `tabs` (Tabs) |
 
 ---
 
@@ -139,35 +162,15 @@ Earlier on this branch: highlight.js code blocks, separate `.html` / `.ts` per d
 
 ## 6. What to do next
 
-1. **Quick wins (small, do first)**
-   - Add `tailwind-merge` to `cn()` so user `class` overrides win predictably.
-   - Fix the `uiInput` id override: respect an `id` input and fall back to the auto id.
-   - Expose the remaining button variants and sizes in the types, plus the docs controls.
-   - Housekeeping: tsconfig paths, `libs/hotkeys`, the plan/spec deletion.
+1. **Select + Multi-select** ✅ (`@angular/aria` Combobox + Listbox on CDK overlay, tag chips, search, docs + tests).
+2. **Presentational batch** ✅ (Alert, Spinner / Progress bar, Card, Badge, Avatar, Tag, docs + tests).
+3. **Tooltip** ✅ (`[uiTooltip]` directive on CDK overlay, hover/focus triggers, positions, delay, transit buffer, arrow, styles, docs + tests).
+4. **Tabs** ✅ (`@libs/ui/tabs` compound directives on `@angular/aria/tabs`, variants, docs + tests).
+5. **Menu / Dropdown** ⏳ (Next up: `@angular/aria/menu` or CDK menu on overlay, reusing `menu-*` / `dropdown` utilities).
+6. **Divider / Space polish** ⏳ (Wrap utility into component/part if needed).
 
-2. **Overlay foundation** — `@libs/ui/overlay`, or put it in `core`:
-   - position presets with fallbacks
-   - scroll strategy
-   - z-index layering
-   - close on outside click / Escape
+Once steps 4–5 are done, **Roadmap Phase 1 is complete** (except Popover). Phase 2 then starts with Date Picker and Pagination already in hand.
 
-   Select, Tooltip, Popover and Menu all build on this. Toast, loader and date-picker can move onto it later.
-
-3. **Select + Multi-select** (`@angular/aria` Combobox + Listbox on the overlay)
-   - Implements `UiFormFieldControl`, so it works in `ui-form-field` with label, hint, error, prefix/suffix and `aria-invalid`.
-   - `<ui-option>` projection, `compareWith`, disabled options, placeholder.
-   - Multi-select needs a minimal **Tag**; build it here.
-   - Docs page + tests (keyboard, forms, disabled).
-
-4. **Tooltip + Popover** — thin wrappers on the overlay (`[uiTooltip]` directive; popover trigger + content template).
-
-5. **Menu / Dropdown** — `@angular/aria` Menu on the overlay, reusing the `menu-*` / `dropdown` utilities.
-
-6. **Presentational batch** — Card, Badge, Avatar, Tag (finish it), Alert component, `ui-spinner` (pull it out of button and reuse it in loader), Divider. Each is about an hour with the utility-first approach; each gets a docs page.
-
-7. **Tabs** (`@angular/aria`, move the app example into the library) and an optional **brand toggle** in the docs header to preview app overrides.
-
-Once step 7 is done, **Roadmap Phase 1 is complete**. Phase 2 then starts with Date Picker and Pagination already in hand.
 
 ---
 

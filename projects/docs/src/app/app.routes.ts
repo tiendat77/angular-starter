@@ -96,6 +96,21 @@ export const routes: Routes = [
       import('./features/tag-doc/tag-doc.component').then((m) => m.TagDocComponent),
   },
   {
+    path: 'tooltip',
+    loadComponent: () =>
+      import('./features/tooltip-doc/tooltip-doc.component').then((m) => m.TooltipDocComponent),
+  },
+  {
+    path: 'tabs',
+    loadComponent: () =>
+      import('./features/tabs-doc/tabs-doc.component').then((m) => m.TabsDocComponent),
+  },
+  {
+    path: 'menu',
+    loadComponent: () =>
+      import('./features/menu-doc/menu-doc.component').then((m) => m.MenuDocComponent),
+  },
+  {
     path: '**',
     redirectTo: 'button',
   },

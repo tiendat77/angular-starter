@@ -65,6 +65,10 @@
       "types": "./types/libs-ui-loader.d.ts",
       "default": "./fesm2022/libs-ui-loader.mjs"
     },
+    "./menu": {
+      "types": "./types/libs-ui-menu.d.ts",
+      "default": "./fesm2022/libs-ui-menu.mjs"
+    },
     "./paginator": {
       "types": "./types/libs-ui-paginator.d.ts",
       "default": "./fesm2022/libs-ui-paginator.mjs"
@@ -85,6 +89,10 @@
       "types": "./types/libs-ui-svg-icon.d.ts",
       "default": "./fesm2022/libs-ui-svg-icon.mjs"
     },
+    "./tabs": {
+      "types": "./types/libs-ui-tabs.d.ts",
+      "default": "./fesm2022/libs-ui-tabs.mjs"
+    },
     "./tag": {
       "types": "./types/libs-ui-tag.d.ts",
       "default": "./fesm2022/libs-ui-tag.mjs"
@@ -92,6 +100,10 @@
     "./toast": {
       "types": "./types/libs-ui-toast.d.ts",
       "default": "./fesm2022/libs-ui-toast.mjs"
+    },
+    "./tooltip": {
+      "types": "./types/libs-ui-tooltip.d.ts",
+      "default": "./fesm2022/libs-ui-tooltip.mjs"
     }
   },
   "sideEffects": [

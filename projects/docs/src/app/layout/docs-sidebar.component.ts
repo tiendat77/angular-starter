@@ -38,6 +38,14 @@ export class DocsSidebarComponent {
         { label: 'Toast', path: '/toast' },
         { label: 'Loader', path: '/loader' },
         { label: 'Spinner & Progress', path: '/progress' },
+        { label: 'Tooltip', path: '/tooltip' },
+      ],
+    },
+    {
+      title: 'Navigation',
+      items: [
+        { label: 'Tabs', path: '/tabs' },
+        { label: 'Menu / Dropdown', path: '/menu' },
       ],
     },
     {
