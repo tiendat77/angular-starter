@@ -18,7 +18,7 @@ This document provides a comprehensive overview of the architecture and technica
 
 ## 📂 Directory Structure
 
-The project follows a modular, feature-based architecture with separated core and shared layers.
+The project adopts **Feature-Sliced Design (FSD)** architecture (see `.agents/rules/feature-sliced-design.md`). Code is organized into horizontal layers with strict top-to-bottom unidirectional dependencies.
 
 ```mermaid
 graph TD
@@ -35,11 +35,12 @@ graph TD
     Src --> Models[models/]
     Src --> Styles[styles/]
 
-    App --> Core[core/]
-    App --> Features[features/]
-    App --> Api[api/]
-    App --> Services[services/]
-    App --> Shared[shared/]
+    App --> AppLayer[app / core / routes]
+    App --> PagesLayer[pages / feature routes]
+    App --> WidgetsLayer[widgets / layouts]
+    App --> FeaturesLayer[features / user actions]
+    App --> EntitiesLayer[entities / domain data]
+    App --> SharedLayer[shared / base api / libs]
 
     Libs --> DatePicker[date-picker]
     Libs --> Dialog[dialog]
@@ -52,36 +53,36 @@ graph TD
     Libs --> Toast[toast]
 ```
 
-### 1. `apps/main/src/app/core/`
+### 1. `apps/main/src/app/core/` (App & Layout Layer)
 
-The backbone of the application. Contains singleton services, global guards, interceptors, and the layout system.
+The backbone of the application. Contains singleton services, global guards, interceptors, and shell layouts.
 
 - **`auth/`**: Authentication logic, token management, session handling.
 - **`guard/`**: `AuthGuard` and `NoAuthGuard` for route protection.
 - **`layouts/`**: Multi-layout system (`dense`, `empty`, `modern`).
 - **`commons/`**: Core utilities, base classes, and interceptors.
 
-### 2. `apps/main/src/app/features/`
+### 2. `apps/main/src/app/features/` (Features & Pages Layer)
 
-Feature-based modules. Each feature is encapsulated within its own directory and uses **lazy loading** via `routes.ts` files.
+Slices organized by business domains and user interactions. Each slice follows FSD segments (`ui/`, `model/`, `api/`, `lib/`, `config/`) and exposes its public API via `index.ts`:
 
-- `auth/`: Sign-in, sign-up, forgot-password, reset-password, access-denied.
+- `auth/`: User authentication flows (`sign-in`, `sign-up`, `forgot-password`, `reset-password`, `access-denied`).
 - `example/`: Example feature demonstrating dialogs, datepickers, loaders, toasts, and icons.
 - `not-found/`: 404 handler page.
 
-### 3. `apps/main/src/app/api/`
+### 3. `apps/main/src/app/api/` & `entities/` (Entity & Data Layer)
 
-Centralized API layer. Contains base classes, operators, helpers, data models, and API resources for backend communication.
+Entity and data access layer. Contains base classes, operators, domain models, and API resources:
 
 - `base/`: `BaseApiService`, API list interfaces, response operators.
 - `resources/`: Dedicated services per entity (e.g., `ExampleAPIService`).
-- `models/`: API data models and Zod schemas.
+- `models/`: Domain models and Zod schemas.
 
 ### 4. `apps/main/src/app/services/`
 
 Cross-cutting application-level services (e.g., `UserService`).
 
-### 5. `apps/main/src/app/shared/`
+### 5. `apps/main/src/app/shared/` & `@libs/*` (Shared Layer)
 
 Reusable UI components, directives, and pipes used across multiple feature modules.
 

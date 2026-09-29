@@ -226,17 +226,21 @@ Always order template attributes and bindings predictably:
 
 ---
 
-## 🛤️ Angular Routing & Feature Modules
+## 🛤️ Angular Routing & Feature Modules (Feature-Sliced Design)
 
-### 1. Folder Structure
+All feature modules and routing views must adhere to **Feature-Sliced Design (FSD)** principles (see detailed rules in `.agents/rules/feature-sliced-design.md`).
 
-- Feature modules are located in `apps/main/src/app/features/`.
-- Structure per feature:
+### 1. Folder Structure & Segments
+
+- Features are located in `apps/main/src/app/features/` (or `pages/` for full route views).
+- Structure per feature slice:
+  - `ui/`: Components, dialogs, and HTML templates (`feature-name.ts`, `feature-name.html`).
+  - `model/`: Signals, store, models, and Zod schemas (`feature-name.model.ts`, `feature-name.store.ts`).
+  - `api/`: API resource services extending `BaseApiService`.
+  - `lib/`: Slice-specific pure functions, validators, or helpers.
+  - `config/`: Slice-specific constants or tokens.
   - `routes.ts`: Lazy-loaded route definitions.
-  - `feature-name.ts`: Main component logic.
-  - `feature-name.html`: Template view.
-  - `sub-component/`: Dedicated subdirectories for child dialogs or nested components.
-  - `index.ts`: Public API exports.
+  - `index.ts`: Public API exports (strictly no deep imports from outside).
 
 ### 2. Lazy Loading & Guards
 

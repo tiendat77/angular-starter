@@ -1,0 +1,298 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Style Guide Colors
+/* ----------------------------------------------------------------------------------------------------- */
+@theme {
+  /* Primary (Red & Yellow) */
+  --color-red-1: #ffeceb;
+  --color-red-2: #ffc7c3;
+  --color-red-3: #ff837a;
+  --color-red-4: #e03c31;
+  /* Brand color */
+  --color-red-5: #74150f;
+
+  --color-yellow-1: #fff8e7;
+  --color-yellow-2: #ffe9b6;
+  --color-yellow-3: #ffd36b;
+  --color-yellow-4: #fcb40a;
+  /* Brand color */
+  --color-yellow-5: #a6732b;
+
+  /* Secondary (Cyan & Blue) */
+  --color-cyan-1: #e8feff;
+  --color-cyan-2: #9ed8da;
+  --color-cyan-3: #1dbabf;
+  --color-cyan-4: #009ba1;
+  /* Default */
+  --color-cyan-5: #007c80;
+
+  --color-blue-1: #eef5ff;
+  --color-blue-2: #80a1d4;
+  --color-blue-3: #2e5eaa;
+  --color-blue-4: #023e8a;
+  --color-blue-5: #0a2463;
+
+  /* Functional (Purple, Green, Orange) */
+  --color-purple-1: #f0eaf4;
+  --color-purple-2: #c1adcd;
+  --color-purple-3: #845d9c;
+
+  --color-green-1: #e7fff4;
+  --color-green-2: #9bdabe;
+  --color-green-3: #07a35d;
+
+  --color-orange-1: #fff0e9;
+  --color-orange-2: #ffd1bc;
+  --color-orange-3: #ff661f;
+
+  /* Neutral */
+  --color-white: #ffffff;
+  --color-gray-1: #fafafa;
+  --color-gray-2: #f2f2f2;
+  --color-gray-3: #cccccc;
+  --color-gray-4: #999999;
+  --color-gray-5: #505050;
+  --color-gray-6: #2c2c2c;
+  --color-black: #000000;
+
+  /* Opacities */
+  --color-white-10: rgba(255, 255, 255, 0.1);
+  --color-white-30: rgba(255, 255, 255, 0.3);
+  --color-white-60: rgba(255, 255, 255, 0.6);
+  --color-white-80: rgba(255, 255, 255, 0.8);
+  --color-black-30: rgba(0, 0, 0, 0.3);
+  --color-black-60: rgba(0, 0, 0, 0.6);
+  --color-black-80: rgba(0, 0, 0, 0.8);
+
+  --opacity-10: 0.1;
+  --opacity-30: 0.3;
+  --opacity-60: 0.6;
+  --opacity-80: 0.8;
+
+  /* Semantic - Content */
+  --color-content-primary: var(--color-gray-6);
+  --color-content-secondary: var(--color-gray-5);
+  --color-content-tertiary: var(--color-gray-4);
+
+  /* Semantic - Background */
+  --color-background-primary: var(--color-white);
+  --color-background-secondary: var(--color-gray-2);
+  --color-background-tertiary: var(--color-gray-3);
+
+  /* Semantic - Border */
+  --color-border-opaque: var(--color-gray-2);
+  --color-border-selected: var(--color-gray-6);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Border Utilities
+/* ----------------------------------------------------------------------------------------------------- */
+@utility border-opaque {
+  border-color: var(--color-border-opaque);
+}
+
+@utility border-selected {
+  border-color: var(--color-border-selected);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Gradient Utilities
+/* ----------------------------------------------------------------------------------------------------- */
+@utility bg-gradient-to-bottom-white {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+}
+
+@utility bg-gradient-to-bottom-dark {
+  background-image: linear-gradient(180deg, rgba(44, 44, 44, 0) 0%, #2c2c2c 100%);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Shadows / Effects
+/* ----------------------------------------------------------------------------------------------------- */
+
+@theme {
+  --shadow-small: 0 4px 6px rgba(44, 44, 44, 0.04);
+  --shadow-medium: 0 4px 16px rgba(44, 44, 44, 0.08);
+  --shadow-large: 0 8px 20px rgba(182, 182, 182, 0.42);
+
+  --shadow-notification: 0 8px 15px rgba(44, 44, 44, 0.1);
+  --shadow-notifications: 0 8px 15px rgba(44, 44, 44, 0.1);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Typography
+/* ----------------------------------------------------------------------------------------------------- */
+
+@theme {
+  --font-heading: 'Lexend', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+}
+
+@utility font-heading {
+  font-family: var(--font-heading);
+}
+
+@utility font-body {
+  font-family: var(--font-body);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Heading (Lexend Medium 500)
+/* ----------------------------------------------------------------------------------------------------- */
+@utility text-heading-xxl {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  /* 40px */
+  line-height: 4rem;
+  /* 64px */
+  font-weight: 500;
+}
+
+@utility text-heading-xl {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  /* 32px */
+  line-height: 2.75rem;
+  /* 44px */
+  font-weight: 500;
+}
+
+@utility text-heading-lg {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  /* 24px */
+  line-height: 2rem;
+  /* 32px */
+  font-weight: 500;
+}
+
+@utility text-heading-md {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  /* 18px */
+  line-height: 1.75rem;
+  /* 28px */
+  font-weight: 500;
+}
+
+@utility text-heading-sm {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  /* 16px */
+  line-height: 1.5rem;
+  /* 24px */
+  font-weight: 500;
+}
+
+@utility text-heading-xs {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  /* 14px */
+  line-height: 1.25rem;
+  /* 20px */
+  font-weight: 500;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Body (Roboto Regular 400)
+/* ----------------------------------------------------------------------------------------------------- */
+@utility text-body-lg {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  /* 16px */
+  line-height: 1.5rem;
+  /* 24px */
+  font-weight: 400;
+}
+
+@utility text-body-md {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  /* 14px */
+  line-height: 1.25rem;
+  /* 20px */
+  font-weight: 400;
+}
+
+@utility text-body-md-short {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  /* 14px */
+  line-height: 1.25rem;
+  /* 20px */
+  font-weight: 400;
+}
+
+@utility text-body-md-long {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  /* 14px */
+  line-height: 1.5rem;
+  /* 24px */
+  font-weight: 400;
+}
+
+@utility text-body-sm {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  /* 12px */
+  line-height: 1rem;
+  /* 16px */
+  font-weight: 400;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Expressive (Roboto Medium 500 / Bold 700)
+/* ----------------------------------------------------------------------------------------------------- */
+@utility text-expressive-xl {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  /* 18px */
+  line-height: 1.75rem;
+  /* 28px */
+  font-weight: 500;
+}
+
+@utility text-expressive-lg {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  /* 16px */
+  line-height: 1.5rem;
+  /* 24px */
+  font-weight: 500;
+}
+
+@utility text-expressive-md-short {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  /* 14px */
+  line-height: 1.25rem;
+  /* 20px */
+  font-weight: 500;
+}
+
+@utility text-expressive-md-long {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  /* 14px */
+  line-height: 1.5rem;
+  /* 24px */
+  font-weight: 500;
+}
+
+@utility text-expressive-sm {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  /* 12px */
+  line-height: 1rem;
+  /* 16px */
+  font-weight: 500;
+}
+
+@utility text-expressive-xs {
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  /* 10px */
+  line-height: 0.75rem;
+  /* 12px */
+  font-weight: 700;
+}
