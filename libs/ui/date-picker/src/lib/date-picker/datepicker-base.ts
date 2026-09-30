@@ -34,6 +34,7 @@ import { ComponentPortal, ComponentType } from '@angular/cdk/portal';
 import {
   booleanAttribute,
   ComponentRef,
+  ContentChild,
   Directive,
   DOCUMENT,
   ElementRef,
@@ -59,6 +60,7 @@ import { CalendarCellClassFunction } from '../calendar/calendar-body';
 import { createMissingDateImplError } from '../utils/errors';
 import { DateSelectionModel, ExtractDateTypeFromSelection } from './date-selection-model';
 import { DatepickerContent } from './datepicker-content';
+import { DatepickerDayExtra } from './datepicker-day-extra';
 import { DateFilterFn } from './datepicker-input-base';
 
 /** Used to generate a unique ID for each datepicker instance. */
@@ -223,6 +225,12 @@ export abstract class DatepickerBase<
 
   /** Function that can be used to add custom CSS classes to dates. */
   @Input() dateClass: CalendarCellClassFunction<D>;
+
+  /** Whether to show the Vietnamese lunar date (Âm lịch) below each day number. */
+  @Input({ transform: booleanAttribute }) showLunar = false;
+
+  /** Template that renders extra content below each day (e.g. the best price of the day). */
+  @ContentChild(DatepickerDayExtra) dayExtra?: DatepickerDayExtra;
 
   /** Emits when the datepicker has been opened. */
   @Output('opened') readonly openedStream = new EventEmitter<void>();
@@ -453,13 +461,18 @@ export abstract class DatepickerBase<
     instance._assignModel(false);
   }
 
+  /** Component rendered in the overlay; range pickers override it to show their own calendar. */
+  protected _getContentComponent(): ComponentType<DatepickerContent<S, D>> {
+    return DatepickerContent;
+  }
+
   /** Opens the overlay with the calendar. */
   private _openOverlay(): void {
     this._destroyOverlay();
 
     const isDialog = this.touchUi;
     const portal = new ComponentPortal<DatepickerContent<S, D>>(
-      DatepickerContent,
+      this._getContentComponent(),
       this._viewContainerRef
     );
     const overlayRef = (this._overlayRef = this._overlay.create(

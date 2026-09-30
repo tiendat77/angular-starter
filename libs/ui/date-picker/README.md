@@ -564,6 +564,54 @@ value can be anything that is accepted by `ngClass`.
 
 <!-- example(datepicker-date-class) -->
 
+### Lunar calendar and extra text per day
+
+Add `showLunar` to show the Vietnamese lunar date (Âm lịch) above each day number. The 1st of a lunar
+month is labelled `day/month` (e.g. `1/8`), other days show just the lunar day. The conversion is
+`solarToLunar()` (ported from [vietnamese-lunar-calendar](https://github.com/tiendat77/vietnamese-lunar-calendar)),
+which is also exported.
+
+To render extra content below each day (e.g. the best price of the day), project an
+`ng-template` with the `datepickerDayExtra` directive. It receives the cell's date as `$implicit`
+and can contain any markup:
+
+```html
+<date-picker
+  #picker
+  showLunar
+>
+  <ng-template
+    datepickerDayExtra
+    let-date
+  >
+    <span class="text-success">{{ priceOf(date) }}</span>
+  </ng-template>
+</date-picker>
+```
+
+`<date-range-picker>` shows two months side by side, previews the range with a dashed outline while
+you hover the end date, and closes as soon as the end date is picked.
+
+### Translating buttons and labels
+
+Dates, month and weekday names follow the `DateAdapter` locale. The remaining strings (Close
+and the screen-reader labels of the header buttons) are configured through `DatepickerIntl`:
+
+```ts
+providers: [
+  provideNativeDateAdapter(),
+  { provide: DATE_LOCALE, useValue: 'vi-VN' },
+  provideDatepickerLabels({
+    monthYearFormat: '{month}, {year}',
+    closeLabel: 'Đóng',
+    prevMonthLabel: 'Tháng trước',
+  }),
+];
+```
+
+To switch language at runtime, mutate the injected `DatepickerIntl` and call `intl.changes.next()`.
+The toggle button's label is its own `aria-label` input.
+
 ### Accessibility
 
 The `Datepicker` pop-up uses the `role="dialog"` interaction pattern. This dialog then contains

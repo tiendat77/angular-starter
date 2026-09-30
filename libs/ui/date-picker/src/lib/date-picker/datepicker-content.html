@@ -1,21 +1,10 @@
 <div
   cdkTrapFocus
   role="dialog"
-  class="flex flex-auto flex-col overflow-hidden rounded-lg"
+  class="flex flex-auto flex-col overflow-hidden rounded-lg pb-2"
   [attr.aria-modal]="true"
   [attr.aria-labelledby]="_dialogLabelId ?? undefined"
 >
-  <div class="bg-primary flex flex-col px-3 py-2">
-    <div class="flex flex-col">
-      <span class="text-primary-content text-xs font-normal tracking-wider uppercase"> Selected date </span>
-    </div>
-    <div class="mt-4 flex flex-col">
-      <span class="text-primary-content text-xl font-normal">
-        {{ _getSelectedDisplay() }}
-      </span>
-    </div>
-  </div>
-
   <calendar
     class="flex-auto"
     [id]="datepicker.id"
@@ -28,6 +17,8 @@
     [headerComponent]="datepicker.calendarHeaderComponent"
     [selected]="_getSelected()"
     [dateClass]="datepicker.dateClass"
+    [showLunar]="datepicker.showLunar"
+    [dayExtra]="datepicker.dayExtra?.template ?? null"
     [comparisonStart]="comparisonStart"
     [comparisonEnd]="comparisonEnd"
     [@fadeInCalendar]="'enter'"
@@ -40,24 +31,19 @@
     (_userDragDrop)="_handleUserDragDrop($event)"
   />
 
-  <div class="flex w-full items-center justify-end gap-3 px-3 py-3">
+  <!-- Keyboard / screen-reader only: pickers close as soon as the selection is complete -->
+  <div
+    class="flex w-full items-center justify-end gap-3 px-3 pt-1 pb-1"
+    [class.cdk-visually-hidden]="!_closeButtonFocused"
+  >
     <button
       type="button"
       class="btn"
-      [class.cdk-visually-hidden]="!_closeButtonFocused"
       (focus)="_closeButtonFocused = true"
       (blur)="_closeButtonFocused = false"
       (click)="datepicker.close()"
     >
-      Close
-    </button>
-
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="datepicker.apply()"
-    >
-      Apply
+      {{ _intl.closeLabel }}
     </button>
   </div>
 </div>

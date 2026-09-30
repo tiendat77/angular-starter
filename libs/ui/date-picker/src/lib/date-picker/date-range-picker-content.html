@@ -1,0 +1,33 @@
+<div
+  role="dialog"
+  class="flex flex-auto flex-col overflow-hidden rounded-lg"
+  [attr.aria-modal]="true"
+  [attr.aria-labelledby]="_dialogLabelId ?? undefined"
+>
+  <date-range-calendar
+    [selected]="_getRange()"
+    [startAt]="datepicker.startAt"
+    [minDate]="datepicker._getMinDate()"
+    [maxDate]="datepicker._getMaxDate()"
+    [dateFilter]="datepicker._getDateFilter()"
+    [showLunar]="datepicker.showLunar"
+    [dayExtra]="datepicker.dayExtra?.template ?? null"
+    (_userSelection)="_handleUserSelection($event)"
+  />
+
+  <!-- Keyboard / screen-reader only: the picker closes as soon as the end date is picked -->
+  <div
+    class="flex w-full items-center justify-end px-3"
+    [class.cdk-visually-hidden]="!_closeButtonFocused"
+  >
+    <button
+      type="button"
+      class="btn"
+      (focus)="_closeButtonFocused = true"
+      (blur)="_closeButtonFocused = false"
+      (click)="datepicker.close()"
+    >
+      {{ _intl.closeLabel }}
+    </button>
+  </div>
+</div>

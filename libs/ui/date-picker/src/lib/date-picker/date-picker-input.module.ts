@@ -15,9 +15,12 @@ import { NgModule } from '@angular/core';
 
 import { CalendarModule } from '../calendar/calendar.module';
 import { Datepicker } from './date-picker';
+import { DateRangePicker } from './date-range-picker';
 import { DATEPICKER_SCROLL_STRATEGY_FACTORY_PROVIDER } from './datepicker-base';
 import { DatepickerContent } from './datepicker-content';
+import { DatepickerDayExtra } from './datepicker-day-extra';
 import { DatepickerInput } from './datepicker-input';
+import { DatepickerRangeInput } from './datepicker-range-input';
 import { DatepickerToggle } from './datepicker-toggle';
 
 @NgModule({
@@ -28,11 +31,23 @@ import { DatepickerToggle } from './datepicker-toggle';
     PortalModule,
     CalendarModule,
     Datepicker,
+    DateRangePicker,
     DatepickerContent,
+    DatepickerDayExtra,
     DatepickerInput,
+    DatepickerRangeInput,
     DatepickerToggle,
   ],
-  exports: [CdkScrollableModule, Datepicker, DatepickerContent, DatepickerInput, DatepickerToggle],
+  exports: [
+    CdkScrollableModule,
+    Datepicker,
+    DateRangePicker,
+    DatepickerContent,
+    DatepickerDayExtra,
+    DatepickerInput,
+    DatepickerRangeInput,
+    DatepickerToggle,
+  ],
   providers: [DATEPICKER_SCROLL_STRATEGY_FACTORY_PROVIDER],
 })
 export class DatepickerInputModule {}

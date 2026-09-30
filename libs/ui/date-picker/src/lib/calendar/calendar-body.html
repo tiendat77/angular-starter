@@ -65,7 +65,18 @@
             [class.calendar-body-comparison-identical]="_isComparisonIdentical(item.compareValue)"
             [class.calendar-body-today]="todayValue === item.compareValue"
           >
-            {{ item.displayValue }}
+            @if (item.topText) {
+              <span class="calendar-body-cell-top">{{ item.topText }}</span>
+            }
+            <span class="calendar-body-cell-value">{{ item.displayValue }}</span>
+            @if (dayExtra && item.rawValue) {
+              <span class="calendar-body-cell-extra">
+                <ng-container
+                  [ngTemplateOutlet]="dayExtra"
+                  [ngTemplateOutletContext]="{ $implicit: item.rawValue }"
+                />
+              </span>
+            }
           </span>
           <span
             class="calendar-body-cell-preview"

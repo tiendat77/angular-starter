@@ -6,8 +6,13 @@
 
   .calendar-table-header th {
     font-size: 0.875rem;
-    font-weight: 400;
-    color: var(--color-muted-foreground);
+    font-weight: 500;
+    color: var(--color-foreground);
     padding-bottom: 0.5rem;
+  }
+
+  // Empty spacer row under the weekdays; the padding inherited from `th` would double the gap
+  .calendar-table-header .calendar-table-header-divider {
+    padding: 0;
   }
 }

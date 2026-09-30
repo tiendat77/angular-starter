@@ -161,3 +161,90 @@ export const SINGLE_DATE_SELECTION_MODEL_PROVIDER: FactoryProvider = {
   deps: [[new Optional(), new SkipSelf(), DateSelectionModel], DateAdapter],
   useFactory: SINGLE_DATE_SELECTION_MODEL_FACTORY,
 };
+
+/**
+ * A selection model that contains a date range.
+ * @docs-private
+ */
+// eslint-disable-next-line @angular-eslint/use-injectable-provided-in
+@Injectable()
+export class RangeDateSelectionModel<D> extends DateSelectionModel<DateRange<D>, D> {
+  // eslint-disable-next-line @angular-eslint/prefer-inject
+  constructor(adapter?: DateAdapter<D>) {
+    super(new DateRange<D>(null, null), adapter || inject<DateAdapter<D>>(DateAdapter));
+  }
+
+  /**
+   * Adds a date to the range: the first click sets the start, the second the end. A second click
+   * before the start moves the start instead, and a click on a complete range begins a new one.
+   */
+  add(date: D | null): void {
+    let { start, end } = this.selection;
+
+    if (start == null || end != null) {
+      start = date;
+      end = null;
+    } else if (date != null && this._adapter.compareDate(date, start) < 0) {
+      start = date;
+    } else {
+      end = date;
+    }
+
+    super.updateSelection(new DateRange<D>(start, end), this);
+  }
+
+  /** Checks whether the current selection is valid. */
+  isValid(): boolean {
+    const { start, end } = this.selection;
+
+    // Empty ranges are valid.
+    if (start == null && end == null) {
+      return true;
+    }
+
+    // Complete ranges are only valid if both dates are valid and the start is not after the end.
+    if (start != null && end != null) {
+      return (
+        this._isValidDateInstance(start) &&
+        this._isValidDateInstance(end) &&
+        this._adapter.compareDate(start, end) <= 0
+      );
+    }
+
+    // Partial ranges are valid if the start/end is valid.
+    return (
+      (start == null || this._isValidDateInstance(start)) &&
+      (end == null || this._isValidDateInstance(end))
+    );
+  }
+
+  /** A range is complete once both its start and end are set. */
+  isComplete(): boolean {
+    return this.selection.start != null && this.selection.end != null;
+  }
+
+  /** Clones the selection model. */
+  clone() {
+    const clone = new RangeDateSelectionModel<D>(this._adapter);
+    clone.updateSelection(this.selection, this);
+    return clone;
+  }
+}
+
+/** @docs-private */
+export function RANGE_DATE_SELECTION_MODEL_FACTORY(
+  parent: RangeDateSelectionModel<unknown>,
+  adapter: DateAdapter<unknown>
+) {
+  return parent || new RangeDateSelectionModel(adapter);
+}
+
+/**
+ * Used to provide a range selection model to a component.
+ * @docs-private
+ */
+export const RANGE_DATE_SELECTION_MODEL_PROVIDER: FactoryProvider = {
+  provide: DateSelectionModel,
+  deps: [[new Optional(), new SkipSelf(), DateSelectionModel], DateAdapter],
+  useFactory: RANGE_DATE_SELECTION_MODEL_FACTORY,
+};

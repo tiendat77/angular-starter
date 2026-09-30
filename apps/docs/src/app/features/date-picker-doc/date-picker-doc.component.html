@@ -20,7 +20,17 @@
     <date-picker
       #picker
       [startView]="startView()"
-    />
+      [showLunar]="showLunar()"
+    >
+      @if (showExtra()) {
+        <ng-template
+          let-date
+          datepickerDayExtra
+        >
+          {{ price(date) }}
+        </ng-template>
+      }
+    </date-picker>
     <p class="text-muted-foreground text-sm">
       Value:
       <span class="text-foreground font-mono">{{ control.value ? (control.value | date: 'yyyy-MM-dd') : 'null' }}</span>
@@ -65,6 +75,33 @@
         <input
           type="checkbox"
           class="border-border rounded"
+          [ngModel]="showLunar()"
+          (ngModelChange)="showLunar.set($event)"
+        />
+        <span>Lunar calendar (Âm lịch)</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="showExtra()"
+          (ngModelChange)="showExtra.set($event)"
+        />
+        <span>Extra text (price)</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="vietnamese()"
+          (ngModelChange)="setVietnamese($event)"
+        />
+        <span>Vietnamese locale</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
           [ngModel]="disabled()"
           (ngModelChange)="toggleDisabled($event)"
         />
@@ -74,4 +111,66 @@
   </div>
 
   <doc-api-table [rows]="apiRows" />
+</doc-playground>
+
+<doc-playground
+  class="mt-16 block"
+  title="Date Range Picker"
+  description="Two months side by side. Hovering previews the range with a dashed outline, and the picker closes once the end date is picked."
+  [code]="rangeCode()"
+>
+  <div
+    preview
+    class="flex w-full max-w-sm flex-col gap-3 p-4"
+  >
+    <label class="input w-full">
+      <datepicker-toggle [for]="rangePicker" />
+      <input
+        placeholder="Check-in – Check-out"
+        [dateRangePicker]="rangePicker"
+        [formControl]="rangeControl"
+      />
+    </label>
+    <date-range-picker
+      #rangePicker
+      [showLunar]="rangeLunar()"
+    >
+      @if (rangeExtra()) {
+        <ng-template
+          datepickerDayExtra
+          let-date
+        >
+          {{ price(date) }}
+        </ng-template>
+      }
+    </date-range-picker>
+    <p class="text-muted-foreground text-sm">
+      Value:
+      <span class="text-foreground font-mono">{{ rangeText() }}</span>
+    </p>
+  </div>
+
+  <div
+    controls
+    class="space-y-2 text-xs"
+  >
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="rangeLunar()"
+        (ngModelChange)="rangeLunar.set($event)"
+      />
+      <span>Lunar calendar (Âm lịch)</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="rangeExtra()"
+        (ngModelChange)="rangeExtra.set($event)"
+      />
+      <span>Extra text (price)</span>
+    </label>
+  </div>
 </doc-playground>

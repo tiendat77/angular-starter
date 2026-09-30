@@ -51,6 +51,7 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
   outline: none;
   font-family: inherit;
   margin: 0;
+  cursor: pointer;
 }
 
 .calendar-body-cell-content {
@@ -59,8 +60,10 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
   z-index: 1;
 
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.125rem;
 
   box-sizing: border-box;
   width: $calendar-body-cell-content-size;
@@ -82,10 +85,41 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
   }
 }
 
-// Hover / keyboard-active cell
+// Cells with lunar / extra text are taller than wide, so a capsule would look like a stadium.
+.calendar-body-cell-content:has(.calendar-body-cell-top, .calendar-body-cell-extra) {
+  border-radius: 0.5rem;
+}
+
+.calendar-body-cell-value {
+  font-size: 0.875rem;
+  line-height: 1.25;
+}
+
+// Secondary lines above / below the day number
+.calendar-body-cell-top,
+.calendar-body-cell-extra {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 0.625rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-muted-foreground);
+}
+
+.calendar-body-selected {
+  > .calendar-body-cell-top,
+  > .calendar-body-cell-extra {
+    color: inherit;
+    opacity: 0.85;
+  }
+}
+
+// Hover / keyboard focus. The "active" cell only carries the roving tabindex, so it is highlighted
+// when it actually has keyboard focus, not just because it is the first / current day of the month.
 .calendar-body-cell:not(.calendar-body-disabled):hover
   > .calendar-body-cell-content:not(.calendar-body-selected),
-.calendar-body-active > .calendar-body-cell-content:not(.calendar-body-selected) {
+.calendar-body-active:focus-visible > .calendar-body-cell-content:not(.calendar-body-selected) {
   background-color: var(--color-muted);
 }
 
@@ -125,7 +159,54 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
   border-end-end-radius: 999px;
 }
 
-.calendar-body-in-preview > .calendar-body-cell-content {
-  border-style: dashed;
-  border-color: var(--color-border);
+// Range preview while the end date is pending (like ng-zorro): a dashed outline around the days
+// of each week row. Top/bottom edges run along the whole row; the side edges close the outline at the
+// start / end of the preview and at the first / last day of each row.
+// Round caps match the circular day; cells with lunar / extra text are rounded rectangles instead
+$calendar-body-preview-radius: 999px;
+$calendar-body-preview-color: color-mix(in oklab, var(--color-primary) 55%, transparent);
+
+.calendar-body-in-preview::after {
+  content: '';
+  position: absolute;
+  inset: 5% 0;
+  z-index: 0;
+  pointer-events: none;
+  border-block: 1px dashed $calendar-body-preview-color;
+}
+
+.calendar-body-in-preview.calendar-body-preview-start::after,
+.calendar-body-cell-container:not(.calendar-body-cell-container ~ .calendar-body-cell-container)
+  > .calendar-body-in-preview::after {
+  left: 5%;
+  border-inline-start: 1px dashed $calendar-body-preview-color;
+  border-start-start-radius: $calendar-body-preview-radius;
+  border-end-start-radius: $calendar-body-preview-radius;
+}
+
+.calendar-body-in-preview.calendar-body-preview-end::after,
+.calendar-body-cell-container:last-child > .calendar-body-in-preview::after {
+  right: 5%;
+  border-inline-end: 1px dashed $calendar-body-preview-color;
+  border-start-end-radius: $calendar-body-preview-radius;
+  border-end-end-radius: $calendar-body-preview-radius;
+}
+
+.calendar-body-tall {
+  .calendar-body-in-preview::after {
+    border-radius: 0;
+  }
+
+  .calendar-body-in-preview.calendar-body-preview-start::after,
+  .calendar-body-cell-container:not(.calendar-body-cell-container ~ .calendar-body-cell-container)
+    > .calendar-body-in-preview::after {
+    border-start-start-radius: 0.5rem;
+    border-end-start-radius: 0.5rem;
+  }
+
+  .calendar-body-in-preview.calendar-body-preview-end::after,
+  .calendar-body-cell-container:last-child > .calendar-body-in-preview::after {
+    border-start-end-radius: 0.5rem;
+    border-end-end-radius: 0.5rem;
+  }
 }

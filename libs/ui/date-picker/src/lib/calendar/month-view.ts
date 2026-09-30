@@ -34,6 +34,7 @@ import {
   OnDestroy,
   Output,
   SimpleChanges,
+  TemplateRef,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -50,6 +51,7 @@ import {
 
 import { DATE_FORMATS, DateAdapter, DateFormats } from '../adapter';
 import { DateRange } from '../date-picker/date-selection-model';
+import { formatLunarLabel, solarToLunar } from '../lunar/vietnamese-lunar';
 import { createMissingDateImplError } from '../utils/errors';
 
 const DAYS_PER_WEEK = 7;
@@ -138,6 +140,12 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
   /** Function that can be used to add custom CSS classes to dates. */
   @Input() dateClass: CalendarCellClassFunction<D>;
 
+  /** Whether to show the Vietnamese lunar date above the day number. */
+  @Input() showLunar = false;
+
+  /** Template rendered below the day number of every cell; receives the cell's date. */
+  @Input() dayExtra: TemplateRef<any> | null = null;
+
   /** Start of the comparison range. */
   @Input() comparisonStart: D | null;
 
@@ -149,6 +157,16 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
 
   /** ARIA Accessible name of the `<input endDate/>` */
   @Input() endDateAccessibleName: string | null;
+
+  /**
+   * Preview range drawn while the user picks the end date. Leave it `undefined` to let the view
+   * compute it from its own hover; a parent showing several months passes it in so the preview
+   * spans all of them.
+   */
+  @Input() previewRange: DateRange<D> | null | undefined;
+
+  /** Emits the date under the pointer / focus, or `null` when it leaves the grid. */
+  @Output() readonly hoverDate = new EventEmitter<D | null>();
 
   /** Origin of active drag, or null when dragging is not active. */
   @Input() activeDrag: CalendarUserEvent<D> | null = null;
@@ -234,6 +252,15 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
 
     if (comparisonChange && !comparisonChange.firstChange) {
       this._setRanges(this.selected);
+    }
+
+    if (changes['showLunar'] && !changes['showLunar'].firstChange) {
+      this._init();
+    }
+
+    if (changes['previewRange'] && this.previewRange !== undefined) {
+      this._previewStart = this._getCellCompareValue(this.previewRange?.start ?? null);
+      this._previewEnd = this._getCellCompareValue(this.previewRange?.end ?? null);
     }
 
     if (changes['activeDrag'] && !this.activeDrag) {
@@ -422,8 +449,29 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
   }
 
   /** Called when the user has activated a new cell and the preview needs to be updated. */
-  _previewChanged({ event, value: cell }: CalendarUserEvent<CalendarCell<D> | null>) {
-    /** No-oop */
+  _previewChanged({ value: cell }: CalendarUserEvent<CalendarCell<D> | null>) {
+    const hovered = cell ? (cell.rawValue ?? null) : null;
+    this.hoverDate.emit(hovered);
+
+    if (this.previewRange !== undefined) {
+      return;
+    }
+
+    // Only an incomplete range (start picked, end pending) has something to preview
+    const selected = this._selected;
+    if (
+      hovered &&
+      selected instanceof DateRange &&
+      selected.start &&
+      !selected.end &&
+      this._dateAdapter.compareDate(hovered, selected.start) >= 0
+    ) {
+      this._previewStart = this._getCellCompareValue(selected.start);
+      this._previewEnd = this._getCellCompareValue(hovered);
+    } else {
+      this._clearPreview();
+    }
+    this._changeDetectorRef.detectChanges();
   }
 
   /**
@@ -487,10 +535,21 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
           enabled,
           cellClasses,
           this._getCellCompareValue(date)!,
-          date
+          date,
+          this.showLunar ? this._getLunarLabel(date) : null
         )
       );
     }
+  }
+
+  /** Lunar label (e.g. `12` or `1/10`) of a date. */
+  private _getLunarLabel(date: D): string {
+    const lunar = solarToLunar(
+      this._dateAdapter.getDate(date),
+      this._dateAdapter.getMonth(date) + 1,
+      this._dateAdapter.getYear(date)
+    );
+    return formatLunarLabel(lunar);
   }
 
   /** Date filter for the month */

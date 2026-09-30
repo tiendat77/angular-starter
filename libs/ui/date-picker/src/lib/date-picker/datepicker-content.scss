@@ -17,7 +17,8 @@ $non-touch-calendar-height: 24rem; // 384px
 
   .calendar {
     width: $non-touch-calendar-width;
-    height: $non-touch-calendar-height;
+    min-height: 0;
+    height: auto;
   }
 }
 

@@ -1,0 +1,48 @@
+.date-range-picker-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 24px color-mix(in oklab, var(--color-foreground) 12%, transparent);
+}
+
+.date-range-calendar-panel {
+  // 7 columns of 3rem, like the single calendar
+  width: 21rem;
+}
+
+.date-range-calendar-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 0.5rem;
+}
+
+.date-range-calendar-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 500;
+}
+
+// `Calendar` (which owns these rules) isn't rendered here, only its month views
+.date-range-calendar {
+  .calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .calendar-table-header th {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    padding-bottom: 0.5rem;
+  }
+
+  .calendar-table-header .calendar-table-header-divider {
+    padding: 0;
+  }
+}

@@ -14,7 +14,9 @@ import {
   inject,
 } from '@angular/core';
 
-import { DATE_FORMATS, DateAdapter, DateFormats } from '../adapter';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DateAdapter } from '../adapter';
+import { DatepickerIntl } from '../date-picker/datepicker-intl';
 import { Calendar } from './calendar';
 import { getActiveOffset, isSameMultiYearView, yearsPerPage } from './multi-year-view';
 
@@ -31,20 +33,29 @@ let calendarHeaderId = 1;
 export class CalendarHeader<D> {
   calendar = inject<Calendar<D>>(Calendar);
   private _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
-  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+  private _intl = inject(DatepickerIntl);
 
   constructor() {
     const changeDetectorRef = inject(ChangeDetectorRef);
 
     this.calendar.stateChanges.subscribe(() => changeDetectorRef.markForCheck());
+    this._intl.changes.pipe(takeUntilDestroyed()).subscribe(() => changeDetectorRef.markForCheck());
+  }
+
+  /** "September 2026", laid out by `DatepickerIntl.monthYearFormat` (e.g. "tháng 9, 2026"). */
+  private _formatMonthYear(): string {
+    const date = this.calendar.activeDate;
+    const month = this._dateAdapter.getMonthNames('long')[this._dateAdapter.getMonth(date)];
+    return this._intl.monthYearFormat
+      .replace('{month}', month)
+      .replace('{year}', this._dateAdapter.getYearName(date));
   }
 
   /** The display text for the current calendar view. */
   get periodButtonText(): string {
     if (this.calendar.currentView == 'month') {
-      return this._dateAdapter
-        .format(this.calendar.activeDate, this._dateFormats.display.monthYearLabel)
-        .toLocaleUpperCase();
+      // Kept in its natural case; the template capitalizes the first letter
+      return this._formatMonthYear();
     }
     if (this.calendar.currentView == 'year') {
       return this._dateAdapter.getYearName(this.calendar.activeDate);
@@ -57,9 +68,7 @@ export class CalendarHeader<D> {
   /** The aria description for the current calendar view. */
   get periodButtonDescription(): string {
     if (this.calendar.currentView == 'month') {
-      return this._dateAdapter
-        .format(this.calendar.activeDate, this._dateFormats.display.monthYearLabel)
-        .toLocaleUpperCase();
+      return this._formatMonthYear();
     }
     if (this.calendar.currentView == 'year') {
       return this._dateAdapter.getYearName(this.calendar.activeDate);
@@ -73,27 +82,26 @@ export class CalendarHeader<D> {
 
   /** The `aria-label` for changing the calendar view. */
   get periodButtonLabel(): string {
-    // TODO: translate
-    return this.calendar.currentView == 'month' ? 'Choose month and year' : 'Choose date';
+    return this.calendar.currentView == 'month'
+      ? this._intl.switchToMultiYearViewLabel
+      : this._intl.switchToMonthViewLabel;
   }
 
   /** The label for the previous button. */
   get prevButtonLabel(): string {
-    // TODO: translate
     return {
-      month: 'Previous month',
-      year: 'Previous year',
-      'multi-year': 'Previous 24 years',
+      month: this._intl.prevMonthLabel,
+      year: this._intl.prevYearLabel,
+      'multi-year': this._intl.prevMultiYearLabel,
     }[this.calendar.currentView];
   }
 
   /** The label for the next button. */
   get nextButtonLabel(): string {
-    // TODO: translate
     return {
-      month: 'Next month',
-      year: 'Next year',
-      'multi-year': 'Next 24 years',
+      month: this._intl.nextMonthLabel,
+      year: this._intl.nextYearLabel,
+      'multi-year': this._intl.nextMultiYearLabel,
     }[this.calendar.currentView];
   }
 

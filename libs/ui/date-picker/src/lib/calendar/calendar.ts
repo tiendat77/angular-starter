@@ -22,6 +22,7 @@ import {
   Output,
   SimpleChange,
   SimpleChanges,
+  TemplateRef,
   ViewChild,
   ViewEncapsulation,
   inject,
@@ -131,6 +132,12 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
 
   /** Function that can be used to add custom CSS classes to dates. */
   @Input() dateClass: CalendarCellClassFunction<D>;
+
+  /** Whether to show the Vietnamese lunar date in the month view. */
+  @Input() showLunar = false;
+
+  /** Template rendered below the day number in the month view; receives the cell's date. */
+  @Input() dayExtra: TemplateRef<any> | null = null;
 
   /** Start of the comparison range. */
   @Input() comparisonStart: D | null;

@@ -25,7 +25,6 @@ import { NgClass } from '@angular/common';
 import { Subject, Subscription } from 'rxjs';
 
 import { DateAdapter } from '../adapter/date-adapter';
-import { DATE_FORMATS, DateFormats } from '../adapter/date-formats';
 import { Calendar } from '../calendar/calendar';
 import { CalendarUserEvent } from '../calendar/calendar-body';
 import { animations } from '../utils/animations';
@@ -36,6 +35,7 @@ import {
   ExtractDateTypeFromSelection,
 } from './date-selection-model';
 import { DatepickerBase } from './datepicker-base';
+import { DatepickerIntl } from './datepicker-intl';
 
 /**
  * Component used as the content for the datepicker overlay. We use this instead of using
@@ -68,7 +68,7 @@ export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
   private _changeDetectorRef = inject(ChangeDetectorRef);
   private _globalModel = inject<DateSelectionModel<S, D>>(DateSelectionModel);
   private _dateAdapter = inject<DateAdapter<D>>(DateAdapter);
-  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+  protected _intl = inject(DatepickerIntl);
 
   private _subscriptions = new Subscription();
   private _model: DateSelectionModel<S, D>;
@@ -115,11 +115,14 @@ export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
 
   ngAfterViewInit() {
     this._subscriptions.add(
+      this._intl.changes.subscribe(() => this._changeDetectorRef.markForCheck())
+    );
+    this._subscriptions.add(
       this.datepicker.stateChanges.subscribe(() => {
         this._changeDetectorRef.markForCheck();
       })
     );
-    this._calendar.focusActiveCell();
+    this._calendar?.focusActiveCell();
   }
 
   ngOnDestroy() {
@@ -160,13 +163,6 @@ export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
 
   _getSelected() {
     return this._model?.selection as unknown as D | DateRange<D> | null;
-  }
-
-  _getSelectedDisplay() {
-    const selected = (this._model.selection as unknown as D | null) || this._dateAdapter.today();
-    return selected
-      ? this._dateAdapter.format(selected, this._dateFormats.display.dayMonthDateLabel)
-      : '';
   }
 
   /** Applies the current pending selection to the global model. */

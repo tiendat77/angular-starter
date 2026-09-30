@@ -7,7 +7,7 @@
  */
 
 import { Platform, normalizePassiveListenerOptions } from '@angular/cdk/platform';
-import { NgClass } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
   AfterViewChecked,
   ChangeDetectionStrategy,
@@ -20,6 +20,7 @@ import {
   OnDestroy,
   Output,
   SimpleChanges,
+  TemplateRef,
   ViewEncapsulation,
   inject,
 } from '@angular/core';
@@ -47,7 +48,8 @@ export class CalendarCell<D = any> {
     public enabled: boolean,
     public cssClasses: CalendarCellCssClasses = {},
     public compareValue = value,
-    public rawValue?: D
+    public rawValue?: D,
+    public topText: string | null = null
   ) {}
 }
 
@@ -88,7 +90,7 @@ const passiveEventOptions = normalizePassiveListenerOptions({ passive: true });
   exportAs: 'calendarBody',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass],
+  imports: [NgClass, NgTemplateOutlet],
 })
 export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChecked {
   private _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
@@ -124,6 +126,9 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
 
   /** The minimum number of free cells needed to fit the label in the first row. */
   @Input() labelMinRequiredCells: number;
+
+  /** Template rendered below the day number of every cell; receives the cell's date. */
+  @Input() dayExtra: TemplateRef<any> | null = null;
 
   /** The number of columns in the table. */
   @Input() numCols = 7;

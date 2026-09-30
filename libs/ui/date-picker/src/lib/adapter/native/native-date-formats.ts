@@ -14,7 +14,7 @@ export const NATIVE_DATE_FORMATS: DateFormats = {
   },
   display: {
     dateInput: { year: 'numeric', month: 'numeric', day: 'numeric' },
-    monthYearLabel: { year: 'numeric', month: 'short' },
+    monthYearLabel: { year: 'numeric', month: 'long' },
     dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
     monthYearA11yLabel: { year: 'numeric', month: 'long' },
     dayMonthDateLabel: { weekday: 'short', month: 'long', day: 'numeric' },
