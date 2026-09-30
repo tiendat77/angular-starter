@@ -30,10 +30,11 @@
         id="icon-namespace"
         class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
         [ngModel]="namespace()"
-        (ngModelChange)="namespace.set($event)"
+        (ngModelChange)="namespace.set($event); search.set('')"
       >
-        <option value="heroicons_outline">heroicons_outline</option>
-        <option value="heroicons_solid">heroicons_solid</option>
+        @for (ns of namespaces; track ns) {
+          <option [value]="ns">{{ ns }}</option>
+        }
       </select>
     </div>
 
@@ -50,7 +51,7 @@
         [ngModel]="iconName()"
         (ngModelChange)="iconName.set($event)"
       >
-        @for (name of iconNames; track name) {
+        @for (name of iconNames(); track name) {
           <option [value]="name">{{ name }}</option>
         }
       </select>
@@ -98,9 +99,21 @@
   <!-- Icon Gallery -->
   <section class="space-y-4">
     <h2 class="text-foreground text-xl font-bold tracking-tight">Gallery</h2>
-    <p class="text-muted-foreground text-sm">Click an icon to preview it in the playground.</p>
+    <p class="text-muted-foreground text-sm">
+      All {{ iconNames().length }} icons in
+      <code class="font-mono">{{ namespace() }}</code>
+      . Click an icon to preview it in the playground.
+    </p>
+    <input
+      type="search"
+      aria-label="Search icons"
+      placeholder="Search icons..."
+      class="border-border bg-background text-foreground w-full max-w-xs rounded-lg border px-3 py-1.5 text-sm"
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+    />
     <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
-      @for (name of iconNames; track name) {
+      @for (name of filteredIconNames(); track name) {
         <button
           type="button"
           class="border-border hover:bg-muted text-muted-foreground hover:text-foreground flex cursor-pointer flex-col items-center gap-2 rounded-xl border p-4 transition-colors"
@@ -114,6 +127,8 @@
           />
           <span class="font-mono text-xs">{{ name }}</span>
         </button>
+      } @empty {
+        <p class="text-muted-foreground col-span-full text-sm">No icons match "{{ search() }}".</p>
       }
     </div>
   </section>
@@ -183,6 +198,20 @@
             <td class="text-muted-foreground px-4 py-3 font-sans">
               Registers SVG sprite URLs under namespace names at app bootstrap.
             </td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">IconsService.list(ns)</td>
+            <td class="text-muted-foreground px-4 py-3">Observable&lt;string[]&gt;</td>
+            <td class="px-4 py-3">-</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">
+              Sorted names of every icon in a namespace (individual icons and icon sets; resolver icons excluded).
+            </td>
+          </tr>
+          <tr>
+            <td class="text-primary px-4 py-3 font-semibold">IconsService.namespaces()</td>
+            <td class="text-muted-foreground px-4 py-3">string[]</td>
+            <td class="px-4 py-3">-</td>
+            <td class="text-muted-foreground px-4 py-3 font-sans">Registered namespaces.</td>
           </tr>
         </tbody>
       </table>

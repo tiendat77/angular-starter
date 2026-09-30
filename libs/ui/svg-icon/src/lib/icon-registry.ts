@@ -394,6 +394,72 @@ export class SvgIconRegistry implements OnDestroy {
     return observableThrow(getSvgIconNameNotFoundError(key));
   }
 
+  /**
+   * Namespaces that have at least one icon or icon set registered. Namespaces served only by a
+   * resolver function are not included, as resolvers can't be enumerated.
+   */
+  getNamespaces(): string[] {
+    const namespaces = new Set<string>(this._iconSetConfigs.keys());
+
+    for (const key of this._svgIconConfigs.keys()) {
+      namespaces.add(key.slice(0, key.indexOf(':')));
+    }
+
+    return [...namespaces].sort();
+  }
+
+  /**
+   * Sorted, de-duplicated names of the icons in a namespace: every icon registered individually
+   * plus every icon found in its icon sets. Icon sets that are not loaded yet are fetched first,
+   * and a set that fails to load is reported to the ErrorHandler and skipped. Icons produced by
+   * resolver functions are not included.
+   */
+  getIconNames(namespace = ''): Observable<string[]> {
+    const iconSetConfigs = this._iconSetConfigs.get(namespace) ?? [];
+    const loads = iconSetConfigs
+      .filter((config) => !config.svgText)
+      .map((config) =>
+        this._loadSvgIconSetFromConfig(config).pipe(
+          catchError((err: HttpErrorResponse) => {
+            const url = this._sanitizer.sanitize(SecurityContext.RESOURCE_URL, config.url);
+            this._errorHandler.handleError(
+              new Error(`Loading icon set URL: ${url} failed: ${err.message}`)
+            );
+            return observableOf(null);
+          })
+        )
+      );
+
+    // forkJoin([]) completes without emitting, so skip it when every set is already loaded.
+    return (loads.length ? forkJoin(loads) : observableOf([])).pipe(
+      map(() => {
+        const names = new Set<string>();
+        const prefix = iconKey(namespace, '');
+
+        for (const key of this._svgIconConfigs.keys()) {
+          if (key.startsWith(prefix)) {
+            names.add(key.slice(prefix.length));
+          }
+        }
+
+        for (const config of iconSetConfigs) {
+          if (config.svgText) {
+            const set = this._svgElementFromConfig(config as LoadedSvgIconConfig);
+            // Icons are direct children of the set, or of its <defs>; deeper ids belong to the
+            // icon internals (gradients, clip paths).
+            for (const el of Array.from(
+              set.querySelectorAll(':scope > [id], :scope > defs > [id]')
+            )) {
+              names.add(el.id);
+            }
+          }
+        }
+
+        return [...names].sort((a, b) => a.localeCompare(b));
+      })
+    );
+  }
+
   ngOnDestroy() {
     this._resolvers = [];
     this._svgIconConfigs.clear();

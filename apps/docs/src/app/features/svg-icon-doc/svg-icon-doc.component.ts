@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { SvgIcon } from '@libs/ui/svg-icon';
+import { IconsService, SvgIcon } from '@libs/ui/svg-icon';
+import { switchMap } from 'rxjs';
 import { CodeBlockComponent } from '../../shared/code-block/code-block.component';
 import { PlaygroundComponent } from '../../shared/playground/playground.component';
-
-type IconNamespace = 'heroicons_outline' | 'heroicons_solid';
 
 @Component({
   selector: 'doc-svg-icon',
@@ -13,29 +13,25 @@ type IconNamespace = 'heroicons_outline' | 'heroicons_solid';
   templateUrl: './svg-icon-doc.component.html',
 })
 export class SvgIconDocComponent {
-  readonly iconNames = [
-    'home',
-    'user',
-    'cog-6-tooth',
-    'bell',
-    'heart',
-    'star',
-    'magnifying-glass',
-    'envelope',
-    'calendar',
-    'trash',
-    'check-circle',
-    'x-mark',
-    'arrow-right',
-    'camera',
-    'bars-3',
-    'sun',
-    'moon',
-  ];
+  private readonly _icons = inject(IconsService);
+
+  readonly namespaces = this._icons.namespaces();
+  readonly namespace = signal(this.namespaces[0] ?? '');
+  readonly search = signal('');
+
+  /** Every icon in the selected namespace, loaded from the registered sets. */
+  readonly iconNames = toSignal(
+    toObservable(this.namespace).pipe(switchMap((namespace) => this._icons.list(namespace))),
+    { initialValue: [] as string[] }
+  );
+  readonly filteredIconNames = computed(() => {
+    const query = this.search().trim().toLowerCase();
+    return query ? this.iconNames().filter((name) => name.includes(query)) : this.iconNames();
+  });
+
   readonly sizes = ['3', '4', '5', '6', '8', '10', '12', '16'];
   readonly colors = ['text-foreground', 'text-primary', 'text-error', 'text-muted-foreground'];
 
-  readonly namespace = signal<IconNamespace>('heroicons_outline');
   readonly iconName = signal('home');
   readonly size = signal('8');
   readonly color = signal('text-foreground');
