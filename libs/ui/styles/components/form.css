@@ -34,7 +34,7 @@
 /*  Modifiers set `--input-*` custom properties so they compose in any order.
 /* ----------------------------------------------------------------------------------------------------- */
 @utility input {
-  --_color: var(--input-color, var(--color-primary));
+  --_color: var(--input-color, var(--color-muted-foreground));
 
   display: inline-flex;
   flex-shrink: 1;
@@ -189,7 +189,7 @@
 /*  @ Textarea
 /* ----------------------------------------------------------------------------------------------------- */
 @utility textarea {
-  --_color: var(--textarea-color, var(--color-primary));
+  --_color: var(--textarea-color, var(--color-muted-foreground));
 
   display: block;
   min-height: var(--textarea-size, 5rem);
@@ -320,7 +320,7 @@
 /*  @ Select
 /* ----------------------------------------------------------------------------------------------------- */
 @utility select {
-  --_color: var(--select-color, var(--color-primary));
+  --_color: var(--select-color, var(--color-muted-foreground));
 
   display: inline-flex;
   align-items: center;

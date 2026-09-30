@@ -1,8 +1,8 @@
 <!-- Pointer convenience only: keyboard users focus the inner combobox input -->
 <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus, @angular-eslint/template/click-events-have-key-events -->
 <div
-  cdkOverlayOrigin
   #origin="cdkOverlayOrigin"
+  cdkOverlayOrigin
   [class]="triggerClass()"
   (mousedown)="onTriggerMousedown($event)"
   (click)="onTriggerClick()"
@@ -32,12 +32,10 @@
 
   <input
     #trigger
-    ngCombobox
     #combobox="ngCombobox"
+    ngCombobox
     autocomplete="off"
     [id]="id"
-    [(value)]="searchTerm"
-    [(expanded)]="open"
     [disabled]="$disabled()"
     [softDisabled]="false"
     [attr.aria-invalid]="$invalid() || null"
@@ -47,6 +45,8 @@
     [attr.inputmode]="searchable() ? null : 'none'"
     [attr.placeholder]="showPlaceholder() ? placeholder() : null"
     [attr.data-readonly]="searchable() ? null : ''"
+    [(value)]="searchTerm"
+    [(expanded)]="open"
     (beforeinput)="onTriggerBeforeInput($event)"
     (keydown)="onTriggerKeydown($event)"
   />
@@ -83,8 +83,9 @@
   <span
     class="sr-only"
     [id]="valueId"
-    >{{ valueText() }}</span
   >
+    {{ valueText() }}
+  </span>
 }
 
 <ng-template
@@ -101,10 +102,10 @@
   >
     <div
       #panel
+      #listbox="ngListbox"
       class="select-panel"
       ngComboboxWidget
       ngListbox
-      #listbox="ngListbox"
       focusMode="activedescendant"
       selectionMode="explicit"
       [multi]="multiple()"
