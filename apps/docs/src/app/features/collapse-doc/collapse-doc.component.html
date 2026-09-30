@@ -1,0 +1,286 @@
+<div class="space-y-12">
+  <!-- Page Header -->
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight">Collapse / Accordion</h1>
+    <p class="text-muted-foreground mt-2 text-base">
+      Enterprise-grade, accessible expandable panels powered by
+      <code class="text-primary font-mono text-sm">&#64;angular/aria/accordion</code>
+      , supporting single-expansion accordion mode, smooth pure CSS dynamic height transitions, and composable template
+      slots.
+    </p>
+  </div>
+
+  <!-- Playground -->
+  <doc-playground [code]="generatedCode()">
+    <div
+      preview
+      class="w-full max-w-xl"
+    >
+      <ui-collapse
+        [accordion]="accordion()"
+        [variant]="variant()"
+        [expandIconPosition]="expandIconPosition()"
+        [(activeIds)]="playgroundActiveIds"
+      >
+        <ui-collapse-panel
+          header="System Overview"
+          [id]="'panel-1'"
+        >
+          <p class="text-foreground/80 text-sm">
+            Real-time latency metrics, memory allocation charts, and deployment cluster status across all operational
+            regions.
+          </p>
+        </ui-collapse-panel>
+        <ui-collapse-panel
+          header="Access Control"
+          [id]="'panel-2'"
+        >
+          <p class="text-foreground/80 text-sm">
+            Configure fine-grained IAM policies, OAuth client secrets, and rotate signing certificates.
+          </p>
+        </ui-collapse-panel>
+        <ui-collapse-panel
+          header="Billing & Invoices"
+          [id]="'panel-3'"
+        >
+          <p class="text-foreground/80 text-sm">
+            Manage auto-renewing subscriptions, tax registration numbers, and download automated PDF invoices.
+          </p>
+        </ui-collapse-panel>
+      </ui-collapse>
+
+      <div class="text-foreground/60 mt-4 font-mono text-xs">Active IDs: {{ playgroundActiveIds() | json }}</div>
+    </div>
+
+    <div
+      controls
+      class="space-y-4"
+    >
+      <!-- Variant -->
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Variant</legend>
+        <select
+          class="select select-sm select-bordered w-full"
+          [ngModel]="variant()"
+          (ngModelChange)="variant.set($event)"
+        >
+          @for (v of variants; track v) {
+            <option [value]="v">{{ v }}</option>
+          }
+        </select>
+      </fieldset>
+
+      <!-- Expand Icon Position -->
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Icon Position</legend>
+        <select
+          class="select select-sm select-bordered w-full"
+          [ngModel]="expandIconPosition()"
+          (ngModelChange)="expandIconPosition.set($event)"
+        >
+          @for (pos of iconPositions; track pos) {
+            <option [value]="pos">{{ pos }}</option>
+          }
+        </select>
+      </fieldset>
+
+      <!-- Accordion Mode -->
+      <fieldset class="fieldset">
+        <label class="fieldset-label flex cursor-pointer items-center justify-between">
+          <span>Accordion Mode (Single Expansion)</span>
+          <input
+            type="checkbox"
+            class="toggle toggle-primary toggle-sm"
+            [ngModel]="accordion()"
+            (ngModelChange)="accordion.set($event)"
+          />
+        </label>
+      </fieldset>
+    </div>
+  </doc-playground>
+
+  <!-- Showcase: Accordion Mode -->
+  <section class="space-y-4">
+    <h2 class="text-xl font-semibold">Accordion Mode</h2>
+    <p class="text-muted-foreground text-sm">
+      Enforce single-panel expansion with
+      <code class="font-mono text-xs">accordion="true"</code>
+      . Opening one item automatically collapses previously opened items.
+    </p>
+
+    <div class="bg-muted/40 border-border max-w-xl rounded-xl border p-6">
+      <ui-collapse
+        [accordion]="true"
+        [(activeIds)]="accordionActiveId"
+      >
+        <ui-collapse-panel
+          header="What is the SLA guarantee?"
+          [id]="'faq-1'"
+        >
+          <p class="text-foreground/80 text-sm">
+            We provide a 99.99% uptime guarantee with automated multi-zone failover and 24/7 incident response.
+          </p>
+        </ui-collapse-panel>
+        <ui-collapse-panel
+          header="Can I export audit logs to S3?"
+          [id]="'faq-2'"
+        >
+          <p class="text-foreground/80 text-sm">
+            Yes, real-time audit event streams can be delivered to AWS S3, Google Cloud Storage, or Datadog via
+            webhooks.
+          </p>
+        </ui-collapse-panel>
+        <ui-collapse-panel
+          header="How does billing scale with seats?"
+          [id]="'faq-3'"
+        >
+          <p class="text-foreground/80 text-sm">
+            Per-seat pricing decreases tiered by volume: $20/seat for 1-50 users, $15/seat for 51-200 users, and custom
+            enterprise tiers.
+          </p>
+        </ui-collapse-panel>
+      </ui-collapse>
+    </div>
+  </section>
+
+  <!-- Showcase: Template Slots & Extra Click Isolation -->
+  <section class="space-y-4">
+    <h2 class="text-xl font-semibold">Template Slots & Action Click Isolation</h2>
+    <p class="text-muted-foreground text-sm">
+      Use
+      <code class="font-mono text-xs">*uiCollapseHeader</code>
+      for rich titles and
+      <code class="font-mono text-xs">*uiCollapseExtra</code>
+      for auxiliary action buttons. Clicks on extra action elements are automatically isolated via event stopping and
+      will not trigger panel expansion.
+    </p>
+
+    <div class="bg-muted/40 border-border max-w-xl rounded-xl border p-6">
+      <ui-collapse variant="bordered">
+        <ui-collapse-panel [id]="'slot-1'">
+          <div
+            *uiCollapseHeader
+            class="flex items-center gap-2"
+          >
+            <span class="font-semibold">Production Cluster</span>
+            <span class="badge badge-success badge-sm">Healthy</span>
+          </div>
+
+          <button
+            *uiCollapseExtra
+            type="button"
+            class="btn btn-xs btn-outline"
+            (click)="onExtraAction($event)"
+          >
+            Restart
+          </button>
+
+          <p class="text-foreground/80 text-sm">
+            Cluster running kubernetes v1.31 across 12 worker nodes. Memory utilization is currently at 42%.
+          </p>
+        </ui-collapse-panel>
+      </ui-collapse>
+
+      <div class="text-foreground/60 mt-3 text-xs">
+        Action button clicks recorded:
+        <span class="text-primary font-bold">{{ actionCount() }}</span>
+        (Panel state unaffected)
+      </div>
+    </div>
+  </section>
+
+  <!-- Showcase: Nested Panels -->
+  <section class="space-y-4">
+    <h2 class="text-xl font-semibold">Nested Panels</h2>
+    <p class="text-muted-foreground text-sm">
+      Because panel heights are animated dynamically using modern CSS Grid (
+      <code class="font-mono text-xs">grid-template-rows: 0fr -> 1fr</code>
+      ), expanding nested collapse panels automatically adjusts the parent height smoothly with zero layout clipping.
+    </p>
+
+    <div class="bg-muted/40 border-border max-w-xl rounded-xl border p-6">
+      <ui-collapse variant="bordered">
+        <ui-collapse-panel
+          header="Parent Section"
+          [id]="'parent-1'"
+        >
+          <p class="text-foreground/80 mb-4 text-sm">
+            This parent container smoothly accommodates any changes in child panel height.
+          </p>
+
+          <ui-collapse variant="ghost">
+            <ui-collapse-panel
+              header="Nested Child 1"
+              [id]="'child-1'"
+            >
+              <p class="text-muted-foreground text-xs">Nested item 1 details.</p>
+            </ui-collapse-panel>
+            <ui-collapse-panel
+              header="Nested Child 2"
+              [id]="'child-2'"
+            >
+              <p class="text-muted-foreground text-xs">Nested item 2 details with more content.</p>
+            </ui-collapse-panel>
+          </ui-collapse>
+        </ui-collapse-panel>
+      </ui-collapse>
+    </div>
+  </section>
+
+  <!-- Showcase: Lazy Rendering & Custom Expand Icon -->
+  <section class="space-y-4">
+    <h2 class="text-xl font-semibold">Lazy Content & Custom Expand Icon</h2>
+    <p class="text-muted-foreground text-sm">
+      Use
+      <code class="font-mono text-xs">*uiCollapseContent</code>
+      to defer instantiation until first opened. Use
+      <code class="font-mono text-xs">*uiCollapseIcon</code>
+      to replace the chevron with any custom icon or indicator.
+    </p>
+
+    <div class="bg-muted/40 border-border max-w-xl rounded-xl border p-6">
+      <ui-collapse variant="bordered">
+        <ui-collapse-panel
+          header="Heavy Analytics Dashboard (Lazy)"
+          [id]="'lazy-panel'"
+        >
+          <ng-template uiCollapseIcon>
+            <span class="text-primary text-sm font-bold">#</span>
+          </ng-template>
+
+          <div
+            *uiCollapseContent
+            class="space-y-2 p-2"
+          >
+            <div class="alert alert-info text-xs">
+              This content was instantiated lazily only after this panel was expanded.
+            </div>
+            <p class="text-foreground/80 text-sm">
+              Render performance is maximized for pages with dozens of deep data panels.
+            </p>
+          </div>
+        </ui-collapse-panel>
+      </ui-collapse>
+    </div>
+  </section>
+
+  <!-- API Reference -->
+  <section class="space-y-6">
+    <h2 class="text-2xl font-bold">API Reference</h2>
+
+    <div>
+      <h3 class="mb-3 text-lg font-semibold">UiCollapse Inputs & Models</h3>
+      <doc-api-table [rows]="collapseApi" />
+    </div>
+
+    <div>
+      <h3 class="mb-3 text-lg font-semibold">UiCollapsePanel Inputs & Models</h3>
+      <doc-api-table [rows]="panelApi" />
+    </div>
+
+    <div>
+      <h3 class="mb-3 text-lg font-semibold">Template Slot Directives</h3>
+      <doc-api-table [rows]="directiveApi" />
+    </div>
+  </section>
+</div>

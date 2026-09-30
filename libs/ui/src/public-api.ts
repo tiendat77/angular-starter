@@ -4,6 +4,7 @@ export * from '@libs/ui/badge';
 export * from '@libs/ui/button';
 export * from '@libs/ui/card';
 export * from '@libs/ui/checkbox';
+export * from '@libs/ui/collapse';
 export * from '@libs/ui/core';
 export * from '@libs/ui/date-picker';
 export * from '@libs/ui/dialog';

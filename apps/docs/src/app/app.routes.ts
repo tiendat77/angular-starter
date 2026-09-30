@@ -123,6 +123,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'collapse',
+    loadComponent: () =>
+      import('./features/collapse-doc/collapse-doc.component').then((m) => m.CollapseDocComponent),
+  },
+  {
     path: '**',
     redirectTo: 'button',
   },

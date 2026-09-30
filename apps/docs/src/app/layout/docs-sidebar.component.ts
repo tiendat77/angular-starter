@@ -47,6 +47,7 @@ export class DocsSidebarComponent {
       items: [
         { label: 'Tabs', path: '/tabs' },
         { label: 'Menu / Dropdown', path: '/menu' },
+        { label: 'Collapse / Accordion', path: '/collapse' },
       ],
     },
     {
