@@ -45,9 +45,11 @@
     transition: opacity 100ms ease;
   }
 
+  /* Hover highlights the border like `radio`; hovering the label counts too */
   @media (hover: hover) {
-    &:hover:not(:checked, :indeterminate, :disabled, [data-checked], [data-indeterminate]) {
-      background-color: var(--color-muted);
+    &:hover:not(:disabled),
+    :hover > * > &:not(:disabled) {
+      border-color: var(--_color);
     }
   }
 
@@ -158,42 +160,50 @@
   margin: 0;
   padding: 0;
   background-color: var(--color-background);
-  border: 1px solid
-    var(--radio-border, color-mix(in oklab, var(--color-foreground) 30%, var(--color-background)));
+  border: 1.5px solid
+    var(--radio-border, color-mix(in oklab, var(--color-foreground) 40%, var(--color-background)));
   border-radius: 9999px;
   appearance: none;
   cursor: pointer;
-  outline-offset: 2px;
+  outline: none;
   transition:
-    background-color 150ms ease,
-    border-color 150ms ease;
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 
-  /* Center dot */
+  /* Center dot: half the outer diameter, with a background-colored gap to the ring */
   &::before {
     content: '';
-    width: calc(var(--radio-size, 1.25rem) * 0.4);
-    height: calc(var(--radio-size, 1.25rem) * 0.4);
-    background-color: var(--radio-content, var(--color-primary-content));
+    width: calc(var(--radio-size, 1.25rem) * 0.5);
+    height: calc(var(--radio-size, 1.25rem) * 0.5);
+    background-color: var(--_color);
     border-radius: 9999px;
     scale: 0;
     transition: scale 150ms ease;
   }
 
   @media (hover: hover) {
-    &:hover:not(:checked, :disabled, [data-checked]) {
-      background-color: var(--color-muted);
+    &:hover:not(:disabled) {
+      border-color: var(--_color);
+    }
+
+    /* Non-native `ui-radio`: hovering the whole control (label included) highlights the ring */
+    :hover > * > & {
+      border-color: var(--_color);
     }
   }
 
+  /* Soft halo instead of an outline */
   &:focus-visible {
-    outline-width: 2px;
-    outline-style: solid;
-    outline-color: var(--_color);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--_color) 15%, transparent);
+  }
+
+  /* Non-native `ui-radio` takes focus on the host, so the halo is drawn on the circle */
+  :focus-visible > * > & {
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--_color) 15%, transparent);
   }
 
   &:checked,
   &[data-checked] {
-    background-color: var(--_color);
     border-color: var(--_color);
 
     &::before {
@@ -201,9 +211,16 @@
     }
   }
 
-  &:disabled {
+  &:disabled,
+  [aria-disabled='true'] > * > & {
     cursor: not-allowed;
-    opacity: 0.5;
+    background-color: var(--color-muted);
+    border-color: var(--color-border);
+    box-shadow: none;
+
+    &::before {
+      background-color: var(--color-muted-foreground);
+    }
   }
 }
 
@@ -324,32 +341,102 @@
   }
 }
 
+/* Label inside the track (`ui-switch` with `labelInside`). The wrapper is sized by the label, the
+   `.toggle` input fills it, and the thumb is positioned (not translated) so it follows the width.
+   Size/color modifiers go on the wrapper so the label can read the same custom properties. */
+@utility toggle-inside {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+
+  & > input.toggle {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    &:not(:checked, [data-checked]) {
+      background-color: color-mix(in oklab, var(--color-foreground) 18%, var(--color-background));
+      border-color: color-mix(in oklab, var(--color-foreground) 22%, var(--color-background));
+    }
+
+    &::before {
+      position: absolute;
+      inset-block: 0.125rem;
+      inset-inline-start: 0.125rem;
+      height: auto;
+      background-color: var(--color-background);
+      transition:
+        inset-inline-start 200ms ease,
+        translate 200ms ease;
+    }
+
+    &:checked::before,
+    &[data-checked]::before {
+      inset-inline-start: calc(100% - 0.125rem);
+      translate: -100% 0;
+    }
+  }
+
+  &:has(> input:disabled) {
+    opacity: 0.5;
+  }
+}
+
+/* Label text; padded on the thumb's side so the text sits in the free part of the track */
+@utility toggle-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--toggle-size, 1.5rem);
+  padding-inline: calc(var(--toggle-size, 1.5rem) + 0.25rem) 0.625rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-foreground);
+  pointer-events: none;
+  transition: color 200ms ease;
+
+  .toggle-inside:has(> input:checked, > input[data-checked]) > & {
+    padding-inline: 0.625rem calc(var(--toggle-size, 1.5rem) + 0.25rem);
+    color: var(--toggle-content, var(--color-primary-content));
+  }
+}
+
 @utility toggle-neutral {
   --toggle-color: var(--color-foreground);
+  --toggle-content: var(--color-background);
 }
 
 @utility toggle-primary {
   --toggle-color: var(--color-primary);
+  --toggle-content: var(--color-primary-content);
 }
 
 @utility toggle-secondary {
   --toggle-color: var(--color-secondary);
+  --toggle-content: var(--color-secondary-content);
 }
 
 @utility toggle-info {
   --toggle-color: var(--color-info);
+  --toggle-content: var(--color-info-content);
 }
 
 @utility toggle-success {
   --toggle-color: var(--color-success);
+  --toggle-content: var(--color-success-content);
 }
 
 @utility toggle-warning {
   --toggle-color: var(--color-warning);
+  --toggle-content: var(--color-warning-content);
 }
 
 @utility toggle-error {
   --toggle-color: var(--color-error);
+  --toggle-content: var(--color-error-content);
 }
 
 @utility toggle-xs {

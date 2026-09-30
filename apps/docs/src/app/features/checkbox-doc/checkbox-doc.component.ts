@@ -1,12 +1,22 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UiCheckboxComponent, UiSwitchComponent } from '@libs/ui/checkbox';
+import {
+  UiCheckboxComponent,
+  UiSwitchComponent,
+  UiSwitchLabeledComponent,
+} from '@libs/ui/checkbox';
 import { UiSize } from '@libs/ui/core';
 import { PlaygroundComponent } from '../../shared/playground/playground.component';
 
 @Component({
   selector: 'doc-checkbox',
-  imports: [FormsModule, UiCheckboxComponent, UiSwitchComponent, PlaygroundComponent],
+  imports: [
+    FormsModule,
+    UiCheckboxComponent,
+    UiSwitchComponent,
+    UiSwitchLabeledComponent,
+    PlaygroundComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './checkbox-doc.component.html',
 })

@@ -69,7 +69,8 @@
   }
 
   &:active:not(.btn-active) {
-    translate: 0 1px;
+    transform: scale(0.98);
+    background-color: var(--btn-active-bg, color-mix(in oklab, var(--_hover-bg) 88%, black));
   }
 
   &:disabled,

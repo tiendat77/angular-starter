@@ -55,3 +55,20 @@ export const switchTrackVariants = cva({
     size: 'md',
   },
 });
+
+/** Wrapper of a switch with its label inside the track; carries the size so the label scales with it. */
+export const switchLabeledVariants = cva({
+  base: 'toggle-inside',
+  variants: {
+    size: {
+      xs: 'toggle-xs',
+      sm: 'toggle-sm',
+      md: 'toggle-md',
+      lg: 'toggle-lg',
+      xl: 'toggle-xl',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});

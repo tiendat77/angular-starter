@@ -32,7 +32,7 @@ export const radioCircleVariants = cva({
 
 /** Host layout, label typography and disabled state of `ui-radio`. */
 export const radioVariants = cva({
-  base: 'inline-flex items-start gap-2 select-none rounded-md p-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+  base: 'inline-flex items-start gap-2 select-none p-0.5 outline-none',
   variants: {
     size: {
       xs: 'text-xs',
@@ -42,7 +42,7 @@ export const radioVariants = cva({
       xl: 'text-lg',
     },
     disabled: {
-      true: 'cursor-not-allowed text-muted-foreground opacity-50 pointer-events-none',
+      true: 'cursor-not-allowed text-muted-foreground pointer-events-none',
       false: 'cursor-pointer text-foreground',
     },
   },

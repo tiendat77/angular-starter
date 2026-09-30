@@ -100,6 +100,16 @@
   border-radius: 0.5rem;
   box-shadow: 0 8px 24px color-mix(in oklab, var(--color-foreground) 12%, transparent);
   outline: none;
+
+  /* Slim scrollbar, thumb invisible until the panel itself is hovered.
+     Standard properties are used because Chromium does not restyle ::-webkit-scrollbar-thumb
+     when a parent's :hover changes (it only updates once the pointer is over the bar). */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+
+  &:hover {
+    scrollbar-color: color-mix(in oklab, var(--color-muted-foreground) 60%, transparent) transparent;
+  }
 }
 
 @utility select-option {

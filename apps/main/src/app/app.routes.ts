@@ -54,8 +54,8 @@ export const routes: Routes = [
    */
   {
     path: 'app',
-    canActivate: [AuthGuard],
-    canActivateChild: [AuthGuard],
+    // canActivate: [AuthGuard],
+    // canActivateChild: [AuthGuard],
     component: LayoutComponent,
     data: { layout: 'dense' },
     resolve: {
