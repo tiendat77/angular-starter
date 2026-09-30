@@ -78,17 +78,6 @@ export const routes: Routes = [
         },
         loadChildren: () => import('@/features/example/routes'),
       },
-      {
-        path: 'products',
-        canActivate: [ngxPermissionsGuard],
-        data: {
-          permissions: {
-            only: [PERMISSION.OVERVIEW],
-            redirectTo: '/access-denied',
-          },
-        },
-        loadChildren: () => import('@/features/products/routes'),
-      },
     ],
   },
   {

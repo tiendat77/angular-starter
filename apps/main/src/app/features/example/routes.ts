@@ -17,6 +17,10 @@ const routes: Routes = [
     path: 'aria',
     component: AriaExampleComponent,
   },
+  {
+    path: 'products',
+    loadChildren: () => import('./products/routes'),
+  },
 ];
 
 export default routes;

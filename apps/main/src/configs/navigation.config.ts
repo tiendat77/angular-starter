@@ -26,10 +26,10 @@ export const navigation: NavigationItem[] = [
       },
       {
         id: 'dashboard.products',
-        title: 'Sản phẩm',
+        title: 'Product Management',
         type: 'basic',
         icon: 'heroicons_outline:shopping-bag',
-        link: '/app/products',
+        link: '/app/example/products',
       },
     ],
   },
