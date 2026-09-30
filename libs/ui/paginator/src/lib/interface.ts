@@ -25,6 +25,9 @@ export interface Pager {
 
   /** The label for the page */
   text: string;
+
+  /** Whether this pager item represents an ellipsis indicator */
+  isEllipsis?: boolean;
 }
 
 // Note that while `PaginatorDefaultOptions` and `PAGINATOR_DEFAULT_OPTIONS` are identical
@@ -44,4 +47,7 @@ export interface PaginatorDefaultOptions {
 
   /** Whether to show the first/last buttons UI to the user. */
   showFirstLastButtons?: boolean;
+
+  /** Custom label for page size. Defaults to 'Page size:'. */
+  pageSizeLabel?: string;
 }

@@ -1,0 +1,189 @@
+<div
+  class="bg-card border-border relative z-0 flex max-h-[90vh] w-full max-w-[600px] flex-col overflow-hidden rounded-2xl border shadow-2xl"
+>
+  <!-- Dialog Header -->
+  <div class="border-border flex items-center justify-between border-b px-6 py-4">
+    <h3 class="text-base-content text-lg font-bold">
+      {{ dialogTitle() }}
+    </h3>
+    <button
+      type="button"
+      class="btn btn-ghost btn-circle btn-sm text-base-content/60 hover:text-base-content"
+      (click)="onCancel()"
+    >
+      <svg-icon
+        key="heroicons_outline:x-mark"
+        class="size-5"
+      />
+    </button>
+  </div>
+
+  <!-- Dialog Body with Form -->
+  <form
+    class="flex-1 overflow-y-auto px-6 py-5"
+    [formGroup]="form"
+  >
+    @if (errorMessage()) {
+      <div class="bg-error/10 text-error mb-4 flex items-center gap-2 rounded-lg p-3 text-sm">
+        <svg-icon
+          key="heroicons_outline:exclamation-circle"
+          class="size-5 shrink-0"
+        />
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <div class="space-y-4">
+      <!-- Product Title -->
+      <div>
+        <label
+          for="product-title"
+          class="text-base-content mb-1 block text-sm font-medium"
+        >
+          Tên sản phẩm
+          <span class="text-error">*</span>
+        </label>
+        <input
+          uiInput
+          id="product-title"
+          type="text"
+          formControlName="title"
+          placeholder="Nhập tên sản phẩm"
+          class="w-full"
+        />
+        @if (
+          form.get('title')?.touched && (form.get('title')?.hasError('required') || form.get('title')?.hasError('zod'))
+        ) {
+          <p class="text-error mt-1 text-xs">{{ form.get('title')?.getError('zod') || 'Tên sản phẩm là bắt buộc' }}</p>
+        }
+      </div>
+
+      <!-- Category Select -->
+      <div>
+        <label
+          for="product-category"
+          class="text-base-content mb-1 block text-sm font-medium"
+        >
+          Danh mục
+          <span class="text-error">*</span>
+        </label>
+        <ui-select
+          id="product-category"
+          placeholder="Chọn danh mục"
+          [value]="form.get('category')?.value || null"
+          (valueChange)="onCategoryChange($event)"
+        >
+          @for (cat of data?.categories || []; track cat.slug) {
+            <ui-option
+              [label]="cat.name"
+              [value]="cat.slug"
+            >
+              {{ cat.name }}
+            </ui-option>
+          }
+        </ui-select>
+        @if (
+          form.get('category')?.touched &&
+          (form.get('category')?.hasError('required') || form.get('category')?.hasError('zod'))
+        ) {
+          <p class="text-error mt-1 text-xs">{{ form.get('category')?.getError('zod') || 'Vui lòng chọn danh mục' }}</p>
+        }
+      </div>
+
+      <!-- Price & Stock Grid -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label
+            for="product-price"
+            class="text-base-content mb-1 block text-sm font-medium"
+          >
+            Giá bán ($)
+            <span class="text-error">*</span>
+          </label>
+          <input
+            uiInput
+            id="product-price"
+            type="number"
+            min="0"
+            step="0.01"
+            formControlName="price"
+            placeholder="0.00"
+            class="w-full"
+          />
+          @if (
+            form.get('price')?.touched && (form.get('price')?.hasError('min') || form.get('price')?.hasError('zod'))
+          ) {
+            <p class="text-error mt-1 text-xs">
+              {{ form.get('price')?.getError('zod') || 'Giá bán không được nhỏ hơn 0' }}
+            </p>
+          }
+        </div>
+
+        <div>
+          <label
+            for="product-stock"
+            class="text-base-content mb-1 block text-sm font-medium"
+          >
+            Số lượng tồn kho
+            <span class="text-error">*</span>
+          </label>
+          <input
+            uiInput
+            id="product-stock"
+            type="number"
+            min="0"
+            step="1"
+            formControlName="stock"
+            placeholder="0"
+            class="w-full"
+          />
+          @if (
+            form.get('stock')?.touched && (form.get('stock')?.hasError('min') || form.get('stock')?.hasError('zod'))
+          ) {
+            <p class="text-error mt-1 text-xs">
+              {{ form.get('stock')?.getError('zod') || 'Số lượng tồn kho không hợp lệ' }}
+            </p>
+          }
+        </div>
+      </div>
+
+      <!-- Description Textarea -->
+      <div>
+        <label
+          for="product-desc"
+          class="text-base-content mb-1 block text-sm font-medium"
+        >
+          Mô tả sản phẩm
+        </label>
+        <textarea
+          uiTextarea
+          id="product-desc"
+          rows="3"
+          formControlName="description"
+          placeholder="Mô tả chi tiết về sản phẩm..."
+          class="w-full"
+        ></textarea>
+      </div>
+    </div>
+  </form>
+
+  <!-- Dialog Footer -->
+  <div class="border-border bg-base-50/50 flex items-center justify-end gap-3 border-t px-6 py-4">
+    <button
+      uiButton
+      type="button"
+      variant="outline"
+      (click)="onCancel()"
+    >
+      Hủy bỏ
+    </button>
+    <button
+      uiButton
+      type="button"
+      variant="primary"
+      (click)="onSave()"
+    >
+      {{ isEdit() ? 'Cập nhật' : 'Thêm mới' }}
+    </button>
+  </div>
+</div>

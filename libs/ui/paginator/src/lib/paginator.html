@@ -2,39 +2,99 @@
   @if (!hidePageSize) {
     <div class="flex items-center gap-2">
       <div class="label">
-        <span class="text-base whitespace-nowrap">Page size: </span>
+        <span class="text-sm whitespace-nowrap">{{ pageSizeLabel }}</span>
       </div>
 
       @if (_displayedPageSizeOptions.length > 1) {
-        <select
-          class="select select-bordered w-full max-w-xs min-w-22"
-          [disabled]="disabled"
-          [ngModel]="pageSize"
-          (ngModelChange)="_changePageSize($event)"
-        >
-          @for (pageSizeOption of _displayedPageSizeOptions; track pageSizeOption) {
-            <option [value]="pageSizeOption">
-              {{ pageSizeOption }}
-            </option>
-          }
-        </select>
+        <div class="relative">
+          <button
+            #pageSizeOrigin="cdkOverlayOrigin"
+            type="button"
+            cdkOverlayOrigin
+            class="paginator-page-size-trigger btn btn-sm bg-base-100 border-base-200 hover:bg-base-200 flex h-8 min-h-8 min-w-16 items-center justify-between gap-1 border px-2.5 text-sm font-normal"
+            aria-haspopup="listbox"
+            [disabled]="disabled"
+            [attr.aria-expanded]="$isPageSizeOpen()"
+            (click)="togglePageSizeOverlay()"
+          >
+            <span>{{ pageSize }}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3.5 w-3.5 opacity-60 transition-transform duration-150"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              [class.rotate-180]="$isPageSizeOpen()"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="pageSizeOrigin"
+            [cdkConnectedOverlayOpen]="$isPageSizeOpen()"
+            [cdkConnectedOverlayPositions]="_overlayPositions"
+            [cdkConnectedOverlayMinWidth]="64"
+            (overlayOutsideClick)="closePageSizeOverlay()"
+            (detach)="closePageSizeOverlay()"
+          >
+            <div
+              class="paginator-page-size-panel bg-card z-50 flex max-h-60 min-w-24 flex-col overflow-y-auto rounded border py-1 text-sm shadow-md"
+              role="listbox"
+            >
+              @for (option of _displayedPageSizeOptions; track option) {
+                <button
+                  type="button"
+                  class="paginator-page-size-option hover:bg-muted flex cursor-pointer items-center justify-between px-3 py-1.5 text-left transition-colors"
+                  role="option"
+                  [class.bg-muted]="option === pageSize"
+                  [class.font-semibold]="option === pageSize"
+                  [attr.aria-selected]="option === pageSize"
+                  (click)="selectPageSizeOption(option)"
+                >
+                  <span>{{ option }}</span>
+                  @if (option === pageSize) {
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="h-4 w-4"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  }
+                </button>
+              }
+            </div>
+          </ng-template>
+        </div>
       }
     </div>
 
     @if (_displayedPageSizeOptions.length <= 1) {
       <div class="label">
-        <span class="text-base whitespace-nowrap">
+        <span class="text-sm whitespace-nowrap">
           {{ pageSize }}
         </span>
       </div>
     }
   }
 
-  <div class="join">
-    <!-- Previous Page Button -->
+  <div class="join rounded">
+    <!-- First Page Button -->
     @if (showFirstLastButtons) {
       <button
-        class="btn btn-circle join-item"
+        type="button"
+        class="btn btn-sm join-item border-base-200 bg-base-100 hover:bg-base-200 disabled:bg-base-100 h-8 min-h-8 w-8 min-w-8 border p-0 disabled:opacity-40"
+        aria-label="First page"
         [disabled]="_previousButtonsDisabled()"
         (click)="firstPage()"
       >
@@ -44,7 +104,7 @@
           viewBox="0 0 24 24"
           stroke-width="2"
           stroke="currentColor"
-          class="h-6 w-6"
+          class="h-4 w-4"
         >
           <path
             stroke-linecap="round"
@@ -54,77 +114,99 @@
         </svg>
       </button>
     }
+
+    <!-- Previous Page Button -->
     <button
-      class="btn btn-circle join-item"
+      type="button"
+      class="btn btn-sm join-item border-base-200 bg-base-100 hover:bg-base-200 disabled:bg-base-100 h-8 min-h-8 w-8 min-w-8 border p-0 disabled:opacity-40"
+      aria-label="Previous page"
       [disabled]="_previousButtonsDisabled()"
       (click)="previousPage()"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        fill="currentColor"
-        class="h-6 w-6"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        class="h-4 w-4"
       >
         <path
-          fill-rule="evenodd"
-          d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
-          clip-rule="evenodd"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15.75 19.5 8.25 12l7.5-7.5"
         />
       </svg>
     </button>
 
     <!-- Page Buttons -->
-    @for (page of _pages; track page.number) {
-      <button
-        class="btn join-item"
-        [ngClass]="{ 'btn-primary': page.number === pageIndex }"
-        (click)="selectPage(page.number)"
-      >
-        {{ page.text }}
-      </button>
+    @for (page of _pages; track $index) {
+      @if (page.isEllipsis) {
+        <span
+          class="join-item border-base-200 bg-base-100 flex h-8 min-h-8 min-w-8 items-center justify-center border px-2 text-sm opacity-60 select-none"
+        >
+          ...
+        </span>
+      } @else {
+        <button
+          type="button"
+          class="btn btn-sm join-item border-base-200 h-8 min-h-8 min-w-8 border px-2 text-sm font-normal"
+          [ngClass]="{
+            'btn-primary font-medium': page.number === pageIndex,
+            'bg-base-100 hover:bg-base-200': page.number !== pageIndex,
+          }"
+          (click)="selectPage(page.number)"
+        >
+          {{ page.text }}
+        </button>
+      }
     }
 
     <!-- Next Page Button -->
     <button
-      class="btn btn-circle join-item"
+      type="button"
+      class="btn btn-sm join-item border-base-200 bg-base-100 hover:bg-base-200 disabled:bg-base-100 h-8 min-h-8 w-8 min-w-8 border p-0 disabled:opacity-40"
+      aria-label="Next page"
       [disabled]="_nextButtonsDisabled()"
       (click)="nextPage()"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        fill="currentColor"
-        class="h-6 w-6"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        class="h-4 w-4"
       >
         <path
-          fill-rule="evenodd"
-          d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
-          clip-rule="evenodd"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m8.25 4.5 7.5 7.5-7.5 7.5"
         />
       </svg>
     </button>
 
+    <!-- Last Page Button -->
     @if (showFirstLastButtons) {
       <button
-        class="btn btn-circle join-item"
+        type="button"
+        class="btn btn-sm join-item border-base-200 bg-base-100 hover:bg-base-200 disabled:bg-base-100 h-8 min-h-8 w-8 min-w-8 border p-0 disabled:opacity-40"
+        aria-label="Last page"
         [disabled]="_nextButtonsDisabled()"
-        (click)="nextPage()"
+        (click)="lastPage()"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
+          fill="none"
           viewBox="0 0 24 24"
-          fill="currentColor"
-          class="h-6 w-6"
+          stroke-width="2"
+          stroke="currentColor"
+          class="h-4 w-4"
         >
           <path
-            fill-rule="evenodd"
-            d="M13.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L11.69 12 4.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
-            clip-rule="evenodd"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M19.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06L17.69 12l-6.97-6.97a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
-            clip-rule="evenodd"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5"
           />
         </svg>
       </button>

@@ -15,7 +15,7 @@ import {
   output,
   viewChild,
 } from '@angular/core';
-import { PageEvent, Paginator } from '@libs/ui/paginator';
+import { PageEvent } from '@libs/ui/paginator';
 import { UiSpinnerComponent } from '@libs/ui/progress';
 import { UiTableEmpty } from './table-empty.directive';
 import { UiTableStore } from './table.store';
@@ -26,7 +26,7 @@ import { UiTableDensity, UiTableQueryParams, UiTableSelectionMode } from './tabl
   exportAs: 'uiTable',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [UiTableStore],
-  imports: [Paginator, UiSpinnerComponent],
+  imports: [UiSpinnerComponent],
   host: {
     class: 'block',
   },
@@ -47,16 +47,6 @@ import { UiTableDensity, UiTableQueryParams, UiTableSelectionMode } from './tabl
       }
     </div>
     <ng-content />
-    @if (showPagination()) {
-      <paginator
-        [length]="store.total()"
-        [pageIndex]="store.currentPage()"
-        [pageSize]="pageSize()"
-        [pageSizeOptions]="pageSizeOptions()"
-        [hideTotal]="false"
-        (page)="onPage($event)"
-      />
-    }
   `,
 })
 export class UiTable<T = unknown, K = unknown> implements OnInit {
@@ -71,7 +61,6 @@ export class UiTable<T = unknown, K = unknown> implements OnInit {
   readonly pageIndex = model(1);
   readonly pageSize = model(10);
   readonly pageSizeOptions = input<number[]>([10, 20, 50, 100]);
-  readonly showPagination = input(true, { transform: booleanAttribute });
   readonly selectionMode = input<UiTableSelectionMode>('none');
   readonly selectedKeys = model<ReadonlySet<K>>(new Set<K>());
   readonly density = input<UiTableDensity>('default');

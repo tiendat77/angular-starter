@@ -24,6 +24,13 @@ export const navigation: NavigationItem[] = [
         icon: 'heroicons_outline:sparkles',
         link: '/app/example/aria',
       },
+      {
+        id: 'dashboard.products',
+        title: 'Sản phẩm',
+        type: 'basic',
+        icon: 'heroicons_outline:shopping-bag',
+        link: '/app/products',
+      },
     ],
   },
 ];

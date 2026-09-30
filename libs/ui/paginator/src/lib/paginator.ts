@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import { CdkConnectedOverlay, CdkOverlayOrigin, ConnectedPosition } from '@angular/cdk/overlay';
 import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -21,6 +22,7 @@ import {
   booleanAttribute,
   inject,
   numberAttribute,
+  signal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -48,7 +50,7 @@ let nextUniqueId = 0;
 @Component({
   selector: 'paginator',
   exportAs: 'paginator',
-  templateUrl: 'paginator.html',
+  templateUrl: './paginator.html',
   host: {
     role: 'group',
     '[class.hidden]': 'autoHide && _pages.length < 1',
@@ -56,7 +58,7 @@ let nextUniqueId = 0;
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, FormsModule, ReactiveFormsModule],
+  imports: [NgClass, FormsModule, ReactiveFormsModule, CdkConnectedOverlay, CdkOverlayOrigin],
 })
 export class Paginator implements OnInit, OnDestroy {
   private _changeDetectorRef = inject(ChangeDetectorRef);
@@ -124,6 +126,9 @@ export class Paginator implements OnInit, OnDestroy {
   /** Whether to hide the page size selection UI from the user. */
   @Input({ transform: booleanAttribute }) hidePageSize = false;
 
+  /** Custom label for page size. Defaults to 'Page size:'. */
+  @Input() pageSizeLabel = 'Page size:';
+
   /** Whether to show the first/last buttons UI to the user. */
   @Input({ transform: booleanAttribute }) showFirstLastButtons = false;
 
@@ -142,11 +147,23 @@ export class Paginator implements OnInit, OnDestroy {
   /** Emits when the paginator is initialized. */
   initialized: Observable<void> = this._initializedStream;
 
+  /** State of page size select overlay panel. */
+  readonly $isPageSizeOpen = signal(false);
+
+  /** Overlay positions for page size dropdown. */
+  readonly _overlayPositions: ConnectedPosition[] = [
+    { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
+    { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
+    { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 4 },
+    { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom', offsetY: -4 },
+  ];
+
   constructor() {
     const defaults = inject<PaginatorDefaultOptions>(PAGINATOR_DEFAULT_OPTIONS, { optional: true });
 
     if (defaults) {
-      const { pageSize, pageSizeOptions, hidePageSize, showFirstLastButtons } = defaults;
+      const { pageSize, pageSizeOptions, hidePageSize, showFirstLastButtons, pageSizeLabel } =
+        defaults;
 
       if (pageSize != null) {
         this._pageSize = pageSize;
@@ -162,6 +179,10 @@ export class Paginator implements OnInit, OnDestroy {
 
       if (showFirstLastButtons != null) {
         this.showFirstLastButtons = showFirstLastButtons;
+      }
+
+      if (pageSizeLabel != null) {
+        this.pageSizeLabel = pageSizeLabel;
       }
     } else {
       this._pageSize = DEFAULT_PAGE_SIZE;
@@ -179,9 +200,27 @@ export class Paginator implements OnInit, OnDestroy {
     this._initializedStream.complete();
   }
 
+  /** Toggle the page size dropdown overlay. */
+  togglePageSizeOverlay(): void {
+    if (!this.disabled) {
+      this.$isPageSizeOpen.update((open) => !open);
+    }
+  }
+
+  /** Close the page size dropdown overlay. */
+  closePageSizeOverlay(): void {
+    this.$isPageSizeOpen.set(false);
+  }
+
+  /** Select a page size option from the overlay and close. */
+  selectPageSizeOption(size: number): void {
+    this._changePageSize(size);
+    this.closePageSizeOverlay();
+  }
+
   /** Jump to a specific page index. */
   selectPage(pageIndex: number): void {
-    if (pageIndex >= 0 && pageIndex <= this.getNumberOfPages() && pageIndex !== this.pageIndex) {
+    if (pageIndex >= 1 && pageIndex <= this.getNumberOfPages() && pageIndex !== this.pageIndex) {
       const previousPageIndex = this.pageIndex;
       this.pageIndex = pageIndex;
 
@@ -319,35 +358,49 @@ export class Paginator implements OnInit, OnDestroy {
   }
 
   private _calcPages(pageIndex?: number): Pager[] {
-    const pages: Pager[] = [];
     const totalPages = this.getNumberOfPages();
-
-    let startPage = 1;
-    let endPage = totalPages;
-
-    const maxSize = 5;
-    const isMaxSized = maxSize < totalPages;
-
-    pageIndex = pageIndex || this.pageIndex;
-
-    if (isMaxSized) {
-      startPage = pageIndex - Math.floor(maxSize / 2);
-      endPage = pageIndex + Math.floor(maxSize / 2);
-
-      if (startPage < 1) {
-        startPage = 1;
-        endPage = Math.min(startPage + maxSize - 1, totalPages);
-      } else if (endPage > totalPages) {
-        startPage = Math.max(totalPages - maxSize + 1, 1);
-        endPage = totalPages;
-      }
+    if (totalPages <= 0) {
+      return [];
     }
 
-    for (let num = startPage; num <= endPage; num++) {
-      pages.push({
-        number: num,
-        text: '' + num,
-      });
+    const current = Math.min(Math.max(pageIndex || this.pageIndex, 1), totalPages);
+
+    // If total pages <= 7, display all pages directly without ellipsis
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => ({
+        number: i + 1,
+        text: '' + (i + 1),
+      }));
+    }
+
+    const pages: Pager[] = [];
+
+    // Smart ellipsis pagination matching design system (paginator.svg):
+    // Case 1: Near start (current <= 4) -> [1, 2, 3, 4, 5, '...', totalPages]
+    if (current <= 4) {
+      for (let i = 1; i <= 5; i++) {
+        pages.push({ number: i, text: '' + i });
+      }
+      pages.push({ number: -1, text: '...', isEllipsis: true });
+      pages.push({ number: totalPages, text: '' + totalPages });
+    }
+    // Case 2: Near end (current >= totalPages - 3) -> [1, '...', totalPages - 4, ..., totalPages]
+    else if (current >= totalPages - 3) {
+      pages.push({ number: 1, text: '1' });
+      pages.push({ number: -1, text: '...', isEllipsis: true });
+      for (let i = totalPages - 4; i <= totalPages; i++) {
+        pages.push({ number: i, text: '' + i });
+      }
+    }
+    // Case 3: Middle -> [1, '...', current - 2, ..., current + 2, '...', totalPages]
+    else {
+      pages.push({ number: 1, text: '1' });
+      pages.push({ number: -1, text: '...', isEllipsis: true });
+      for (let i = current - 2; i <= current + 2; i++) {
+        pages.push({ number: i, text: '' + i });
+      }
+      pages.push({ number: -2, text: '...', isEllipsis: true });
+      pages.push({ number: totalPages, text: '' + totalPages });
     }
 
     return pages;

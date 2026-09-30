@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { PageEvent, Paginator } from './public-api';
 
 @Component({
@@ -9,7 +9,8 @@ import { PageEvent, Paginator } from './public-api';
     <paginator
       [length]="length()"
       [pageIndex]="pageIndex()"
-      [pageSize]="10"
+      [pageSize]="pageSize()"
+      [pageSizeLabel]="pageSizeLabel()"
       (page)="onPage($event)"
     />
   `,
@@ -17,11 +18,14 @@ import { PageEvent, Paginator } from './public-api';
 class PaginatorHostComponent {
   readonly length = signal(95);
   readonly pageIndex = signal(1);
+  readonly pageSize = signal(10);
+  readonly pageSizeLabel = signal('Page size:');
   readonly events: PageEvent[] = [];
 
   onPage(event: PageEvent): void {
     this.events.push(event);
     this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
   }
 }
 
@@ -33,6 +37,9 @@ describe('Paginator', () => {
     Array.from(fixture.nativeElement.querySelectorAll('paginator .join-item')).filter((b) =>
       /^\d+$/.test((b as HTMLElement).textContent!.trim())
     ) as HTMLButtonElement[];
+
+  const allPageItems = (): HTMLElement[] =>
+    Array.from(fixture.nativeElement.querySelectorAll('paginator .join-item')) as HTMLElement[];
 
   beforeEach(() => {
     TestBed.configureTestingModule({ imports: [PaginatorHostComponent] });
@@ -75,5 +82,79 @@ describe('Paginator', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('paginator').classList).toContain('hidden');
+  });
+
+  it('should not use btn-circle and should follow design system shape', () => {
+    const circularButtons = fixture.nativeElement.querySelectorAll('paginator .btn-circle');
+    expect(circularButtons.length).toBe(0);
+  });
+
+  it('should support custom pageSizeLabel for i18n', () => {
+    host.pageSizeLabel.set('Kích thước trang:');
+    fixture.detectChanges();
+
+    const labelEl = fixture.nativeElement.querySelector('paginator .label');
+    expect(labelEl?.textContent?.trim()).toContain('Kích thước trang:');
+  });
+
+  it('should render smart ellipsis when total pages > 7', () => {
+    // 90 pages
+    host.length.set(900);
+    host.pageSize.set(10);
+    host.pageIndex.set(1);
+    fixture.detectChanges();
+
+    // Start pages: [1, 2, 3, 4, 5, '...', 90]
+    const itemTextsStart = allPageItems()
+      .map((el) => el.textContent?.trim())
+      .filter((t) => t && (t === '...' || /^\d+$/.test(t)));
+    expect(itemTextsStart).toEqual(['1', '2', '3', '4', '5', '...', '90']);
+
+    // Middle pages: [1, '...', 5, 6, 7, 8, 9, '...', 90]
+    host.pageIndex.set(7);
+    fixture.detectChanges();
+
+    const itemTextsMiddle = allPageItems()
+      .map((el) => el.textContent?.trim())
+      .filter((t) => t && (t === '...' || /^\d+$/.test(t)));
+    expect(itemTextsMiddle).toEqual(['1', '...', '5', '6', '7', '8', '9', '...', '90']);
+
+    // End pages: [1, '...', 86, 87, 88, 89, 90]
+    host.pageIndex.set(90);
+    fixture.detectChanges();
+
+    const itemTextsEnd = allPageItems()
+      .map((el) => el.textContent?.trim())
+      .filter((t) => t && (t === '...' || /^\d+$/.test(t)));
+    expect(itemTextsEnd).toEqual(['1', '...', '86', '87', '88', '89', '90']);
+  });
+
+  it('should use overlay panel instead of native select for page size', () => {
+    const nativeSelect = fixture.nativeElement.querySelector('paginator select');
+    expect(nativeSelect).toBeNull();
+
+    const trigger = fixture.nativeElement.querySelector('.paginator-page-size-trigger');
+    expect(trigger).not.toBeNull();
+    expect(trigger.textContent.trim()).toContain('10');
+
+    // Click trigger to open overlay
+    trigger.click();
+    fixture.detectChanges();
+
+    const overlayPanel = document.querySelector('.paginator-page-size-panel');
+    expect(overlayPanel).not.toBeNull();
+
+    // Select option 25
+    const option25 = Array.from(document.querySelectorAll('.paginator-page-size-option')).find(
+      (el) => el.textContent?.trim() === '25'
+    ) as HTMLElement;
+    expect(option25).toBeDefined();
+
+    option25.click();
+    fixture.detectChanges();
+
+    expect(host.pageSize()).toBe(25);
+    expect(host.pageIndex()).toBe(1);
+    expect(document.querySelector('.paginator-page-size-panel')).toBeNull();
   });
 });

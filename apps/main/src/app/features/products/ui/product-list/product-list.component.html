@@ -1,0 +1,235 @@
+<div class="flex flex-col gap-6 p-6">
+  <!-- Page Header -->
+  <div class="flex flex-col gap-1">
+    <h1 class="text-base-content text-2xl font-bold tracking-tight sm:text-3xl">Quản lý Sản phẩm</h1>
+    <p class="text-base-content/60 text-sm">
+      Feature module mẫu chuẩn CRUD tích hợp DummyJSON API, Feature-Sliced Design, Angular Signals và thư viện
+      &#64;libs/ui.
+    </p>
+  </div>
+
+  <!-- Filter & Actions Bar -->
+  <div class="border-border bg-card rounded-2xl border p-4">
+    <product-filter (addClicked)="onAddProduct()" />
+  </div>
+
+  <!-- Error Banner -->
+  @if (_store.$error()) {
+    <div class="bg-error/10 text-error flex items-center gap-3 rounded-xl p-4">
+      <svg-icon
+        key="heroicons_outline:exclamation-triangle"
+        class="size-6 shrink-0"
+      />
+      <div class="flex-1">
+        <h4 class="font-semibold">Đã xảy ra lỗi khi tải dữ liệu</h4>
+        <p class="text-sm opacity-90">{{ _store.$error() }}</p>
+      </div>
+      <button
+        uiButton
+        type="button"
+        variant="outline"
+        size="sm"
+        (click)="_store.loadProducts()"
+      >
+        Thử lại
+      </button>
+    </div>
+  }
+
+  <!-- Data Table Card -->
+  <div class="border-border bg-card overflow-hidden rounded-2xl border">
+    <ui-table
+      #t="uiTable"
+      [data]="_store.$products()"
+      [loading]="_store.$loading()"
+      [frontPagination]="false"
+      [total]="_store.$total()"
+    >
+      <table
+        uiTableElement
+        class="w-full"
+      >
+        <thead>
+          <tr
+            class="border-border bg-base-50/50 text-base-content/60 border-b text-left text-xs font-semibold tracking-wider uppercase"
+          >
+            <th class="px-6 py-3.5">Sản phẩm</th>
+            <th class="px-4 py-3.5">Danh mục</th>
+            <th class="px-4 py-3.5">Giá bán</th>
+            <th class="px-4 py-3.5">Tồn kho</th>
+            <th class="px-4 py-3.5">Đánh giá</th>
+            <th class="px-6 py-3.5 text-right">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody class="divide-base-200 divide-y text-sm">
+          @for (product of t.viewData(); track product.id) {
+            <tr
+              uiTableRow
+              class="hover:bg-base-200/40 transition"
+              [row]="product"
+            >
+              <!-- Thumbnail & Title -->
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="border-border bg-base-200/40 relative size-12 shrink-0 overflow-hidden rounded-lg border">
+                    @if (product.thumbnail) {
+                      <img
+                        class="size-full object-cover"
+                        [alt]="product.title"
+                        [src]="product.thumbnail"
+                      />
+                    } @else {
+                      <div class="text-base-content/30 flex size-full items-center justify-center">
+                        <svg-icon
+                          key="heroicons_outline:photo"
+                          class="size-6"
+                        />
+                      </div>
+                    }
+                  </div>
+                  <div class="min-w-0">
+                    <button
+                      type="button"
+                      class="text-base-content hover:text-primary block cursor-pointer truncate text-left font-medium"
+                      (click)="onViewDetail(product)"
+                    >
+                      {{ product.title }}
+                    </button>
+                    @if (product.sku) {
+                      <span class="text-base-content/50 block font-mono text-xs">
+                        {{ product.sku }}
+                      </span>
+                    }
+                  </div>
+                </div>
+              </td>
+
+              <!-- Category -->
+              <td class="px-4 py-4">
+                <ui-tag
+                  appearance="outline"
+                  size="sm"
+                >
+                  {{ product.category }}
+                </ui-tag>
+              </td>
+
+              <!-- Price -->
+              <td class="text-base-content px-4 py-4 font-semibold">
+                {{ product.price | currency: 'USD' : 'symbol' : '1.2-2' }}
+              </td>
+
+              <!-- Stock Status -->
+              <td class="px-4 py-4">
+                @if (product.stock > 20) {
+                  <span
+                    class="bg-success/10 text-success inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  >
+                    <span class="bg-success size-1.5 rounded-full"></span>
+                    Còn {{ product.stock }}
+                  </span>
+                } @else if (product.stock > 0) {
+                  <span
+                    class="bg-warning/10 text-warning inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  >
+                    <span class="bg-warning size-1.5 rounded-full"></span>
+                    Sắp hết ({{ product.stock }})
+                  </span>
+                } @else {
+                  <span
+                    class="bg-error/10 text-error inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  >
+                    <span class="bg-error size-1.5 rounded-full"></span>
+                    Hết hàng
+                  </span>
+                }
+              </td>
+
+              <!-- Rating -->
+              <td class="px-4 py-4">
+                <div class="text-warning flex items-center gap-1">
+                  <svg-icon
+                    key="heroicons_solid:star"
+                    class="size-4"
+                  />
+                  <span class="text-base-content text-xs font-semibold">
+                    {{ product.rating | number: '1.1-1' }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Actions -->
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-1">
+                  <!-- Quick View -->
+                  <button
+                    type="button"
+                    title="Xem chi tiết"
+                    class="btn btn-ghost btn-circle btn-sm text-base-content/60 hover:text-base-content"
+                    (click)="onViewDetail(product)"
+                  >
+                    <svg-icon
+                      name="heroicons_outline:eye"
+                      class="size-4"
+                    />
+                  </button>
+
+                  <!-- Edit -->
+                  <button
+                    type="button"
+                    title="Chỉnh sửa"
+                    class="btn btn-ghost btn-circle btn-sm text-base-content/60 hover:text-primary"
+                    (click)="onEditProduct(product)"
+                  >
+                    <svg-icon
+                      name="heroicons_outline:pencil-square"
+                      class="size-4"
+                    />
+                  </button>
+
+                  <!-- Delete -->
+                  <button
+                    type="button"
+                    title="Xóa"
+                    class="btn btn-ghost btn-circle btn-sm text-base-content/60 hover:text-error"
+                    (click)="onDeleteProduct(product)"
+                  >
+                    <svg-icon
+                      name="heroicons_outline:trash"
+                      class="size-4"
+                    />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Empty State Template -->
+      <ng-template uiTableEmpty>
+        <div class="flex flex-col items-center justify-center py-16 text-center">
+          <div class="bg-base-200/50 text-base-content/40 mb-4 flex size-16 items-center justify-center rounded-full">
+            <svg-icon
+              key="heroicons_outline:inbox"
+              class="size-8"
+            />
+          </div>
+          <h3 class="text-base-content text-base font-semibold">Không tìm thấy sản phẩm nào</h3>
+          <p class="text-base-content/60 mt-1 text-sm">Thử thay đổi từ khóa tìm kiếm hoặc chọn danh mục khác.</p>
+        </div>
+      </ng-template>
+    </ui-table>
+
+    <!-- Paginator Footer -->
+    <div class="border-border border-t">
+      <paginator
+        [length]="_store.$total()"
+        [pageSize]="_store.$pageSize()"
+        [pageIndex]="_store.$pageIndex()"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="onPageChange($event)"
+      />
+    </div>
+  </div>
+</div>

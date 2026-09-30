@@ -55,6 +55,12 @@ export class PaginatorDocComponent {
       description: 'Hides the page size select.',
     },
     {
+      name: 'pageSizeLabel',
+      type: 'string',
+      default: "'Page size:'",
+      description: 'Custom label for the page size select (supports i18n).',
+    },
+    {
       name: 'autoHide',
       type: 'boolean',
       default: 'true',
