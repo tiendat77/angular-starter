@@ -11,6 +11,7 @@ import { PageEvent, Paginator } from './public-api';
       [pageIndex]="pageIndex()"
       [pageSize]="pageSize()"
       [pageSizeLabel]="pageSizeLabel()"
+      [disabled]="disabled()"
       (page)="onPage($event)"
     />
   `,
@@ -20,6 +21,7 @@ class PaginatorHostComponent {
   readonly pageIndex = signal(1);
   readonly pageSize = signal(10);
   readonly pageSizeLabel = signal('Page size:');
+  readonly disabled = signal(false);
   readonly events: PageEvent[] = [];
 
   onPage(event: PageEvent): void {
@@ -156,5 +158,36 @@ describe('Paginator', () => {
     expect(host.pageSize()).toBe(25);
     expect(host.pageIndex()).toBe(1);
     expect(document.querySelector('.paginator-page-size-panel')).toBeNull();
+  });
+
+  describe('when disabled', () => {
+    beforeEach(() => {
+      host.disabled.set(true);
+      fixture.detectChanges();
+    });
+
+    it('disables every button, including the page numbers', () => {
+      const buttons = Array.from(
+        fixture.nativeElement.querySelectorAll('paginator button')
+      ) as HTMLButtonElement[];
+      expect(buttons.length).toBeGreaterThan(0);
+      expect(buttons.every((b) => b.disabled)).toBe(true);
+    });
+
+    it('does not change the page from a page number or the paginator API', () => {
+      pageButtons()
+        .find((b) => b.textContent?.trim() === '3')!
+        .click();
+      const paginator = fixture.debugElement.children[0].componentInstance as Paginator;
+      paginator.nextPage();
+      paginator.lastPage();
+      paginator.selectPage(4);
+      paginator._changePageSize(25);
+      fixture.detectChanges();
+
+      expect(host.events).toHaveLength(0);
+      expect(host.pageIndex()).toBe(1);
+      expect(host.pageSize()).toBe(10);
+    });
   });
 });

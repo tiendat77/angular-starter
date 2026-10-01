@@ -62,6 +62,7 @@ import { DateSelectionModel, ExtractDateTypeFromSelection } from './date-selecti
 import { DatepickerContent } from './datepicker-content';
 import { DatepickerDayExtra } from './datepicker-day-extra';
 import { DateFilterFn } from './datepicker-input-base';
+import { DatepickerMobileContent } from './datepicker-mobile-content';
 
 /** Used to generate a unique ID for each datepicker instance. */
 let datepickerUid = 0;
@@ -177,6 +178,12 @@ export abstract class DatepickerBase<
    * than a dropdown and elements have more padding to allow for bigger touch targets.
    */
   @Input({ transform: booleanAttribute }) touchUi = false;
+
+  /**
+   * Media query below which the picker opens as a full-screen sheet with a vertically scrolling
+   * list of months instead of a dropdown. Set to `false` to always use the dropdown / dialog.
+   */
+  @Input() fullscreenBreakpoint: string | false = '(max-width: 640px)';
 
   /** Whether the datepicker pop-up should be disabled. */
   @Input({ transform: booleanAttribute })
@@ -463,29 +470,50 @@ export abstract class DatepickerBase<
 
   /** Component rendered in the overlay; range pickers override it to show their own calendar. */
   protected _getContentComponent(): ComponentType<DatepickerContent<S, D>> {
+    return this._fullscreen
+      ? (DatepickerMobileContent as unknown as ComponentType<DatepickerContent<S, D>>)
+      : this._getDesktopContentComponent();
+  }
+
+  /** Content shown when not full-screen; range pickers override it to show two months. */
+  protected _getDesktopContentComponent(): ComponentType<DatepickerContent<S, D>> {
     return DatepickerContent;
   }
+
+  /** Whether the overlay that is open (or being opened) is the full-screen mobile sheet. */
+  _fullscreen = false;
 
   /** Opens the overlay with the calendar. */
   private _openOverlay(): void {
     this._destroyOverlay();
 
-    const isDialog = this.touchUi;
+    this._fullscreen =
+      !!this.fullscreenBreakpoint &&
+      typeof matchMedia === 'function' &&
+      matchMedia(this.fullscreenBreakpoint).matches;
+    const isDialog = this.touchUi && !this._fullscreen;
+    const fullscreen = this._fullscreen;
     const portal = new ComponentPortal<DatepickerContent<S, D>>(
       this._getContentComponent(),
       this._viewContainerRef
     );
     const overlayRef = (this._overlayRef = this._overlay.create(
       new OverlayConfig({
-        positionStrategy: isDialog ? this._getDialogStrategy() : this._getDropdownStrategy(),
-        hasBackdrop: true,
+        positionStrategy: fullscreen
+          ? this._overlay.position().global().top('0').left('0')
+          : isDialog
+            ? this._getDialogStrategy()
+            : this._getDropdownStrategy(),
+        ...(fullscreen ? { width: '100%', height: '100%' } : {}),
+        hasBackdrop: !fullscreen,
         backdropClass: [
           isDialog ? 'cdk-overlay-dark-backdrop' : 'overlay-transparent-backdrop',
           this._backdropHarnessClass,
         ],
         direction: this._dir || undefined,
-        scrollStrategy: isDialog ? this._overlay.scrollStrategies.block() : this._scrollStrategy(),
-        panelClass: `datepicker-${isDialog ? 'dialog' : 'popup'}`,
+        scrollStrategy:
+          isDialog || fullscreen ? this._overlay.scrollStrategies.block() : this._scrollStrategy(),
+        panelClass: `datepicker-${fullscreen ? 'fullscreen' : isDialog ? 'dialog' : 'popup'}`,
       })
     ));
 

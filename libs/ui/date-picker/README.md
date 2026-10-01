@@ -612,6 +612,18 @@ providers: [
 To switch language at runtime, mutate the injected `DatepickerIntl` and call `intl.changes.next()`.
 The toggle button's label is its own `aria-label` input.
 
+### Mobile (full-screen) mode
+
+Below `fullscreenBreakpoint` (default `(max-width: 640px)`) both `<date-picker>` and
+`<date-range-picker>` open as a full-screen sheet instead of a dropdown: a close button, a sticky
+weekday row and a vertically scrolling list of months. Tapping a date (or the end date of a range)
+selects it and closes the sheet. Set `[fullscreenBreakpoint]="false"` to keep the dropdown on phones.
+
+Without `min` / `max` the list covers 36 months either side of the selected (or `startAt`) date.
+Each month is a fixed-height placeholder and the calendar grid is only mounted for months near the
+viewport, so scrolling stays smooth no matter how long the list is. The title strings come from
+`DatepickerIntl` (`selectDateLabel`, `selectDatesLabel`, `closeLabel`).
+
 ### Accessibility
 
 The `Datepicker` pop-up uses the `role="dialog"` interaction pattern. This dialog then contains

@@ -1,0 +1,70 @@
+<div
+  cdkTrapFocus
+  cdkTrapFocusAutoCapture
+  role="dialog"
+  class="datepicker-fullscreen"
+  [attr.aria-modal]="true"
+  [attr.aria-label]="_title"
+>
+  <header class="datepicker-fullscreen-header">
+    <button
+      type="button"
+      class="btn btn-circle btn-ghost"
+      [attr.aria-label]="_intl.closeLabel"
+      (click)="datepicker.close()"
+    >
+      <svg
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18 18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+    <h2 class="datepicker-fullscreen-title">{{ _title }}</h2>
+  </header>
+
+  <div
+    class="datepicker-fullscreen-weekdays"
+    aria-hidden="true"
+  >
+    @for (day of _weekdays; track day.long) {
+      <span>{{ day.narrow }}</span>
+    }
+  </div>
+
+  <div
+    #scroller
+    class="datepicker-fullscreen-scroller"
+  >
+    @for (month of _months; track $index) {
+      <section
+        class="datepicker-fullscreen-month"
+        [attr.data-index]="$index"
+        [style.--rows]="month.rows"
+        [style.--ratio]="_ratio"
+      >
+        <h3 class="datepicker-fullscreen-month-title first-letter:uppercase">{{ month.title }}</h3>
+        @if (_mounted().has($index)) {
+          <month-view
+            [selected]="_getSelected()"
+            [activeDate]="month.date"
+            [minDate]="datepicker._getMinDate()"
+            [maxDate]="datepicker._getMaxDate()"
+            [dateFilter]="datepicker._getDateFilter()"
+            [showLunar]="datepicker.showLunar"
+            [dayExtra]="datepicker.dayExtra?.template ?? null"
+            (_userSelection)="_handleUserSelection($event)"
+          />
+        }
+      </section>
+    }
+  </div>
+</div>

@@ -12,7 +12,7 @@ describe('UiBottomSheetConfig', () => {
     expect(config.restoreFocus).toBe(true);
     expect(config.snapPoints).toEqual([0.5]);
     expect(config.initialSnapIndex).toBe(0);
-    expect(config.backdropClass).toBe('ui-bottom-sheet-backdrop');
+    expect(config.backdropClass).toBe('bottom-sheet-backdrop');
     expect(config.ariaLabel).toBeNull();
     expect(config.data).toBeNull();
   });

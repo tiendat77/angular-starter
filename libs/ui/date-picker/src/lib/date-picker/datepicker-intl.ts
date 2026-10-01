@@ -1,8 +1,13 @@
 import { Injectable, Provider } from '@angular/core';
 import { Subject } from 'rxjs';
+import { DateAdapter } from '../adapter';
 
 /** Strings rendered by the date picker itself (buttons and screen-reader labels). */
 export interface DatepickerLabels {
+  /** Title of the full-screen (mobile) picker when a single date is selected. */
+  selectDateLabel: string;
+  /** Title of the full-screen (mobile) picker when a range is selected. */
+  selectDatesLabel: string;
   /** Layout of the month view title; `{month}` and `{year}` are replaced (e.g. `{month}, {year}`). */
   monthYearFormat: string;
   /** Close button, only reachable by keyboard / screen reader. */
@@ -32,6 +37,8 @@ export class DatepickerIntl implements DatepickerLabels {
   /** Emits when a label changed. */
   readonly changes = new Subject<void>();
 
+  selectDateLabel = 'Select date';
+  selectDatesLabel = 'Select dates';
   monthYearFormat = '{month} {year}';
   closeLabel = 'Close';
   switchToMultiYearViewLabel = 'Choose month and year';
@@ -53,4 +60,12 @@ export function provideDatepickerLabels(labels: Partial<DatepickerLabels>): Prov
     provide: DatepickerIntl,
     useFactory: () => Object.assign(new DatepickerIntl(), labels),
   };
+}
+
+/** "September 2026", laid out by {@link DatepickerIntl.monthYearFormat}. */
+export function formatMonthYear<D>(adapter: DateAdapter<D>, intl: DatepickerIntl, date: D): string {
+  const month = adapter.getMonthNames('long')[adapter.getMonth(date)];
+  return intl.monthYearFormat
+    .replace('{month}', month)
+    .replace('{year}', adapter.getYearName(date));
 }

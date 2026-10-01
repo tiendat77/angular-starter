@@ -46,6 +46,17 @@ export const animations: {
         ])
       )
     ),
+    transition(
+      'void => enter-fullscreen',
+      animate(
+        '220ms cubic-bezier(0.32, 0.72, 0, 1)',
+        keyframes([style({ transform: 'translateY(100%)' }), style({ transform: 'none' })])
+      )
+    ),
+    transition(
+      'enter-fullscreen => void',
+      animate('180ms cubic-bezier(0.4, 0, 1, 1)', style({ transform: 'translateY(100%)' }))
+    ),
     transition('* => void', animate('100ms linear', style({ opacity: 0 }))),
   ]),
 

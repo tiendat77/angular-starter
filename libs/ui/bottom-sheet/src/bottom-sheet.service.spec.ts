@@ -115,7 +115,7 @@ describe('UiBottomSheet', () => {
     });
     flush();
 
-    const panel = overlayContainerElement.querySelector('.ui-bottom-sheet-panel');
+    const panel = overlayContainerElement.querySelector('.bottom-sheet-panel');
     expect(panel).not.toBeNull();
     expect(overlayContainerElement.querySelector('#data-label')?.textContent).toBe('filters');
   });
@@ -153,7 +153,7 @@ describe('UiBottomSheet', () => {
     const confirmBtn = overlayContainerElement.querySelector<HTMLButtonElement>('#confirm-btn');
     confirmBtn?.click();
     flush();
-    completeTransition(overlayContainerElement.querySelector('.ui-bottom-sheet-panel'));
+    completeTransition(overlayContainerElement.querySelector('.bottom-sheet-panel'));
 
     expect(resolved).toBe('confirmed:filters');
   });
@@ -168,7 +168,7 @@ describe('UiBottomSheet', () => {
     const backdrop = overlayContainerElement.querySelector<HTMLElement>('.cdk-overlay-backdrop');
     backdrop?.click();
     flush();
-    completeTransition(overlayContainerElement.querySelector('.ui-bottom-sheet-panel'));
+    completeTransition(overlayContainerElement.querySelector('.bottom-sheet-panel'));
 
     expect(dismissed).toBe(true);
   });
@@ -197,7 +197,7 @@ describe('UiBottomSheet', () => {
     let dismissed = false;
     ref.afterDismissed().subscribe(() => (dismissed = true));
 
-    const panel = overlayContainerElement.querySelector<HTMLElement>('.ui-bottom-sheet-panel');
+    const panel = overlayContainerElement.querySelector<HTMLElement>('.bottom-sheet-panel');
     panel?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     flush();
     completeTransition(panel);
@@ -217,7 +217,7 @@ describe('UiBottomSheet', () => {
 
     // The first sheet's dismiss() has been called; its exit transition must complete
     // before it's considered gone (mirrors ToastService's replace-then-enter sequencing).
-    const panels = overlayContainerElement.querySelectorAll('.ui-bottom-sheet-panel');
+    const panels = overlayContainerElement.querySelectorAll('.bottom-sheet-panel');
     expect(panels.length).toBeGreaterThanOrEqual(1);
     completeTransition(panels[0]);
     flush();
@@ -250,14 +250,14 @@ describe('UiBottomSheet', () => {
       expect(aDismissed).toBe(true);
       expect(bDismissed).toBe(true);
 
-      const panelsAfterOpens = overlayContainerElement.querySelectorAll('.ui-bottom-sheet-panel');
+      const panelsAfterOpens = overlayContainerElement.querySelectorAll('.bottom-sheet-panel');
       expect(panelsAfterOpens.length).toBe(1); // a and b's overlays were already disposed
       expect(overlayContainerElement.querySelector('#data-label')?.textContent).toBe('c');
 
       // The last one opened (c) is the one that actually ends up visible/open.
       await settle();
-      const cPanel = overlayContainerElement.querySelector('.ui-bottom-sheet-panel');
-      expect(cPanel?.classList.contains('ui-bottom-sheet-panel-visible')).toBe(true);
+      const cPanel = overlayContainerElement.querySelector('.bottom-sheet-panel');
+      expect(cPanel?.classList.contains('bottom-sheet-panel-visible')).toBe(true);
     }
   );
 
@@ -272,7 +272,7 @@ describe('UiBottomSheet', () => {
     await settle();
 
     ref.dismiss();
-    completeTransition(overlayContainerElement.querySelector('.ui-bottom-sheet-panel'));
+    completeTransition(overlayContainerElement.querySelector('.bottom-sheet-panel'));
     flush();
 
     expect(document.activeElement).toBe(trigger);
@@ -293,7 +293,7 @@ describe('UiBottomSheet', () => {
     expect(overlayContainerElement.hasAttribute('aria-hidden')).toBe(false);
 
     ref.dismiss();
-    completeTransition(overlayContainerElement.querySelector('.ui-bottom-sheet-panel'));
+    completeTransition(overlayContainerElement.querySelector('.bottom-sheet-panel'));
     flush();
 
     expect(sibling.hasAttribute('aria-hidden')).toBe(false);
@@ -316,14 +316,14 @@ describe('UiBottomSheet', () => {
     // Complete the first sheet's exit transition so its afterDismissed() resolves and the
     // second sheet enters. The background must remain hidden throughout: the first sheet's
     // dismissal must not restore aria-hidden while the second (replacement) is still open.
-    const panels = overlayContainerElement.querySelectorAll('.ui-bottom-sheet-panel');
+    const panels = overlayContainerElement.querySelectorAll('.bottom-sheet-panel');
     completeTransition(panels[0]);
     flush();
 
     expect(sibling.getAttribute('aria-hidden')).toBe('true');
     expect(overlayContainerElement.querySelector('#data-label')?.textContent).toBe('second');
 
-    const secondPanel = overlayContainerElement.querySelector('.ui-bottom-sheet-panel');
+    const secondPanel = overlayContainerElement.querySelector('.bottom-sheet-panel');
     service.dismiss();
     completeTransition(secondPanel);
     flush();

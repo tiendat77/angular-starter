@@ -16,7 +16,7 @@ import { DateAdapter } from '../adapter';
 import { CalendarUserEvent } from '../calendar/calendar-body';
 import { MonthView } from '../calendar/month-view';
 import { DateRange } from './date-selection-model';
-import { DatepickerIntl } from './datepicker-intl';
+import { DatepickerIntl, formatMonthYear } from './datepicker-intl';
 
 /**
  * Two month views side by side for picking a date range. The first panel owns the navigation
@@ -76,10 +76,7 @@ export class DateRangeCalendar<D> implements OnInit {
   }
 
   protected _title(date: D): string {
-    const month = this._adapter.getMonthNames('long')[this._adapter.getMonth(date)];
-    return this._intl.monthYearFormat
-      .replace('{month}', month)
-      .replace('{year}', this._adapter.getYearName(date));
+    return formatMonthYear(this._adapter, this._intl, date);
   }
 
   protected _shift(months: number) {

@@ -1,24 +1,24 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Bottom Sheet
 /*
-/*  `ui-bottom-sheet-overlay-pane` the CDK overlay pane host - forced to span the full viewport
+/*  `bottom-sheet-overlay-pane` the CDK overlay pane host - forced to span the full viewport
 /*                                 width (see I4: GlobalPositionStrategy only tracks a single
 /*                                 horizontal anchor, so `.left('0').right('0')` alone does not
 /*                                 make the pane flush-width; `width: 100%` on the OverlayConfig is
 /*                                 the real fix, this is a defensive backstop for the class itself)
-/*  `ui-bottom-sheet-backdrop`  fades in/out with the CDK overlay's own showing/hidden class toggle
-/*  `ui-bottom-sheet-panel`     fixed-height panel, slides via `transform: translateY(...)`, bound inline
+/*  `bottom-sheet-backdrop`  fades in/out with the CDK overlay's own showing/hidden class toggle
+/*  `bottom-sheet-panel`     fixed-height panel, slides via `transform: translateY(...)`, bound inline
 /*                              by the component (translateY itself depends on both the current snap
 /*                              index AND whether the sheet is visible - see the container's
 /*                              `translateYPx` computed); this file only owns the transition timing/easing
-/*  `ui-bottom-sheet-handle`    the grabber affordance
+/*  `bottom-sheet-handle`    the grabber affordance
 /* ----------------------------------------------------------------------------------------------------- */
-@utility ui-bottom-sheet-overlay-pane {
+@utility bottom-sheet-overlay-pane {
   display: block;
   width: 100%;
 }
 
-@utility ui-bottom-sheet-backdrop {
+@utility bottom-sheet-backdrop {
   background-color: rgb(0 0 0 / 0.5);
   opacity: 0;
   transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -32,7 +32,7 @@
   }
 }
 
-@utility ui-bottom-sheet-panel {
+@utility bottom-sheet-panel {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -44,15 +44,24 @@
   transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
   will-change: transform;
 
-  &.ui-bottom-sheet-panel-dragging {
+  &.bottom-sheet-panel-dragging {
     transition: none;
   }
 
   /* Off-screen while not visible (enter()'s deferred flip hasn't run yet, or exit() already
      started) - keep it out of the way of clicks/tab order rather than letting an
      off-screen-but-still-in-the-DOM panel intercept pointer events. */
-  &:not(.ui-bottom-sheet-panel-visible) {
+  &:not(.bottom-sheet-panel-visible) {
     pointer-events: none;
+  }
+
+  /* Baseline for the hidden state. The inline `transform` binding only lands on the first change
+     detection pass, which runs after the element is already in the DOM. Without this the panel is
+     painted fully open for that first frame, and then animates DOWN to its hidden position before
+     animating back up - which reads as the sheet sliding in from the top. `100%` is the panel's own
+     height, i.e. the same off-screen position the inline binding computes. */
+  &:not(.bottom-sheet-panel-visible):not(.bottom-sheet-panel-dragging) {
+    transform: translateY(100%);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -60,7 +69,7 @@
   }
 }
 
-@utility ui-bottom-sheet-handle {
+@utility bottom-sheet-handle {
   /* Rendered after the body in DOM order (see I6 in the component template) so FocusTrap's
      default DOM-order tabbable walk finds content before the handle; `order: -1` keeps it
      visually first/on top regardless. */
@@ -91,7 +100,7 @@
   }
 }
 
-@utility ui-bottom-sheet-body {
+@utility bottom-sheet-body {
   flex: 1;
   overflow-y: auto;
   overscroll-behavior: contain;

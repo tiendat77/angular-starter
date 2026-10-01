@@ -22,7 +22,9 @@ import { DatepickerRangeInput } from './datepicker-range-input';
   ],
 })
 export class DateRangePicker<D> extends DatepickerBase<DatepickerRangeInput<D>, DateRange<D>, D> {
-  protected override _getContentComponent(): ComponentType<DatepickerContent<DateRange<D>, D>> {
+  protected override _getDesktopContentComponent(): ComponentType<
+    DatepickerContent<DateRange<D>, D>
+  > {
     return DateRangePickerContent;
   }
 }

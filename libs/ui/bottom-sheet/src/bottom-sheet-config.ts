@@ -39,7 +39,7 @@ export class UiBottomSheetConfig<D = unknown> {
   panelClass?: string | string[];
 
   /** Extra class applied to the CDK backdrop element. */
-  backdropClass?: string = 'ui-bottom-sheet-backdrop';
+  backdropClass?: string = 'bottom-sheet-backdrop';
 
   /** aria-label applied to the panel's role="dialog" element. */
   ariaLabel: string | null = null;

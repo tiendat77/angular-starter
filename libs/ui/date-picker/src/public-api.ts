@@ -39,6 +39,7 @@ export { DateRangePickerContent } from './lib/date-picker/date-range-picker-cont
 export * from './lib/date-picker/date-selection-model';
 export * from './lib/date-picker/datepicker-day-extra';
 export * from './lib/date-picker/datepicker-intl';
+export { DatepickerMobileContent } from './lib/date-picker/datepicker-mobile-content';
 export { DatepickerRangeInput } from './lib/date-picker/datepicker-range-input';
 export { formatLunarLabel, solarToLunar } from './lib/lunar/vietnamese-lunar';
 export type { LunarDate } from './lib/lunar/vietnamese-lunar';

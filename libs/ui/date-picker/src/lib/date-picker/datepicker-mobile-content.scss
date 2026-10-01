@@ -1,0 +1,83 @@
+.datepicker-mobile-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+}
+
+.datepicker-fullscreen {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.datepicker-fullscreen-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  padding: calc(0.5rem + env(safe-area-inset-top)) 0.75rem 0.5rem;
+}
+
+.datepicker-fullscreen-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.datepicker-fullscreen-weekdays {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.datepicker-fullscreen-scroller {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  // Lets a month's height be expressed in terms of the scroller's width (`cqw`) without any JS
+  container-type: inline-size;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+// Height = title + rows × (cell width × aspect ratio). The month-view's day cells get their height
+// from percentage padding, so this matches them exactly and the scroll length is known before any
+// month is rendered.
+.datepicker-fullscreen-month {
+  --title-height: 2.75rem;
+
+  box-sizing: border-box;
+  height: calc(var(--title-height) + var(--rows) * ((100cqw - 1.5rem) / 7 * var(--ratio)));
+  padding-inline: 0.75rem;
+  contain: layout paint style;
+}
+
+.datepicker-fullscreen-month-title {
+  display: flex;
+  align-items: center;
+  height: var(--title-height);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+// The sticky weekday row above replaces each month's own header row
+.datepicker-fullscreen-month {
+  .calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .calendar-table-header {
+    display: none;
+  }
+}

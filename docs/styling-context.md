@@ -134,7 +134,7 @@ Use these instead of hand-rolling; modifiers only set `--<component>-*` vars, so
 - **alert**: `alert-{neutral,primary,info,success,warning,error}` + `alert-soft|outline|dash|solid|banner|vertical|horizontal`.
 - **badge / tag**: `badge-{neutral,primary,info,success,warning,error}` `-sm|md|dot|circular`; `tag-*` same colors + `tag-outline|solid|checkable`.
 - **form**: `input` (`-bordered|ghost|filled`), `checkbox|radio|toggle` (colors `neutral…error`, sizes `xs…xl`), `form-control`, `label`, `label-text`.
-- **others**: `avatar-*`, `tabs`/`tab-*`, `menu-*`, `dropdown`, `divider-*`, `join`, `data-table-*`, `modal-*`, `ui-bottom-sheet-*`.
+- **others**: `avatar-*`, `tabs`/`tab-*`, `menu-*`, `dropdown`, `divider-*`, `join`, `data-table-*`, `modal-*`, `bottom-sheet-*`.
 
 Colors in these utilities map to the §2 tokens: `neutral` = `foreground`-based, `primary|secondary|info|success|warning|error` = the same-named token.
 

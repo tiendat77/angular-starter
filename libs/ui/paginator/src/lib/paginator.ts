@@ -214,13 +214,20 @@ export class Paginator implements OnInit, OnDestroy {
 
   /** Select a page size option from the overlay and close. */
   selectPageSizeOption(size: number): void {
-    this._changePageSize(size);
+    if (!this.disabled) {
+      this._changePageSize(size);
+    }
     this.closePageSizeOverlay();
   }
 
   /** Jump to a specific page index. */
   selectPage(pageIndex: number): void {
-    if (pageIndex >= 1 && pageIndex <= this.getNumberOfPages() && pageIndex !== this.pageIndex) {
+    if (
+      !this.disabled &&
+      pageIndex >= 1 &&
+      pageIndex <= this.getNumberOfPages() &&
+      pageIndex !== this.pageIndex
+    ) {
       const previousPageIndex = this.pageIndex;
       this.pageIndex = pageIndex;
 
@@ -230,7 +237,7 @@ export class Paginator implements OnInit, OnDestroy {
 
   /** Advances to the next page if it exists. */
   nextPage(): void {
-    if (!this.hasNextPage()) {
+    if (this.disabled || !this.hasNextPage()) {
       return;
     }
 
@@ -241,7 +248,7 @@ export class Paginator implements OnInit, OnDestroy {
 
   /** Move back to the previous page if it exists. */
   previousPage(): void {
-    if (!this.hasPreviousPage()) {
+    if (this.disabled || !this.hasPreviousPage()) {
       return;
     }
 
@@ -253,7 +260,7 @@ export class Paginator implements OnInit, OnDestroy {
   /** Move to the first page if not already there. */
   firstPage(): void {
     // hasPreviousPage being false implies at the start
-    if (!this.hasPreviousPage()) {
+    if (this.disabled || !this.hasPreviousPage()) {
       return;
     }
 
@@ -265,7 +272,7 @@ export class Paginator implements OnInit, OnDestroy {
   /** Move to the last page if not already there. */
   lastPage(): void {
     // hasNextPage being false implies at the end
-    if (!this.hasNextPage()) {
+    if (this.disabled || !this.hasNextPage()) {
       return;
     }
 
@@ -303,6 +310,10 @@ export class Paginator implements OnInit, OnDestroy {
    * that the 10th item will still be displayed.
    */
   _changePageSize(pageSize: number) {
+    if (this.disabled) {
+      return;
+    }
+
     const previousPageIndex = this.pageIndex;
 
     this.pageIndex = 1;

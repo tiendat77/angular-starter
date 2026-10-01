@@ -101,7 +101,7 @@ describe('BottomSheetContainerComponent', () => {
 
   it('renders role=dialog, aria-modal, and the configured aria-label', () => {
     fixture = createContainer({ ariaLabel: 'Filter products' });
-    const panel: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-panel');
+    const panel: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-panel');
 
     expect(panel.getAttribute('role')).toBe('dialog');
     expect(panel.getAttribute('aria-modal')).toBe('true');
@@ -110,12 +110,12 @@ describe('BottomSheetContainerComponent', () => {
 
   it('hides the drag handle when hasDragHandle is false', () => {
     fixture = createContainer({ hasDragHandle: false });
-    expect(fixture.nativeElement.querySelector('.ui-bottom-sheet-handle')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.bottom-sheet-handle')).toBeNull();
   });
 
   it('renders the handle as a keyboard-operable slider reflecting snapIndex', () => {
     fixture = createContainer({ snapPoints: [0.25, 0.5, 0.9], initialSnapIndex: 1 });
-    const handle: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-handle');
+    const handle: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-handle');
 
     expect(handle.getAttribute('role')).toBe('slider');
     expect(handle.getAttribute('aria-valuemin')).toBe('0');
@@ -126,7 +126,7 @@ describe('BottomSheetContainerComponent', () => {
 
   it('renders the handle as non-interactive when disableDrag is true', () => {
     fixture = createContainer({ disableDrag: true });
-    const handle: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-handle');
+    const handle: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-handle');
 
     expect(handle.getAttribute('role')).toBeNull();
     expect(handle.getAttribute('tabindex')).toBeNull();
@@ -134,7 +134,7 @@ describe('BottomSheetContainerComponent', () => {
 
   it('ArrowUp/ArrowDown/Home/End on the handle call snapTo with clamped indices', () => {
     fixture = createContainer({ snapPoints: [0.25, 0.5, 0.9], initialSnapIndex: 1 });
-    const handle: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-handle');
+    const handle: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-handle');
 
     handle.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     fixture.detectChanges();
@@ -183,7 +183,7 @@ describe('BottomSheetContainerComponent', () => {
     fixture.componentInstance.enter();
     await settle(fixture);
 
-    const panel: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-panel');
+    const panel: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-panel');
     expect(document.activeElement).toBe(panel);
   });
 
@@ -215,7 +215,7 @@ describe('BottomSheetContainerComponent', () => {
   describe('enter/exit lifecycle', () => {
     it('changes the rendered transform between the hidden and entered states, and emits _onEnter once the real transitionend fires (Critical fix)', async () => {
       fixture = createContainer({ snapPoints: [0.5] });
-      const panel: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-panel');
+      const panel: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-panel');
 
       // Before enter() ever runs, the panel renders fully off-screen (panelHeightPx), not at
       // its resting snap position - this is what makes the eventual flip to "visible" a real,
@@ -239,7 +239,7 @@ describe('BottomSheetContainerComponent', () => {
 
     it('changes the rendered transform between the entered and exited states, and emits _onExit once (Critical fix)', async () => {
       fixture = createContainer({ snapPoints: [0.5] });
-      const panel: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-panel');
+      const panel: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-panel');
 
       fixture.componentInstance.enter();
       await settle(fixture);
@@ -263,8 +263,8 @@ describe('BottomSheetContainerComponent', () => {
 
     it('ignores a bubbled transitionend from inside the opened content (I2/Critical)', async () => {
       fixture = createContainer({ snapPoints: [0.5] });
-      const panel: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-panel');
-      const body: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-body');
+      const panel: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-panel');
+      const body: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-body');
 
       let entered = false;
       fixture.componentInstance._onEnter.subscribe(() => (entered = true));
@@ -285,7 +285,7 @@ describe('BottomSheetContainerComponent', () => {
 
     it('emits _onEnter (afterOpened) only once, not on every subsequent transitionend while visible (I2)', async () => {
       fixture = createContainer({ snapPoints: [0.25, 0.5, 0.9], initialSnapIndex: 1 });
-      const panel: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-panel');
+      const panel: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-panel');
 
       let enterCount = 0;
       let completed = false;
@@ -351,7 +351,7 @@ describe('BottomSheetContainerComponent', () => {
       fixture.componentInstance._processDragStart(400, 'handle');
       fixture.componentInstance._processDragMove(500, 16); // dragged down 100px
 
-      const panel: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-panel');
+      const panel: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-panel');
       expect(panel.style.transform).toBe('translateY(500px)'); // startTranslateY(400) + 100
     });
 
@@ -377,7 +377,7 @@ describe('BottomSheetContainerComponent', () => {
 
       expect(fixture.componentInstance.snapIndex()).toBe(1); // same index it started at
 
-      const panel: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-panel');
+      const panel: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-panel');
       expect(panel.style.transform).toBe('translateY(400px)'); // resting position, not the stale mid-drag value
     });
 
@@ -420,7 +420,7 @@ describe('BottomSheetContainerComponent', () => {
     it('onHandlePointerDown is a no-op when disableDrag is true (drag never starts, so nothing can resolve to a dismiss)', () => {
       fixture = createContainer({ snapPoints: [0.5], initialSnapIndex: 0, disableDrag: true });
       fixture.componentInstance.visible.set(true);
-      const handle = fixture.nativeElement.querySelector('.ui-bottom-sheet-handle');
+      const handle = fixture.nativeElement.querySelector('.bottom-sheet-handle');
       expect(handle).not.toBeNull(); // still rendered (hasDragHandle default true), just non-interactive
 
       let dismissRequested = false;
@@ -493,7 +493,7 @@ describe('BottomSheetContainerComponent', () => {
         expect(dismissRequested).toBe(false);
         expect(fixture.componentInstance.snapIndex()).toBe(1); // unchanged - reverted, not resolved
 
-        const panel: HTMLElement = fixture.nativeElement.querySelector('.ui-bottom-sheet-panel');
+        const panel: HTMLElement = fixture.nativeElement.querySelector('.bottom-sheet-panel');
         expect(panel.style.transform).toBe('translateY(400px)'); // back to the resting position it started at
       });
 

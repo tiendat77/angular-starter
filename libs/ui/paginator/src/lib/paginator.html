@@ -11,7 +11,7 @@
             #pageSizeOrigin="cdkOverlayOrigin"
             type="button"
             cdkOverlayOrigin
-            class="paginator-page-size-trigger btn btn-sm bg-base-100 border-base-200 hover:bg-base-200 flex h-8 min-h-8 min-w-16 items-center justify-between gap-1 border px-2.5 text-sm font-normal"
+            class="paginator-page-size-trigger btn btn-outline btn-sm flex h-8 min-h-8 min-w-16 items-center justify-between gap-1 px-2.5 text-sm font-normal"
             aria-haspopup="listbox"
             [disabled]="disabled"
             [attr.aria-expanded]="$isPageSizeOpen()"
@@ -43,7 +43,7 @@
             (detach)="closePageSizeOverlay()"
           >
             <div
-              class="paginator-page-size-panel bg-card z-50 flex max-h-60 min-w-24 flex-col overflow-y-auto rounded border py-1 text-sm shadow-md"
+              class="paginator-page-size-panel bg-background border-border text-foreground z-50 flex max-h-60 min-w-24 flex-col overflow-y-auto rounded-lg border py-1 text-sm shadow-md"
               role="listbox"
             >
               @for (option of _displayedPageSizeOptions; track option) {
@@ -93,7 +93,7 @@
     @if (showFirstLastButtons) {
       <button
         type="button"
-        class="btn btn-sm join-item border-base-200 bg-base-100 hover:bg-base-200 disabled:bg-base-100 h-8 min-h-8 w-8 min-w-8 border p-0 disabled:opacity-40"
+        class="btn btn-outline btn-sm join-item h-8 min-h-8 w-8 min-w-8 p-0"
         aria-label="First page"
         [disabled]="_previousButtonsDisabled()"
         (click)="firstPage()"
@@ -118,7 +118,7 @@
     <!-- Previous Page Button -->
     <button
       type="button"
-      class="btn btn-sm join-item border-base-200 bg-base-100 hover:bg-base-200 disabled:bg-base-100 h-8 min-h-8 w-8 min-w-8 border p-0 disabled:opacity-40"
+      class="btn btn-outline btn-sm join-item h-8 min-h-8 w-8 min-w-8 p-0"
       aria-label="Previous page"
       [disabled]="_previousButtonsDisabled()"
       (click)="previousPage()"
@@ -143,18 +143,20 @@
     @for (page of _pages; track $index) {
       @if (page.isEllipsis) {
         <span
-          class="join-item border-base-200 bg-base-100 flex h-8 min-h-8 min-w-8 items-center justify-center border px-2 text-sm opacity-60 select-none"
+          class="join-item border-border bg-background text-muted-foreground flex h-8 min-h-8 min-w-8 items-center justify-center border px-2 text-sm select-none"
         >
           ...
         </span>
       } @else {
         <button
           type="button"
-          class="btn btn-sm join-item border-base-200 h-8 min-h-8 min-w-8 border px-2 text-sm font-normal"
+          class="btn btn-sm join-item h-8 min-h-8 min-w-8 px-2 text-sm font-normal"
           [ngClass]="{
             'btn-primary font-medium': page.number === pageIndex,
-            'bg-base-100 hover:bg-base-200': page.number !== pageIndex,
+            'btn-outline': page.number !== pageIndex,
           }"
+          [disabled]="disabled"
+          [attr.aria-current]="page.number === pageIndex ? 'page' : null"
           (click)="selectPage(page.number)"
         >
           {{ page.text }}
@@ -165,7 +167,7 @@
     <!-- Next Page Button -->
     <button
       type="button"
-      class="btn btn-sm join-item border-base-200 bg-base-100 hover:bg-base-200 disabled:bg-base-100 h-8 min-h-8 w-8 min-w-8 border p-0 disabled:opacity-40"
+      class="btn btn-outline btn-sm join-item h-8 min-h-8 w-8 min-w-8 p-0"
       aria-label="Next page"
       [disabled]="_nextButtonsDisabled()"
       (click)="nextPage()"
@@ -190,7 +192,7 @@
     @if (showFirstLastButtons) {
       <button
         type="button"
-        class="btn btn-sm join-item border-base-200 bg-base-100 hover:bg-base-200 disabled:bg-base-100 h-8 min-h-8 w-8 min-w-8 border p-0 disabled:opacity-40"
+        class="btn btn-outline btn-sm join-item h-8 min-h-8 w-8 min-w-8 p-0"
         aria-label="Last page"
         [disabled]="_nextButtonsDisabled()"
         (click)="lastPage()"

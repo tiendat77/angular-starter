@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { Paginator } from '@libs/ui/paginator';
+import { PageEvent, Paginator } from '@libs/ui/paginator';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UI_TABLE, UiTable, UiTableQueryParams } from './public-api';
 
@@ -13,7 +13,7 @@ interface User {
 const USERS: User[] = Array.from({ length: 25 }, (_, i) => ({ id: i + 1, name: `User ${i + 1}` }));
 
 @Component({
-  imports: [UI_TABLE],
+  imports: [UI_TABLE, Paginator],
   template: `
     <ui-table
       #t="uiTable"
@@ -49,6 +49,14 @@ const USERS: User[] = Array.from({ length: 25 }, (_, i) => ({ id: i + 1, name: `
         <ng-template uiTableEmpty><span class="custom-empty">Nothing here</span></ng-template>
       }
     </ui-table>
+    <!-- The table no longer renders a paginator; consumers place their own next to it -->
+    <paginator
+      [length]="t.store.total()"
+      [pageIndex]="t.store.currentPage()"
+      [pageSize]="size()"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      (page)="onPage($event, t)"
+    />
   `,
 })
 class HostComponent {
@@ -61,6 +69,12 @@ class HostComponent {
   readonly size = signal(10);
   readonly events: UiTableQueryParams[] = [];
   readonly byId = (u: User) => u.id;
+
+  onPage(event: PageEvent, table: UiTable<User, number>): void {
+    const pageSize = Number(event.pageSize);
+    if (pageSize !== this.size()) table.store.setPageSize(pageSize);
+    else table.store.setPage(event.pageIndex);
+  }
 }
 
 async function settle(fixture: ComponentFixture<unknown>): Promise<void> {

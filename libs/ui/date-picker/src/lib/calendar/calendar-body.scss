@@ -117,10 +117,16 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
 
 // Hover / keyboard focus. The "active" cell only carries the roving tabindex, so it is highlighted
 // when it actually has keyboard focus, not just because it is the first / current day of the month.
-.calendar-body-cell:not(.calendar-body-disabled):hover
-  > .calendar-body-cell-content:not(.calendar-body-selected),
 .calendar-body-active:focus-visible > .calendar-body-cell-content:not(.calendar-body-selected) {
   background-color: var(--color-muted);
+}
+
+// Touch screens keep `:hover` on the last tapped element, which would leave a stale highlight
+@media (hover: hover) {
+  .calendar-body-cell:not(.calendar-body-disabled):hover
+    > .calendar-body-cell-content:not(.calendar-body-selected) {
+    background-color: var(--color-muted);
+  }
 }
 
 .calendar-body-selected {

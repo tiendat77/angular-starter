@@ -43,7 +43,7 @@ const EXIT_FALLBACK_MS = 400;
   imports: [CdkPortalOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'ui-bottom-sheet-overlay-pane',
+    class: 'bottom-sheet-overlay-pane',
   },
 })
 export class BottomSheetContainerComponent
@@ -121,6 +121,8 @@ export class BottomSheetContainerComponent
     velocityPxPerMs: number;
   } | null = null;
   private _activePointerId: number | null = null;
+  /** Detaches the window pointer listeners of an in-flight drag. */
+  private _removeDragListeners: (() => void) | null = null;
 
   constructor() {
     super();
@@ -135,6 +137,7 @@ export class BottomSheetContainerComponent
     this._destroyed = true;
     this._clearExitFallbackTimer();
     window.removeEventListener('resize', this._resizeListener);
+    this._removeDragListeners?.();
     this._focusTrap?.destroy();
     if (this.config.restoreFocus && this._previouslyFocusedElement) {
       this._previouslyFocusedElement.focus();
@@ -321,7 +324,11 @@ export class BottomSheetContainerComponent
         window.removeEventListener('pointermove', onMove);
         window.removeEventListener('pointerup', onUp);
         window.removeEventListener('pointercancel', onCancel);
+        this._removeDragListeners = null;
       };
+      // Starting a new gesture while one is still tracked must not stack listeners
+      this._removeDragListeners?.();
+      this._removeDragListeners = cleanup;
       const onMove = (moveEvent: PointerEvent) => {
         if (moveEvent.pointerId !== this._activePointerId) return;
         if (this._processDragMove(moveEvent.clientY, moveEvent.timeStamp)) {
@@ -357,7 +364,7 @@ export class BottomSheetContainerComponent
     };
     if (origin === 'handle') {
       this.dragging.set(true);
-      // See the I5 finding: `.ui-bottom-sheet-body` normally allows native vertical touch
+      // See the I5 finding: `.bottom-sheet-body` normally allows native vertical touch
       // panning (`touch-action: pan-y`) so content can scroll. Once a drag is actually moving
       // the sheet, switch it to `none` so a touch that started on the handle and crosses over
       // the body doesn't get intercepted by the browser's native pan; restored on release/cancel.
@@ -387,7 +394,7 @@ export class BottomSheetContainerComponent
       // This branch runs from inside the pointermove listener, which for real drags is
       // registered via ngZone.runOutsideAngular in _beginDrag. Force re-entry so the
       // `dragging` write triggers change detection (e.g. to apply the
-      // .ui-bottom-sheet-panel-dragging class) instead of silently waiting for the next
+      // .bottom-sheet-panel-dragging class) instead of silently waiting for the next
       // zone re-entry at drag-end. Safe to call when already in-zone (e.g. from tests
       // that call _processDragMove directly).
       this._ngZone.run(() => this.dragging.set(true));

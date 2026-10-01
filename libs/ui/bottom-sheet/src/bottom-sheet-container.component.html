@@ -1,12 +1,12 @@
 <div
   #panel
-  class="ui-bottom-sheet-panel"
+  class="bottom-sheet-panel"
   role="dialog"
   aria-modal="true"
   tabindex="-1"
   [attr.aria-label]="config.ariaLabel"
-  [class.ui-bottom-sheet-panel-visible]="visible()"
-  [class.ui-bottom-sheet-panel-dragging]="dragging()"
+  [class.bottom-sheet-panel-visible]="visible()"
+  [class.bottom-sheet-panel-dragging]="dragging()"
   [style.height.px]="panelHeightPx()"
   [style.transform]="panelTransform()"
   (transitionend)="onPanelTransitionEnd($event)"
@@ -24,7 +24,7 @@
   -->
   <div
     #body
-    class="ui-bottom-sheet-body"
+    class="bottom-sheet-body"
     (pointerdown)="onBodyPointerDown($event)"
   >
     <ng-template cdkPortalOutlet />
@@ -32,7 +32,7 @@
   @if (config.hasDragHandle) {
     <div
       #handle
-      class="ui-bottom-sheet-handle"
+      class="bottom-sheet-handle"
       [attr.role]="config.disableDrag ? null : 'slider'"
       [attr.aria-orientation]="config.disableDrag ? null : 'vertical'"
       [attr.aria-valuemin]="config.disableDrag ? null : 0"

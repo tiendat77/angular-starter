@@ -144,6 +144,13 @@ export class DatePickerDocComponent {
         'Same inputs as <date-picker> (showLunar, startView, touchUi, dayExtra template). Shows two months, selects start then end, and closes on the end date.',
     },
     {
+      name: '<date-picker> fullscreenBreakpoint',
+      type: 'string | false',
+      default: "'(max-width: 640px)'",
+      description:
+        'Media query below which the picker opens as a full-screen sheet with a scrolling list of months (also on <date-range-picker>). false disables it.',
+    },
+    {
       name: '<date-picker> touchUi',
       type: 'boolean',
       default: 'false',
