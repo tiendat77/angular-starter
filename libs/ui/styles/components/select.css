@@ -169,3 +169,35 @@
   color: var(--color-primary);
   background-color: transparent;
 }
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  Mobile bottom sheet (`ui-select-sheet`): title, scrolling option list, Cancel / Apply
+/* ----------------------------------------------------------------------------------------------------- */
+@utility select-sheet-title {
+  flex-shrink: 0;
+  padding: 0.25rem 1rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-foreground);
+}
+
+@utility select-sheet-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-height: 0;
+  padding: 0 0.75rem 0.5rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@utility select-sheet-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-background);
+}

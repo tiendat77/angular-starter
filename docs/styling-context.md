@@ -24,7 +24,7 @@
 
 Consequence: **a class from `apps/main` §4 (e.g. `text-hint`, `bg-card`, `text-heading-md`, `red-4`) does not exist in `apps/docs` or in `libs/ui`.** Library code may only rely on §2.
 
-Dark mode: `data-theme="dark" | "light"` on `<html>` (set by `ThemeService`, `apps/main/src/app/services/theme.service.ts`). The variant is `@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *))`, not the `.dark` class and not `prefers-color-scheme`.
+Dark mode: `data-theme="dark" | "light"` on `<html>` (set by `ThemeService`, `apps/main/src/shared/lib/theme/theme.service.ts`). The variant is `@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *))`, not the `.dark` class and not `prefers-color-scheme`.
 
 ## 2. Semantic tokens — the ONLY colors for `libs/ui` and docs (also valid in main)
 

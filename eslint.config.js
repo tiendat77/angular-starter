@@ -3,6 +3,19 @@ const eslint = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 const prettierRecommended = require('eslint-plugin-prettier/recommended');
+const boundaries = require('eslint-plugin-boundaries');
+
+// Feature-Sliced Design layers of apps/main (see docs/superpowers/specs/2026-10-01-fsd-main-app-design.md)
+const SRC = 'apps/main/src';
+const SLICED_LAYERS = ['pages', 'widgets', 'features', 'entities'];
+const ALL_LAYERS = ['app', 'pages', 'widgets', 'features', 'entities', 'shared'];
+const LAYERS_ABOVE = {
+  shared: ['app', 'pages', 'widgets', 'features', 'entities'],
+  entities: ['app', 'pages', 'widgets', 'features'],
+  features: ['app', 'pages', 'widgets'],
+  widgets: ['app', 'pages'],
+  pages: ['app'],
+};
 
 module.exports = tseslint.config(
   {
@@ -96,6 +109,60 @@ module.exports = tseslint.config(
       '@angular-eslint/template/conditional-complexity': ['warn', { maxComplexity: 3 }],
       '@angular-eslint/template/eqeqeq': ['warn', { allowNullOrUndefined: true }],
       '@angular-eslint/template/no-call-expression': 'off',
+    },
+  },
+  {
+    // FSD boundaries
+    files: [`${SRC}/{app,pages,widgets,features,entities,shared}/**/*.ts`],
+    plugins: { boundaries },
+    settings: {
+      'import/resolver': { typescript: { alwaysTryTypes: true } },
+      'boundaries/elements': [
+        ...SLICED_LAYERS.map((layer) => ({
+          type: layer,
+          pattern: `${SRC}/${layer}/*`,
+          capture: ['slice'],
+        })),
+        { type: 'app', pattern: `${SRC}/app` },
+        { type: 'shared', pattern: `${SRC}/shared` },
+      ],
+    },
+    rules: {
+      'boundaries/dependencies': [
+        'error',
+        {
+          default: 'allow',
+          policies: [
+            // A layer never imports a layer above it
+            ...Object.entries(LAYERS_ABOVE).map(([layer, above]) => ({
+              from: { element: { type: layer } },
+              disallow: { to: { element: { type: above } } },
+              message: `{{ from.element.types.[0] }} must not import from {{ to.element.types.[0] }} (layers only depend downward)`,
+            })),
+            // Slices of the same layer are independent of each other
+            ...SLICED_LAYERS.map((layer) => ({
+              from: { element: { type: layer } },
+              disallow: { to: { element: { type: layer } } },
+              message: `${layer} slices must not import each other ({{ from.element.captured.slice }} -> {{ to.element.captured.slice }})`,
+            })),
+            // Cross-slice imports go through the slice's public API (index.ts)
+            {
+              disallow: {
+                to: {
+                  element: {
+                    type: SLICED_LAYERS,
+                    fileInternalPath: '!index.ts',
+                  },
+                },
+              },
+              message:
+                'Import {{ to.element.captured.slice }} through its index.ts, not a deep path',
+            },
+            // A slice may import itself freely (overrides the rules above)
+            { allow: { dependency: { relationship: { to: 'internal' } } } },
+          ],
+        },
+      ],
     },
   },
   {

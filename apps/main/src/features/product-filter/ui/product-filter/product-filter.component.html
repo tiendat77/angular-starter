@@ -1,0 +1,62 @@
+<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+  <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+    <!-- Search Input -->
+    <div class="relative w-full sm:w-72">
+      <input
+        uiInput
+        type="text"
+        placeholder="Tìm kiếm sản phẩm..."
+        class="w-full pl-9"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchChange($event)"
+      />
+      <div class="text-base-content/50 pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <svg-icon
+          name="heroicons_outline:magnifying-glass"
+          class="size-4"
+        />
+      </div>
+    </div>
+
+    <!-- Category Filter Select -->
+    <div class="w-full sm:w-60">
+      <ui-select
+        placeholder="Tất cả danh mục"
+        [value]="category() || null"
+        (valueChange)="onCategoryChange($event)"
+      >
+        <ui-option
+          label="Tất cả danh mục"
+          [value]="null"
+        >
+          Tất cả danh mục
+        </ui-option>
+        @for (cat of categories(); track cat.slug) {
+          <ui-option
+            [label]="cat.name"
+            [value]="cat.slug"
+          >
+            {{ cat.name }}
+          </ui-option>
+        }
+      </ui-select>
+    </div>
+  </div>
+
+  <!-- Add Product Action -->
+  <div class="flex items-center">
+    <button
+      uiButton
+      type="button"
+      variant="primary"
+      class="w-full sm:w-auto"
+      (click)="onAdd()"
+    >
+      <svg-icon
+        name="heroicons_outline:plus"
+        class="size-4"
+      />
+      <span>Thêm sản phẩm</span>
+    </button>
+  </div>
+</div>

@@ -1,6 +1,82 @@
 # Angular Starter
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 22.
+
+## Project structure (Feature-Sliced Design)
+
+The workspace has three projects: `apps/main` (the application), `apps/docs` (component showcase) and `libs/*` (the `@libs/ui` kit and friends). `apps/main/src` follows [Feature-Sliced Design](https://feature-sliced.design/): code is split into **layers**, and a layer may only import from the layers **below** it.
+
+```
+apps/main/src/
+├── app/         bootstrap: app.config.ts, app.routes.ts, guards/, interceptors/
+├── pages/       one slice per route: sign-in, sign-up, products, not-found, ...
+├── widgets/     large composite blocks reused across pages: layouts
+├── features/    user actions with business value: auth, theme-toggle, product-filter, product-manage
+├── entities/    business data: session (tokens + current user), product (model, api, detail dialog)
+├── shared/      domain-free building blocks: api/, lib/, config/, ui/, directives/, pipes/
+├── environments/, styles/, main.ts, index.html   build entry and static files (not layers)
+```
+
+### Import rules
+
+| Layer      | May import                                 |
+| ---------- | ------------------------------------------ |
+| `app`      | pages, widgets, features, entities, shared |
+| `pages`    | widgets, features, entities, shared        |
+| `widgets`  | features, entities, shared                 |
+| `features` | entities, shared                           |
+| `entities` | shared                                     |
+| `shared`   | nothing from the app (`@libs/*` is fine)   |
+
+- **Slices on the same layer never import each other** (`entities/product` must not use `entities/session`). If two slices need the same thing, move it down a layer or compose them in a higher one.
+- **Import a slice through its `index.ts` only**: `import { SessionStore } from '@/entities/session'`, never `@/entities/session/model/session.store`.
+- Inside a slice, use relative imports. Across slices and layers, use the `@/` alias (it points to `apps/main/src/*`).
+- `shared` is split by segment and has no slice `index.ts`; import from the segment, e.g. `@/shared/lib/theme`, `@/shared/ui/logo`.
+
+### Anatomy of a slice
+
+Create a segment folder only when the slice has something to put in it:
+
+```
+entities/product/
+├── api/      HTTP calls (product-api.service.ts)
+├── model/    types, zod schemas, stores
+├── ui/       presentation components
+└── index.ts  the slice's public API
+```
+
+`pages/<name>/` additionally has a `routes.ts`, exposed as the default export of `index.ts` (`export { default } from './routes'`), and `app.routes.ts` lazy-loads it with `loadChildren: () => import('@/pages/<name>')`. Page-local state (for example the products list store) lives in the page's own `model/`.
+
+### Where does my code go?
+
+1. A route's screen? `pages/<route>`.
+2. A reusable user action (a form, a dialog that changes data, a toggle)? `features/<action>`.
+3. A business object and how it is fetched and shown (`product`, `session`)? `entities/<name>`.
+4. A shell shared by many pages (sidebar + header)? `widgets/<name>`.
+5. Knows nothing about this app's domain (HTTP base class, helpers, pipes, generic UI)? `shared/<segment>`.
+6. Wires the application together (providers, guards, interceptors, root routes)? `app/`.
+
+### Enforced by the linter
+
+The rules above are checked by `eslint-plugin-boundaries` (see `eslint.config.js`) and fail as errors:
+
+```bash
+npx eslint apps/main          # reports upward imports, cross-slice imports and deep imports
+```
+
+### Analyzing the bundle
+
+`yarn analyze` builds with `--stats-json`, writes an interactive treemap to `dist/main/stats.html` and prints what is in the initial bundle. `yarn analyze:report` reprints the report from the last build, and `yarn analyze:open` opens the treemap.
+
+## Libraries and Utilities
+
+When contributing to this project, please ensure you use the following installed libraries as per our standards:
+
+- **Date and Time**: Use `dayjs` instead of `moment` for all date-time calculations.
+- **Schema Validation**: Use `zod` for all schema validation needs.
+- **Utilities**: Use `es-toolkit` instead of `lodash` for general utility functions.
+- **Animations**: Use `@lottiefiles` for handling UI animations.
+- **Excel Manipulating**: Use `exceljs` for reading, writing, and manipulating Excel worksheets.
 
 ## Git Branch Naming Convention
 
@@ -78,16 +154,6 @@ If you are using `Visual Studio Code`, install these extensions:
 - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
 - [Angular Language Service](https://marketplace.visualstudio.com/items?itemName=Angular.ng-template)
-
-## Libraries and Utilities
-
-When contributing to this project, please ensure you use the following installed libraries as per our standards:
-
-- **Date and Time**: Use `dayjs` instead of `moment` for all date-time calculations.
-- **Schema Validation**: Use `zod` for all schema validation needs.
-- **Utilities**: Use `es-toolkit` instead of `lodash` for general utility functions.
-- **Animations**: Use `@lottiefiles` for handling UI animations.
-- **Excel Manipulating**: Use `exceljs` for reading, writing, and manipulating Excel worksheets.
 
 ## Development server
 

@@ -1,0 +1,47 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Animations
+/*
+/*  Only what the app uses (previously the whole animate.css file): `animate-head-shake` for error
+/*  alerts and `animate-splash-pulse` for the loading logo in index.html.
+/* ----------------------------------------------------------------------------------------------------- */
+@theme {
+  --animate-head-shake: head-shake 1s ease-in-out both;
+  --animate-splash-pulse: splash-pulse 3s ease-in-out infinite both;
+
+  @keyframes head-shake {
+    0% {
+      transform: translateX(0);
+    }
+
+    6.5% {
+      transform: translateX(-6px) rotateY(-9deg);
+    }
+
+    18.5% {
+      transform: translateX(5px) rotateY(7deg);
+    }
+
+    31.5% {
+      transform: translateX(-3px) rotateY(-5deg);
+    }
+
+    43.5% {
+      transform: translateX(2px) rotateY(3deg);
+    }
+
+    50% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes splash-pulse {
+    from,
+    to {
+      transform: scale3d(1, 1, 1);
+    }
+
+    50% {
+      transform: scale3d(1.05, 1.05, 1.05);
+    }
+  }
+}

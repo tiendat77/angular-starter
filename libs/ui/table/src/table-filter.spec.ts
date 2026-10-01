@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { UI_TABLE, UiTableFilterFn, UiTableQueryParams } from './public-api';
+import { UiTableFilterFn, UiTableModule, UiTableQueryParams } from './public-api';
 
 interface Member {
   id: number;
@@ -18,7 +18,7 @@ const MEMBERS: Member[] = [
 ];
 
 @Component({
-  imports: [UI_TABLE],
+  imports: [UiTableModule],
   template: `
     <ui-table
       #t="uiTable"

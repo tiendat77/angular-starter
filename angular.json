@@ -40,7 +40,8 @@
               }
             ],
             "styles": ["apps/main/src/styles/index.css"],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["exceljs"]
           },
           "configurations": {
             "production": {

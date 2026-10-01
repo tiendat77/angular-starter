@@ -1,11 +1,6 @@
-import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 
-import { AuthGuard, NoAuthGuard } from '@/core/guard';
-import { LayoutComponent, LayoutService } from '@/core/layouts';
-import { PERMISSION } from '@configs/permission.config';
-import { ngxPermissionsGuard } from 'ngx-permissions';
-import { UserService } from './services/user.service';
+import { AuthGuard, NoAuthGuard } from './guards';
 
 export const routes: Routes = [
   /**
@@ -32,19 +27,19 @@ export const routes: Routes = [
     children: [
       {
         path: 'sign-in',
-        loadChildren: () => import('@/features/auth/sign-in/routes'),
+        loadChildren: () => import('@/pages/sign-in'),
       },
       {
         path: 'sign-up',
-        loadChildren: () => import('@/features/auth/sign-up/routes'),
+        loadChildren: () => import('@/pages/sign-up'),
       },
       {
         path: 'forgot-password',
-        loadChildren: () => import('@/features/auth/forgot-password/routes'),
+        loadChildren: () => import('@/pages/forgot-password'),
       },
       {
         path: 'reset-password',
-        loadChildren: () => import('@/features/auth/reset-password/routes'),
+        loadChildren: () => import('@/pages/reset-password'),
       },
     ],
   },
@@ -56,37 +51,43 @@ export const routes: Routes = [
     path: 'app',
     // canActivate: [AuthGuard],
     // canActivateChild: [AuthGuard],
-    component: LayoutComponent,
+    loadComponent: () => import('@/widgets/layouts').then((m) => m.LayoutComponent),
     data: { layout: 'dense' },
-    resolve: {
-      initial: () => {
-        const _layoutService = inject(LayoutService);
-        const _userService = inject(UserService);
-
-        _layoutService.get(_userService.$user()?.permissions || []);
-      },
-    },
     children: [
       {
         path: 'example',
-        canActivate: [ngxPermissionsGuard],
-        data: {
-          permissions: {
-            only: [PERMISSION.OVERVIEW],
-            redirectTo: '/access-denied',
+        // canActivate: [ngxPermissionsGuard],
+        // data: {
+        //   permissions: {
+        //     only: [PERMISSION.OVERVIEW],
+        //     redirectTo: '/access-denied',
+        //   },
+        // },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'welcome',
           },
-        },
-        loadChildren: () => import('@/features/example/routes'),
+          {
+            path: 'welcome',
+            loadChildren: () => import('@/pages/welcome'),
+          },
+          {
+            path: 'products',
+            loadChildren: () => import('@/pages/products'),
+          },
+        ],
       },
     ],
   },
   {
     path: 'access-denied',
-    component: LayoutComponent,
+    loadComponent: () => import('@/widgets/layouts').then((m) => m.LayoutComponent),
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
     data: { layout: 'empty' },
-    loadChildren: () => import('@/features/auth/access-denied/routes'),
+    loadChildren: () => import('@/pages/access-denied'),
   },
 
   /**
@@ -94,6 +95,6 @@ export const routes: Routes = [
    */
   {
     path: '**',
-    loadChildren: () => import('@/features/not-found/routes'),
+    loadChildren: () => import('@/pages/not-found'),
   },
 ];

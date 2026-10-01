@@ -27,6 +27,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
+import { UiBottomSheet, UiBottomSheetRef } from '@libs/ui/bottom-sheet';
 import { cn, UI_CONFIG, UiFormFieldControl, UiSize } from '@libs/ui/core';
 import { inputVariants, UiFormFieldAppearance } from '@libs/ui/input';
 import { debounce, distinctUntilChanged, filter, skip, timer } from 'rxjs';
@@ -35,7 +36,8 @@ import { UiOptionComponent } from './option.component';
 import { UiSelectEmptyDirective } from './select-empty.directive';
 import { uiDefaultFilter, UiSelectFilterFn, UiSelectOptionRef } from './select-filter';
 import { SelectLabelCache } from './select-label-cache';
-import { UI_SELECT, UiSelectContext } from './select.tokens';
+import { UiSelectSheetComponent } from './select-sheet.component';
+import { UI_SELECT, UiSelectContext, UiSelectSheetData } from './select.tokens';
 
 let nextSelectId = 0;
 
@@ -87,6 +89,7 @@ export class UiSelectComponent<T = unknown>
   private readonly _injector = inject(Injector);
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly _bottomSheet = inject(UiBottomSheet);
 
   readonly id = `ui-select-${nextSelectId++}`;
 
@@ -111,6 +114,12 @@ export class UiSelectComponent<T = unknown>
   readonly compareWith = input<(a: T, b: T) => boolean>((a, b) => a === b);
   readonly maxTagCount = input<number | null>(null);
 
+  /**
+   * Media query below which the options open in a bottom sheet (with Cancel / Apply) instead of a
+   * popup. Set to `false` to always use the popup.
+   */
+  readonly mobileBreakpoint = input<string | false>('(max-width: 640px)');
+
   readonly allowClear = input(false, { transform: booleanAttribute });
   /** Accessible name when the select isn't labelled by a `ui-form-field` label. */
   readonly ariaLabel = input<string | null>(null);
@@ -134,6 +143,11 @@ export class UiSelectComponent<T = unknown>
   // -----------------------------------------------------------------------------------------------------
   protected readonly positions = PANEL_POSITIONS;
   protected readonly open = signal(false);
+  /** Whether the viewport currently matches `mobileBreakpoint`. */
+  protected readonly mobile = signal(false);
+  /** The input never takes typing when it's not searchable, or when search lives in the sheet. */
+  protected readonly readonlyInput = computed(() => !this.searchable() || this.mobile());
+  private _sheetRef: UiBottomSheetRef<UiSelectSheetComponent<T>, T[]> | null = null;
   readonly searchTerm = signal('');
   protected readonly valueId = `${this.id}-value`;
   private readonly _externalDescribedBy = signal<string[]>([]);
@@ -264,7 +278,36 @@ export class UiSelectComponent<T = unknown>
 
     // Disabling while open closes the panel
     effect(() => {
-      if (this.$disabled()) untracked(() => this.open.set(false));
+      if (this.$disabled()) {
+        untracked(() => {
+          this.open.set(false);
+          this._sheetRef?.dismiss();
+        });
+      }
+    });
+
+    // Track the mobile breakpoint
+    effect((onCleanup) => {
+      const query = this.mobileBreakpoint();
+      if (!query || typeof matchMedia !== 'function') {
+        this.mobile.set(false);
+        return;
+      }
+      const mql = matchMedia(query);
+      const update = () => this.mobile.set(mql.matches);
+      update();
+      mql.addEventListener('change', update);
+      onCleanup(() => mql.removeEventListener('change', update));
+    });
+
+    // The combobox can open itself (e.g. ArrowDown); on mobile that opens the sheet instead
+    effect(() => {
+      if (this.open() && this.mobile()) {
+        untracked(() => {
+          this.open.set(false);
+          this._openSheet();
+        });
+      }
     });
 
     // Labels of the current value, whenever a matching option is declared. After render, because
@@ -329,6 +372,10 @@ export class UiSelectComponent<T = unknown>
   // -----------------------------------------------------------------------------------------------------
   setOpen(open: boolean): void {
     if (open && this.$disabled()) return;
+    if (open && this.mobile()) {
+      this._openSheet();
+      return;
+    }
     this.open.set(open);
   }
 
@@ -362,6 +409,10 @@ export class UiSelectComponent<T = unknown>
 
   protected onTriggerClick(): void {
     if (this.$disabled()) return;
+    if (this.mobile()) {
+      this._openSheet();
+      return;
+    }
     this._input()?.nativeElement.focus();
     this.setOpen(this.searchable() ? true : !this.open());
   }
@@ -371,7 +422,7 @@ export class UiSelectComponent<T = unknown>
    * expression: Angular calls preventDefault() on any listener that returns `false`.)
    */
   protected onTriggerBeforeInput(event: Event): void {
-    if (!this.searchable()) event.preventDefault();
+    if (this.readonlyInput()) event.preventDefault();
   }
 
   protected onTriggerKeydown(event: KeyboardEvent): void {
@@ -426,6 +477,58 @@ export class UiSelectComponent<T = unknown>
   // -----------------------------------------------------------------------------------------------------
   // @ Private methods
   // -----------------------------------------------------------------------------------------------------
+  /** Opens the options in a bottom sheet; the selection is only committed when applied. */
+  private _openSheet(): void {
+    if (this._sheetRef || this.$disabled()) return;
+
+    const data: UiSelectSheetData<T> = {
+      title: this._sheetTitle(),
+      multiple: this.multiple(),
+      searchable: this.searchable(),
+      searchTerm: this.searchTerm,
+      options: this.visibleOptions,
+      loading: this.loading,
+      emptyText: this.emptyText,
+      emptyTemplate: this.emptyTemplate,
+      selected: [...this.selectedValues()],
+      compareWith: (a, b) => this._eq(a, b),
+    };
+    const ref = this._bottomSheet.open<UiSelectSheetComponent<T>, UiSelectSheetData<T>, T[]>(
+      UiSelectSheetComponent,
+      { data, snapPoints: [0.85], ariaLabel: data.title }
+    );
+    this._sheetRef = ref;
+    this.openedChange.emit(true);
+
+    ref.afterDismissed().subscribe((result) => {
+      this._sheetRef = null;
+      this._resetSearch();
+      this._onTouched();
+      this.openedChange.emit(false);
+      if (!result) return;
+
+      this._remember(result);
+      this._commit(this.multiple() ? result : (result[0] ?? null));
+    });
+  }
+
+  /** The surrounding form-field label, else the aria label, else the placeholder. */
+  private _sheetTitle(): string {
+    const doc = this._host.nativeElement.ownerDocument;
+    const fieldLabel = doc.querySelector(`label[for="${this.id}"]`)?.textContent?.trim();
+    if (fieldLabel) return fieldLabel;
+
+    const ariaLabel = this.ariaLabel()?.trim();
+    if (ariaLabel) return ariaLabel;
+
+    const labelledBy = this.ariaLabelledby()
+      ?.split(/\s+/)
+      .map((id) => doc.getElementById(id)?.textContent?.trim())
+      .filter(Boolean)
+      .join(' ');
+    return labelledBy || this.placeholder();
+  }
+
   private _remember(values: T[]): void {
     for (const value of values) {
       const option = this.options().find((o) => this._eq(o.value(), value));

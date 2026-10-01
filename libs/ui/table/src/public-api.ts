@@ -1,4 +1,3 @@
-export * from './table';
 export * from './table-cell.directive';
 export * from './table-element.directive';
 export * from './table-empty.directive';
@@ -11,6 +10,7 @@ export * from './table-sort.directive';
 export * from './table.comparator';
 export * from './table.component';
 export * from './table.i18n';
+export * from './table.module';
 export * from './table.store';
 export * from './table.types';
 export * from './table.variants';

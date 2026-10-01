@@ -2,7 +2,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { UI_TABLE, UiTableQueryParams, UiTableSortOrder } from './public-api';
+import { UiTableModule, UiTableQueryParams, UiTableSortOrder } from './public-api';
 
 interface Person {
   id: number;
@@ -18,7 +18,7 @@ const PEOPLE: Person[] = [
 ];
 
 @Component({
-  imports: [UI_TABLE],
+  imports: [UiTableModule],
   template: `
     <ui-table
       #t="uiTable"

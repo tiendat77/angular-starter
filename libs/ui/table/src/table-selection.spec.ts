@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { UI_TABLE, UiTableSelectionMode } from './public-api';
+import { UiTableModule, UiTableSelectionMode } from './public-api';
 
 interface User {
   id: number;
@@ -12,7 +12,7 @@ const makeUsers = () =>
   Array.from({ length: 25 }, (_, i) => ({ id: i + 1, name: `User ${i + 1}` }));
 
 @Component({
-  imports: [UI_TABLE],
+  imports: [UiTableModule],
   template: `
     <ui-table
       #t="uiTable"
@@ -141,7 +141,7 @@ describe('Table selection', () => {
 });
 
 @Component({
-  imports: [UI_TABLE],
+  imports: [UiTableModule],
   template: `
     <ui-table
       [data]="[]"

@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { UI_TABLE } from './public-api';
+import { UiTableModule } from './public-api';
 
 interface Item {
   id: number;
@@ -9,7 +9,7 @@ interface Item {
 }
 
 @Component({
-  imports: [UI_TABLE],
+  imports: [UiTableModule],
   template: `
     <ui-table
       #t="uiTable"
@@ -95,7 +95,7 @@ class HostComponent {
 }
 
 @Component({
-  imports: [UI_TABLE],
+  imports: [UiTableModule],
   template: `
     <ui-table [data]="[]">
       <table uiTableElement>
@@ -121,7 +121,7 @@ class HostComponent {
 class MissingWidthHostComponent {}
 
 @Component({
-  imports: [UI_TABLE],
+  imports: [UiTableModule],
   template: `
     <ui-table
       #t="uiTable"

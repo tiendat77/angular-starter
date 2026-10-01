@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { PageEvent, Paginator } from '@libs/ui/paginator';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { UI_TABLE, UiTable, UiTableQueryParams } from './public-api';
+import { UiTable, UiTableModule, UiTableQueryParams } from './public-api';
 
 interface User {
   id: number;
@@ -13,7 +13,7 @@ interface User {
 const USERS: User[] = Array.from({ length: 25 }, (_, i) => ({ id: i + 1, name: `User ${i + 1}` }));
 
 @Component({
-  imports: [UI_TABLE, Paginator],
+  imports: [UiTableModule, Paginator],
   template: `
     <ui-table
       #t="uiTable"
