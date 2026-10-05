@@ -24,6 +24,7 @@ export class DocsSidebarComponent {
       items: [
         { label: 'Button', path: '/button' },
         { label: 'Form Field & Input', path: '/input' },
+        { label: 'OTP Input', path: '/otp-input' },
         { label: 'Checkbox & Switch', path: '/checkbox' },
         { label: 'Radio Group', path: '/radio' },
         { label: 'Select', path: '/select' },

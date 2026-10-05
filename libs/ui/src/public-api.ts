@@ -11,6 +11,7 @@ export * from '@libs/ui/dialog';
 export * from '@libs/ui/input';
 export * from '@libs/ui/loader';
 export * from '@libs/ui/menu';
+export * from '@libs/ui/otp-input';
 export * from '@libs/ui/paginator';
 export * from '@libs/ui/progress';
 export * from '@libs/ui/radio';

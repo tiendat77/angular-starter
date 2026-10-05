@@ -1,0 +1,216 @@
+<doc-playground
+  title="OTP Input"
+  description="One-time-code input with single-character slots: typing, paste and SMS autofill, keyboard navigation, masking and Reactive Forms support. Works with or without ui-form-field."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="w-full max-w-sm p-4"
+  >
+    <ui-form-field>
+      <label
+        uiLabel
+        for="otp-playground"
+      >
+        Verification code
+      </label>
+      <ui-otp-input
+        inputId="otp-playground"
+        [formControl]="control"
+        [length]="length()"
+        [size]="size()"
+        [formatter]="formatter()"
+        [mask]="mask()"
+        [autoFocus]="autoFocus()"
+      />
+      <span uiHint>Enter the {{ length() }}-digit code we sent you.</span>
+      @if (control.invalid && control.touched) {
+        <span uiError>Enter all {{ length() }} characters.</span>
+      }
+    </ui-form-field>
+    <p class="text-muted-foreground mt-3 text-xs">
+      Value:
+      <code class="text-foreground font-mono">{{ control.value || '(empty)' }}</code>
+    </p>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="otp-length"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Length
+      </label>
+      <select
+        id="otp-length"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="length()"
+        (ngModelChange)="setLength(+$event)"
+      >
+        <option [ngValue]="4">4</option>
+        <option [ngValue]="6">6</option>
+        <option [ngValue]="8">8</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="otp-size"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Size
+      </label>
+      <select
+        id="otp-size"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="size()"
+        (ngModelChange)="size.set($event)"
+      >
+        <option value="sm">sm</option>
+        <option value="md">md</option>
+        <option value="lg">lg</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="otp-formatter"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Formatter
+      </label>
+      <select
+        id="otp-formatter"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="formatter()"
+        (ngModelChange)="formatter.set($event)"
+      >
+        <option value="numeric">numeric</option>
+        <option value="alphanumeric">alphanumeric</option>
+      </select>
+    </div>
+
+    <div class="border-border/50 space-y-2 border-t pt-2">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="mask()"
+          (ngModelChange)="mask.set($event)"
+        />
+        <span>Mask</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="autoFocus()"
+          (ngModelChange)="autoFocus.set($event)"
+        />
+        <span>Auto focus (on mount)</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="control.disabled"
+          (ngModelChange)="toggleDisabled($event)"
+        />
+        <span>Disabled</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="control.touched"
+          (ngModelChange)="toggleTouched($event)"
+        />
+        <span>Mark as Touched (Trigger Validation)</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Reactive Forms example -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Reactive Forms</h2>
+    <p class="text-muted-foreground text-sm">
+      The value is always a string, so Validators.required and Validators.minLength(length) work as usual. Try
+      submitting with a partial code.
+    </p>
+    <div class="border-border bg-background rounded-2xl border p-6">
+      <form
+        class="flex max-w-sm flex-col gap-4"
+        [formGroup]="verifyForm"
+        (ngSubmit)="submit()"
+      >
+        <ui-form-field>
+          <label
+            uiLabel
+            for="otp-verify"
+          >
+            Verification code
+          </label>
+          <ui-otp-input
+            inputId="otp-verify"
+            formControlName="code"
+            (completed)="submit()"
+          />
+          <span uiHint>Enter the 6-digit code we sent you.</span>
+          @if (verifyForm.controls.code.invalid && verifyForm.controls.code.touched) {
+            <span uiError>Enter all 6 digits.</span>
+          }
+        </ui-form-field>
+        <button
+          uiButton
+          type="submit"
+        >
+          Verify
+        </button>
+        @if (submittedCode(); as code) {
+          <p class="text-success text-sm">Submitted code: {{ code }}</p>
+        }
+      </form>
+    </div>
+    <pre
+      class="border-border bg-muted/30 text-foreground overflow-x-auto rounded-xl border p-4 text-xs"
+    ><code>{{ reactiveFormsCode }}</code></pre>
+  </section>
+
+  <!-- Standalone example -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Without ui-form-field</h2>
+    <p class="text-muted-foreground text-sm">
+      It needs no wrapper, no visible label and no forms directive. Use (completed) to read the code, and inputId or
+      ariaLabelledby to attach a label.
+    </p>
+    <div class="border-border bg-background flex flex-col gap-3 rounded-2xl border p-6">
+      <label
+        for="standalone-otp"
+        class="text-foreground text-sm font-medium"
+      >
+        Enter your PIN
+      </label>
+      <ui-otp-input
+        inputId="standalone-otp"
+        [length]="4"
+        [mask]="true"
+        (completed)="standaloneCode.set($event)"
+      />
+      <p class="text-muted-foreground text-xs">
+        completed:
+        <code class="text-foreground font-mono">{{ standaloneCode() || '(not yet)' }}</code>
+      </p>
+    </div>
+    <pre
+      class="border-border bg-muted/30 text-foreground overflow-x-auto rounded-xl border p-4 text-xs"
+    ><code>{{ standaloneUsageCode }}</code></pre>
+  </section>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

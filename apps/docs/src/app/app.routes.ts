@@ -17,6 +17,11 @@ export const routes: Routes = [
       import('./pages/input-doc/input-doc.component').then((m) => m.InputDocComponent),
   },
   {
+    path: 'otp-input',
+    loadComponent: () =>
+      import('./pages/otp-input-doc/otp-input-doc.component').then((m) => m.OtpInputDocComponent),
+  },
+  {
     path: 'checkbox',
     loadComponent: () =>
       import('./pages/checkbox-doc/checkbox-doc.component').then((m) => m.CheckboxDocComponent),
