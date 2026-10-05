@@ -14,6 +14,7 @@ export * from '@libs/ui/menu';
 export * from '@libs/ui/otp-input';
 export * from '@libs/ui/paginator';
 export * from '@libs/ui/progress';
+export * from '@libs/ui/qr-code';
 export * from '@libs/ui/radio';
 export * from '@libs/ui/select';
 export * from '@libs/ui/svg-icon';

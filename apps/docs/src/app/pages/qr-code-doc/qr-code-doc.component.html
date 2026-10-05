@@ -1,0 +1,235 @@
+<doc-playground
+  title="QR Code"
+  description="QR code drawn on a canvas or as an SVG, with an optional centred logo and a status overlay for loading, expired and scanned codes."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="flex w-full justify-center p-4"
+  >
+    <ui-qr-code
+      [value]="value()"
+      [size]="size()"
+      [color]="color()"
+      [bgColor]="bgColor()"
+      [level]="level()"
+      [type]="type()"
+      [icon]="withIcon() ? logo : undefined"
+      [iconSize]="iconSize()"
+      [status]="status()"
+      [bordered]="bordered()"
+      (refresh)="status.set('active')"
+    />
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="qr-value"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Value
+      </label>
+      <input
+        id="qr-value"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="value()"
+        (ngModelChange)="value.set($event)"
+      />
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label
+          for="qr-type"
+          class="text-muted-foreground mb-1 block font-medium"
+        >
+          Type
+        </label>
+        <select
+          id="qr-type"
+          class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+          [ngModel]="type()"
+          (ngModelChange)="type.set($event)"
+        >
+          <option value="canvas">canvas</option>
+          <option value="svg">svg</option>
+        </select>
+      </div>
+      <div>
+        <label
+          for="qr-level"
+          class="text-muted-foreground mb-1 block font-medium"
+        >
+          Level
+        </label>
+        <select
+          id="qr-level"
+          class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+          [ngModel]="level()"
+          (ngModelChange)="level.set($event)"
+        >
+          <option value="L">L</option>
+          <option value="M">M</option>
+          <option value="Q">Q</option>
+          <option value="H">H</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label
+        for="qr-status"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Status
+      </label>
+      <select
+        id="qr-status"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="status()"
+        (ngModelChange)="status.set($event)"
+      >
+        <option value="active">active</option>
+        <option value="loading">loading</option>
+        <option value="expired">expired</option>
+        <option value="scanned">scanned</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="qr-size"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Size: {{ size() }}px
+      </label>
+      <input
+        id="qr-size"
+        type="range"
+        min="96"
+        max="280"
+        step="8"
+        class="w-full"
+        [ngModel]="size()"
+        (ngModelChange)="size.set(+$event)"
+      />
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label
+          for="qr-color"
+          class="text-muted-foreground mb-1 block font-medium"
+        >
+          Color
+        </label>
+        <input
+          id="qr-color"
+          type="color"
+          class="border-border h-8 w-full rounded-lg border"
+          [ngModel]="color()"
+          (ngModelChange)="color.set($event)"
+        />
+      </div>
+      <div>
+        <label
+          for="qr-bg"
+          class="text-muted-foreground mb-1 block font-medium"
+        >
+          Background
+        </label>
+        <input
+          id="qr-bg"
+          type="color"
+          class="border-border h-8 w-full rounded-lg border"
+          [ngModel]="bgColor()"
+          (ngModelChange)="bgColor.set($event)"
+        />
+      </div>
+    </div>
+
+    <div class="border-border/50 space-y-2 border-t pt-2">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="withIcon()"
+          (ngModelChange)="withIcon.set($event)"
+        />
+        <span>Centre logo</span>
+      </label>
+      @if (withIcon()) {
+        <div>
+          <label
+            for="qr-icon-size"
+            class="text-muted-foreground mb-1 block font-medium"
+          >
+            Icon size: {{ iconSize() }}px
+          </label>
+          <input
+            id="qr-icon-size"
+            type="range"
+            min="16"
+            max="80"
+            step="4"
+            class="w-full"
+            [ngModel]="iconSize()"
+            (ngModelChange)="iconSize.set(+$event)"
+          />
+        </div>
+      }
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="bordered()"
+          (ngModelChange)="bordered.set($event)"
+        />
+        <span>Bordered</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Expiring code -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Expiring code</h2>
+    <p class="text-muted-foreground text-sm">
+      Dynamic value, status and the refresh event. This code is valid for 15 seconds; when it expires the overlay offers
+      a Refresh button, which loads a new code.
+    </p>
+    <div class="border-border bg-background flex flex-wrap items-center gap-6 rounded-2xl border p-6">
+      <ui-qr-code
+        type="svg"
+        [value]="expiringValue()"
+        [status]="expiringStatus()"
+        [icon]="logo"
+        (refresh)="onRefresh()"
+      />
+      <div class="text-muted-foreground space-y-1 text-xs">
+        <p>
+          Encoded:
+          <code class="text-foreground font-mono break-all">{{ expiringValue() }}</code>
+        </p>
+        <p>
+          Status:
+          <code class="text-foreground font-mono">{{ expiringStatus() }}</code>
+          @if (expiringStatus() === 'active') {
+            <span>(expires in {{ remaining() }}s)</span>
+          }
+        </p>
+      </div>
+    </div>
+    <pre
+      class="border-border bg-muted/30 text-foreground overflow-x-auto rounded-xl border p-4 text-xs"
+    ><code>{{ expiringCode }}</code></pre>
+  </section>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

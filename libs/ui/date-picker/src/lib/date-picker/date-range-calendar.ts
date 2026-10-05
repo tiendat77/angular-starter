@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -31,7 +30,7 @@ import { DatepickerIntl, formatMonthYear } from './datepicker-intl';
   host: { class: 'date-range-calendar' },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MonthView, NgTemplateOutlet],
+  imports: [MonthView],
 })
 export class DateRangeCalendar<D> implements OnInit {
   private _adapter = inject<DateAdapter<D>>(DateAdapter);

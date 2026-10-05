@@ -5,6 +5,10 @@ const rootConfig = require('../../eslint.config.js');
 module.exports = tseslint.config(
   ...rootConfig,
   {
+    // Vendored third-party generator, kept as published
+    ignores: ['qr-code/src/lib/qrcodegen.ts'],
+  },
+  {
     files: ['**/*.ts'],
     rules: {
       '@angular-eslint/directive-selector': [
