@@ -50,11 +50,10 @@
   border-color: var(--input-border, var(--input-color, var(--color-border)));
   border-radius: var(--input-radius, 0.5rem);
   appearance: none;
-  outline-offset: 2px;
   transition:
     border-color 150ms ease,
     background-color 150ms ease,
-    outline-color 150ms ease;
+    box-shadow 150ms ease;
 
   &::placeholder,
   & input::placeholder {
@@ -75,13 +74,13 @@
     appearance: none;
   }
 
+  /* Soft halo instead of an outline; the transparent outline stays visible in forced-colors mode */
   &:focus,
   &:focus-within {
-    outline-width: 2px;
-    outline-style: solid;
-    outline-color: var(--_color);
+    outline: 2px solid transparent;
     border-color: var(--_color);
     background-color: var(--input-focus-bg, var(--input-bg, var(--color-background)));
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--_color) 15%, transparent);
   }
 
   &[aria-invalid='true'],
@@ -201,21 +200,20 @@
   border-style: solid;
   border-color: var(--textarea-border, var(--textarea-color, var(--color-border)));
   border-radius: var(--textarea-radius, 0.5rem);
-  outline-offset: 2px;
   transition:
     border-color 150ms ease,
-    background-color 150ms ease;
+    background-color 150ms ease,
+    box-shadow 150ms ease;
 
   &::placeholder {
     color: color-mix(in oklab, var(--color-foreground) 50%, transparent);
   }
 
   &:focus {
-    outline-width: 2px;
-    outline-style: solid;
-    outline-color: var(--_color);
+    outline: 2px solid transparent;
     border-color: var(--_color);
     background-color: var(--textarea-focus-bg, var(--textarea-bg, var(--color-background)));
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--_color) 15%, transparent);
   }
 
   &[aria-invalid='true'] {
@@ -341,16 +339,15 @@
   cursor: pointer;
   user-select: none;
   appearance: none;
-  outline-offset: 2px;
   transition:
     border-color 150ms ease,
-    background-color 150ms ease;
+    background-color 150ms ease,
+    box-shadow 150ms ease;
 
   &:focus {
-    outline-width: 2px;
-    outline-style: solid;
-    outline-color: var(--_color);
+    outline: 2px solid transparent;
     border-color: var(--_color);
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--_color) 15%, transparent);
   }
 
   &[aria-invalid='true'] {
