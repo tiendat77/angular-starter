@@ -34,7 +34,7 @@ const ALL: User[] = [
       [loading]="loading()"
       [compareWith]="byId"
       [(value)]="value"
-      (search)="terms.push($event)"
+      (searchChange)="terms.push($event)"
     >
       @for (u of results(); track u.id) {
         <ui-option

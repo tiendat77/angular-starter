@@ -107,7 +107,7 @@ export class UiSelectComponent<T = unknown>
   readonly filterFn = input<UiSelectFilterFn<T> | null | undefined>(uiDefaultFilter);
   readonly searchDebounce = input(300, { transform: numberAttribute });
 
-  /** The consumer filters (usually remotely, via `(search)`); the select renders options as given. */
+  /** The consumer filters (usually remotely, via `(searchChange)`); the select renders options as given. */
   readonly serverSearch = input(false, { transform: booleanAttribute });
   readonly loading = input(false, { transform: booleanAttribute });
   readonly multiple = input(false, { transform: booleanAttribute });
@@ -127,7 +127,7 @@ export class UiSelectComponent<T = unknown>
   readonly disabled = input(false, { transform: booleanAttribute });
 
   /** Debounced search term, emitted whenever `searchable` is on. */
-  readonly search = output<string>();
+  readonly searchChange = output<string>();
   readonly openedChange = output<boolean>();
 
   // -----------------------------------------------------------------------------------------------------
@@ -328,7 +328,7 @@ export class UiSelectComponent<T = unknown>
         distinctUntilChanged(),
         takeUntilDestroyed()
       )
-      .subscribe((term) => this.search.emit(term));
+      .subscribe((term) => this.searchChange.emit(term));
   }
 
   // -----------------------------------------------------------------------------------------------------

@@ -17,7 +17,7 @@ const statsPath = args.find((a) => !a.startsWith('--')) ?? 'dist/main/stats.json
 const top = Number(args.find((a) => a.startsWith('--top='))?.split('=')[1] ?? 15);
 
 if (!fs.existsSync(statsPath)) {
-  console.error(`Not found: ${statsPath}\nRun "yarn analyze" (it builds with --stats-json first).`);
+  console.error(`Not found: ${statsPath}\nRun "npm run analyze" (it builds with --stats-json first).`);
   process.exit(1);
 }
 
@@ -110,4 +110,4 @@ for (const f of lazyFiles.slice(0, 5)) {
   console.log(`${pad(f, 34)}${padl(fmt(outputs[f].bytes), 12)}  ${owners}`);
 }
 
-console.log('\nTip: "yarn analyze" also writes dist/main/stats.html, an interactive treemap of every chunk.\n');
+console.log('\nTip: "npm run analyze" also writes dist/main/stats.html, an interactive treemap of every chunk.\n');

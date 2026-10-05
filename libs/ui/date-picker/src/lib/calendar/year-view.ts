@@ -53,7 +53,7 @@ import {
  */
 @Component({
   selector: 'year-view',
-  templateUrl: 'year-view.html',
+  templateUrl: './year-view.html',
   exportAs: 'yearView',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,

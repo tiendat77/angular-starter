@@ -13,7 +13,7 @@ import { SessionStore } from '@/entities/session';
 
 /** Config */
 import { NavigationItem } from '@libs/navigation';
-import { navigation } from './config/navigation.config';
+import { NAVIGATION } from './config/navigation.config';
 
 @Injectable({ providedIn: 'root' })
 export class LayoutService {
@@ -82,7 +82,7 @@ export class LayoutService {
   // -----------------------------------------------------------------------------------------------------
 
   get(permissions: string[] = []): void {
-    this.$navigation.set(this._filter(cloneDeep(navigation), permissions));
+    this.$navigation.set(this._filter(cloneDeep(NAVIGATION), permissions));
   }
 
   // -----------------------------------------------------------------------------------------------------

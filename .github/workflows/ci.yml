@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+# A newer push to the same ref makes the older run pointless
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node version comes from .nvmrc; the Dockerfile has its own ARG NODE_VERSION, keep them equal
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # Keep this list and its order in sync with .ci/verify.mjs (`npm run verify` runs it locally)
+      - name: Lint (includes the FSD boundary rules)
+        run: npm run lint:ci
+
+      - name: Test
+        run: npm run test:ci
+
+      - name: Build app (enforces the bundle budget)
+        run: npx ng build main
+
+      - name: Build docs
+        run: npx ng build docs
+
+      # Last: it writes packages/, which tsconfig paths resolve before the library sources
+      - name: Build libraries
+        run: npm run build:libs

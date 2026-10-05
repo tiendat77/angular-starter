@@ -27,6 +27,8 @@ function range<T>(length: number, valueFunction: (index: number) => T): T[] {
 }
 
 /** Adapts the native JS Date for use with cdk-based components that work with dates. */
+// Provided through `DateAdapter` (`provideNativeDateAdapter`, `NativeDateModule`), never in root.
+// eslint-disable-next-line @angular-eslint/use-injectable-provided-in
 @Injectable()
 export class NativeDateAdapter extends DateAdapter<Date> {
   /**
@@ -132,7 +134,7 @@ export class NativeDateAdapter extends DateAdapter<Date> {
     return new Date();
   }
 
-  parse(value: any, parseFormat?: any): Date | null {
+  parse(value: any, _parseFormat?: any): Date | null {
     // We have no way using the native JS Date to set the parse format or locale, so we ignore these
     // parameters.
     if (typeof value == 'number') {

@@ -22,5 +22,15 @@
 **/secrets.dev.yaml
 **/values.dev.yaml
 LICENSE
-README.md
 *.zip
+# Build output, caches and tooling that the image build does not need (anchored at the context root)
+dist
+.angular
+coverage
+.github
+.husky
+.idea
+.agents
+docs
+tools
+*.md

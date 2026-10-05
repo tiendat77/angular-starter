@@ -241,12 +241,6 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
     this._activeDate = this._dateAdapter.today();
   }
 
-  ngAfterContentInit() {
-    this._rerenderSubscription = this._dateAdapter.localeChanges
-      .pipe(startWith(null))
-      .subscribe(() => this._init());
-  }
-
   ngOnChanges(changes: SimpleChanges) {
     const comparisonChange = changes['comparisonStart'] || changes['comparisonEnd'];
 
@@ -266,6 +260,12 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
     if (changes['activeDrag'] && !this.activeDrag) {
       this._clearPreview();
     }
+  }
+
+  ngAfterContentInit() {
+    this._rerenderSubscription = this._dateAdapter.localeChanges
+      .pipe(startWith(null))
+      .subscribe(() => this._init());
   }
 
   ngOnDestroy() {

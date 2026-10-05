@@ -66,12 +66,12 @@ export class DatepickerToggle<D> implements AfterContentInit, OnChanges, OnDestr
     }
   }
 
-  ngOnDestroy() {
-    this._stateChanges.unsubscribe();
-  }
-
   ngAfterContentInit() {
     this._watchStateChanges();
+  }
+
+  ngOnDestroy() {
+    this._stateChanges.unsubscribe();
   }
 
   _open(event: Event): void {

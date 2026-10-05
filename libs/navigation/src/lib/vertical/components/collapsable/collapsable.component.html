@@ -55,8 +55,8 @@
 
 @if (!isCollapsed) {
   <div
-    class="vertical-navigation-item-children"
     @expandCollapse
+    class="vertical-navigation-item-children"
   >
     @for (item of item.children; track item.id) {
       <!-- Skip the hidden items -->

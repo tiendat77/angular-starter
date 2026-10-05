@@ -51,8 +51,8 @@ export type CalendarView = 'month' | 'year' | 'multi-year';
 /** A calendar that is used as part of the datepicker. */
 @Component({
   selector: 'calendar',
-  templateUrl: 'calendar.html',
-  styleUrl: 'calendar.scss',
+  templateUrl: './calendar.html',
+  styleUrl: './calendar.scss',
   host: {
     class: 'calendar',
   },
@@ -235,25 +235,6 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
     }
   }
 
-  ngAfterContentInit() {
-    this._calendarHeaderPortal = new ComponentPortal(this.headerComponent || CalendarHeader);
-    this.activeDate = this.startAt || this._dateAdapter.today();
-
-    // Assign to the private property since we don't want to move focus on init.
-    this._currentView = this.startView;
-  }
-
-  ngAfterViewChecked() {
-    if (this._moveFocusOnNextTick) {
-      this._moveFocusOnNextTick = false;
-      this.focusActiveCell();
-    }
-  }
-
-  ngOnDestroy() {
-    this.stateChanges.complete();
-  }
-
   ngOnChanges(changes: SimpleChanges) {
     // Ignore date changes that are at a different time on the same day. This fixes issues where
     // the calendar re-renders when there is no meaningful change to [minDate] or [maxDate]
@@ -283,6 +264,25 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
     }
 
     this.stateChanges.next();
+  }
+
+  ngAfterContentInit() {
+    this._calendarHeaderPortal = new ComponentPortal(this.headerComponent || CalendarHeader);
+    this.activeDate = this.startAt || this._dateAdapter.today();
+
+    // Assign to the private property since we don't want to move focus on init.
+    this._currentView = this.startView;
+  }
+
+  ngAfterViewChecked() {
+    if (this._moveFocusOnNextTick) {
+      this._moveFocusOnNextTick = false;
+      this.focusActiveCell();
+    }
+  }
+
+  ngOnDestroy() {
+    this.stateChanges.complete();
   }
 
   /** Focuses the active date. */

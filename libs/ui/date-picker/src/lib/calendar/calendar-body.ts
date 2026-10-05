@@ -136,6 +136,23 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
   /** The cell number of the active cell in the table. */
   @Input() activeCell = 0;
 
+  ngOnChanges(changes: SimpleChanges) {
+    const columnChanges = changes['numCols'];
+    const { rows, numCols } = this;
+
+    if (changes['rows'] || columnChanges) {
+      this._firstRowOffset = rows && rows.length && rows[0].length ? numCols - rows[0].length : 0;
+    }
+
+    if (changes['cellAspectRatio'] || columnChanges || !this._cellPadding) {
+      this._cellPadding = `${(50 * this.cellAspectRatio) / numCols}%`;
+    }
+
+    if (columnChanges || !this._cellWidth) {
+      this._cellWidth = `${100 / numCols}%`;
+    }
+  }
+
   ngAfterViewChecked() {
     if (this._focusActiveCellAfterViewChecked) {
       this._focusActiveCell();
@@ -242,23 +259,6 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
   /** Returns whether a cell should be marked as selected. */
   _isSelected(value: number) {
     return this.startValue === value || this.endValue === value;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    const columnChanges = changes['numCols'];
-    const { rows, numCols } = this;
-
-    if (changes['rows'] || columnChanges) {
-      this._firstRowOffset = rows && rows.length && rows[0].length ? numCols - rows[0].length : 0;
-    }
-
-    if (changes['cellAspectRatio'] || columnChanges || !this._cellPadding) {
-      this._cellPadding = `${(50 * this.cellAspectRatio) / numCols}%`;
-    }
-
-    if (columnChanges || !this._cellWidth) {
-      this._cellWidth = `${100 / numCols}%`;
-    }
   }
 
   ngOnDestroy() {

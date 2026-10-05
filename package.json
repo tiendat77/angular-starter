@@ -15,11 +15,20 @@
     "docs:dev": "ng serve docs",
     "docs:build": "ng build docs",
     "lint": "npx eslint . --fix",
+    "lint:ci": "eslint apps libs/ui --max-warnings 0",
+    "test:ci": "ng test main --watch=false && ng test ui --watch=false && node --test \"tools/**/*.test.mjs\"",
+    "new:page": "node tools/new-slice.mjs page",
+    "new:feature": "node tools/new-slice.mjs feature",
+    "new:entity": "node tools/new-slice.mjs entity",
+    "verify": "node .ci/verify.mjs",
     "prepare": "husky",
     "lint-staged": "lint-staged",
     "test": "ng test main"
   },
   "private": true,
+  "engines": {
+    "node": "^24.15.0 || >=26.0.0"
+  },
   "dependencies": {
     "@angular/animations": "^22.0.5",
     "@angular/aria": "^22.0.3",

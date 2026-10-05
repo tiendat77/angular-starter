@@ -40,7 +40,7 @@ const FRUITS: Fruit[] = [
       searchable
       [filterFn]="filterFn()"
       [(value)]="value"
-      (search)="searches.push($event)"
+      (searchChange)="searches.push($event)"
     >
       @for (f of fruits; track f.id) {
         <ui-option
@@ -71,7 +71,7 @@ class SearchHostComponent {
   readonly searches: string[] = [];
 }
 
-describe('UiSelectComponent (search)', () => {
+describe('UiSelectComponent (searchChange)', () => {
   let fixture: ComponentFixture<SearchHostComponent>;
 
   beforeEach(async () => {
@@ -179,7 +179,7 @@ describe('UiSelectComponent (search)', () => {
     expect(listbox()).toBeNull();
   });
 
-  it('emits (search) debounced by 300ms', async () => {
+  it('emits (searchChange) debounced by 300ms', async () => {
     vi.useFakeTimers();
     type(trigger(), 'b');
     await settle(fixture);

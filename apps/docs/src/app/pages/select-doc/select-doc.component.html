@@ -22,7 +22,7 @@
       [compareWith]="byId"
       [value]="value()"
       (valueChange)="onPlaygroundValue($event)"
-      (search)="serverSearch() && query($event)"
+      (searchChange)="serverSearch() && query($event)"
     >
       @for (p of serverSearch() ? results() : people; track p.id) {
         <ui-option

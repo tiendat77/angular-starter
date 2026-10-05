@@ -14,7 +14,7 @@ export interface UiSelectSheetData<T> {
   title: string;
   multiple: boolean;
   searchable: boolean;
-  /** Shared with the select, so debounced `(search)` events and server search keep working. */
+  /** Shared with the select, so debounced `(searchChange)` events and server search keep working. */
   searchTerm: WritableSignal<string>;
   /** The options to render (already filtered by the search term). */
   options: Signal<readonly UiOptionComponent<T>[]>;

@@ -64,9 +64,26 @@ The rules above are checked by `eslint-plugin-boundaries` (see `eslint.config.js
 npx eslint apps/main          # reports upward imports, cross-slice imports and deep imports
 ```
 
+### Adding a page, feature or entity
+
+Use the generator instead of copying a neighbour: it creates the slice with the right structure, naming and a passing test.
+
+```bash
+npm run new:page -- invoice-list            # pages/invoice-list: routes, component, spec
+npm run new:feature -- invoice-filter       # presentational component
+npm run new:entity -- invoice               # zod model + API service
+npm run new:page -- invoice-list --dry-run  # show what would be written (keep the `--`)
+```
+
+Routes and the sidebar stay hand-written, in one place each: add the page's route to `app/app.routes.ts` and, if it belongs in the menu, an item to `widgets/layouts/config/navigation.config.ts`. For a page the generator prints the route snippet to paste.
+
+### Checks (CI)
+
+`npm run verify` runs exactly what CI runs on every pull request: lint (with the boundary rules above), the unit tests, the production builds of the app, the docs and the libraries. It is the one command to run before pushing. The lint warning count is capped (`lint:ci` in `package.json`): fix warnings you touch and lower the cap.
+
 ### Analyzing the bundle
 
-`yarn analyze` builds with `--stats-json`, writes an interactive treemap to `dist/main/stats.html` and prints what is in the initial bundle. `yarn analyze:report` reprints the report from the last build, and `yarn analyze:open` opens the treemap.
+`npm run analyze` builds with `--stats-json`, writes an interactive treemap to `dist/main/stats.html` and prints what is in the initial bundle. `npm run analyze:report` reprints the report from the last build, and `npm run analyze:open` opens the treemap.
 
 ## Libraries and Utilities
 

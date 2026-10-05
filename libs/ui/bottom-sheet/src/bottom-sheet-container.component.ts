@@ -201,9 +201,7 @@ export class BottomSheetContainerComponent
     ) {
       return root;
     }
-    const children = root.children;
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i];
+    for (const child of Array.from(root.children)) {
       if (child.nodeType === Node.ELEMENT_NODE) {
         const tabbable = this._firstTabbableElement(child as HTMLElement);
         if (tabbable) return tabbable;

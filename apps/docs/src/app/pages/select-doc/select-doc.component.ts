@@ -95,7 +95,7 @@ export class SelectDocComponent {
     if (this.multiple()) attrs.push('multiple');
     if (this.searchable()) attrs.push('searchable');
     if (this.serverSearch())
-      attrs.push('serverSearch', '[loading]="loading()"', '(search)="query($event)"');
+      attrs.push('serverSearch', '[loading]="loading()"', '(searchChange)="query($event)"');
     if (this.allowClear()) attrs.push('allowClear');
     if (this.disabled()) attrs.push('disabled');
     if (this.maxTagCount() != null) attrs.push(`[maxTagCount]="${this.maxTagCount()}"`);
@@ -167,13 +167,13 @@ export class SelectDocComponent {
       name: 'serverSearch',
       type: 'boolean',
       default: 'false',
-      description: 'No client filtering; update the options from (search).',
+      description: 'No client filtering; update the options from (searchChange).',
     },
     {
       name: 'searchDebounce',
       type: 'number',
       default: '300',
-      description: 'Debounce (ms) for (search).',
+      description: 'Debounce (ms) for (searchChange).',
     },
     {
       name: 'loading',
@@ -218,7 +218,7 @@ export class SelectDocComponent {
       description: 'Same scale and look as uiInput.',
     },
     {
-      name: '(search)',
+      name: '(searchChange)',
       type: 'string',
       description: 'Debounced search term (whenever searchable).',
     },
