@@ -11,3 +11,4 @@ export * from './lib/toast.module';
 export * from './lib/toast.provider';
 export * from './lib/toast.ref';
 export * from './lib/toast.service';
+export * from './lib/toast.variants';

@@ -1,12 +1,6 @@
 <div
   role="alert"
-  class="alert bg-muted relative min-w-60 border-0 border-l-4 px-4 py-3 shadow-lg"
-  [ngClass]="{
-    'border-info': data.type === 'info',
-    'border-success': data.type === 'success',
-    'border-warning': data.type === 'warning',
-    'border-error': data.type === 'error',
-  }"
+  [class]="panelClass"
 >
   <div class="mr-6 flex items-start gap-4">
     <!-- Icon -->
@@ -104,7 +98,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        class="text-hint h-5 w-5"
+        class="text-muted-foreground h-5 w-5"
       >
         <path
           stroke-linecap="round"
