@@ -20,6 +20,10 @@ interface NavGroup {
 export class DocsSidebarComponent {
   readonly navGroups: NavGroup[] = [
     {
+      title: 'Foundations',
+      items: [{ label: 'Theme', path: '/theme' }],
+    },
+    {
       title: 'Forms',
       items: [
         { label: 'Button', path: '/button' },

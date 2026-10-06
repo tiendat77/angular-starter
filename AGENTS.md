@@ -6,7 +6,7 @@ Before writing or editing any Tailwind class, `cva()` variant or CSS in `apps/ma
 
 Key rules:
 - Colors come from the semantic tokens (`bg-background`, `bg-muted`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-primary text-primary-content`, …).
-- `libs/ui` and `apps/docs` must not use raw palette colors or `apps/main`-only classes (`text-hint`, `bg-card`, `text-heading-*`).
+- `libs/ui` must not use raw palette colors or `@libs/theme` / `apps/main` classes (`text-heading-*`, the `red-1` palette, `shadow-medium`, `text-hint`, `bg-card`). `apps/docs` may use `@libs/theme` classes but not `apps/main`-only ones (`text-hint`, `bg-card`, safe-area).
 - Dark mode is driven by `data-theme` tokens; don't add `dark:` where a token already handles it.
 
 ## Component library

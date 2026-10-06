@@ -19,10 +19,11 @@
 | Project | Entry | What it adds |
 |---|---|---|
 | `libs/ui` | `libs/ui/styles/index.css` → `tokens.css` + `components/*.css` | Semantic color tokens, icon sizes, `dark` variant, component `@utility` classes. Neutral zinc defaults so the lib renders standalone. |
-| `apps/main` | `apps/main/src/styles/index.css` (imports Tailwind, then `_colors`, `_branding`, `_themes`, lib styles, `_vendors`) | Brand overrides (primary/secondary scales), legacy RGB tokens + utilities (`bg-card`, `text-hint`…), style-guide palette, typography scale, shadows, spacing, safe-area. |
-| `apps/docs` | `apps/docs/src/styles.css` | Imports Tailwind + `libs/ui` styles **only** (no main-app branding). Adds highlight.js token colors. Uses default Tailwind sizing/typography (`text-sm`, `text-xl`…). |
+| `libs/theme` | `libs/theme/styles/tokens.css` (+ `brand.css`) | Styles-only package shared by the apps. `tokens.css`: brand primary/secondary scales, style-guide palette, shadows, fonts, type scale (definitions only, no side effects). `brand.css`: re-brands `@libs/ui` (`--color-primary` → scale 500), imported only by the app that carries the brand. |
+| `apps/main` | `apps/main/src/styles/index.css` (imports Tailwind, `@libs/theme` tokens + brand, `_colors`, `_themes`, lib styles, `_vendors`) | Everything from `@libs/theme`, plus legacy RGB tokens + utilities (`bg-card`, `text-hint`…), extra spacing keys, safe-area. |
+| `apps/docs` | `apps/docs/src/styles.css` | Imports Tailwind + `libs/ui` styles + `@libs/theme` **tokens only** (not `brand.css`, so the docs keep the neutral look). Adds highlight.js token colors. The Theme page documents the tokens. |
 
-Consequence: **a class from `apps/main` §4 (e.g. `text-hint`, `bg-card`, `text-heading-md`, `red-4`) does not exist in `apps/docs` or in `libs/ui`.** Library code may only rely on §2.
+Consequence: **a class that only `apps/main` defines (`text-hint`, `bg-card`, safe-area, the extra spacing keys) does not exist in `apps/docs` or in `libs/ui`.** The `@libs/theme` classes (`text-heading-md`, `red-4`, `shadow-medium`, `bg-primary-50`…) exist in `apps/main` and `apps/docs`, **never** in `libs/ui`: library code may only rely on §2.
 
 Dark mode: `data-theme="dark" | "light"` on `<html>` (set by `ThemeService`, `apps/main/src/shared/lib/theme/theme.service.ts`). The variant is `@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *))`, not the `.dark` class and not `prefers-color-scheme`.
 
@@ -79,9 +80,11 @@ panel: 'p-4 border-t border-border bg-muted/30',
 - **Shadows (main only)**: `shadow-small`, `shadow-medium`, `shadow-large`, `shadow-notification`. In lib/docs use Tailwind `shadow-sm|md|lg` or the card utilities (`card-elevated`).
 - **Misc utility**: `scrollbar-none` (main).
 
-## 4. `apps/main`-only tokens (do NOT use in `libs/ui` or `apps/docs`)
+## 4. `@libs/theme` and `apps/main` tokens (do NOT use in `libs/ui`; `apps/docs` may use the `@libs/theme` ones)
 
-### Brand scales (`_colors.css` → `_themes.css` `@theme`)
+> What is shared lives in `libs/theme/styles/tokens.css` (brand scales, style-guide palette, shadows, typography). Only the legacy RGB surfaces, safe-area utilities and extra spacing keys are `apps/main`-only. The docs Theme page (`/theme`) shows every shared token live.
+
+### Brand scales (`libs/theme/styles/tokens.css`)
 - `primary-{50,100,…,900,950}` red, `500` = brand (#ff2d3e); `secondary-{50…950}` orange, `500` = #ff840a. `on-primary`, `on-secondary` = white.
 - Usage in main: `text-primary-500`, `bg-primary-50`, `border-primary-200`. For the plain brand color prefer `bg-primary` / `text-primary` (§2).
 

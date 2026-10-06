@@ -7,6 +7,11 @@ export const routes: Routes = [
     redirectTo: 'button',
   },
   {
+    path: 'theme',
+    loadComponent: () =>
+      import('./pages/theme-doc/theme-doc.component').then((m) => m.ThemeDocComponent),
+  },
+  {
     path: 'button',
     loadComponent: () =>
       import('./pages/button-doc/button-doc.component').then((m) => m.ButtonDocComponent),

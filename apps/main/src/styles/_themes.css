@@ -1,30 +1,4 @@
 @theme {
-  --color-on-primary: var(--on-primary);
-  --color-primary-50: var(--primary-50);
-  --color-primary-100: var(--primary-100);
-  --color-primary-200: var(--primary-200);
-  --color-primary-300: var(--primary-300);
-  --color-primary-400: var(--primary-400);
-  --color-primary-500: var(--primary-500);
-  --color-primary-600: var(--primary-600);
-  --color-primary-700: var(--primary-700);
-  --color-primary-800: var(--primary-800);
-  --color-primary-900: var(--primary-900);
-  --color-primary-950: var(--primary-950);
-
-  --color-on-secondary: var(--on-secondary);
-  --color-secondary-50: var(--secondary-50);
-  --color-secondary-100: var(--secondary-100);
-  --color-secondary-200: var(--secondary-200);
-  --color-secondary-300: var(--secondary-300);
-  --color-secondary-400: var(--secondary-400);
-  --color-secondary-500: var(--secondary-500);
-  --color-secondary-600: var(--secondary-600);
-  --color-secondary-700: var(--secondary-700);
-  --color-secondary-800: var(--secondary-800);
-  --color-secondary-900: var(--secondary-900);
-  --color-secondary-950: var(--secondary-950);
-
   --safe-area-top: env(safe-area-inset-top);
   --safe-area-right: env(safe-area-inset-right);
   --safe-area-bottom: env(safe-area-inset-bottom);
@@ -34,6 +8,16 @@
   --scale-97: 0.97;
   --scale-98: 0.98;
 
+  /*
+   * KNOWN HAZARD: while a bare-number `--opacity-<n>` exists, Tailwind compiles the matching colour
+   * modifier (`bg-error/10`, `text-foreground/60`, ...) to `color-mix(... var(--opacity-<n>), ...)`.
+   * A number is not a valid <percentage> there, so the declaration is invalid and the colour is
+   * transparent. These live here, not in @libs/theme, so the shared tokens never carry that risk.
+   */
+  --opacity-10: 0.1;
+  --opacity-30: 0.3;
+  --opacity-60: 0.6;
+  --opacity-80: 0.8;
   --opacity-12: 0.12;
   --opacity-38: 0.38;
   --opacity-87: 0.87;

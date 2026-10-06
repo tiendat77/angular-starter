@@ -1,0 +1,296 @@
+<div class="space-y-12">
+  <header>
+    <h1 class="text-foreground text-3xl font-bold tracking-tight">Theme</h1>
+    <p class="text-muted-foreground mt-2 max-w-3xl text-base">
+      The design tokens behind the UI: colors, typography, shadows and sizes. Every value on this page is read live from
+      the browser's computed style, so it always matches the CSS. Toggle the theme in the header to see the semantic
+      tokens flip.
+    </p>
+  </header>
+
+  <!-- Layers -->
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">How the config is layered</h2>
+    <div class="border-border overflow-x-auto rounded-xl border">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-muted/50 border-border text-muted-foreground border-b text-xs uppercase">
+          <tr>
+            <th class="px-4 py-3">Layer</th>
+            <th class="px-4 py-3">Source</th>
+            <th class="px-4 py-3">Provides</th>
+            <th class="px-4 py-3">Used by</th>
+          </tr>
+        </thead>
+        <tbody class="divide-border divide-y text-xs">
+          @for (layer of layers; track layer.name) {
+            <tr>
+              <td class="text-primary px-4 py-3 font-semibold whitespace-nowrap">
+                {{ layer.name }}
+              </td>
+              <td class="text-muted-foreground px-4 py-3 font-mono">{{ layer.source }}</td>
+              <td class="text-muted-foreground px-4 py-3">{{ layer.provides }}</td>
+              <td class="text-muted-foreground px-4 py-3">{{ layer.usedBy }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Semantic colors -->
+  <section class="space-y-4">
+    <div>
+      <h2 class="text-foreground text-xl font-bold tracking-tight">Semantic colors</h2>
+      <p class="text-muted-foreground mt-1 text-sm">
+        The only colors components may use. They carry the dark theme and any brand override. Pair every fill with its
+        <code class="font-mono">-content</code>
+        text token.
+      </p>
+    </div>
+    @for (group of semanticColors; track group.title) {
+      <div class="space-y-2">
+        <h3 class="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+          {{ group.title }}
+        </h3>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          @for (swatch of group.swatches; track swatch.token) {
+            <div class="border-border bg-background overflow-hidden rounded-xl border">
+              <div
+                #computed="docComputed"
+                docComputed="background-color"
+                [class]="'border-border h-16 border-b ' + swatch.cls"
+              ></div>
+              <div class="space-y-0.5 p-2 text-xs">
+                <p class="text-foreground font-mono font-medium">{{ swatch.cls }}</p>
+                <p class="text-muted-foreground font-mono">{{ computed.value() }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    <doc-code-block
+      language="html"
+      [code]="colorUsage"
+    />
+  </section>
+
+  <!-- Brand scales -->
+  <section class="space-y-4">
+    <div>
+      <h2 class="text-foreground text-xl font-bold tracking-tight">Brand scales</h2>
+      <p class="text-muted-foreground mt-1 text-sm">
+        Eleven steps (50 to 950) for the brand primary and secondary colors. In the main app
+        <code class="font-mono">--color-primary</code>
+        points at step 500; here the docs keep the neutral default.
+      </p>
+    </div>
+    @for (group of brandScales; track group.title) {
+      <div class="space-y-2">
+        <h3 class="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+          {{ group.title }}
+        </h3>
+        <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-11">
+          @for (swatch of group.swatches; track swatch.token) {
+            <div class="border-border bg-background overflow-hidden rounded-xl border">
+              <div
+                #computed="docComputed"
+                docComputed="background-color"
+                [class]="'h-12 ' + swatch.cls"
+              ></div>
+              <div class="space-y-0.5 p-2 text-[11px]">
+                <p class="text-foreground font-mono font-medium">{{ swatch.cls.slice(3) }}</p>
+                <p class="text-muted-foreground font-mono">{{ computed.value() }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </section>
+
+  <!-- Style-guide palette -->
+  <section class="space-y-4">
+    <div>
+      <h2 class="text-foreground text-xl font-bold tracking-tight">Style-guide palette</h2>
+      <p class="text-muted-foreground mt-1 text-sm">
+        The brand's hand-picked colors, numbered from 1 (lightest) upwards. Not the Tailwind 50 to 950 scale:
+        <code class="font-mono">gray-5</code>
+        is the brand's,
+        <code class="font-mono">gray-500</code>
+        is Tailwind's.
+      </p>
+    </div>
+    @for (group of styleGuideColors; track group.title) {
+      <div class="space-y-2">
+        <h3 class="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+          {{ group.title }}
+          @if (group.note) {
+            <span class="ml-2 font-normal tracking-normal normal-case">{{ group.note }}</span>
+          }
+        </h3>
+        <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
+          @for (swatch of group.swatches; track swatch.token) {
+            <div class="border-border bg-background overflow-hidden rounded-xl border">
+              <div
+                class="h-14"
+                [style.background-image]="
+                  group.checker
+                    ? 'repeating-conic-gradient(var(--color-muted) 0% 25%, var(--color-background) 0% 50%)'
+                    : null
+                "
+                [style.background-size]="group.checker ? '12px 12px' : null"
+              >
+                <div
+                  #computed="docComputed"
+                  docComputed="background-color"
+                  [class]="'h-full w-full ' + swatch.cls"
+                ></div>
+              </div>
+              <div class="space-y-0.5 p-2 text-[11px]">
+                <p class="text-foreground font-mono font-medium">{{ swatch.cls.slice(3) }}</p>
+                <p class="text-muted-foreground font-mono">{{ computed.value() }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </section>
+
+  <!-- Typography -->
+  <section class="space-y-4">
+    <div>
+      <h2 class="text-foreground text-xl font-bold tracking-tight">Typography</h2>
+      <p class="text-muted-foreground mt-1 text-sm">
+        Each
+        <code class="font-mono">text-*</code>
+        utility sets family, size, line-height and weight together, so don't add
+        <code class="font-mono">text-sm</code>
+        or
+        <code class="font-mono">font-medium</code>
+        on top. Sizes below are what the browser computed.
+      </p>
+    </div>
+
+    <div class="grid gap-3 sm:grid-cols-2">
+      @for (font of fontFamilies; track font.cls) {
+        <div class="border-border bg-background space-y-1 rounded-xl border p-4">
+          <p
+            #family="docComputed"
+            docComputed="font-family"
+            [class]="'text-foreground text-2xl ' + font.cls"
+          >
+            {{ family.value() }}
+          </p>
+          <p class="text-muted-foreground font-mono text-xs">{{ font.cls }}</p>
+          <p [class]="'text-foreground text-sm ' + font.cls">Aa Bb Cc 0123456789</p>
+        </div>
+      }
+    </div>
+
+    @for (group of typeScale; track group.title) {
+      <div class="space-y-2">
+        <h3 class="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+          {{ group.title }}
+          <span class="ml-2 font-normal tracking-normal normal-case">{{ group.note }}</span>
+        </h3>
+        <div class="border-border divide-border bg-background divide-y rounded-xl border">
+          @for (token of group.tokens; track token.cls) {
+            <div class="grid items-center gap-x-6 gap-y-1 px-4 py-3 md:grid-cols-[14rem_1fr_16rem]">
+              <p class="text-muted-foreground font-mono text-xs">{{ token.cls }}</p>
+              <p
+                #computed="docComputed"
+                docComputed="font-size,line-height,font-weight"
+                [class]="'text-foreground truncate ' + token.cls"
+              >
+                Quick brown fox
+              </p>
+              <p class="text-muted-foreground font-mono text-xs">{{ computed.value() }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    <doc-code-block
+      language="html"
+      [code]="typeUsage"
+    />
+  </section>
+
+  <!-- Shadows -->
+  <section class="space-y-4">
+    <div>
+      <h2 class="text-foreground text-xl font-bold tracking-tight">Shadows</h2>
+      <p class="text-muted-foreground mt-1 text-sm">
+        Soft elevation for cards and notifications. In the default Tailwind scale use
+        <code class="font-mono">shadow-sm|md|lg</code>
+        ; these are the brand's.
+      </p>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      @for (shadow of shadows; track shadow.cls) {
+        <div class="space-y-2">
+          <div
+            #computed="docComputed"
+            docComputed="box-shadow"
+            [class]="'bg-background flex h-24 items-center justify-center rounded-xl ' + shadow.cls"
+          >
+            <span class="text-muted-foreground font-mono text-xs">{{ shadow.cls }}</span>
+          </div>
+          <p class="text-muted-foreground font-mono text-[11px]">{{ computed.value() }}</p>
+        </div>
+      }
+    </div>
+    <doc-code-block
+      language="html"
+      [code]="shadowUsage"
+    />
+  </section>
+
+  <!-- Sizes -->
+  <section class="space-y-4">
+    <div>
+      <h2 class="text-foreground text-xl font-bold tracking-tight">Icon sizes</h2>
+      <p class="text-muted-foreground mt-1 text-sm">
+        <code class="font-mono">icon-size-&lt;n&gt;</code>
+        sizes an
+        <code class="font-mono">svg-icon</code>
+        (and a nested svg). The number is the Tailwind spacing step.
+      </p>
+    </div>
+    <div class="flex flex-wrap items-end gap-4">
+      @for (size of iconSizes; track size.cls) {
+        <div class="flex flex-col items-center gap-2">
+          <div
+            #computed="docComputed"
+            docComputed="width"
+            [class]="'bg-muted border-border rounded border ' + size.cls"
+          ></div>
+          <p class="text-muted-foreground font-mono text-[11px]">{{ size.cls.slice(5) }}</p>
+          <p class="text-muted-foreground font-mono text-[11px]">{{ computed.value() }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Dark mode -->
+  <section class="space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Dark mode</h2>
+    <p class="text-muted-foreground text-sm">
+      The theme is the
+      <code class="font-mono">data-theme</code>
+      attribute on
+      <code class="font-mono">&lt;html&gt;</code>
+      , set by the app's theme service (here, the toggle in the header). Semantic tokens change value under
+      <code class="font-mono">[data-theme='dark']</code>
+      , so components need no
+      <code class="font-mono">dark:</code>
+      classes.
+    </p>
+    <doc-code-block
+      language="html"
+      [code]="darkUsage"
+    />
+  </section>
+</div>

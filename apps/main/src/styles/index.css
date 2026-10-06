@@ -1,10 +1,17 @@
 @import 'tailwindcss';
 
+/*
+ * Tailwind scans every project file, apps/docs included. The docs Theme page spells out ~120
+ * utility class names so its swatches render; the main app must not ship CSS for them.
+ */
+@source not '../../../docs/src/app/pages/theme-doc';
+
+@import '../../../../libs/theme/styles/tokens.css';
+@import '../../../../libs/theme/styles/brand.css';
+@import '../../../../libs/ui/styles/index.css';
 @import './_colors.css';
-@import './_branding.css';
 @import './_themes.css';
 @import './_animations.css';
-@import '../../../../libs/ui/styles/index.css';
 @import './_vendors.css';
 
 @plugin '@tailwindcss/typography';
