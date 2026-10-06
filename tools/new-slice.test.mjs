@@ -86,7 +86,7 @@ describe('planFiles', () => {
       'ui/invoice-list/invoice-list.ts',
     ]);
     assert.match(out['ui/invoice-list/invoice-list.ts'], /export class InvoiceListComponent/);
-    assert.match(out['ui/invoice-list/invoice-list.ts'], /selector: 'app-invoice-list'/);
+    assert.match(out['ui/invoice-list/invoice-list.ts'], /selector: 'invoice-list'/);
     assert.match(out['routes.ts'], /from '\.\/ui\/invoice-list\/invoice-list'/);
     assert.match(out['ui/invoice-list/invoice-list.html'], /Invoice list/);
   });

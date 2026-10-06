@@ -107,7 +107,7 @@ function getLunarMonth11(year: number, timezone: number): number {
 function getLeapMonthOffset(a11: number, timezone: number): number {
   const k = INT((a11 - NEW_MOON_EPOCH) / SYNODIC_MONTH + 0.5);
   let i = 1;
-  let last = 0;
+  let last: number;
   let arc = getSunLongitude(getNewMoon(k + i, timezone), timezone);
 
   do {

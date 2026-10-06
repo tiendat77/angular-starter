@@ -8,12 +8,12 @@ ARG NODE_VERSION=24
 FROM node:${NODE_VERSION}-alpine AS build
 WORKDIR /workspace
 
-# Dependencies first: this layer is rebuilt only when package.json, package-lock.json or .npmrc change.
+# Dependencies first: this layer is rebuilt only when package.json or package-lock.json change.
 # - HUSKY=0: the `prepare` script installs git hooks, and there is no .git in the image.
 # - NODE_ENV is not "production" yet: `npm ci` would then skip devDependencies, and the Angular CLI
 #   and build tools are devDependencies.
 # - The cache mount keeps npm's download cache between builds (BuildKit).
-COPY package.json package-lock.json .npmrc ./
+COPY package.json package-lock.json ./
 RUN --mount=type=cache,id=npm,target=/root/.npm \
     HUSKY=0 npm ci --no-fund --no-audit
 
