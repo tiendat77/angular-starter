@@ -1,0 +1,247 @@
+<doc-playground
+  title="Editor"
+  description="Rich-text (WYSIWYG) editor built on Tiptap: toolbar, bubble menu over selected text, links, images (URL or upload), alignment and lists. A form control that works with or without ui-form-field."
+  [code]="generatedCode()"
+>
+  <!-- Live Preview -->
+  <div
+    preview
+    class="w-full p-4"
+  >
+    <ui-form-field>
+      <label
+        uiLabel
+        for="editor-playground"
+      >
+        Body
+      </label>
+      <ui-editor
+        inputId="editor-playground"
+        [formControl]="control"
+        [outputFormat]="format()"
+        [placeholder]="placeholder()"
+        [minHeight]="minHeight()"
+        [toolbar]="toolbar()"
+        [bubbleMenu]="bubbleMenu()"
+        [uploadImage]="withUpload() ? upload : undefined"
+        (imageRejected)="onImageRejected($event)"
+        (imageFailed)="onImageFailed($event)"
+      />
+      <span uiHint>Select text for the bubble menu. Images can be uploaded when a handler is set.</span>
+    </ui-form-field>
+    @if (lastImageProblem()) {
+      <p
+        class="text-error mt-2 text-xs"
+        role="status"
+      >
+        {{ lastImageProblem() }}
+      </p>
+    }
+    <p class="text-muted-foreground mt-3 text-xs">Value ({{ format() }}):</p>
+    <pre
+      class="border-border bg-muted text-foreground mt-1 max-h-48 overflow-auto rounded-lg border p-3 text-xs"
+    ><code>{{ valueText() }}</code></pre>
+  </div>
+
+  <!-- Controls -->
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="editor-format"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Output format
+      </label>
+      <select
+        id="editor-format"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="format()"
+        (ngModelChange)="setFormat($event)"
+      >
+        <option value="html">html</option>
+        <option value="json">json</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="editor-min-height"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Min height
+      </label>
+      <select
+        id="editor-min-height"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="minHeight()"
+        (ngModelChange)="minHeight.set($event)"
+      >
+        <option value="6rem">6rem</option>
+        <option value="10rem">10rem</option>
+        <option value="16rem">16rem</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="editor-toolbar"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Toolbar
+      </label>
+      <select
+        id="editor-toolbar"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="preset()"
+        (ngModelChange)="preset.set($event)"
+      >
+        <option value="full">full (default)</option>
+        <option value="compact">compact</option>
+        <option value="none">none</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="editor-placeholder"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Placeholder
+      </label>
+      <input
+        id="editor-placeholder"
+        type="text"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="placeholder()"
+        (ngModelChange)="placeholder.set($event)"
+      />
+    </div>
+
+    <label class="text-foreground flex items-center gap-2">
+      <input
+        type="checkbox"
+        [ngModel]="bubble()"
+        (ngModelChange)="bubble.set($event)"
+      />
+      Bubble menu
+    </label>
+
+    <label class="text-foreground flex items-center gap-2">
+      <input
+        type="checkbox"
+        [ngModel]="withUpload()"
+        (ngModelChange)="withUpload.set($event)"
+      />
+      Upload handler (reads the file locally)
+    </label>
+
+    <label class="text-foreground flex items-center gap-2">
+      <input
+        type="checkbox"
+        [checked]="control.disabled"
+        (change)="toggleDisabled($any($event.target).checked)"
+      />
+      Disabled
+    </label>
+
+    <label class="text-foreground flex items-center gap-2">
+      <input
+        type="checkbox"
+        [checked]="control.touched"
+        (change)="$any($event.target).checked ? control.markAsTouched() : control.markAsUntouched()"
+      />
+      Touched
+    </label>
+  </div>
+
+  <!-- Reactive Forms example -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Reactive Forms</h2>
+    <p class="text-muted-foreground text-sm">
+      An empty editor is an empty string, so Validators.required works as usual. The error shows once the control is
+      touched, which is when focus leaves the whole editor (toolbar included).
+    </p>
+    <div class="border-border bg-background rounded-2xl border p-6">
+      <form
+        class="flex flex-col gap-4"
+        [formGroup]="articleForm"
+        (ngSubmit)="publish()"
+      >
+        <ui-form-field>
+          <label
+            uiLabel
+            for="editor-article"
+          >
+            Article
+          </label>
+          <ui-editor
+            inputId="editor-article"
+            formControlName="body"
+            placeholder="Write the article…"
+          />
+          @if (articleForm.controls.body.invalid && articleForm.controls.body.touched) {
+            <span uiError>Write something first.</span>
+          }
+        </ui-form-field>
+        <button
+          uiButton
+          type="submit"
+        >
+          Publish
+        </button>
+        @if (published(); as html) {
+          <div class="border-border rounded-lg border p-4">
+            <p class="text-muted-foreground mb-2 text-xs">
+              Preview (rendered with [innerHTML], which Angular sanitises):
+            </p>
+            <div
+              class="editor-content"
+              [innerHTML]="html"
+            ></div>
+          </div>
+        }
+      </form>
+    </div>
+    <pre
+      class="border-border bg-muted text-foreground overflow-x-auto rounded-xl border p-4 text-xs"
+    ><code>{{ reactiveFormsCode }}</code></pre>
+  </section>
+
+  <!-- Toolbar config -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Choosing the tools</h2>
+    <p class="text-muted-foreground text-sm">
+      The toolbar and the bubble menu are lists of tool ids, so you can show fewer tools or reorder them. Try the
+      Toolbar control above.
+    </p>
+    <pre
+      class="border-border bg-muted text-foreground overflow-x-auto rounded-xl border p-4 text-xs"
+    ><code>{{ toolbarCode }}</code></pre>
+  </section>
+
+  <!-- Upload example -->
+  <section class="mt-8 space-y-4">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Image upload</h2>
+    <p class="text-muted-foreground text-sm">
+      The library knows no backend: pass a function that turns a File into a URL. Files are checked first (type and
+      size) and refused ones are reported through (imageRejected).
+    </p>
+    <pre
+      class="border-border bg-muted text-foreground overflow-x-auto rounded-xl border p-4 text-xs"
+    ><code>{{ uploadCode }}</code></pre>
+  </section>
+
+  <section class="mt-8 space-y-2">
+    <h2 class="text-foreground text-xl font-bold tracking-tight">Security</h2>
+    <p class="text-muted-foreground text-sm">
+      The value is HTML typed by users and is not sanitised. Treat it as untrusted wherever you render it: Angular's
+      [innerHTML] sanitises it, but a server that stores and re-serves it must do the same. Links accept only http,
+      https, mailto and tel.
+    </p>
+  </section>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>

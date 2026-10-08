@@ -6,8 +6,7 @@
  */
 @source not '../../../docs/src/app/pages/theme-doc';
 
-@import '../../../../libs/theme/styles/tokens.css';
-@import '../../../../libs/theme/styles/brand.css';
+@import '../../../../libs/theme/styles/index.css';
 @import '../../../../libs/ui/styles/index.css';
 @import './_colors.css';
 @import './_themes.css';

@@ -1,0 +1,116 @@
+<div
+  class="editor-toolbar"
+  role="toolbar"
+  aria-orientation="horizontal"
+  [attr.aria-label]="context.$labels().toolbar"
+  [attr.aria-busy]="uploading() ? 'true' : null"
+>
+  @for (item of items(); track $index) {
+    @if (item === 'separator') {
+      <span
+        class="editor-separator"
+        role="separator"
+        aria-orientation="vertical"
+      ></span>
+    } @else {
+      <ng-container [ngComponentOutlet]="tools[item]" />
+    }
+  }
+</div>
+
+@if (bar(); as mode) {
+  <form
+    class="editor-bar"
+    (submit)="$event.preventDefault(); applyBar()"
+    (keydown)="onBarKeydown($event)"
+  >
+    <input
+      #barInput
+      class="editor-bar-input"
+      type="text"
+      inputmode="url"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="https://"
+      [attr.aria-label]="mode === 'link' ? context.$labels().linkUrl : context.$labels().imageUrl"
+      [attr.aria-invalid]="barError() ? 'true' : null"
+      [attr.aria-describedby]="barError() ? barErrorId : null"
+      [value]="barValue()"
+      (input)="onBarInput($event)"
+    />
+    <button
+      type="submit"
+      class="editor-button editor-button-wide"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="m5 13 4 4L19 7" />
+      </svg>
+      <span>{{ context.$labels().apply }}</span>
+    </button>
+    @if (mode === 'link' && isLinkActive()) {
+      <button
+        type="button"
+        class="editor-button editor-button-wide"
+        (click)="removeLink()"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          <path d="M4 4l16 16" />
+        </svg>
+        <span>{{ context.$labels().remove }}</span>
+      </button>
+    }
+    <button
+      type="button"
+      class="editor-button editor-button-wide"
+      (click)="closeBar()"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M6 6l12 12" />
+        <path d="M18 6 6 18" />
+      </svg>
+      <span>{{ context.$labels().cancel }}</span>
+    </button>
+    @if (barError()) {
+      <p
+        class="editor-bar-error"
+        role="alert"
+        [id]="barErrorId"
+      >
+        {{ barError() }}
+      </p>
+    }
+  </form>
+}
+
+@if (uploading()) {
+  <p
+    class="sr-only"
+    role="status"
+  >
+    {{ context.$labels().uploading }}
+  </p>
+}
+
+<input
+  #fileInput
+  type="file"
+  hidden
+  tabindex="-1"
+  aria-hidden="true"
+  [accept]="allowedImageTypes().join(',')"
+  (change)="onFile($event)"
+/>

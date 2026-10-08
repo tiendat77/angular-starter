@@ -1,0 +1,5 @@
+@if (context.editor()) {
+  @for (id of tools(); track id) {
+    <ng-container [ngComponentOutlet]="registry[id]" />
+  }
+}

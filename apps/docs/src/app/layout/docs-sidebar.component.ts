@@ -29,6 +29,7 @@ export class DocsSidebarComponent {
         { label: 'Button', path: '/button' },
         { label: 'Form Field & Input', path: '/input' },
         { label: 'OTP Input', path: '/otp-input' },
+        { label: 'Editor', path: '/editor' },
         { label: 'Checkbox & Switch', path: '/checkbox' },
         { label: 'Radio Group', path: '/radio' },
         { label: 'Select', path: '/select' },

@@ -1,0 +1,16 @@
+<div
+  [class]="$frameClass()"
+  [style.--editor-min-height]="minHeight()"
+>
+  @if (editor() && toolbar().length > 0) {
+    <ui-editor-toolbar
+      [items]="toolbar()"
+      [allowedImageTypes]="allowedImageTypes()"
+      [maxImageSize]="maxImageSize()"
+      (imageRejected)="imageRejected.emit($event)"
+      (imageFailed)="imageFailed.emit($event)"
+    />
+  }
+  <div #content></div>
+  <ui-editor-bubble-menu [tools]="bubbleMenu()" />
+</div>

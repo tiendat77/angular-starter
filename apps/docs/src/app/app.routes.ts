@@ -27,6 +27,11 @@ export const routes: Routes = [
       import('./pages/otp-input-doc/otp-input-doc.component').then((m) => m.OtpInputDocComponent),
   },
   {
+    path: 'editor',
+    loadComponent: () =>
+      import('./pages/editor-doc/editor-doc.component').then((m) => m.EditorDocComponent),
+  },
+  {
     path: 'qr-code',
     loadComponent: () =>
       import('./pages/qr-code-doc/qr-code-doc.component').then((m) => m.QrCodeDocComponent),
