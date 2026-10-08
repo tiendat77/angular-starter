@@ -1,0 +1,402 @@
+<doc-playground
+  title="Slider"
+  description="A slider with one thumb: drag it, press the track, or use the keyboard (arrows, Page Up / Down, Home / End). A form control and a two-way [(value)]."
+  [code]="code()"
+>
+  <div
+    preview
+    class="flex w-full max-w-sm flex-col gap-4 px-6 py-10"
+  >
+    <ui-slider
+      ariaLabel="Volume"
+      [min]="min()"
+      [max]="max()"
+      [step]="step()"
+      [size]="size()"
+      [color]="color()"
+      [showTicks]="showTicks()"
+      [tickStep]="tickStep()"
+      [showValue]="showValue()"
+      [displayWith]="displayWith()"
+      [disabled]="disabled()"
+      [(value)]="value"
+    />
+    <p class="text-muted-foreground text-sm">
+      Value:
+      <span class="text-foreground font-mono">{{ value() ?? 'null' }}</span>
+    </p>
+  </div>
+
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div class="grid grid-cols-3 gap-2">
+      @for (
+        field of [
+          ['Min', min],
+          ['Max', max],
+          ['Step', step],
+        ];
+        track field[0]
+      ) {
+        <label class="text-muted-foreground block font-medium">
+          {{ field[0] }}
+          <input
+            type="number"
+            class="border-border bg-background text-foreground mt-1 w-full rounded-lg border px-2 py-1.5"
+            [ngModel]="$any(field[1])()"
+            (ngModelChange)="$any(field[1]).set(+$event || 0)"
+          />
+        </label>
+      }
+    </div>
+
+    <div>
+      <label
+        for="slider-size"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Size
+      </label>
+      <select
+        id="slider-size"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="size()"
+        (ngModelChange)="size.set($event)"
+      >
+        <option value="xs">xs</option>
+        <option value="sm">sm</option>
+        <option value="md">md</option>
+        <option value="lg">lg</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="slider-color"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Color
+      </label>
+      <select
+        id="slider-color"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="color()"
+        (ngModelChange)="color.set($event)"
+      >
+        @for (c of colors; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="slider-format"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        displayWith
+      </label>
+      <select
+        id="slider-format"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="format()"
+        (ngModelChange)="format.set($event)"
+      >
+        <option value="none">none</option>
+        <option value="percent">percent</option>
+        <option value="currency">currency</option>
+      </select>
+    </div>
+
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="showTicks()"
+        (ngModelChange)="showTicks.set($event)"
+      />
+      <span>Ticks</span>
+    </label>
+    @if (showTicks()) {
+      <label class="text-muted-foreground block font-medium">
+        tickStep (empty: step)
+        <input
+          type="number"
+          class="border-border bg-background text-foreground mt-1 w-full rounded-lg border px-2 py-1.5"
+          [ngModel]="tickStep()"
+          (ngModelChange)="tickStep.set(+$event > 0 ? +$event : null)"
+        />
+      </label>
+    }
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="showValue()"
+        (ngModelChange)="showValue.set($event)"
+      />
+      <span>Always show the value</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="disabled()"
+        (ngModelChange)="disabled.set($event)"
+      />
+      <span>Disabled</span>
+    </label>
+  </div>
+
+  <doc-api-table
+    title="Slider API"
+    [rows]="sliderRows"
+  />
+</doc-playground>
+
+<doc-playground
+  class="mt-16 block"
+  title="Range slider"
+  description="Two thumbs for a lower and an upper value. The thumbs never cross; a press on the track moves the nearest one."
+  [code]="rangeCode()"
+>
+  <div
+    preview
+    class="flex w-full max-w-sm flex-col gap-4 px-6 py-10"
+  >
+    <ui-range-slider
+      ariaLabel="Price range"
+      [step]="rangeStep()"
+      [minGap]="rangeGap()"
+      [size]="rangeSize()"
+      [color]="rangeColor()"
+      [showTicks]="rangeTicks()"
+      [showValue]="rangeShowValue()"
+      [displayWith]="rangeDisplayWith()"
+      [disabled]="rangeDisabled()"
+      [(value)]="range"
+    />
+    <p class="text-muted-foreground text-sm">
+      Value:
+      <span class="text-foreground font-mono">
+        {{ rangeText() }}
+      </span>
+    </p>
+  </div>
+
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div class="grid grid-cols-2 gap-2">
+      <label class="text-muted-foreground block font-medium">
+        Step
+        <input
+          type="number"
+          class="border-border bg-background text-foreground mt-1 w-full rounded-lg border px-2 py-1.5"
+          [ngModel]="rangeStep()"
+          (ngModelChange)="rangeStep.set(+$event || 1)"
+        />
+      </label>
+      <label class="text-muted-foreground block font-medium">
+        minGap
+        <input
+          type="number"
+          class="border-border bg-background text-foreground mt-1 w-full rounded-lg border px-2 py-1.5"
+          [ngModel]="rangeGap()"
+          (ngModelChange)="rangeGap.set(+$event || 0)"
+        />
+      </label>
+    </div>
+
+    <div>
+      <label
+        for="range-size"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Size
+      </label>
+      <select
+        id="range-size"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="rangeSize()"
+        (ngModelChange)="rangeSize.set($event)"
+      >
+        <option value="xs">xs</option>
+        <option value="sm">sm</option>
+        <option value="md">md</option>
+        <option value="lg">lg</option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="range-color"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        Color
+      </label>
+      <select
+        id="range-color"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="rangeColor()"
+        (ngModelChange)="rangeColor.set($event)"
+      >
+        @for (c of colors; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="range-format"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        displayWith
+      </label>
+      <select
+        id="range-format"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="rangeFormat()"
+        (ngModelChange)="rangeFormat.set($event)"
+      >
+        <option value="none">none</option>
+        <option value="percent">percent</option>
+        <option value="currency">currency</option>
+      </select>
+    </div>
+
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="rangeTicks()"
+        (ngModelChange)="rangeTicks.set($event)"
+      />
+      <span>Ticks</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="rangeShowValue()"
+        (ngModelChange)="rangeShowValue.set($event)"
+      />
+      <span>Always show the values</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="rangeDisabled()"
+        (ngModelChange)="rangeDisabled.set($event)"
+      />
+      <span>Disabled</span>
+    </label>
+  </div>
+
+  <doc-api-table
+    title="Range slider API"
+    [rows]="rangeRows"
+  />
+</doc-playground>
+
+<section class="mt-16 space-y-4">
+  <h2 class="text-foreground text-xl font-bold tracking-tight">Reactive Forms</h2>
+  <p class="text-muted-foreground text-sm">
+    Both are form controls: the slider holds a number and the range slider a [low, high] tuple. Inside ui-form-field
+    they get a label, a hint and an error, and show the error once touched (when focus has left them). Try dragging the
+    volume under 10%, or the price range closer than 100.
+  </p>
+
+  <div class="border-border bg-background rounded-2xl border p-6">
+    <form
+      class="flex max-w-md flex-col gap-8"
+      [formGroup]="orderForm"
+      (ngSubmit)="submit()"
+    >
+      <ui-form-field>
+        <label
+          uiLabel
+          for="order-volume"
+        >
+          Volume
+        </label>
+        <ui-slider
+          inputId="order-volume"
+          formControlName="volume"
+          ariaLabel="Volume"
+          showValue
+          [displayWith]="percent"
+        />
+        <span uiHint>Pick at least 10%.</span>
+        @if (orderForm.controls.volume.invalid && orderForm.controls.volume.touched) {
+          <span uiError>Volume must be at least 10%.</span>
+        }
+      </ui-form-field>
+
+      <ui-form-field>
+        <label
+          uiLabel
+          for="order-price"
+        >
+          Price
+        </label>
+        <ui-range-slider
+          inputId="order-price"
+          formControlName="price"
+          ariaLabel="Price"
+          showValue
+          showTicks
+          [min]="0"
+          [max]="1000"
+          [step]="50"
+          [displayWith]="currency"
+        />
+        <span uiHint>At least $100 apart.</span>
+        @if (orderForm.controls.price.invalid && orderForm.controls.price.touched) {
+          <span uiError>Choose a range of at least $100.</span>
+        }
+      </ui-form-field>
+
+      <div class="flex gap-2">
+        <button
+          uiButton
+          type="submit"
+        >
+          Apply
+        </button>
+        <button
+          uiButton
+          type="button"
+          variant="outline"
+          (click)="reset()"
+        >
+          Reset
+        </button>
+      </div>
+    </form>
+
+    <p class="text-muted-foreground mt-6 text-sm">Form value (live):</p>
+    <pre
+      class="border-border bg-muted text-foreground mt-1 rounded-lg border p-3 text-xs"
+    ><code>{{ orderForm.value | json }}</code></pre>
+    @if (submitted()) {
+      <p class="text-success mt-3 text-sm">Applied: {{ submitted() | json }}</p>
+    }
+  </div>
+
+  <pre
+    class="border-border bg-muted text-foreground overflow-x-auto rounded-xl border p-4 text-xs"
+  ><code>{{ reactiveCode }}</code></pre>
+</section>
+
+<section class="mt-12">
+  <doc-api-table
+    title="Keyboard"
+    [rows]="keyboardRows"
+  />
+</section>

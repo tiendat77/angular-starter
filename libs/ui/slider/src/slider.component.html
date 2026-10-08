@@ -1,0 +1,55 @@
+<div
+  class="slider-area"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerEnd($event)"
+  (pointercancel)="onPointerEnd($event)"
+>
+  <div
+    #rail
+    class="slider-rail"
+  >
+    <div
+      class="slider-fill"
+      [style.inset-inline-end.%]="100 - fillEnd()"
+    ></div>
+
+    @if (showTicks()) {
+      <div
+        class="slider-ticks"
+        aria-hidden="true"
+      >
+        @for (tick of $ticks(); track tick) {
+          <span
+            class="slider-tick"
+            [class.slider-tick-active]="tickActive(tick)"
+            [style.inset-inline-start.%]="percentOf(tick)"
+          ></span>
+        }
+      </div>
+    }
+
+    <ui-slider-thumb
+      [thumbId]="id"
+      [value]="$shown()"
+      [min]="$min()"
+      [max]="$max()"
+      [lowerBound]="$min()"
+      [upperBound]="$max()"
+      [step]="$step()"
+      [pageStep]="$pageStep()"
+      [rtl]="isRtl()"
+      [percent]="percentOf($shown())"
+      [disabled]="$disabled()"
+      [invalid]="$invalid()"
+      [label]="ariaLabelledby() ? null : (ariaLabel() ?? null)"
+      [labelledby]="ariaLabelledby() ?? null"
+      [describedBy]="$describedBy()"
+      [valueText]="valueText($shown())"
+      [bubbleText]="bubbleText($shown())"
+      [showValue]="showValue()"
+      [active]="_dragging() === 0"
+      (valueChange)="_setThumb(0, $event)"
+    />
+  </div>
+</div>

@@ -50,7 +50,9 @@ import { UiPrefixDirective, UiSuffixDirective } from './prefix-suffix.directive'
     <ng-content select="[uiLabel]" />
     <div [class]="$controlRowClass()">
       <ng-content select="[uiPrefix]" />
-      <ng-content select="[uiInput], [uiTextarea], ui-select, ui-otp-input, ui-editor" />
+      <ng-content
+        select="[uiInput], [uiTextarea], ui-select, ui-otp-input, ui-editor, ui-slider, ui-range-slider"
+      />
       <ng-content select="[uiSuffix]" />
     </div>
     <ng-content select="[uiHint]" />

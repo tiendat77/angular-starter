@@ -1,0 +1,220 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Slider (ui-slider, ui-range-slider)
+/*
+/*  The base is `slider-root`, not `slider`: Tailwind generates a utility for every scanned word, and
+/*  "slider" is in routes, menus and imports.
+/*
+/*  Semantic tokens only. Tints are explicit `color-mix()` (never Tailwind `/N` colour modifiers, see
+/*  editor.css). Modifiers only set custom properties, so they compose in any order:
+/*    color → --slider-color        size → --slider-track / --slider-thumb
+/*  Logical properties (`inset-inline-*`) make the track work in right-to-left layouts.
+/* ----------------------------------------------------------------------------------------------------- */
+@utility slider-root {
+  --_color: var(--slider-color, var(--color-primary));
+  /* A touch darker than the colour: keeps a light colour (secondary) visible on the rail */
+  --_edge: color-mix(in oklab, var(--_color) 80%, var(--color-foreground));
+  --_track: var(--slider-track, 0.5rem);
+  --_thumb: var(--slider-thumb, 1.25rem);
+
+  display: block;
+  width: 100%;
+  min-width: 0;
+
+  /* Room for the thumbs, which overhang the ends of the rail by half their size */
+  & .slider-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: var(--_thumb);
+    padding-inline: calc(var(--_thumb) / 2);
+    cursor: pointer;
+    user-select: none;
+    /* Horizontal drags are the slider's; vertical ones still scroll the page */
+    touch-action: pan-y;
+  }
+
+  & .slider-rail {
+    position: relative;
+    width: 100%;
+    height: var(--_track);
+    background-color: var(--color-border);
+    border-radius: 9999px;
+  }
+
+  & .slider-fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: 0;
+    background-color: var(--_color);
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px var(--_edge);
+  }
+
+  & .slider-ticks {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 0.5rem);
+    height: 0.375rem;
+    pointer-events: none;
+  }
+
+  & .slider-tick {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    margin-inline-start: -0.5px;
+    background-color: color-mix(in oklab, var(--color-muted-foreground) 60%, transparent);
+  }
+
+  & .slider-tick-active {
+    background-color: var(--_color);
+  }
+
+  & .slider-thumb {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    width: var(--_thumb);
+    height: var(--_thumb);
+    margin-top: calc(var(--_thumb) / -2);
+    margin-inline-start: calc(var(--_thumb) / -2);
+    background-color: var(--color-background);
+    border: 2px solid var(--_edge);
+    border-radius: 9999px;
+    box-shadow: 0 1px 2px color-mix(in oklab, var(--color-foreground) 20%, transparent);
+    outline: none;
+    cursor: grab;
+    transition:
+      box-shadow 150ms ease,
+      transform 150ms ease;
+
+    &:hover {
+      box-shadow: 0 0 0 4px color-mix(in oklab, var(--_color) 15%, transparent);
+    }
+
+    /* Soft halo instead of an outline, like the form controls */
+    &:focus-visible,
+    &.slider-thumb-active {
+      box-shadow: 0 0 0 4px color-mix(in oklab, var(--_color) 25%, transparent);
+    }
+
+    /* The thumb in use is on top when two thumbs overlap */
+    &:focus,
+    &.slider-thumb-active {
+      z-index: 2;
+    }
+
+    &.slider-thumb-active {
+      cursor: grabbing;
+      transform: scale(1.08);
+    }
+  }
+
+  /* The value over a thumb: on hover, focus and drag, or always with `showValue` */
+  & .slider-bubble {
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 50%;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    color: var(--color-background);
+    background-color: var(--color-foreground);
+    border-radius: 0.375rem;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+  }
+
+  & .slider-thumb:hover .slider-bubble,
+  & .slider-thumb:focus-visible .slider-bubble,
+  & .slider-thumb-active .slider-bubble,
+  & .slider-thumb-show .slider-bubble {
+    opacity: 1;
+  }
+}
+
+/* Ticks sit under the track: make room for them */
+@utility slider-ticked {
+  padding-bottom: 0.875rem;
+}
+
+/* An always-visible value sits over the thumb: make room for it above the track */
+@utility slider-valued {
+  padding-top: 2rem;
+}
+
+@utility slider-disabled {
+  opacity: 0.5;
+
+  & .slider-area,
+  & .slider-thumb {
+    cursor: not-allowed;
+  }
+
+  & .slider-thumb:hover {
+    box-shadow: 0 1px 2px color-mix(in oklab, var(--color-foreground) 20%, transparent);
+  }
+
+  & .slider-bubble {
+    display: none;
+  }
+}
+
+/* `.slider-root.slider-invalid` wins over the colour modifiers */
+@utility slider-invalid {
+  &.slider-root {
+    --slider-color: var(--color-error);
+  }
+}
+
+@utility slider-neutral {
+  --slider-color: var(--color-foreground);
+}
+
+@utility slider-primary {
+  --slider-color: var(--color-primary);
+}
+
+@utility slider-secondary {
+  --slider-color: var(--color-secondary);
+}
+
+@utility slider-info {
+  --slider-color: var(--color-info);
+}
+
+@utility slider-success {
+  --slider-color: var(--color-success);
+}
+
+@utility slider-warning {
+  --slider-color: var(--color-warning);
+}
+
+@utility slider-error {
+  --slider-color: var(--color-error);
+}
+
+@utility slider-xs {
+  --slider-track: 0.25rem;
+  --slider-thumb: 0.75rem;
+}
+
+@utility slider-sm {
+  --slider-track: 0.375rem;
+  --slider-thumb: 1rem;
+}
+
+@utility slider-md {
+  --slider-track: 0.5rem;
+  --slider-thumb: 1.25rem;
+}
+
+@utility slider-lg {
+  --slider-track: 0.75rem;
+  --slider-thumb: 1.5rem;
+}

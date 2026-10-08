@@ -32,6 +32,11 @@ export const routes: Routes = [
       import('./pages/editor-doc/editor-doc.component').then((m) => m.EditorDocComponent),
   },
   {
+    path: 'slider',
+    loadComponent: () =>
+      import('./pages/slider-doc/slider-doc.component').then((m) => m.SliderDocComponent),
+  },
+  {
     path: 'qr-code',
     loadComponent: () =>
       import('./pages/qr-code-doc/qr-code-doc.component').then((m) => m.QrCodeDocComponent),

@@ -17,6 +17,7 @@ export * from '@libs/ui/progress';
 export * from '@libs/ui/qr-code';
 export * from '@libs/ui/radio';
 export * from '@libs/ui/select';
+export * from '@libs/ui/slider';
 export * from '@libs/ui/svg-icon';
 export * from '@libs/ui/table';
 export * from '@libs/ui/tabs';
