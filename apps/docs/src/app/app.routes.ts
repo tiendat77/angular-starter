@@ -32,6 +32,11 @@ export const routes: Routes = [
       import('./pages/editor-doc/editor-doc.component').then((m) => m.EditorDocComponent),
   },
   {
+    path: 'carousel',
+    loadComponent: () =>
+      import('./pages/carousel-doc/carousel-doc.component').then((m) => m.CarouselDocComponent),
+  },
+  {
     path: 'qr-code',
     loadComponent: () =>
       import('./pages/qr-code-doc/qr-code-doc.component').then((m) => m.QrCodeDocComponent),

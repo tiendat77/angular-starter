@@ -1,0 +1,279 @@
+<doc-playground
+  title="Carousel"
+  description="A slide show: put ui-carousel-slide elements inside ui-carousel. Change slides with the arrows, the dots, the arrow keys or a swipe; activeIndex is two-way bindable."
+  [code]="code()"
+>
+  <div
+    preview
+    class="w-full max-w-xl p-4"
+  >
+    <ui-carousel
+      #imageCarousel
+      ariaLabel="Photos"
+      [effect]="effect()"
+      [dotPosition]="dotPosition()"
+      [dots]="dots()"
+      [arrows]="arrows()"
+      [loop]="loop()"
+      [enableSwipe]="enableSwipe()"
+      [speed]="speed()"
+      [(activeIndex)]="index"
+      (beforeChange)="lastBefore.set($event)"
+      (afterChange)="lastAfter.set($event)"
+    >
+      @for (photo of scenes; track photo.src) {
+        <ui-carousel-slide>
+          <img
+            class="block aspect-video w-full object-cover"
+            [src]="photo.src"
+            [alt]="photo.title + ' landscape'"
+          />
+        </ui-carousel-slide>
+      }
+    </ui-carousel>
+
+    <div class="mt-4 space-y-1 text-sm">
+      <p class="text-muted-foreground">
+        activeIndex:
+        <span class="text-foreground font-mono">{{ index() }}</span>
+      </p>
+      <p class="text-muted-foreground">
+        beforeChange:
+        <span class="text-foreground font-mono">{{ lastBefore() | json }}</span>
+      </p>
+      <p class="text-muted-foreground">
+        afterChange:
+        <span class="text-foreground font-mono">{{ lastAfter() | json }}</span>
+      </p>
+    </div>
+    <div class="mt-3 flex flex-wrap gap-2">
+      <button
+        uiButton
+        type="button"
+        variant="outline"
+        size="sm"
+        (click)="carousel()?.prev()"
+      >
+        prev()
+      </button>
+      <button
+        uiButton
+        type="button"
+        variant="outline"
+        size="sm"
+        (click)="carousel()?.next()"
+      >
+        next()
+      </button>
+      <button
+        uiButton
+        type="button"
+        variant="outline"
+        size="sm"
+        (click)="carousel()?.goTo(scenes.length - 1)"
+      >
+        goTo(last)
+      </button>
+    </div>
+  </div>
+
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <div>
+      <label
+        for="carousel-effect"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        effect
+      </label>
+      <select
+        id="carousel-effect"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="effect()"
+        (ngModelChange)="effect.set($event)"
+      >
+        <option value="scrollx">scrollx</option>
+        <option value="fade">fade</option>
+      </select>
+    </div>
+    <div>
+      <label
+        for="carousel-dots"
+        class="text-muted-foreground mb-1 block font-medium"
+      >
+        dotPosition
+      </label>
+      <select
+        id="carousel-dots"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [ngModel]="dotPosition()"
+        (ngModelChange)="dotPosition.set($event)"
+      >
+        <option value="bottom">bottom</option>
+        <option value="top">top</option>
+        <option value="left">left (vertical)</option>
+        <option value="right">right (vertical)</option>
+      </select>
+    </div>
+    <label class="text-muted-foreground block font-medium">
+      speed (ms)
+      <input
+        type="number"
+        class="border-border bg-background text-foreground mt-1 w-full rounded-lg border px-2 py-1.5"
+        [ngModel]="speed()"
+        (ngModelChange)="speed.set(+$event >= 0 ? +$event : 500)"
+      />
+    </label>
+    @for (
+      flag of [
+        ['dots', dots],
+        ['arrows', arrows],
+        ['loop', loop],
+        ['enableSwipe', enableSwipe],
+      ];
+      track flag[0]
+    ) {
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="$any(flag[1])()"
+          (ngModelChange)="$any(flag[1]).set($event)"
+        />
+        <span>{{ flag[0] }}</span>
+      </label>
+    }
+  </div>
+
+  <doc-api-table [rows]="apiRows" />
+</doc-playground>
+
+<doc-playground
+  class="mt-16 block"
+  title="Autoplay card slider"
+  description="Cards that cross-fade by themselves, with a counter drawn in every dot. Hover or focus pauses it; the button in the corner stops and starts it."
+  [code]="cardsCode()"
+>
+  <div
+    preview
+    class="w-full max-w-xl p-4"
+  >
+    <ui-carousel
+      ariaLabel="Highlights"
+      effect="fade"
+      [arrows]="false"
+      [autoPlay]="autoPlay()"
+      [autoPlaySpeed]="autoPlaySpeed()"
+      [pauseOnHover]="pauseOnHover()"
+      [(activeIndex)]="cardsIndex"
+    >
+      @for (card of cards; track card.title) {
+        <ui-carousel-slide>
+          <div class="bg-muted flex min-h-56 flex-col justify-center gap-3 px-12 pt-10 pb-16">
+            <h3 class="text-foreground text-xl font-bold tracking-tight">{{ card.title }}</h3>
+            <p class="text-muted-foreground max-w-md text-sm">{{ card.text }}</p>
+            <div>
+              <button
+                uiButton
+                type="button"
+                size="sm"
+              >
+                Learn more
+              </button>
+            </div>
+          </div>
+        </ui-carousel-slide>
+      }
+
+      <ng-template
+        let-index
+        let-count="count"
+        uiCarouselDot
+      >
+        <span class="block px-2 text-xs tabular-nums">{{ index + 1 }} / {{ count }}</span>
+      </ng-template>
+    </ui-carousel>
+  </div>
+
+  <div
+    controls
+    class="space-y-4 text-xs"
+  >
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="autoPlay()"
+        (ngModelChange)="autoPlay.set($event)"
+      />
+      <span>autoPlay</span>
+    </label>
+    <label class="text-muted-foreground block font-medium">
+      autoPlaySpeed (ms)
+      <input
+        type="number"
+        class="border-border bg-background text-foreground mt-1 w-full rounded-lg border px-2 py-1.5"
+        [ngModel]="autoPlaySpeed()"
+        (ngModelChange)="autoPlaySpeed.set(+$event > 0 ? +$event : 3000)"
+      />
+    </label>
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="pauseOnHover()"
+        (ngModelChange)="pauseOnHover.set($event)"
+      />
+      <span>pauseOnHover</span>
+    </label>
+  </div>
+</doc-playground>
+
+<section class="mt-16 space-y-4">
+  <h2 class="text-foreground text-xl font-bold tracking-tight">Thumbnails as dots</h2>
+  <p class="text-muted-foreground text-sm">
+    The template of uiCarouselDot is drawn inside each dot, which stays a button that goes to its slide, so the
+    thumbnails are keyboard and screen-reader friendly. The active one gets a ring.
+  </p>
+  <div class="border-border bg-background max-w-xl rounded-2xl border p-4">
+    <ui-carousel
+      ariaLabel="Landscapes"
+      dotPosition="bottom"
+      [arrows]="false"
+      [(activeIndex)]="thumbsIndex"
+    >
+      @for (photo of scenes; track photo.src) {
+        <ui-carousel-slide>
+          <img
+            class="block aspect-video w-full object-cover"
+            [src]="photo.src"
+            [alt]="photo.title + ' landscape'"
+          />
+        </ui-carousel-slide>
+      }
+
+      <ng-template
+        let-index
+        uiCarouselDot
+      >
+        <img
+          class="block h-9 w-16 object-cover"
+          alt=""
+          [src]="scenes[index].thumb"
+        />
+      </ng-template>
+    </ui-carousel>
+  </div>
+  <pre
+    class="border-border bg-muted text-foreground overflow-x-auto rounded-xl border p-4 text-xs"
+  ><code>{{ thumbsCode }}</code></pre>
+</section>
+
+<section class="mt-12">
+  <doc-api-table
+    title="Keyboard"
+    [rows]="keyboardRows"
+  />
+</section>

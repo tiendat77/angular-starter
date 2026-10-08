@@ -3,6 +3,7 @@ export * from '@libs/ui/avatar';
 export * from '@libs/ui/badge';
 export * from '@libs/ui/button';
 export * from '@libs/ui/card';
+export * from '@libs/ui/carousel';
 export * from '@libs/ui/checkbox';
 export * from '@libs/ui/collapse';
 export * from '@libs/ui/core';

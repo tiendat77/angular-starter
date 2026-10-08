@@ -66,6 +66,7 @@ export class DocsSidebarComponent {
         { label: 'Avatar', path: '/avatar' },
         { label: 'Badge', path: '/badge' },
         { label: 'Card', path: '/card' },
+        { label: 'Carousel', path: '/carousel' },
         { label: 'QR Code', path: '/qr-code' },
         { label: 'Paginator', path: '/paginator' },
         { label: 'SVG Icon', path: '/svg-icon' },

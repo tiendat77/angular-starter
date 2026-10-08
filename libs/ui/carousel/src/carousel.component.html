@@ -1,0 +1,113 @@
+@if (_showRotateControl()) {
+  <!-- First in the reading order (WAI-ARIA): a slide show that moves by itself can be stopped -->
+  <button
+    type="button"
+    class="carousel-rotate"
+    [attr.aria-label]="_manuallyPaused() ? $labels().play : $labels().pause"
+    (click)="toggleRotation()"
+  >
+    @if (_manuallyPaused()) {
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    } @else {
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M8 5v14M16 5v14" />
+      </svg>
+    }
+  </button>
+}
+
+<div
+  #viewport
+  class="carousel-viewport"
+  tabindex="0"
+  aria-atomic="false"
+  [attr.aria-live]="_rotating() ? 'off' : 'polite'"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerEnd($event)"
+  (pointercancel)="onPointerEnd($event)"
+>
+  <ng-content />
+</div>
+
+@if (arrows() && count() > 1) {
+  <button
+    type="button"
+    class="carousel-arrow carousel-arrow-prev"
+    [attr.aria-label]="$labels().previous"
+    [disabled]="_atStart()"
+    (click)="prev()"
+  >
+    @if (_customPrev(); as icon) {
+      <ng-container [ngTemplateOutlet]="icon" />
+    } @else {
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M15 5 8 12l7 7" />
+      </svg>
+    }
+  </button>
+  <button
+    type="button"
+    class="carousel-arrow carousel-arrow-next"
+    [attr.aria-label]="$labels().next"
+    [disabled]="_atEnd()"
+    (click)="next()"
+  >
+    @if (_customNext(); as icon) {
+      <ng-container [ngTemplateOutlet]="icon" />
+    } @else {
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="m9 5 7 7-7 7" />
+      </svg>
+    }
+  </button>
+}
+
+@if (dots() && count() > 1) {
+  <div
+    class="carousel-dots"
+    role="group"
+    [class.carousel-dots-custom]="!!_customDot()"
+    [attr.aria-label]="$labels().dots"
+  >
+    @for (index of _dotIndexes(); track index) {
+      <button
+        type="button"
+        class="carousel-dot"
+        [attr.aria-label]="$labels().goTo(index, count())"
+        [attr.aria-current]="index === current() ? 'true' : null"
+        (click)="goTo(index)"
+      >
+        @if (_customDot(); as template) {
+          <ng-container
+            [ngTemplateOutlet]="template"
+            [ngTemplateOutletContext]="{
+              $implicit: index,
+              index: index,
+              active: index === current(),
+              count: count(),
+            }"
+          />
+        }
+      </button>
+    }
+  </div>
+}
