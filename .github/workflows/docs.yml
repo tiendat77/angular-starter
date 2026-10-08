@@ -1,0 +1,67 @@
+name: Docs
+
+# Publishes the docs app (apps/docs) to GitHub Pages.
+# One-time setup: Settings > Pages > Build and deployment > Source: "GitHub Actions".
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/docs/**'
+      - 'libs/**'
+      - 'public/**'
+      - 'tools/docs-pages*'
+      - 'angular.json'
+      - 'tsconfig*.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.nvmrc'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a newer push replaces one that has not finished
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node version comes from .nvmrc, like the CI workflow
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - uses: actions/configure-pages@v5
+
+      # The site of a repository lives under /<repository>/ (https://<owner>.github.io/<repository>/).
+      # The script builds with that base href and adds 404.html (SPA fallback) and .nojekyll.
+      - name: Build docs
+        run: npm run docs:pages -- "/${{ github.event.repository.name }}/"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/docs/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

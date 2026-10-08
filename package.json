@@ -14,6 +14,7 @@
     "analyze:open": "esbuild-visualizer --metadata dist/main/stats.json --filename dist/main/stats.html --title \"main bundle\" --open",
     "docs:dev": "ng serve docs",
     "docs:build": "ng build docs",
+    "docs:pages": "node tools/docs-pages.mjs",
     "lint": "npx eslint . --fix",
     "lint:ci": "eslint apps libs/ui --max-warnings 0",
     "test:ci": "ng test main --watch=false && ng test ui --watch=false && node --test \"tools/**/*.test.mjs\"",

@@ -81,6 +81,14 @@ Routes and the sidebar stay hand-written, in one place each: add the page's rout
 
 `npm run verify` runs exactly what CI runs on every pull request: lint (with the boundary rules above), the unit tests, the production builds of the app, the docs and the libraries. It is the one command to run before pushing. The lint warning count is capped (`lint:ci` in `package.json`): fix warnings you touch and lower the cap.
 
+### Docs site (GitHub Pages)
+
+The docs app (`apps/docs`) is published to GitHub Pages by `.github/workflows/docs.yml` on every push to `main` that touches it, the libraries or the build setup (or by hand: Actions > Docs > Run workflow). The site is served at `https://<owner>.github.io/<repository>/`.
+
+One-time setup: **Settings > Pages > Build and deployment > Source: GitHub Actions**.
+
+`npm run docs:pages -- /<repository>/` builds exactly what is deployed (base href, a `404.html` copy of `index.html` so a reload on a deep link such as `/<repository>/date-picker` works, and `.nojekyll`) into `dist/docs/browser`. For a custom domain or a user site, build with `/` instead.
+
 ### Analyzing the bundle
 
 `npm run analyze` builds with `--stats-json`, writes an interactive treemap to `dist/main/stats.html` and prints what is in the initial bundle. `npm run analyze:report` reprints the report from the last build, and `npm run analyze:open` opens the treemap.
