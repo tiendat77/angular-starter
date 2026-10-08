@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { DocsSidebarState } from './docs-sidebar-state';
 
 interface NavItem {
   label: string;
@@ -15,9 +16,12 @@ interface NavGroup {
   selector: 'doc-sidebar',
   imports: [RouterLink, RouterLinkActive],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '(document:keydown.escape)': 'state.close()' },
   templateUrl: './docs-sidebar.component.html',
 })
 export class DocsSidebarComponent {
+  protected readonly state = inject(DocsSidebarState);
+
   readonly navGroups: NavGroup[] = [
     {
       title: 'Foundations',

@@ -1,141 +1,143 @@
 <div class="flex gap-6 px-3 pt-2 pb-3">
-  <!-- Left panel: previous year / month -->
-  <div class="date-range-calendar-panel">
-    <div class="date-range-calendar-header">
-      <button
-        type="button"
-        class="btn btn-circle btn-ghost btn-sm"
-        [attr.aria-label]="_intl.prevYearLabel"
-        (click)="_shift(-12)"
-      >
-        <svg
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m18 18-6-6 6-6M11 18l-6-6 6-6"
-          />
-        </svg>
-      </button>
-      <button
-        type="button"
-        class="btn btn-circle btn-ghost btn-sm"
-        [attr.aria-label]="_intl.prevMonthLabel"
-        (click)="_shift(-1)"
-      >
-        <svg
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.75 19.5 8.25 12l7.5-7.5"
-          />
-        </svg>
-      </button>
-      <span
-        class="date-range-calendar-title first-letter:uppercase"
-        aria-live="polite"
-      >
-        {{ _title(_leftActive) }}
-      </span>
-      <span
-        class="w-18"
-        aria-hidden="true"
-      ></span>
-    </div>
-
-    <month-view
-      [selected]="selected"
-      [minDate]="minDate"
-      [maxDate]="maxDate"
-      [dateFilter]="dateFilter"
-      [showLunar]="showLunar"
-      [dayExtra]="dayExtra"
-      [previewRange]="_preview"
-      [activeDate]="_leftActive"
-      (activeDateChange)="_onLeftActiveChange($event)"
-      (hoverDate)="_onHover($event)"
-      (_userSelection)="_userSelection.emit($event)"
-    />
-  </div>
-
-  <!-- Right panel: next month / year -->
-  <div class="date-range-calendar-panel">
-    <div class="date-range-calendar-header">
-      <span
-        class="w-18"
-        aria-hidden="true"
-      ></span>
-      <span
-        class="date-range-calendar-title first-letter:uppercase"
-        aria-live="polite"
-      >
-        {{ _title(_rightActive) }}
-      </span>
-      <button
-        type="button"
-        class="btn btn-circle btn-ghost btn-sm"
-        [attr.aria-label]="_intl.nextMonthLabel"
-        (click)="_shift(1)"
-      >
-        <svg
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m8.25 4.5 7.5 7.5-7.5 7.5"
-          />
-        </svg>
-      </button>
-      <button
-        type="button"
-        class="btn btn-circle btn-ghost btn-sm"
-        [attr.aria-label]="_intl.nextYearLabel"
-        (click)="_shift(12)"
-      >
-        <svg
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m6 6 6 6-6 6M13 6l6 6-6 6"
-          />
-        </svg>
-      </button>
-    </div>
-
-    <month-view
-      [selected]="selected"
-      [minDate]="minDate"
-      [maxDate]="maxDate"
-      [dateFilter]="dateFilter"
-      [showLunar]="showLunar"
-      [dayExtra]="dayExtra"
-      [previewRange]="_preview"
-      [activeDate]="_rightActive"
-      (activeDateChange)="_onRightActiveChange($event)"
-      (hoverDate)="_onHover($event)"
-      (_userSelection)="_userSelection.emit($event)"
-    />
-  </div>
+  <ng-container *ngTemplateOutlet="panel; context: { side: 'left' }" />
+  <ng-container *ngTemplateOutlet="panel; context: { side: 'right' }" />
 </div>
+
+<!--
+  One panel. In the days the left one owns the previous arrow and the right one the next arrow (a
+  spacer of the same size keeps the labels centred); a panel showing a month or year grid has both. The month and the year are two buttons: each toggles a grid in place
+  of the days, to jump straight to another month or year.
+-->
+<ng-template
+  #panel
+  let-side="side"
+>
+  <div class="date-range-calendar-panel">
+    <div class="date-range-calendar-header">
+      @if (side === 'left' || _view(side) !== 'days') {
+        <button
+          type="button"
+          class="btn btn-circle btn-ghost btn-sm"
+          [attr.aria-label]="_prevLabel(side)"
+          (click)="_shift(side, -1)"
+        >
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 19.5 8.25 12l7.5-7.5"
+            />
+          </svg>
+        </button>
+      } @else {
+        <span
+          class="h-8 w-8 shrink-0"
+          aria-hidden="true"
+        ></span>
+      }
+
+      <div
+        class="date-range-calendar-title"
+        aria-live="polite"
+        [class.flex-row-reverse]="_yearFirst"
+      >
+        <button
+          type="button"
+          class="calendar-header-label first-letter:uppercase"
+          aria-haspopup="grid"
+          [attr.aria-expanded]="_view(side) === 'months'"
+          (click)="_toggleView(side, 'months')"
+        >
+          {{ _monthName(_active(side)) }}
+        </button>
+        <button
+          type="button"
+          class="calendar-header-label"
+          aria-haspopup="grid"
+          [attr.aria-expanded]="_view(side) === 'years'"
+          (click)="_toggleView(side, 'years')"
+        >
+          {{ _yearName(_active(side)) }}
+        </button>
+      </div>
+
+      @if (side === 'right' || _view(side) !== 'days') {
+        <button
+          type="button"
+          class="btn btn-circle btn-ghost btn-sm"
+          [attr.aria-label]="_nextLabel(side)"
+          (click)="_shift(side, 1)"
+        >
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m8.25 4.5 7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </button>
+      } @else {
+        <span
+          class="h-8 w-8 shrink-0"
+          aria-hidden="true"
+        ></span>
+      }
+    </div>
+
+    <!-- A fixed minimum height, so the panel does not jump between the days and the grids -->
+    <div class="date-range-calendar-body">
+      @switch (_view(side)) {
+        @case ('months') {
+          <year-view
+            [selected]="selected"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [dateFilter]="dateFilter"
+            [activeDate]="_active(side)"
+            (activeDateChange)="_onActiveChange(side, $event)"
+            (monthSelected)="_pickMonth(side, $event)"
+          />
+        }
+        @case ('years') {
+          <multi-year-view
+            [selected]="selected"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [dateFilter]="dateFilter"
+            [activeDate]="_active(side)"
+            (activeDateChange)="_onActiveChange(side, $event)"
+            (yearSelected)="_pickYear(side, $event)"
+          />
+        }
+        @default {
+          <month-view
+            [selected]="selected"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [dateFilter]="dateFilter"
+            [showLunar]="showLunar"
+            [showHolidays]="showHolidays"
+            [dayExtra]="dayExtra"
+            [previewRange]="_preview"
+            [activeDate]="_active(side)"
+            (activeDateChange)="_onActiveChange(side, $event)"
+            (hoverDate)="_onHover($event)"
+            (_userSelection)="_userSelection.emit($event)"
+          />
+        }
+      }
+    </div>
+  </div>
+</ng-template>

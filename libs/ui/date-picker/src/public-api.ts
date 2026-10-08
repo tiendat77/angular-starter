@@ -34,6 +34,8 @@ export * from './lib/calendar/month-view';
 export { MultiYearView, yearsPerPage, yearsPerRow } from './lib/calendar/multi-year-view';
 export * from './lib/calendar/year-view';
 export { DateRangeCalendar } from './lib/date-picker/date-range-calendar';
+export { DateRangeInput } from './lib/date-picker/date-range-input';
+export { DateRangeEndInput, DateRangeStartInput } from './lib/date-picker/date-range-input-parts';
 export * from './lib/date-picker/date-range-picker';
 export { DateRangePickerContent } from './lib/date-picker/date-range-picker-content';
 export * from './lib/date-picker/date-selection-model';
@@ -41,5 +43,12 @@ export * from './lib/date-picker/datepicker-day-extra';
 export * from './lib/date-picker/datepicker-intl';
 export { DatepickerMobileContent } from './lib/date-picker/datepicker-mobile-content';
 export { DatepickerRangeInput } from './lib/date-picker/datepicker-range-input';
+export {
+  getVietnameseHolidays,
+  vietnameseHolidayText,
+  type HolidayKind,
+  type HolidayLanguage,
+  type VietnameseHoliday,
+} from './lib/holidays/vietnamese-holidays';
 export { formatLunarLabel, solarToLunar } from './lib/lunar/vietnamese-lunar';
 export type { LunarDate } from './lib/lunar/vietnamese-lunar';

@@ -50,6 +50,19 @@ class TestHostComponent {
   }
 }
 
+@Component({
+  standalone: true,
+  imports: [UiTooltipDirective],
+  template: `<button
+    uiTooltip="Hello"
+    [uiTooltipDelay]="0"
+    [uiTooltipShowOnFocus]="false"
+  >
+    x
+  </button>`,
+})
+class NoFocusHostComponent {}
+
 describe('UiTooltipDirective', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let overlayContainer: OverlayContainer;
@@ -97,6 +110,22 @@ describe('UiTooltipDirective', () => {
     fixture.detectChanges();
 
     expect(overlayContainerElement.querySelector('[role="tooltip"]')).toBeNull();
+  });
+
+  it('does not open on focusin when uiTooltipShowOnFocus is false, but still opens on hover', async () => {
+    const other = TestBed.createComponent(NoFocusHostComponent);
+    other.detectChanges();
+    const el: HTMLElement = other.nativeElement.querySelector('button');
+
+    el.dispatchEvent(new FocusEvent('focusin'));
+    other.detectChanges();
+    expect(overlayContainerElement.querySelector('[role="tooltip"]')).toBeNull();
+
+    el.dispatchEvent(new MouseEvent('mouseenter'));
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    other.detectChanges();
+    expect(overlayContainerElement.querySelector('[role="tooltip"]')).not.toBeNull();
+    el.dispatchEvent(new MouseEvent('mouseleave'));
   });
 
   it('opens immediately on focusin and closes on focusout', () => {

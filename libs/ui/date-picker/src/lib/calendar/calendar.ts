@@ -136,6 +136,9 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
   /** Whether to show the Vietnamese lunar date in the month view. */
   @Input() showLunar = false;
 
+  /** Whether hovering a day shows its Vietnamese holiday, if it has one. */
+  @Input() showHolidays = true;
+
   /** Template rendered below the day number in the month view; receives the cell's date. */
   @Input() dayExtra: TemplateRef<any> | null = null;
 
@@ -207,6 +210,9 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
     return this._currentView;
   }
   set currentView(value: CalendarView) {
+    if (value === 'month') {
+      this._quickChange = false;
+    }
     const viewChangedResult = this._currentView !== value ? value : null;
     this._currentView = value;
     this._moveFocusOnNextTick = true;
@@ -216,6 +222,24 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
     }
   }
   private _currentView: CalendarView;
+
+  /**
+   * Set when the header's month / year label opened a grid from the days: picking a year then
+   * returns to the days (keeping the month) instead of going year → month → day. Pickers that start
+   * in the multi-year view keep that longer flow.
+   */
+  _quickChange = false;
+
+  /** The header's month / year label: opens that grid, or goes back to the days if it is open. */
+  _toggleGrid(grid: 'year' | 'multi-year'): void {
+    if (this.currentView === grid) {
+      this.currentView = 'month';
+      return;
+    }
+    const quick = this.currentView === 'month' || this._quickChange;
+    this.currentView = grid;
+    this._quickChange = quick;
+  }
 
   /** Origin of active drag, or null when dragging is not active. */
   protected _activeDrag: CalendarUserEvent<D> | null = null;

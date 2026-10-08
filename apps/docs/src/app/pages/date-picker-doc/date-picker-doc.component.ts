@@ -33,6 +33,7 @@ export class DatePickerDocComponent {
   readonly weekdaysOnly = signal(false);
   readonly disabled = signal(false);
   readonly showLunar = signal(false);
+  readonly showHolidays = signal(true);
   readonly showExtra = signal(false);
   readonly vietnamese = signal(false);
 
@@ -40,6 +41,57 @@ export class DatePickerDocComponent {
   private readonly _intl = inject(DatepickerIntl);
 
   readonly control = new FormControl<Date | null>(null);
+
+  // Min / max demo: a booking window counted from today
+  private readonly _today = new Date(new Date().setHours(0, 0, 0, 0));
+  readonly minEnabled = signal(true);
+  readonly maxEnabled = signal(true);
+  readonly minOffset = signal(0);
+  readonly maxOffset = signal(30);
+  readonly minMaxControl = new FormControl<Date | null>(null);
+
+  readonly minDate = computed(() => (this.minEnabled() ? this._addDays(this.minOffset()) : null));
+  readonly maxDate = computed(() => (this.maxEnabled() ? this._addDays(this.maxOffset()) : null));
+
+  private readonly _minMaxTick = signal(0);
+  readonly minMaxError = computed(() => {
+    this._minMaxTick();
+    const errors = this.minMaxControl.errors;
+    if (!errors) {
+      return 'none';
+    }
+    return errors['datepickerParse']
+      ? 'datepickerParse (not a date)'
+      : errors['datepickerMin']
+        ? 'datepickerMin (before the minimum)'
+        : errors['datepickerMax']
+          ? 'datepickerMax (after the maximum)'
+          : Object.keys(errors).join(', ');
+  });
+
+  readonly minMaxCode = computed(() => {
+    const fmt = (date: Date) =>
+      `new Date(${date.getFullYear()}, ${date.getMonth()}, ${date.getDate()})`;
+    const min = this.minDate();
+    const max = this.maxDate();
+    const attrs = (min ? '\n    [min]="min"' : '') + (max ? '\n    [max]="max"' : '');
+    const fields =
+      (min ? `\nmin = ${fmt(min)}; // today ${this._offsetText(this.minOffset())}` : '') +
+      (max ? `\nmax = ${fmt(max)}; // today ${this._offsetText(this.maxOffset())}` : '');
+    return `<!-- providers: [provideNativeDateAdapter()] -->
+<label class="input">
+  <datepicker-toggle [for]="picker" />
+  <input
+    placeholder="Arrival date"
+    [datepicker]="picker"
+    [formControl]="arrival"${attrs}
+  />
+</label>
+<date-picker #picker />
+<!-- arrival: FormControl<Date | null> -->
+<!-- Days outside the range are disabled in the calendar, and a typed date outside it
+     sets the datepickerMin / datepickerMax error on the control -->${fields}`;
+  });
 
   // Date range demo
   readonly rangeLunar = signal(true);
@@ -74,6 +126,44 @@ export class DatePickerDocComponent {
 
   private readonly _datePipe = new DatePipe('en-US');
 
+  // Two separate inputs demo
+  readonly checkIn = new FormControl<Date | null>(null);
+  readonly checkOut = new FormControl<Date | null>(null);
+  readonly twoInputsDisabled = signal(false);
+
+  readonly twoInputsCode = `<!-- providers: [provideNativeDateAdapter()] -->
+<date-range-input [rangePicker]="picker">
+  <label class="input">
+    <input dateRangeStart [formControl]="checkIn" placeholder="Check-in" />
+  </label>
+  <span aria-hidden="true">→</span>
+  <label class="input">
+    <input dateRangeEnd [formControl]="checkOut" placeholder="Check-out" />
+    <datepicker-toggle [for]="picker" />
+  </label>
+</date-range-input>
+<date-range-picker #picker />
+<!-- checkIn, checkOut: FormControl<Date | null> -->`;
+
+  readonly twoInputsErrors = computed(() => {
+    this._twoInputsTick();
+    const names = (control: FormControl<Date | null>) =>
+      Object.keys(control.errors ?? {}).join(', ') || 'none';
+    return `start: ${names(this.checkIn)} · end: ${names(this.checkOut)}`;
+  });
+  private readonly _twoInputsTick = signal(0);
+
+  constructor() {
+    const tick = () => this._twoInputsTick.update((v) => v + 1);
+    this.checkIn.statusChanges.subscribe(tick);
+    this.checkOut.statusChanges.subscribe(tick);
+    this.minMaxControl.statusChanges.subscribe(() => this._minMaxTick.update((v) => v + 1));
+  }
+
+  toggleTwoInputsDisabled(disabled: boolean): void {
+    this.twoInputsDisabled.set(disabled);
+  }
+
   readonly dateFilter = (date: Date | null): boolean => {
     if (!this.weekdaysOnly() || !date) return true;
     const day = date.getDay();
@@ -83,7 +173,8 @@ export class DatePickerDocComponent {
   readonly generatedCode = computed(() => {
     const pickerAttrs =
       (this.startView() !== 'month' ? ` startView="${this.startView()}"` : '') +
-      (this.showLunar() ? ' showLunar' : '');
+      (this.showLunar() ? ' showLunar' : '') +
+      (this.showHolidays() ? '' : ' [showHolidays]="false"');
     const extra = this.showExtra()
       ? '>\n  <ng-template datepickerDayExtra let-date>{{ priceOf(date) }}</ng-template>\n</date-picker>'
       : ' />';
@@ -102,11 +193,22 @@ export class DatePickerDocComponent {
 
   readonly apiRows: ApiRow[] = [
     {
+      name: 'date-range-input',
+      type: 'component',
+      description:
+        'Connects two separate inputs (dateRangeStart, dateRangeEnd) to a <date-range-picker>. Each input is a form control of its own, so each can sit in its own field box. Inputs: rangePicker, min, max, datepickerFilter, disabled.',
+    },
+    {
       name: 'input[datepicker]',
       type: 'DatepickerPanel',
       description: 'Connects a text input (and its form control) to a <date-picker>.',
     },
-    { name: 'min / max', type: 'D | null', description: 'Earliest / latest selectable date.' },
+    {
+      name: 'min / max',
+      type: 'D | null',
+      description:
+        'Earliest / latest selectable date. Other days are disabled in the calendar; a typed date outside the range sets datepickerMin / datepickerMax on the form control.',
+    },
     {
       name: 'datepickerFilter',
       type: '(date: D | null) => boolean',
@@ -117,6 +219,26 @@ export class DatePickerDocComponent {
       type: "'month' | 'year' | 'multi-year'",
       default: "'month'",
       description: 'View the calendar opens in.',
+    },
+    {
+      name: 'showHolidays',
+      type: 'boolean',
+      default: 'true',
+      description:
+        'On <date-picker> and <date-range-picker>. Hovering a day that is a Vietnamese holiday or commemoration shows its name in a tooltip (hover only, from a static list: fixed solar dates and fixed lunar dates). The days off the government adds each year (Tết, Quốc khánh, days in lieu) are not in it.',
+    },
+    {
+      name: 'DatepickerIntl.holidayLanguage',
+      type: "'en' | 'vi'",
+      default: "'en'",
+      description:
+        'Language of the holiday names. Set it with provideDatepickerLabels({ holidayLanguage: "vi" }), or on the DatepickerIntl instance followed by changes.next().',
+    },
+    {
+      name: 'getVietnameseHolidays(day, month, year)',
+      type: 'VietnameseHoliday[]',
+      description:
+        'The same static list as a function: { kind: "public" | "traditional" | "observance", name: { vi, en } } per holiday of a Gregorian date (month 1-12). vietnameseHolidayText() joins the names of a day.',
     },
     {
       name: '<date-picker> showLunar',
@@ -173,6 +295,16 @@ export class DatePickerDocComponent {
     },
   ];
 
+  private _addDays(days: number): Date {
+    const date = new Date(this._today);
+    date.setDate(date.getDate() + days);
+    return date;
+  }
+
+  private _offsetText(days: number): string {
+    return days === 0 ? '' : days > 0 ? `+ ${days} days` : `- ${-days} days`;
+  }
+
   /** Demo data for the `datepickerDayExtra` template: a made-up price per day. */
   price(date: Date): string {
     const thousands = 18 + ((date.getDate() * 37 + date.getMonth() * 11) % 25);
@@ -191,6 +323,7 @@ export class DatePickerDocComponent {
             closeLabel: 'Đóng',
             switchToMultiYearViewLabel: 'Chọn tháng và năm',
             switchToMonthViewLabel: 'Chọn ngày',
+            holidayLanguage: 'vi',
             prevMonthLabel: 'Tháng trước',
             nextMonthLabel: 'Tháng sau',
           }

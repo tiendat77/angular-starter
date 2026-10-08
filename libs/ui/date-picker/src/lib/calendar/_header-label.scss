@@ -1,0 +1,28 @@
+// The month and the year in a calendar header: buttons that open a month / year grid. The open one is
+// highlighted. Shared by the single calendar and the range calendar (each loads its own stylesheet).
+.calendar-header-label {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  color: var(--color-foreground);
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+
+  &:hover {
+    background-color: color-mix(in oklab, var(--color-foreground) 8%, transparent);
+  }
+
+  &[aria-expanded='true'] {
+    color: var(--color-primary);
+    background-color: color-mix(in oklab, var(--color-primary) 12%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+}

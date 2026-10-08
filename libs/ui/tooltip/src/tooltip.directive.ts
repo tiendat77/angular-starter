@@ -71,6 +71,10 @@ export class UiTooltipDirective implements OnDestroy {
   readonly disabled = input<boolean>(false, {
     alias: 'uiTooltipDisabled',
   });
+  /** Whether keyboard focus on the host shows the tooltip too (hover always does). */
+  readonly showOnFocus = input<boolean>(true, {
+    alias: 'uiTooltipShowOnFocus',
+  });
   readonly interactive = input<boolean | undefined>(undefined, {
     alias: 'uiTooltipInteractive',
   });
@@ -139,6 +143,9 @@ export class UiTooltipDirective implements OnDestroy {
 
   @HostListener('focusin')
   onFocusIn(): void {
+    if (!this.showOnFocus()) {
+      return;
+    }
     this.show(0);
   }
 

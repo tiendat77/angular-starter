@@ -21,6 +21,7 @@
       #picker
       [startView]="startView()"
       [showLunar]="showLunar()"
+      [showHolidays]="showHolidays()"
     >
       @if (showExtra()) {
         <ng-template
@@ -84,6 +85,15 @@
         <input
           type="checkbox"
           class="border-border rounded"
+          [ngModel]="showHolidays()"
+          (ngModelChange)="showHolidays.set($event)"
+        />
+        <span>Holiday tooltips (hover 1/1, 30/4, 2/9…)</span>
+      </label>
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
           [ngModel]="showExtra()"
           (ngModelChange)="showExtra.set($event)"
         />
@@ -115,6 +125,91 @@
 
 <doc-playground
   class="mt-16 block"
+  title="Min and max date"
+  description="Limit the dates that can be picked, e.g. a booking window counted from today. Days outside the range are disabled in the calendar and the arrows stop at its edges; a typed date outside it sets an error on the form control."
+  [code]="minMaxCode()"
+>
+  <div
+    preview
+    class="flex w-full max-w-xs flex-col gap-3 p-4"
+  >
+    <label class="input w-full">
+      <datepicker-toggle [for]="minMaxPicker" />
+      <input
+        placeholder="Arrival date"
+        [datepicker]="minMaxPicker"
+        [formControl]="minMaxControl"
+        [min]="minDate()"
+        [max]="maxDate()"
+      />
+    </label>
+    <date-picker #minMaxPicker />
+    <p class="text-muted-foreground text-sm">
+      Range:
+      <span class="text-foreground font-mono">
+        {{ minDate() ? (minDate() | date: 'yyyy-MM-dd') : '…' }} →
+        {{ maxDate() ? (maxDate() | date: 'yyyy-MM-dd') : '…' }}
+      </span>
+    </p>
+    <p class="text-muted-foreground text-sm">
+      Value:
+      <span class="text-foreground font-mono">
+        {{ minMaxControl.value ? (minMaxControl.value | date: 'yyyy-MM-dd') : 'null' }}
+      </span>
+    </p>
+    <p class="text-muted-foreground text-sm">
+      Error:
+      <span class="text-foreground font-mono">{{ minMaxError() }}</span>
+    </p>
+  </div>
+
+  <div
+    controls
+    class="space-y-3 text-xs"
+  >
+    <div class="space-y-1">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="minEnabled()"
+          (ngModelChange)="minEnabled.set($event)"
+        />
+        <span>min (days from today)</span>
+      </label>
+      <input
+        type="number"
+        aria-label="Days from today for the minimum date"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [disabled]="!minEnabled()"
+        [ngModel]="minOffset()"
+        (ngModelChange)="minOffset.set(+$event || 0)"
+      />
+    </div>
+    <div class="space-y-1">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          class="border-border rounded"
+          [ngModel]="maxEnabled()"
+          (ngModelChange)="maxEnabled.set($event)"
+        />
+        <span>max (days from today)</span>
+      </label>
+      <input
+        type="number"
+        aria-label="Days from today for the maximum date"
+        class="border-border bg-background text-foreground w-full rounded-lg border px-3 py-1.5"
+        [disabled]="!maxEnabled()"
+        [ngModel]="maxOffset()"
+        (ngModelChange)="maxOffset.set(+$event || 0)"
+      />
+    </div>
+  </div>
+</doc-playground>
+
+<doc-playground
+  class="mt-16 block"
   title="Date Range Picker"
   description="Two months side by side. Hovering previews the range with a dashed outline, and the picker closes once the end date is picked."
   [code]="rangeCode()"
@@ -134,6 +229,7 @@
     <date-range-picker
       #rangePicker
       [showLunar]="rangeLunar()"
+      [showHolidays]="showHolidays()"
     >
       @if (rangeExtra()) {
         <ng-template
@@ -171,6 +267,70 @@
         (ngModelChange)="rangeExtra.set($event)"
       />
       <span>Extra text (price)</span>
+    </label>
+  </div>
+</doc-playground>
+
+<doc-playground
+  class="mt-16 block"
+  title="Date Range, two inputs"
+  description="Start and end each in a field box of their own, one calendar for both. Each input is its own form control with its own errors; typing in either one updates the range."
+  [code]="twoInputsCode"
+>
+  <div
+    preview
+    class="flex w-full flex-col gap-3 p-4"
+  >
+    <date-range-input
+      [rangePicker]="twoPicker"
+      [disabled]="twoInputsDisabled()"
+    >
+      <label class="input min-w-0 flex-1">
+        <input
+          dateRangeStart
+          placeholder="Check-in"
+          [formControl]="checkIn"
+        />
+        <datepicker-toggle [for]="twoPicker" />
+      </label>
+      <span
+        class="text-muted-foreground"
+        aria-hidden="true"
+      >
+        →
+      </span>
+      <label class="input min-w-0 flex-1">
+        <input
+          dateRangeEnd
+          placeholder="Check-out"
+          [formControl]="checkOut"
+        />
+        <datepicker-toggle [for]="twoPicker" />
+      </label>
+    </date-range-input>
+    <date-range-picker
+      #twoPicker
+      showLunar
+      [showHolidays]="showHolidays()"
+    />
+    <p class="text-muted-foreground text-sm">
+      Errors:
+      <span class="text-foreground font-mono">{{ twoInputsErrors() }}</span>
+    </p>
+  </div>
+
+  <div
+    controls
+    class="space-y-2 text-xs"
+  >
+    <label class="flex cursor-pointer items-center gap-2">
+      <input
+        type="checkbox"
+        class="border-border rounded"
+        [ngModel]="twoInputsDisabled()"
+        (ngModelChange)="toggleTwoInputsDisabled($event)"
+      />
+      <span>Disabled</span>
     </label>
   </div>
 </doc-playground>

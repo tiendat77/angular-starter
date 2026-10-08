@@ -24,6 +24,7 @@ import {
   ViewEncapsulation,
   inject,
 } from '@angular/core';
+import { UiTooltipDirective } from '@libs/ui/tooltip';
 
 import { take } from 'rxjs/operators';
 
@@ -49,7 +50,8 @@ export class CalendarCell<D = any> {
     public cssClasses: CalendarCellCssClasses = {},
     public compareValue = value,
     public rawValue?: D,
-    public topText: string | null = null
+    public topText: string | null = null,
+    public tooltip: string | null = null
   ) {}
 }
 
@@ -90,7 +92,7 @@ const passiveEventOptions = normalizePassiveListenerOptions({ passive: true });
   exportAs: 'calendarBody',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, NgTemplateOutlet],
+  imports: [NgClass, NgTemplateOutlet, UiTooltipDirective],
 })
 export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChecked {
   private _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);

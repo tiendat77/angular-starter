@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DocsSidebarState } from './docs-sidebar-state';
 
 @Component({
   selector: 'doc-header',
@@ -6,6 +7,8 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
   templateUrl: './docs-header.component.html',
 })
 export class DocsHeaderComponent {
+  protected readonly sidebar = inject(DocsSidebarState);
+
   readonly isDark = signal(false);
 
   toggleTheme(): void {

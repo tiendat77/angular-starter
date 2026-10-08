@@ -8,7 +8,7 @@ $calendar-body-label-side-padding: math.div(33%, 7) !default;
 $calendar-body-cell-min-size: 2.5rem !default;
 $calendar-body-cell-content-margin: 5% !default;
 $calendar-body-cell-content-border-width: 1px !default;
-$calendar-body-cell-radius: 999px !default;
+$calendar-body-cell-radius: 0.5rem !default;
 
 $calendar-body-min-size: 7 * $calendar-body-cell-min-size !default;
 $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 !default;
@@ -155,21 +155,21 @@ $calendar-body-cell-content-size: 100% - $calendar-body-cell-content-margin * 2 
 
 .calendar-body-range-start::before {
   left: 5%;
-  border-start-start-radius: 999px;
-  border-end-start-radius: 999px;
+  border-start-start-radius: 0.5rem;
+  border-end-start-radius: 0.5rem;
 }
 
 .calendar-body-range-end::before {
   right: 5%;
-  border-start-end-radius: 999px;
-  border-end-end-radius: 999px;
+  border-start-end-radius: 0.5rem;
+  border-end-end-radius: 0.5rem;
 }
 
 // Range preview while the end date is pending (like ng-zorro): a dashed outline around the days
 // of each week row. Top/bottom edges run along the whole row; the side edges close the outline at the
 // start / end of the preview and at the first / last day of each row.
 // Round caps match the circular day; cells with lunar / extra text are rounded rectangles instead
-$calendar-body-preview-radius: 999px;
+$calendar-body-preview-radius: 0.5rem;
 $calendar-body-preview-color: color-mix(in oklab, var(--color-primary) 55%, transparent);
 
 .calendar-body-in-preview::after {

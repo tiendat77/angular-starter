@@ -1,6 +1,7 @@
 import { Injectable, Provider } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DateAdapter } from '../adapter';
+import { HolidayLanguage } from '../holidays/vietnamese-holidays';
 
 /** Strings rendered by the date picker itself (buttons and screen-reader labels). */
 export interface DatepickerLabels {
@@ -22,6 +23,8 @@ export interface DatepickerLabels {
   nextMonthLabel: string;
   nextYearLabel: string;
   nextMultiYearLabel: string;
+  /** Language of the holiday names shown when hovering a day: `en` (default) or `vi`. */
+  holidayLanguage: HolidayLanguage;
 }
 
 /**
@@ -49,6 +52,7 @@ export class DatepickerIntl implements DatepickerLabels {
   nextMonthLabel = 'Next month';
   nextYearLabel = 'Next year';
   nextMultiYearLabel = 'Next 24 years';
+  holidayLanguage: HolidayLanguage = 'en';
 }
 
 /**

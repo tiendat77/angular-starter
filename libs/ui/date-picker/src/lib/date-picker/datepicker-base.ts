@@ -236,6 +236,12 @@ export abstract class DatepickerBase<
   /** Whether to show the Vietnamese lunar date (Âm lịch) below each day number. */
   @Input({ transform: booleanAttribute }) showLunar = false;
 
+  /**
+   * Whether hovering a day shows the name of its Vietnamese holiday, if it has one (a static list;
+   * the language is `DatepickerIntl.holidayLanguage`). On by default.
+   */
+  @Input({ transform: booleanAttribute }) showHolidays = true;
+
   /** Template that renders extra content below each day (e.g. the best price of the day). */
   @ContentChild(DatepickerDayExtra) dayExtra?: DatepickerDayExtra;
 

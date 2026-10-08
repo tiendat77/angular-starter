@@ -39,7 +39,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 
 import {
@@ -51,6 +51,8 @@ import {
 
 import { DATE_FORMATS, DateAdapter, DateFormats } from '../adapter';
 import { DateRange } from '../date-picker/date-selection-model';
+import { DatepickerIntl } from '../date-picker/datepicker-intl';
+import { vietnameseHolidayText } from '../holidays/vietnamese-holidays';
 import { formatLunarLabel, solarToLunar } from '../lunar/vietnamese-lunar';
 import { createMissingDateImplError } from '../utils/errors';
 
@@ -71,6 +73,7 @@ const DAYS_PER_WEEK = 7;
 export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
   readonly _changeDetectorRef = inject(ChangeDetectorRef);
   private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+  private _intl = inject(DatepickerIntl);
   _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
   private _dir = inject(Directionality, { optional: true });
 
@@ -142,6 +145,9 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
 
   /** Whether to show the Vietnamese lunar date above the day number. */
   @Input() showLunar = false;
+
+  /** Whether hovering a day shows its Vietnamese holiday, if it has one. */
+  @Input() showHolidays = true;
 
   /** Template rendered below the day number of every cell; receives the cell's date. */
   @Input() dayExtra: TemplateRef<any> | null = null;
@@ -248,7 +254,10 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
       this._setRanges(this.selected);
     }
 
-    if (changes['showLunar'] && !changes['showLunar'].firstChange) {
+    if (
+      (changes['showLunar'] || changes['showHolidays']) &&
+      !(changes['showLunar'] ?? changes['showHolidays']).firstChange
+    ) {
       this._init();
     }
 
@@ -263,7 +272,7 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
   }
 
   ngAfterContentInit() {
-    this._rerenderSubscription = this._dateAdapter.localeChanges
+    this._rerenderSubscription = merge(this._dateAdapter.localeChanges, this._intl.changes)
       .pipe(startWith(null))
       .subscribe(() => this._init());
   }
@@ -536,10 +545,21 @@ export class MonthView<D> implements AfterContentInit, OnChanges, OnDestroy {
           cellClasses,
           this._getCellCompareValue(date)!,
           date,
-          this.showLunar ? this._getLunarLabel(date) : null
+          this.showLunar ? this._getLunarLabel(date) : null,
+          this.showHolidays ? this._getHolidayText(date) : null
         )
       );
     }
+  }
+
+  /** Name of the holiday of a date (in the language of `DatepickerIntl`), or `null`. */
+  private _getHolidayText(date: D): string | null {
+    return vietnameseHolidayText(
+      this._dateAdapter.getDate(date),
+      this._dateAdapter.getMonth(date) + 1,
+      this._dateAdapter.getYear(date),
+      this._intl.holidayLanguage
+    );
   }
 
   /** Lunar label (e.g. `12` or `1/10`) of a date. */

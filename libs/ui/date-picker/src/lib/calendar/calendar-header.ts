@@ -18,9 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DateAdapter } from '../adapter';
 import { DatepickerIntl } from '../date-picker/datepicker-intl';
 import { Calendar } from './calendar';
-import { getActiveOffset, isSameMultiYearView, yearsPerPage } from './multi-year-view';
-
-let calendarHeaderId = 1;
+import { isSameMultiYearView, yearsPerPage } from './multi-year-view';
 
 /** Default header for MatCalendar */
 @Component({
@@ -42,49 +40,20 @@ export class CalendarHeader<D> {
     this._intl.changes.pipe(takeUntilDestroyed()).subscribe(() => changeDetectorRef.markForCheck());
   }
 
-  /** "September 2026", laid out by `DatepickerIntl.monthYearFormat` (e.g. "tháng 9, 2026"). */
-  private _formatMonthYear(): string {
+  /** The month name of the active date, kept in its natural case; the template capitalizes it. */
+  get monthText(): string {
     const date = this.calendar.activeDate;
-    const month = this._dateAdapter.getMonthNames('long')[this._dateAdapter.getMonth(date)];
-    return this._intl.monthYearFormat
-      .replace('{month}', month)
-      .replace('{year}', this._dateAdapter.getYearName(date));
+    return this._dateAdapter.getMonthNames('long')[this._dateAdapter.getMonth(date)];
   }
 
-  /** The display text for the current calendar view. */
-  get periodButtonText(): string {
-    if (this.calendar.currentView == 'month') {
-      // Kept in its natural case; the template capitalizes the first letter
-      return this._formatMonthYear();
-    }
-    if (this.calendar.currentView == 'year') {
-      return this._dateAdapter.getYearName(this.calendar.activeDate);
-    }
-
-    const [start, end] = this._formatMinAndMaxYearLabels();
-    return `${start} \u2013 ${end}`;
+  get yearText(): string {
+    return this._dateAdapter.getYearName(this.calendar.activeDate);
   }
 
-  /** The aria description for the current calendar view. */
-  get periodButtonDescription(): string {
-    if (this.calendar.currentView == 'month') {
-      return this._formatMonthYear();
-    }
-    if (this.calendar.currentView == 'year') {
-      return this._dateAdapter.getYearName(this.calendar.activeDate);
-    }
-
-    // Format a label for the window of years displayed in the multi-year calendar view. Use
-    // `formatYearRangeLabel` because it is TTS friendly.
-    const [start, end] = this._formatMinAndMaxYearLabels();
-    return `${start} \u2013 ${end}`;
-  }
-
-  /** The `aria-label` for changing the calendar view. */
-  get periodButtonLabel(): string {
-    return this.calendar.currentView == 'month'
-      ? this._intl.switchToMultiYearViewLabel
-      : this._intl.switchToMonthViewLabel;
+  /** Locales that write the year before the month ("2026年9月"): put its button first. */
+  get yearFirst(): boolean {
+    const format = this._intl.monthYearFormat;
+    return format.indexOf('{year}') < format.indexOf('{month}');
   }
 
   /** The label for the previous button. */
@@ -105,9 +74,14 @@ export class CalendarHeader<D> {
     }[this.calendar.currentView];
   }
 
-  /** Handles user clicks on the period label. */
-  currentPeriodClicked(): void {
-    this.calendar.currentView = this.calendar.currentView == 'month' ? 'multi-year' : 'month';
+  /** Handles user clicks on the month: opens the month grid, or goes back to the days. */
+  monthLabelClicked(): void {
+    this.calendar._toggleGrid('year');
+  }
+
+  /** Handles user clicks on the year: opens the year grid, or goes back to the days. */
+  yearLabelClicked(): void {
+    this.calendar._toggleGrid('multi-year');
   }
 
   /** Handles user clicks on the previous button. */
@@ -169,37 +143,4 @@ export class CalendarHeader<D> {
       this.calendar.maxDate
     );
   }
-
-  /**
-   * Format two individual labels for the minimum year and maximum year available in the multi-year
-   * calendar view. Returns an array of two strings where the first string is the formatted label
-   * for the minimum year, and the second string is the formatted label for the maximum year.
-   */
-  private _formatMinAndMaxYearLabels(): [minYearLabel: string, maxYearLabel: string] {
-    // The offset from the active year to the "slot" for the starting year is the
-    // *actual* first rendered year in the multi-year view, and the last year is
-    // just yearsPerPage - 1 away.
-    const activeYear = this._dateAdapter.getYear(this.calendar.activeDate);
-    const minYearOfPage =
-      activeYear -
-      getActiveOffset(
-        this._dateAdapter,
-        this.calendar.activeDate,
-        this.calendar.minDate,
-        this.calendar.maxDate
-      );
-    const maxYearOfPage = minYearOfPage + yearsPerPage - 1;
-    const minYearLabel = this._dateAdapter.getYearName(
-      this._dateAdapter.createDate(minYearOfPage, 0, 1)
-    );
-    const maxYearLabel = this._dateAdapter.getYearName(
-      this._dateAdapter.createDate(maxYearOfPage, 0, 1)
-    );
-
-    return [minYearLabel, maxYearLabel];
-  }
-
-  private _id = `calendar-header-${calendarHeaderId++}`;
-
-  _periodButtonLabelId = `${this._id}-period-label`;
 }

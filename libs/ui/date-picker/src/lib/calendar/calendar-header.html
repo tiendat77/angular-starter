@@ -1,48 +1,4 @@
-<div class="flex items-center justify-between px-3 pt-2.5 pb-0">
-  <!-- [Firefox Issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1880533]
-    Relocated label next to related button and made visually hidden via cdk-visually-hidden
-    to enable label to appear in a11y tree for SR when using Firefox -->
-  <label
-    class="cdk-visually-hidden hidden"
-    for=""
-    [id]="_periodButtonLabelId"
-  >
-    {{ periodButtonDescription }}
-  </label>
-
-  <button
-    class="btn btn-ghost"
-    aria-live="polite"
-    [attr.aria-label]="periodButtonLabel"
-    [attr.aria-describedby]="_periodButtonLabelId"
-    (click)="currentPeriodClicked()"
-  >
-    <span
-      class="inline-block text-base font-medium normal-case first-letter:uppercase"
-      aria-hidden="true"
-    >
-      {{ periodButtonText }}
-    </span>
-
-    <svg
-      class="h-3 w-3"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="3"
-      stroke="currentColor"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="m19.5 8.25-7.5 7.5-7.5-7.5"
-      />
-    </svg>
-  </button>
-
-  <div class="flex-auto"></div>
-
-  <ng-content />
-
+<div class="flex items-center justify-between gap-1 px-3 pt-2.5 pb-4">
   <button
     type="button"
     class="btn btn-circle btn-ghost btn-sm"
@@ -51,7 +7,7 @@
     (click)="previousClicked()"
   >
     <svg
-      class="h-6 w-6"
+      class="h-5 w-5"
       fill="none"
       viewBox="0 0 24 24"
       stroke-width="2"
@@ -65,6 +21,36 @@
     </svg>
   </button>
 
+  <!-- The month and the year are two buttons: each toggles a grid in place of the days -->
+  <div class="flex min-w-0 flex-auto items-center justify-center">
+    <div
+      class="flex items-center gap-1"
+      aria-live="polite"
+      [class.flex-row-reverse]="yearFirst"
+    >
+      <button
+        type="button"
+        class="calendar-header-label first-letter:uppercase"
+        aria-haspopup="grid"
+        [attr.aria-expanded]="calendar.currentView === 'year'"
+        (click)="monthLabelClicked()"
+      >
+        {{ monthText }}
+      </button>
+      <button
+        type="button"
+        class="calendar-header-label"
+        aria-haspopup="grid"
+        [attr.aria-expanded]="calendar.currentView === 'multi-year'"
+        (click)="yearLabelClicked()"
+      >
+        {{ yearText }}
+      </button>
+    </div>
+
+    <ng-content />
+  </div>
+
   <button
     type="button"
     class="btn btn-circle btn-ghost btn-sm"
@@ -73,7 +59,7 @@
     (click)="nextClicked()"
   >
     <svg
-      class="h-6 w-6"
+      class="h-5 w-5"
       fill="none"
       viewBox="0 0 24 24"
       stroke-width="2"

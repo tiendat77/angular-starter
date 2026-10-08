@@ -14,6 +14,7 @@
         [minDate]="minDate"
         [dateClass]="dateClass"
         [showLunar]="showLunar"
+        [showHolidays]="showHolidays"
         [dayExtra]="dayExtra"
         [comparisonStart]="comparisonStart"
         [comparisonEnd]="comparisonEnd"
@@ -47,7 +48,7 @@
         [dateClass]="dateClass"
         [(activeDate)]="activeDate"
         (yearSelected)="_yearSelectedInMultiYearView($event)"
-        (selectedChange)="_goToDateInView($event, 'year')"
+        (selectedChange)="_goToDateInView($event, _quickChange ? 'month' : 'year')"
       />
     }
   }
