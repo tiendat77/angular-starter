@@ -1,3 +1,192 @@
+# Date Picker
+
+A calendar popup connected to a text input: single dates, date ranges (in one input, or in two separate ones), min and max, date filters, month and year views, Vietnamese lunar dates and holiday tooltips. It works with `formControl` and `ngModel` and has a full-screen mode on small screens.
+
+```ts
+import { DatepickerModule, provideNativeDateAdapter } from '@libs/ui/date-picker';
+```
+
+Provide a date adapter once (the native `Date` one here, in the app config or the component's `providers`):
+
+```ts
+providers: [provideNativeDateAdapter()];
+```
+
+## Quick start
+
+### One date
+
+```html
+<label class="input">
+  <datepicker-toggle [for]="picker" />
+  <input placeholder="Pick a date" [datepicker]="picker" [formControl]="birthday" />
+</label>
+<date-picker #picker />
+```
+
+### Min and max, a filter, the holiday tooltips
+
+```html
+<input [datepicker]="picker" [formControl]="arrival" [min]="today" [max]="inThirtyDays" [datepickerFilter]="weekdaysOnly" />
+<date-picker #picker showLunar [showHolidays]="true" />
+```
+
+Days outside the range are disabled in the calendar and the arrows stop at its edges. A typed date outside it sets `datepickerMin` / `datepickerMax` on the form control (and `datepickerParse` for text that is not a date, `datepickerFilter` for a filtered date).
+
+Hovering a day that is a Vietnamese holiday or commemoration shows its name (a static list; `showHolidays` is on by default). The names are English; for Vietnamese set `holidayLanguage: 'vi'` in the labels (below).
+
+### A range in one input
+
+```html
+<label class="input">
+  <datepicker-toggle [for]="range" />
+  <input placeholder="Check-in – Check-out" [dateRangePicker]="range" [formControl]="stay" />
+</label>
+<date-range-picker #range />
+<!-- stay: FormControl<DateRange<Date> | null>; the text is "start – end" and can be typed -->
+```
+
+### A range in two separate inputs
+
+Each date has its own input, form control and errors, and each can sit in a field box of its own:
+
+```html
+<date-range-input [rangePicker]="range">
+  <label class="input"><input dateRangeStart placeholder="Check-in" [formControl]="checkIn" /></label>
+  <span aria-hidden="true">→</span>
+  <label class="input">
+    <input dateRangeEnd placeholder="Check-out" [formControl]="checkOut" />
+    <datepicker-toggle [for]="range" />
+  </label>
+</date-range-input>
+<date-range-picker #range />
+```
+
+An end before the start sets `datepickerRange` on both inputs; moving the start past the end revalidates the end. The calendar opens under the whole row. In the calendar, the first click sets the start and the next one the end.
+
+In the range calendar the month and the year are two buttons: click one to jump to another month or year (each panel gets its own previous / next arrows while a grid is open).
+
+### Extra text under each day
+
+```html
+<date-picker #picker>
+  <ng-template datepickerDayExtra let-date>{{ priceOf(date) }}</ng-template>
+</date-picker>
+```
+
+### Translate it
+
+```ts
+providers: [
+  provideNativeDateAdapter(),
+  provideDatepickerLabels({
+    closeLabel: 'Đóng',
+    prevMonthLabel: 'Tháng trước',
+    nextMonthLabel: 'Tháng sau',
+    monthYearFormat: '{month}, {year}',
+    holidayLanguage: 'vi',
+  }),
+],
+```
+
+The month and weekday names come from the date adapter's locale (`adapter.setLocale('vi-VN')`).
+
+## API
+
+### `input[datepicker]`
+
+| Input / Output     | Type                          | Default | Description                                                            |
+| ------------------ | ----------------------------- | ------- | ---------------------------------------------------------------------- |
+| `datepicker`       | `<date-picker>`               | –       | The picker this input opens.                                           |
+| `min` / `max`      | `D \| null`                   | `null`  | Earliest / latest valid date.                                          |
+| `datepickerFilter` | `(date: D \| null) => boolean` | –      | Return `false` to disable a date.                                      |
+| `disabled`         | `boolean`                     | `false` | Also set by the form.                                                  |
+| `value`            | `D \| null`                   | –       | The date (the form control normally holds it).                         |
+| `(dateChange)`     | `DatepickerInputEvent`        |         | The user changed the date (a change event).                            |
+| `(dateInput)`      | `DatepickerInputEvent`        |         | The user typed or picked a date.                                       |
+
+### `date-picker` and `date-range-picker`
+
+| Input / Output          | Type                                   | Default                | Description                                                                          |
+| ----------------------- | -------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------ |
+| `startAt`               | `D \| null`                            | the value, else today  | The date the calendar opens at.                                                      |
+| `startView`             | `'month' \| 'year' \| 'multi-year'`    | `'month'`              | The view it opens in (`multi-year` is handy for a birthdate).                        |
+| `showLunar`             | `boolean`                              | `false`                | Vietnamese lunar date above each day (on the 1st of a lunar month `day/month`).      |
+| `showHolidays`          | `boolean`                              | `true`                 | Hovering a Vietnamese holiday shows its name.                                        |
+| `dateClass`             | `(date, view) => string \| string[]`   | –                      | Extra CSS classes for dates.                                                         |
+| `touchUi`               | `boolean`                              | `false`                | Opens in a dialog with bigger targets.                                               |
+| `fullscreenBreakpoint`  | `string \| false`                      | `'(max-width: 640px)'` | Media query below which it opens as a full-screen sheet. `false`: always a dropdown. |
+| `xPosition` / `yPosition` | `'start' \| 'end'` / `'above' \| 'below'` | `'start'` / `'below'` | Preferred place of the dropdown.                                                  |
+| `disabled`              | `boolean`                              | `false`                | Cannot be opened.                                                                    |
+| `restoreFocus`          | `boolean`                              | `true`                 | Returns focus to what had it when the calendar closes.                               |
+| `panelClass`            | `string \| string[]`                   | –                      | Classes on the panel.                                                                |
+| `calendarHeaderComponent` | `ComponentType`                      | –                      | Replaces the calendar header.                                                        |
+| `(yearSelected)`, `(monthSelected)` | `D`                        |                        | A year / month was chosen in its view (not a change of the value).                   |
+| `(viewChanged)`         | `'month' \| 'year' \| 'multi-year'`    |                        | The calendar changed view.                                                           |
+| `(openedStream)`, `(closedStream)` | `void`                      |                        | The calendar opened / closed.                                                        |
+
+Methods: `open()`, `close()`; `opened` tells whether it is open (`#picker="datepicker"`).
+
+### `input[dateRangePicker]`
+
+| Input              | Type                            | Default | Description                                              |
+| ------------------ | ------------------------------- | ------- | -------------------------------------------------------- |
+| `dateRangePicker`  | `<date-range-picker>`           | –       | The picker it opens. The form value is a `DateRange<D>` (`{ start, end }`). |
+| `min` / `max`      | `D \| null`                     | `null`  | Earliest / latest valid date.                            |
+| `datepickerFilter` | `(date: D \| null) => boolean`  | –       | Return `false` to disable a date.                        |
+| `disabled`         | `boolean`                       | `false` | Also set by the form.                                    |
+
+### `date-range-input`, `input[dateRangeStart]`, `input[dateRangeEnd]`
+
+| Input              | Type                            | Default | Description                                                                     |
+| ------------------ | ------------------------------- | ------- | ------------------------------------------------------------------------------- |
+| `rangePicker`      | `<date-range-picker>`           | –       | The picker the two inputs share.                                                |
+| `min` / `max`      | `D \| null`                     | `null`  | Earliest / latest valid date, for both inputs.                                  |
+| `datepickerFilter` | `(date: D \| null) => boolean`  | –       | Filter, also checked on typed dates.                                            |
+| `disabled`         | `boolean`                       | `false` | Disables both inputs (each is also a form control and can be disabled itself).  |
+
+Each `dateRangeStart` / `dateRangeEnd` is a form control holding one `D | null`.
+
+### `calendar` (inline, without an input)
+
+```html
+<calendar [selected]="date" (selectedChange)="date = $event" [minDate]="min" [maxDate]="max" showLunar />
+```
+
+| Input / Output                  | Type                              | Default      | Description                                                       |
+| ------------------------------- | --------------------------------- | ------------ | ----------------------------------------------------------------- |
+| `selected`                      | `D \| DateRange<D> \| null`       | `null`       | The selected date (or range).                                     |
+| `startAt`, `startView`          | `D \| null`, `'month' \| 'year' \| 'multi-year'` | today, `'month'` | Where it opens.                                       |
+| `minDate`, `maxDate`            | `D \| null`                       | `null`       | Earliest / latest selectable date.                                |
+| `dateFilter`, `dateClass`       | functions                         | –            | Disable dates; add CSS classes to dates.                          |
+| `showLunar`, `showHolidays`, `dayExtra` | `boolean`, `boolean`, `TemplateRef` | `false`, `true`, – | The same as on the picker.                                 |
+| `comparisonStart`, `comparisonEnd` | `D \| null`                    | –            | A second range drawn for comparison.                              |
+| `headerComponent`               | `ComponentType`                   | –            | Replaces the header.                                              |
+| `(selectedChange)`              | `D \| null`                       |              | The selected date changed.                                        |
+| `(yearSelected)`, `(monthSelected)`, `(viewChanged)` | `D`, `D`, view       |              | A year / month was chosen; the view changed.                      |
+
+### `datepicker-toggle`
+
+| Input | Type                                      | Description                          |
+| ----- | ----------------------------------------- | ------------------------------------ |
+| `for` | `<date-picker>` or `<date-range-picker>`  | The picker the button opens.         |
+| `aria-label` | `string`                           | Accessible name of the button.       |
+| `disabled`   | `boolean`                          | Defaults to the picker's state.      |
+
+### Labels: `DatepickerIntl` / `provideDatepickerLabels(partial)`
+
+`selectDateLabel`, `selectDatesLabel`, `closeLabel`, `monthYearFormat` (`'{month} {year}'`), `switchToMultiYearViewLabel`, `switchToMonthViewLabel`, `prevMonthLabel`, `prevYearLabel`, `prevMultiYearLabel`, `nextMonthLabel`, `nextYearLabel`, `nextMultiYearLabel`, `holidayLanguage` (`'en'` or `'vi'`). Change them at run time on the `DatepickerIntl` instance, then call `intl.changes.next()`.
+
+### Helpers
+
+`getVietnameseHolidays(day, month, year)` and `vietnameseHolidayText(day, month, year, language)` give the holidays of a Gregorian date (`month` is 1–12); `solarToLunar(day, month, year)` converts a date to the Vietnamese lunar calendar.
+
+---
+
+## Detailed guide
+
+The sections below go deeper (formats, adapters, validation, accessibility). Some come from Angular Material's datepicker, which this one started from.
+
 The datepicker allows users to enter a date either through text input, or by choosing a date from
 the calendar. It is made up of several components, directives and [the date implementation](#choosing-a-date-implementation-and-date-format-settings) that work together.
 

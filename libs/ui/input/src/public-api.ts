@@ -3,6 +3,7 @@ export * from './form-field.component';
 export * from './form-field.token';
 export * from './hint.directive';
 export * from './input.directive';
+export * from './input.module';
 export * from './input.variants';
 export * from './label.directive';
 export * from './prefix-suffix.directive';

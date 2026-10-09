@@ -1,25 +1,62 @@
 # Paginator
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.0.
+Navigation between pages of data: numbered pages (with ellipses for long lists), previous / next, optional first / last, and a page-size selector. It holds no data: you give it `length`, `pageSize` and `pageIndex`, and load the page when it emits `(page)`.
 
-## Code scaffolding
+```ts
+import { Paginator, PageEvent } from '@libs/ui/paginator';
+```
 
-Run `ng generate component component-name --project paginator` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project paginator`.
+## Usage
 
-> Note: Don't forget to add `--project paginator` or else it will be added to the default project in your `angular.json` file.
+```ts
+@Component({
+  imports: [Paginator],
+  template: `
+    <paginator
+      [length]="total()"
+      [pageSize]="pageSize()"
+      [pageIndex]="pageIndex()"
+      [showFirstLastButtons]="true"
+      (page)="onPage($event)"
+    />
+  `,
+})
+export class Users {
+  readonly total = signal(95);
+  readonly pageSize = signal(10);
+  readonly pageIndex = signal(0);
 
-## Build
+  onPage(event: PageEvent): void {
+    this.pageSize.set(event.pageSize);
+    this.pageIndex.set(event.pageIndex);
+    this.load(event.pageIndex, event.pageSize);
+  }
+}
+```
 
-Run `ng build paginator` to build the project. The build artifacts will be stored in the `dist/` directory.
+App-wide defaults: `{ provide: PAGINATOR_DEFAULT_OPTIONS, useValue: { pageSize: 25, pageSizeOptions: [25, 50, 100] } }`.
 
-## Publishing
+## API
 
-After building your library with `ng build paginator`, go to the dist folder `cd dist/paginator` and run `npm publish`.
+### `paginator`
 
-## Running unit tests
+| Input                  | Type       | Default             | Description                                                  |
+| ---------------------- | ---------- | ------------------- | ------------------------------------------------------------ |
+| `length`               | `number`   | `0`                 | Total number of items.                                       |
+| `pageIndex`            | `number`   | `0`                 | Zero-based index of the page shown.                          |
+| `pageSize`             | `number`   | `50`                | Items per page.                                              |
+| `pageSizeOptions`      | `number[]` | `[10, 25, 50, 100]` | Sizes the user can choose from.                              |
+| `hidePageSize`         | `boolean`  | `false`             | Hides the page-size selector.                                |
+| `pageSizeLabel`        | `string`   | `'Page size:'`      | Label of the page-size selector.                             |
+| `hideTotal`            | `boolean`  | `true`              | Hides the total count.                                       |
+| `showFirstLastButtons` | `boolean`  | `false`             | Adds first / last page buttons.                              |
+| `autoHide`             | `boolean`  | `true`              | Hides the paginator when there are no pages (`length` is 0). |
+| `disabled`             | `boolean`  | `false`             | Disables every control.                                      |
 
-Run `ng test paginator` to execute the unit tests via [Karma](https://karma-runner.github.io).
+| Output | Type        | Description                        |
+| ------ | ----------- | ---------------------------------- |
+| `page` | `PageEvent` | The page or the page size changed. |
 
-## Further help
+`PageEvent`: `{ pageIndex, previousPageIndex?, pageSize, length? }`.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Methods (use a template reference or `viewChild`): `nextPage()`, `previousPage()`, `firstPage()`, `lastPage()`, `selectPage(index)`, `hasNextPage()`, `hasPreviousPage()`, `getNumberOfPages()`.

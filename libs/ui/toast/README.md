@@ -1,25 +1,72 @@
 # Toast
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.0.
+Short messages that appear over the page and go away by themselves: success, error, info, warning. Opened from code with `ToastService`; each one returns a reference you can dismiss or listen to.
 
-## Code scaffolding
+```ts
+import { ToastService, provideToast } from '@libs/ui/toast';
+```
 
-Run `ng generate component component-name --project toast` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project toast`.
+## Usage
 
-> Note: Don't forget to add `--project toast` or else it will be added to the default project in your `angular.json` file.
+```ts
+private readonly toast = inject(ToastService);
 
-## Build
+save(): void {
+  this.api.save().subscribe({
+    next: () => this.toast.success('Your changes were saved.', 'Saved'),
+    error: () => this.toast.error('Please try again in a moment.', 'Could not save'),
+  });
+}
+```
 
-Run `ng build toast` to build the project. The build artifacts will be stored in the `dist/` directory.
+`success`, `error`, `info` and `warning` take `(message, title?)`. For control over the duration and the place, use `open`:
 
-## Publishing
+```ts
+const ref = this.toast.open('info', 'Update available', 'Reload to get the new version.', {
+  duration: 10000,            // ms; the default is 5000
+  verticalPosition: 'bottom', // 'top' (default) | 'bottom'
+  horizontalPosition: 'end',  // 'start' | 'center' (default) | 'end' | 'left' | 'right'
+});
 
-After building your library with `ng build toast`, go to the dist folder `cd dist/toast` and run `npm publish`.
+ref.afterDismissed().subscribe(({ dismissedByAction }) => {
+  if (dismissedByAction) location.reload();
+});
+```
 
-## Running unit tests
+App-wide defaults for every toast: `{ provide: TOAST_DEFAULT_OPTIONS, useValue: { duration: 8000, verticalPosition: 'bottom' } }`.
 
-Run `ng test toast` to execute the unit tests via [Karma](https://karma-runner.github.io).
+`ToastService` is available everywhere (`providedIn: 'root'`); `provideToast()` (optional) creates it at bootstrap:
 
-## Further help
+```ts
+providers: [provideToast()];
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## API
+
+### `ToastService`
+
+| Method                                                          | Description                                                           |
+| --------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `open(type, title, message, config?)`                           | Opens a toast. `type`: `'success' \| 'error' \| 'info' \| 'warning'`. |
+| `success(message, title?)`, `error(…)`, `info(…)`, `warning(…)` | Shortcuts for `open` with default config.                             |
+| `dismiss()`                                                     | Dismisses the toast that is open.                                     |
+
+### `ToastConfig`
+
+| Option               | Type                                                | Default    | Description                                                    |
+| -------------------- | --------------------------------------------------- | ---------- | -------------------------------------------------------------- |
+| `duration`           | `number`                                            | `5000`     | Milliseconds before it dismisses itself.                       |
+| `verticalPosition`   | `'top' \| 'bottom'`                                 | `'top'`    | Edge of the screen.                                            |
+| `horizontalPosition` | `'start' \| 'center' \| 'end' \| 'left' \| 'right'` | `'center'` | Side of the screen.                                            |
+| `direction`          | `'ltr' \| 'rtl'`                                    | –          | Text direction.                                                |
+| `viewContainerRef`   | `ViewContainerRef`                                  | –          | The dependency-injection parent (does not move it in the DOM). |
+
+### `ToastRef`
+
+| Method                | Description                                                     |
+| --------------------- | --------------------------------------------------------------- |
+| `dismiss()`           | Dismisses the toast.                                            |
+| `dismissWithAction()` | Dismisses it and marks the action as clicked.                   |
+| `afterOpened()`       | `Observable<void>`, when it has appeared.                       |
+| `afterDismissed()`    | `Observable<{ dismissedByAction: boolean }>`, when it has gone. |
+| `onAction()`          | `Observable<void>`, when its action was clicked.                |

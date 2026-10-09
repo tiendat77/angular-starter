@@ -1,25 +1,45 @@
 # Loader
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.0.
+A full-screen loading overlay with a small animation, shown and hidden from code. While it is open it blocks page scrolling.
 
-## Code scaffolding
+```ts
+import { LoaderService, provideLoader } from '@libs/ui/loader';
+```
 
-Run `ng generate component component-name --project loader` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project loader`.
+## Usage
 
-> Note: Don't forget to add `--project loader` or else it will be added to the default project in your `angular.json` file.
+```ts
+private readonly loader = inject(LoaderService);
 
-## Build
+async save(): Promise<void> {
+  this.loader.show();
+  try {
+    await this.api.save();
+  } finally {
+    this.loader.hide();
+  }
+}
+```
 
-Run `ng build loader` to build the project. The build artifacts will be stored in the `dist/` directory.
+`show()` returns a reference: a second `show()` while the loader is open returns the same one, so nested calls do not stack. Close it with `loader.hide()` or `ref.close()`.
 
-## Publishing
+`LoaderService` is available everywhere (`providedIn: 'root'`). `provideLoader()` (optional) creates it at bootstrap:
 
-After building your library with `ng build loader`, go to the dist folder `cd dist/loader` and run `npm publish`.
+```ts
+providers: [provideLoader()];
+```
 
-## Running unit tests
+## API
 
-Run `ng test loader` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### `LoaderService`
 
-## Further help
+| Method   | Description                                                               |
+| -------- | ------------------------------------------------------------------------- |
+| `show()` | Opens the loader and returns a `LoaderOverlayRef` (the open one, if any). |
+| `hide()` | Closes the loader.                                                        |
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### `LoaderOverlayRef`
+
+| Method    | Description        |
+| --------- | ------------------ |
+| `close()` | Closes the loader. |

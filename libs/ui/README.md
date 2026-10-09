@@ -30,7 +30,7 @@
 ### Core Tenets
 
 1. **Signal-First Reactivity**: 100% reactive state using Angular Signals (`input()`, `output()`, `model()`, `computed()`, `linkedSignal()`).
-2. **Strict Standalone & Zoneless-Ready**: Zero `NgModule` usage (except legacy compatibility bridges). Components must have no reliance on Zone.js dirty checking or timing hacks.
+2. **Strict Standalone & Zoneless-Ready**: Zero `NgModule` usage, except legacy compatibility bridges and the convenience `Ui<Name>Module`s (e.g. `UiAlertModule`): they only re-export an entrypoint's standalone parts, so a template needs one import instead of several. Importing the parts directly always works. Components must have no reliance on Zone.js dirty checking or timing hacks.
 3. **Pure OnPush Change Detection**: Every component MUST explicitly declare `changeDetection: ChangeDetectionStrategy.OnPush`.
 4. **Tailwind CSS v4 + Design Tokens**: Styling is driven by custom CSS tokens declared via `@theme` and `@utility` rules, avoiding tight coupling to 3rd-party component CSS.
 5. **Class Variance Authority (CVA)**: Visual variants, sizes, and states are composed cleanly using the `@libs/ui/core` `cva()` utility.
@@ -740,3 +740,41 @@ Before submitting a new component to `@libs/ui`:
 - [ ] Keyboard navigation and ARIA attributes are tested and functional.
 - [ ] Public surface is exported through subpackage `public-api.ts` and root `src/public-api.ts`.
 - [ ] Vitest test suite passes with full branch and state coverage.
+
+---
+
+## 10. Component READMEs
+
+Each entrypoint has its own README with a usage example and the API tables (inputs, outputs, methods):
+
+| Entrypoint                                          | What it is                                                           |
+| --------------------------------------------------- | -------------------------------------------------------------------- |
+| [`@libs/ui/alert`](./alert/README.md)               | **Alert**: Inline message or banner                                  |
+| [`@libs/ui/avatar`](./avatar/README.md)             | **Avatar**: Picture, initials fallback, groups                       |
+| [`@libs/ui/badge`](./badge/README.md)               | **Badge**: Counts and status dots                                    |
+| [`@libs/ui/bottom-sheet`](./bottom-sheet/README.md) | **Bottom Sheet**: Draggable sheet with snap points                   |
+| [`@libs/ui/button`](./button/README.md)             | **Button**: Button and link styles, loading, groups                  |
+| [`@libs/ui/card`](./card/README.md)                 | **Card**: Surface with header, media, footer                         |
+| [`@libs/ui/carousel`](./carousel/README.md)         | **Carousel**: Slide show: swipe, autoplay, fade, dots                |
+| [`@libs/ui/checkbox`](./checkbox/README.md)         | **Checkbox & Switch**: Boolean form controls                         |
+| [`@libs/ui/collapse`](./collapse/README.md)         | **Collapse**: Accordion panels                                       |
+| [`@libs/ui/core`](./core/README.md)                 | **Core**: Types, `cva()`, config, form-control contract              |
+| [`@libs/ui/date-picker`](./date-picker/README.md)   | **Date Picker**: Single dates, ranges, two inputs, holidays          |
+| [`@libs/ui/dialog`](./dialog/README.md)             | **Dialog**: Modal dialogs and confirmations                          |
+| [`@libs/ui/editor`](./editor/README.md)             | **Editor**: Rich-text editor (Tiptap)                                |
+| [`@libs/ui/input`](./input/README.md)               | **Input & Form Field**: Inputs, textarea, labels, hints, errors      |
+| [`@libs/ui/loader`](./loader/README.md)             | **Loader**: Full-screen loading overlay                              |
+| [`@libs/ui/menu`](./menu/README.md)                 | **Menu**: Dropdown of actions                                        |
+| [`@libs/ui/otp-input`](./otp-input/README.md)       | **OTP Input**: One-time-code slots                                   |
+| [`@libs/ui/paginator`](./paginator/README.md)       | **Paginator**: Pages and page size                                   |
+| [`@libs/ui/progress`](./progress/README.md)         | **Progress & Spinner**: Linear and circular progress                 |
+| [`@libs/ui/qr-code`](./qr-code/README.md)           | **QR Code**: Canvas or SVG, icon, status overlay                     |
+| [`@libs/ui/radio`](./radio/README.md)               | **Radio Group**: One choice among several                            |
+| [`@libs/ui/select`](./select/README.md)             | **Select**: Single, multiple, search, mobile sheet                   |
+| [`@libs/ui/slider`](./slider/README.md)             | **Slider & Range Slider**: One value or a range, ticks, value bubble |
+| [`@libs/ui/svg-icon`](./svg-icon/README.md)         | **SVG Icon**: Icon sets from sprite sheets                           |
+| [`@libs/ui/table`](./table/README.md)               | **Table**: Sort, filter, page, select                                |
+| [`@libs/ui/tabs`](./tabs/README.md)                 | **Tabs**: Accessible tabs and panels                                 |
+| [`@libs/ui/tag`](./tag/README.md)                   | **Tag**: Chips: removable, checkable                                 |
+| [`@libs/ui/toast`](./toast/README.md)               | **Toast**: Short messages                                            |
+| [`@libs/ui/tooltip`](./tooltip/README.md)           | **Tooltip**: Hover and focus hints                                   |
