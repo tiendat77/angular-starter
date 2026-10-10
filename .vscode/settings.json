@@ -1,5 +1,8 @@
 {
   "cSpell.words": ["commitlint", "devkit", "whitespaces"],
+  "editor.formatOnSave": false,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
   "workbench.editorAssociations": {
     "*.svg": "default"
   }
