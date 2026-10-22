@@ -1,4 +1,4 @@
-import { Cell, Row, Workbook, Worksheet } from 'exceljs';
+import type { Cell, Row, Workbook, Worksheet } from 'exceljs';
 import { ExcelDatasetModel } from './excel-dataset.model';
 import { ExcelLabelModel } from './excel-label.model';
 
@@ -232,7 +232,8 @@ export class ExcelHelper {
     }
   }
 
-  static createWorkbook(): Workbook {
+  static async createWorkbook(): Promise<Workbook> {
+    const { Workbook } = await import('exceljs');
     const workbook = new Workbook();
     workbook.creator = 'dev@angular-starter';
     workbook.lastModifiedBy = 'dev@angular-starter';
@@ -298,6 +299,7 @@ export class ExcelHelper {
 
     const buffer = await readAsBuffer(file);
 
+    const { Workbook } = await import('exceljs');
     const workbook = new Workbook();
     await workbook.xlsx.load(buffer);
 

@@ -1,6 +1,6 @@
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import z from 'zod';
+import * as z from 'zod';
 
 import { PagingDataModel, ResponseModel } from '../models';
 

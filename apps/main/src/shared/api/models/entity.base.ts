@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const BaseEntitySchema = z.object({
   id: z.string().nullish(),

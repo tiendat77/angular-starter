@@ -1,8 +1,6 @@
-import { Workbook } from 'exceljs';
 import { Observable } from 'rxjs';
 
-import { ExcelLabelModel } from '../../lib';
-import { ExportRequestModel, PagingDataModel, PagingRequestModel } from '../models';
+import { PagingDataModel, PagingRequestModel } from '../models';
 
 /**
  * API Read Interface
@@ -44,13 +42,6 @@ export declare interface ApiDelete<T = any> {
  */
 export declare interface ApiList<T = any> {
   list(): Observable<T[]>;
-}
-
-/**
- * API List Interface
- */
-export declare interface ApiExport {
-  export(excelLabels: ExcelLabelModel[], filterOptions: ExportRequestModel): Observable<Workbook>;
 }
 
 /**

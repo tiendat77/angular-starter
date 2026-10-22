@@ -2,12 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 
 import { forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
-import z from 'zod';
+import * as z from 'zod';
 
 import { environment } from '@environment';
 
 import { DataHelper } from '../../lib';
-import { ExcelDatasetModel, ExcelHelper, ExcelLabelModel } from '../../lib/excel';
 import {
   ExportRequestModel,
   PagingDataModel,
@@ -172,35 +171,6 @@ export class BaseApiService<T = any> {
     return this._http.delete<ResponseModel<boolean>>(`${this._baseUrl}/${id}`).pipe(
       BaseAPIOperator.responseHandler(),
       tap(() => this._cacheMap.clear())
-    );
-  }
-
-  /**
-   * @description Export all data to excel format
-   * @param excelLabels
-   * @param excelOptions
-   * @returns Excel workbook
-   */
-  protected _export(
-    excelLabels: ExcelLabelModel[],
-    filterOptions: ExportRequestModel & Partial<PagingRequestModel>
-  ) {
-    return this._all(filterOptions).pipe(
-      map((res) => {
-        const workbook = ExcelHelper.createWorkbook();
-        const worksheet = workbook.addWorksheet('Sheet1');
-
-        const datasets: ExcelDatasetModel[] = res.map((item) =>
-          ExcelHelper.pickFields(
-            item as Record<string, any>,
-            excelLabels.map((l) => l.key)
-          )
-        );
-
-        ExcelHelper.table(worksheet, excelLabels, datasets);
-
-        return workbook;
-      })
     );
   }
 }
