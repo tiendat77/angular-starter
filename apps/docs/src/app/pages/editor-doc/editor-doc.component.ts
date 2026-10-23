@@ -171,7 +171,8 @@ export class EditorDocComponent {
 <ui-editor [bubbleMenu]="['bold', 'italic', 'link']" />
 
 // Tool ids: undo, heading, blockquote, align-left, align-center, align-right,
-// bold, italic, underline, clear, bullet-list, ordered-list, link, image, and 'separator'.`;
+// bold, italic, underline, color, clear, bullet-list, ordered-list, link, image, and 'separator'.
+// 'color' is not in the default toolbar: add it where you want it.`;
 
   readonly uploadCode = `// Turn the picked file into a URL: any backend, promise or observable.
 upload = (file: File) => this.http.post<{ url: string }>('/api/images', body(file)).pipe(map((r) => r.url));
@@ -245,6 +246,13 @@ upload = (file: File) => this.http.post<{ url: string }>('/api/images', body(fil
       type: 'number',
       default: '5 MiB',
       description: 'Largest image file, in bytes.',
+    },
+    {
+      name: 'colors',
+      type: 'UiEditorColor[]',
+      default: '10 mid-tone colors',
+      description:
+        'Swatches of the color tool, each { value: "#rrggbb", label }. Stored inline: style="color: #rrggbb".',
     },
     {
       name: 'labels',

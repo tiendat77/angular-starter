@@ -6,7 +6,8 @@ Tiptap is large, so this entrypoint is separate: import it where you use it (a l
 
 ```bash
 npm i @tiptap/core @tiptap/pm @tiptap/starter-kit @tiptap/extensions \
-      @tiptap/extension-image @tiptap/extension-text-align @tiptap/extension-bubble-menu
+      @tiptap/extension-image @tiptap/extension-text-align @tiptap/extension-text-style \
+      @tiptap/extension-bubble-menu
 ```
 
 ```ts
@@ -33,7 +34,31 @@ Choose the tools, in order (`'separator'` draws a divider):
 <ui-editor [toolbar]="['bold', 'italic', 'separator', 'bullet-list', 'link']" [bubbleMenu]="[]" />
 ```
 
-Tools: `undo`, `heading`, `blockquote`, `align-left`, `align-center`, `align-right`, `bold`, `italic`, `underline`, `clear`, `bullet-list`, `ordered-list`, `link`, `image`. `UI_EDITOR_DEFAULT_TOOLBAR` and `UI_EDITOR_DEFAULT_BUBBLE_MENU` are the defaults.
+Tools: `undo`, `heading`, `blockquote`, `align-left`, `align-center`, `align-right`, `bold`, `italic`, `underline`, `color`, `clear`, `bullet-list`, `ordered-list`, `link`, `image`. `UI_EDITOR_DEFAULT_TOOLBAR` and `UI_EDITOR_DEFAULT_BUBBLE_MENU` are the defaults; `color` is not one of them, add it where you want it.
+
+### Text color
+
+```html
+<ui-editor [toolbar]="['bold', 'italic', 'underline', 'color', 'separator', 'link']" />
+```
+
+The `color` tool opens a panel with the palette swatches, a "Default color" button (removes the color, so the text follows the page again) and a native color picker for any other color. Keyboard: arrow keys move over the swatches, Home / End jump to the ends, Enter or Space picks, Escape closes.
+
+The color is stored **inline, as hex**: `<span style="color: #ef4444;">`, and `#ef4444` in the JSON document (`marks[].attrs.color`). Give your own palette with `colors` (use `#rrggbb`):
+
+```ts
+colors: UiEditorColor[] = [
+  { value: '#dc2626', label: 'Red' },
+  { value: '#2563eb', label: 'Blue' },
+];
+```
+
+Things to know about inline colors:
+
+- **Angular's `[innerHTML]` removes `style` attributes**, so a stored color is not shown by `[innerHTML]="html"`. Sanitise on the server (for example DOMPurify, allowing `style`) and render with `DomSanitizer.bypassSecurityTrustHtml`, or the colors will silently disappear.
+- **Dark pages:** a fixed color is not theme-aware. The default palette uses mid tones that read on a light and on a dark background; avoid near-black and near-white swatches, and use "Default color" to go back to the theme color.
+- **Clear formatting** removes the color too.
+- Pasted text keeps the colors it came with.
 
 Image upload: the library knows no backend; give it a function that turns a file into a URL (a promise or an observable):
 
@@ -67,6 +92,7 @@ Without `uploadImage` the image menu offers only "Image from URL". A picked file
 | `inputId`           | `string`                                                | auto                         | DOM id of the writing area, so a `<label for>` names it.                    |
 | `ariaLabel`         | `string`                                                | `'Rich text editor'`         | Accessible name of the writing area (ignored when `ariaLabelledby` is set). |
 | `ariaLabelledby`    | `string`                                                | –                            | Id of an element that names it.                                             |
+| `colors`            | `UiEditorColor[]`                                       | 10 mid-tone colors           | Swatches of the `color` tool; each is `{ value: '#rrggbb', label }`.        |
 | `labels`            | `Partial<UiEditorLabels>`                               | English                      | Every text of the toolbar, menus and messages. Use it to localise.          |
 
 | Output          | Type                                       | Description                               |

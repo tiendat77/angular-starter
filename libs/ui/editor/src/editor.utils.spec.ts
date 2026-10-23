@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
 import { describe, expect, it } from 'vitest';
-import { normalizeLinkUrl, resolveImageUrl, validateImage } from './editor.utils';
+import { hexColors, normalizeLinkUrl, resolveImageUrl, validateImage } from './editor.utils';
 
 describe('normalizeLinkUrl', () => {
   it.each([
@@ -87,5 +87,40 @@ describe('resolveImageUrl', () => {
 
   it('rejects an empty url', async () => {
     await expect(resolveImageUrl(Promise.resolve(''))).rejects.toThrow(/url/i);
+  });
+});
+
+describe('hexColors', () => {
+  it('writes the text color of a span as #rrggbb', () => {
+    expect(hexColors('<p><span style="color: rgb(239, 68, 68);">Hi</span></p>')).toBe(
+      '<p><span style="color: #ef4444;">Hi</span></p>'
+    );
+  });
+
+  it('keeps the other declarations of the style', () => {
+    const out = hexColors('<p><span style="font-weight: bold; color: rgb(0, 0, 0);">x</span></p>');
+
+    expect(out).toContain('color: #000000');
+    expect(out).toContain('font-weight');
+  });
+
+  it('does not touch background-color, other colors formats, or text', () => {
+    const html =
+      '<p><span style="background-color: rgb(1, 2, 3);">a</span><span style="color: #ef4444">b</span>' +
+      '<span style="color: red">c</span> color: rgb(1, 2, 3)</p>';
+
+    expect(hexColors(html)).toBe(html);
+  });
+
+  it('converts every colored element', () => {
+    expect(
+      hexColors(
+        '<p><span style="color: rgb(255, 0, 0);">a</span><span style="color: rgb(0, 128, 255);">b</span></p>'
+      )
+    ).toBe('<p><span style="color: #ff0000;">a</span><span style="color: #0080ff;">b</span></p>');
+  });
+
+  it('returns html without colors unchanged', () => {
+    expect(hexColors('<p>Hello</p>')).toBe('<p>Hello</p>');
   });
 });

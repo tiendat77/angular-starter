@@ -6,6 +6,7 @@ import { UiEditorBlockquoteButton } from './tools/blockquote-button.component';
 import { UiEditorBoldButton } from './tools/bold-button.component';
 import { UiEditorBulletListButton } from './tools/bullet-list-button.component';
 import { UiEditorClearFormatButton } from './tools/clear-format-button.component';
+import { UiEditorColorButton } from './tools/color-button.component';
 import { UiEditorHeadingButton } from './tools/heading-button.component';
 import { UiEditorImageButton } from './tools/image-button.component';
 import { UiEditorItalicButton } from './tools/italic-button.component';
@@ -25,6 +26,7 @@ export type UiEditorToolId =
   | 'bold'
   | 'italic'
   | 'underline'
+  | 'color'
   | 'clear'
   | 'bullet-list'
   | 'ordered-list'
@@ -45,6 +47,7 @@ export const UI_EDITOR_TOOLS: Readonly<Record<UiEditorToolId, Type<unknown>>> = 
   bold: UiEditorBoldButton,
   italic: UiEditorItalicButton,
   underline: UiEditorUnderlineButton,
+  color: UiEditorColorButton,
   clear: UiEditorClearFormatButton,
   'bullet-list': UiEditorBulletListButton,
   'ordered-list': UiEditorOrderedListButton,
@@ -52,6 +55,7 @@ export const UI_EDITOR_TOOLS: Readonly<Record<UiEditorToolId, Type<unknown>>> = 
   image: UiEditorImageButton,
 };
 
+/** `color` is not a default: add it to `toolbar` (or `bubbleMenu`) where you want it. */
 export const UI_EDITOR_DEFAULT_TOOLBAR: readonly UiEditorToolbarItem[] = [
   'undo',
   'separator',

@@ -21,6 +21,28 @@ export interface UiEditorImageFailure {
   readonly error: unknown;
 }
 
+/** A color of the text-color palette. */
+export interface UiEditorColor {
+  /** Stored in the content as is, inline: `style="color: <value>"`. Use `#rrggbb`. */
+  readonly value: string;
+  /** Accessible name of the swatch. */
+  readonly label: string;
+}
+
+/** The palette of the `color` tool: mid tones that stay readable on a light and on a dark page. */
+export const UI_EDITOR_DEFAULT_COLORS: readonly UiEditorColor[] = [
+  { value: '#ef4444', label: 'Red' },
+  { value: '#f97316', label: 'Orange' },
+  { value: '#eab308', label: 'Yellow' },
+  { value: '#22c55e', label: 'Green' },
+  { value: '#14b8a6', label: 'Teal' },
+  { value: '#3b82f6', label: 'Blue' },
+  { value: '#8b5cf6', label: 'Violet' },
+  { value: '#ec4899', label: 'Pink' },
+  { value: '#a16207', label: 'Brown' },
+  { value: '#6b7280', label: 'Gray' },
+];
+
 /** Every visible and accessible text of the editor (pass a partial object to localise). */
 export interface UiEditorLabels {
   /** Accessible name of the writing area. */
@@ -43,6 +65,12 @@ export interface UiEditorLabels {
   bold: string;
   italic: string;
   underline: string;
+  /** Text color button and its panel. */
+  textColor: string;
+  /** Removes the color, so the text follows the page again. */
+  defaultColor: string;
+  /** The native color picker, for a color that is not in the palette. */
+  customColor: string;
   clearFormatting: string;
   bulletList: string;
   orderedList: string;
@@ -78,6 +106,9 @@ export const UI_EDITOR_DEFAULT_LABELS: Readonly<UiEditorLabels> = {
   bold: 'Bold',
   italic: 'Italic',
   underline: 'Underline',
+  textColor: 'Text color',
+  defaultColor: 'Default color',
+  customColor: 'Custom color',
   clearFormatting: 'Clear formatting',
   bulletList: 'Bullet list',
   orderedList: 'Numbered list',

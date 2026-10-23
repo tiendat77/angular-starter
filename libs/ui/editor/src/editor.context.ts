@@ -1,6 +1,6 @@
 import { Signal } from '@angular/core';
 import { Editor } from '@tiptap/core';
-import { UiEditorLabels, UiEditorUploadHandler } from './editor.types';
+import { UiEditorColor, UiEditorLabels, UiEditorUploadHandler } from './editor.types';
 
 /**
  * What the toolbar buttons need from the editor they sit in. `UiEditor` provides it, so a button
@@ -14,6 +14,8 @@ export abstract class UiEditorContext {
   abstract readonly $labels: Signal<UiEditorLabels>;
   abstract readonly $disabled: Signal<boolean>;
   abstract readonly uploadImage: Signal<UiEditorUploadHandler | undefined>;
+  /** The palette of the `color` tool. */
+  abstract readonly colors: Signal<readonly UiEditorColor[]>;
 
   /** Opens the address bar to add, change or remove the link under the selection. */
   abstract openLink(): void;

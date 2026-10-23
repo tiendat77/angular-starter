@@ -75,3 +75,40 @@ export function resolveImageUrl(result: Promise<string> | Observable<string>): P
     return url;
   });
 }
+
+const RGB_COLOR = /(^|;\s*)color:\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/;
+
+const toHex = (channel: string): string =>
+  Math.min(255, Number(channel)).toString(16).padStart(2, '0');
+
+/**
+ * Writes the text colors of `html` as `#rrggbb`.
+ *
+ * ProseMirror applies a `style` through the CSS object model, so the browser hands it back as
+ * `color: rgb(239, 68, 68)` even though `#ef4444` is what is stored. This restores the hex, in the
+ * `style` attributes only (a paragraph that merely contains the text "color: rgb(…)" is untouched).
+ */
+export function hexColors(html: string): string {
+  if (!html.includes('color:')) {
+    return html;
+  }
+
+  const template = document.createElement('template');
+  template.innerHTML = html;
+
+  template.content.querySelectorAll('[style]').forEach((element) => {
+    const style = element.getAttribute('style') ?? '';
+    const hex = style.replace(
+      RGB_COLOR,
+      (_, start: string, r: string, g: string, b: string) =>
+        `${start}color: #${toHex(r)}${toHex(g)}${toHex(b)}`
+    );
+
+    if (hex !== style) {
+      // `setAttribute` keeps the string as it is; `element.style` would turn it into rgb() again
+      element.setAttribute('style', hex);
+    }
+  });
+
+  return template.innerHTML;
+}

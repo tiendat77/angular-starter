@@ -8,6 +8,7 @@
     "@tiptap/extension-bubble-menu": "^3.31.4",
     "@tiptap/extension-image": "^3.31.4",
     "@tiptap/extension-text-align": "^3.31.4",
+    "@tiptap/extension-text-style": "^3.31.4",
     "@tiptap/extensions": "^3.31.4",
     "@tiptap/pm": "^3.31.4",
     "@tiptap/starter-kit": "^3.31.4"
@@ -36,6 +37,9 @@
       "optional": true
     },
     "@tiptap/extension-text-align": {
+      "optional": true
+    },
+    "@tiptap/extension-text-style": {
       "optional": true
     },
     "@tiptap/extensions": {

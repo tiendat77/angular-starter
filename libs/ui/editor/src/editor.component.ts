@@ -24,6 +24,8 @@ import { Editor, isNodeSelection, JSONContent } from '@tiptap/core';
 import { BubbleMenu } from '@tiptap/extension-bubble-menu';
 import Image from '@tiptap/extension-image';
 import TextAlign from '@tiptap/extension-text-align';
+import { Color } from '@tiptap/extension-text-style/color';
+import { TextStyle } from '@tiptap/extension-text-style/text-style';
 import { Placeholder } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
 import { UiEditorBubbleMenu } from './editor-bubble-menu.component';
@@ -36,7 +38,9 @@ import {
   UiEditorToolId,
 } from './editor.tools';
 import {
+  UI_EDITOR_DEFAULT_COLORS,
   UI_EDITOR_DEFAULT_LABELS,
+  UiEditorColor,
   UiEditorFormat,
   UiEditorImageFailure,
   UiEditorImageRejection,
@@ -44,6 +48,7 @@ import {
   UiEditorUploadHandler,
   UiEditorValue,
 } from './editor.types';
+import { hexColors } from './editor.utils';
 import { editorVariants } from './editor.variants';
 
 let nextEditorId = 0;
@@ -115,6 +120,8 @@ export class UiEditor
   readonly toolbar = input<readonly UiEditorToolbarItem[]>(UI_EDITOR_DEFAULT_TOOLBAR);
   /** The tools in the menu over selected text; an empty list turns that menu off. */
   readonly bubbleMenu = input<readonly UiEditorToolId[]>(UI_EDITOR_DEFAULT_BUBBLE_MENU);
+  /** The swatches of the `color` tool (stored as inline `color: <value>`). */
+  readonly colors = input<readonly UiEditorColor[]>(UI_EDITOR_DEFAULT_COLORS);
   /** Overrides for the built-in English texts. */
   readonly labels = input<Partial<UiEditorLabels>>({});
 
@@ -298,6 +305,8 @@ export class UiEditor
           },
         }),
         Image,
+        TextStyle,
+        Color,
         TextAlign.configure({ types: ['heading', 'paragraph'] }),
         Placeholder.configure({ placeholder: () => this.placeholder() }),
         BubbleMenu.configure({
@@ -335,7 +344,7 @@ export class UiEditor
     if (this.outputFormat() === 'json') {
       return editor.isEmpty ? null : editor.getJSON();
     }
-    return editor.isEmpty ? '' : editor.getHTML();
+    return editor.isEmpty ? '' : hexColors(editor.getHTML());
   }
 
   private _setContent(editor: Editor, value: UiEditorValue): void {
