@@ -9,18 +9,19 @@
   --scale-98: 0.98;
 
   /*
-   * KNOWN HAZARD: while a bare-number `--opacity-<n>` exists, Tailwind compiles the matching colour
-   * modifier (`bg-error/10`, `text-foreground/60`, ...) to `color-mix(... var(--opacity-<n>), ...)`.
-   * A number is not a valid <percentage> there, so the declaration is invalid and the colour is
-   * transparent. These live here, not in @libs/theme, so the shared tokens never carry that risk.
+   * Percentages, not bare numbers. Tailwind compiles a colour modifier (`bg-error/10`,
+   * `text-foreground/60`) to `color-mix(... var(--opacity-<n>), ...)` as soon as a token of that
+   * name exists, and `color-mix` needs a <percentage>: with `0.1` the declaration is invalid and the
+   * colour renders transparent. `opacity: 10%` is valid too, so the `opacity-10` utilities still work.
+   * `npm run check:styles` fails on a bare number here.
    */
-  --opacity-10: 0.1;
-  --opacity-30: 0.3;
-  --opacity-60: 0.6;
-  --opacity-80: 0.8;
-  --opacity-12: 0.12;
-  --opacity-38: 0.38;
-  --opacity-87: 0.87;
+  --opacity-10: 10%;
+  --opacity-30: 30%;
+  --opacity-60: 60%;
+  --opacity-80: 80%;
+  --opacity-12: 12%;
+  --opacity-38: 38%;
+  --opacity-87: 87%;
 
   --spacing-13: 3.25rem;
   --spacing-15: 3.75rem;

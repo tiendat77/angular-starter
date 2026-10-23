@@ -2,9 +2,7 @@
 /*  @ Editor (ui-editor)
 /*
 /*  Semantic tokens only. Tints are explicit `color-mix()` on a token (like `btn-ghost` and
-/*  `select-panel`), never Tailwind `/N` colour modifiers: in apps/main the `--opacity-*` tokens make
-/*  those compile to an invalid `color-mix`, so they would vanish there. Guarded by
-/*  tools/editor-tokens.test.mjs.
+/*  `select-panel`), so the styles do not depend on which `--opacity-*` tokens an app defines.
 /* ----------------------------------------------------------------------------------------------------- */
 
 /* The frame around toolbar, optional bar and writing area */
