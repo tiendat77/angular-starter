@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 
 import { forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
-import * as z from 'zod';
+import * as z from 'zod/mini';
 
 import { environment } from '@environment';
 
@@ -23,8 +23,8 @@ export class BaseApiService<T = any> {
   protected _baseUrl = environment.apiUrl;
   protected _http = inject(HttpClient);
 
-  protected _schema!: z.ZodSchema<T>;
-  protected _schemaDetail: z.ZodSchema<T> = this._schema;
+  protected _schema!: z.ZodMiniType<T>;
+  protected _schemaDetail: z.ZodMiniType<T> = this._schema;
   protected _cacheMap = new Map<string, any>();
 
   // -----------------------------------------------------------------------------------------------------

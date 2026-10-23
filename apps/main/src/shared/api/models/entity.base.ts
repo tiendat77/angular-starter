@@ -1,25 +1,24 @@
 import dayjs from 'dayjs';
-import * as z from 'zod';
+import * as z from 'zod/mini';
+
+const formatDate = z.pipe(
+  z.string(),
+  z.transform((d) => (d ? dayjs(d).format('DD/MM/YYYY HH:mm') : null))
+);
 
 export const BaseEntitySchema = z.object({
-  id: z.string().nullish(),
-  refID: z.string().nullish(),
-  isActive: z.boolean().nullish(),
-  isDelete: z.boolean().nullish(),
-  createdAt: z
-    .string()
-    .transform((d) => (d ? dayjs(d).format('DD/MM/YYYY HH:mm') : null))
-    .nullish(),
-  editedAt: z
-    .string()
-    .transform((d) => (d ? dayjs(d).format('DD/MM/YYYY HH:mm') : null))
-    .nullish(),
-  userEdit: z
-    .object({
-      id: z.string().nullish(),
-      name: z.string().nullish(),
+  id: z.nullish(z.string()),
+  refID: z.nullish(z.string()),
+  isActive: z.nullish(z.boolean()),
+  isDelete: z.nullish(z.boolean()),
+  createdAt: z.nullish(formatDate),
+  editedAt: z.nullish(formatDate),
+  userEdit: z.nullish(
+    z.object({
+      id: z.nullish(z.string()),
+      name: z.nullish(z.string()),
     })
-    .nullish(),
+  ),
 });
 
 export type BaseEntityModel = z.infer<typeof BaseEntitySchema>;

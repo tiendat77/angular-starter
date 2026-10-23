@@ -1,26 +1,26 @@
-import * as z from 'zod';
+import * as z from 'zod/mini';
 
 export const ProductSchema = z.object({
   id: z.number(),
-  title: z.string().min(1, 'Tên sản phẩm không được để trống'),
-  description: z.string().optional().default(''),
-  category: z.string().min(1, 'Vui lòng chọn danh mục'),
-  price: z.number().min(0, 'Giá sản phẩm không được nhỏ hơn 0'),
-  discountPercentage: z.number().optional().default(0),
-  rating: z.number().optional().default(0),
-  stock: z.number().int().min(0, 'Số lượng tồn kho không hợp lệ'),
-  brand: z.string().optional().default(''),
-  sku: z.string().optional().default(''),
-  thumbnail: z.string().optional().default(''),
-  availabilityStatus: z.string().optional().default('In Stock'),
-  warrantyInformation: z.string().optional().default(''),
-  shippingInformation: z.string().optional().default(''),
-  returnPolicy: z.string().optional().default(''),
+  title: z.string().check(z.minLength(1, 'Tên sản phẩm không được để trống')),
+  description: z._default(z.string(), ''),
+  category: z.string().check(z.minLength(1, 'Vui lòng chọn danh mục')),
+  price: z.number().check(z.gte(0, 'Giá sản phẩm không được nhỏ hơn 0')),
+  discountPercentage: z._default(z.number(), 0),
+  rating: z._default(z.number(), 0),
+  stock: z.int('Số lượng tồn kho không hợp lệ').check(z.gte(0, 'Số lượng tồn kho không hợp lệ')),
+  brand: z._default(z.string(), ''),
+  sku: z._default(z.string(), ''),
+  thumbnail: z._default(z.string(), ''),
+  availabilityStatus: z._default(z.string(), 'In Stock'),
+  warrantyInformation: z._default(z.string(), ''),
+  shippingInformation: z._default(z.string(), ''),
+  returnPolicy: z._default(z.string(), ''),
 });
 
 export type ProductModel = z.infer<typeof ProductSchema>;
 
-export const ProductFormSchema = ProductSchema.pick({
+export const ProductFormSchema = z.pick(ProductSchema, {
   title: true,
   category: true,
   price: true,

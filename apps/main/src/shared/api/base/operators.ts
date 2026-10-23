@@ -1,6 +1,6 @@
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import * as z from 'zod';
+import * as z from 'zod/mini';
 
 import { PagingDataModel, ResponseModel } from '../models';
 
@@ -8,7 +8,7 @@ export class BaseAPIOperator {
   /**
    * RxJS Operator to handle API response
    */
-  static responseHandler = <T = any>(schema?: z.ZodSchema<T>) =>
+  static responseHandler = <T = any>(schema?: z.ZodMiniType<T>) =>
     function (source: Observable<ResponseModel<T>>) {
       return source.pipe(
         switchMap((response) => {
@@ -28,7 +28,7 @@ export class BaseAPIOperator {
   /**
    * RxJS Operator to handle API pagination response
    */
-  static pagingHandler = <T = any>(schema?: z.ZodSchema<any>) =>
+  static pagingHandler = <T = any>(schema?: z.ZodMiniType<any>) =>
     function (source: Observable<PagingDataModel<T>>) {
       return source.pipe(
         map((response) => {
