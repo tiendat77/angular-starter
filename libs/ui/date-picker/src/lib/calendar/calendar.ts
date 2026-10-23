@@ -3,18 +3,19 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
 import { CdkMonitorFocus } from '@angular/cdk/a11y';
+import { _getFocusedElementPierceShadowDom } from '@angular/cdk/platform';
 import { CdkPortalOutlet, ComponentPortal, ComponentType, Portal } from '@angular/cdk/portal';
 
 import {
   AfterContentInit,
   AfterViewChecked,
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
@@ -58,20 +59,20 @@ export type CalendarView = 'month' | 'year' | 'multi-year';
   },
   exportAs: 'calendar',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [SINGLE_DATE_SELECTION_MODEL_PROVIDER],
   imports: [CdkPortalOutlet, CdkMonitorFocus, MonthView, YearView, MultiYearView],
 })
 export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestroy, OnChanges {
-  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
-  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
+  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true })!;
+  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true });
   private _changeDetectorRef = inject(ChangeDetectorRef);
+  private _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   /** An input indicating the type of the header component, if set. */
-  @Input() headerComponent: ComponentType<any>;
+  @Input() headerComponent!: ComponentType<any>;
 
   /** A portal containing the header component type for this calendar. */
-  _calendarHeaderPortal: Portal<any>;
+  _calendarHeaderPortal!: Portal<any>;
 
   /**
    * Used for scheduling that focus should be moved to the active cell on the next tick.
@@ -88,7 +89,7 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
   set startAt(value: D | null) {
     this._startAt = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
   }
-  private _startAt: D | null;
+  private _startAt: D | null = null;
 
   /** Whether the calendar should be started in month or year view. */
   @Input() startView: CalendarView = 'month';
@@ -105,7 +106,7 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
       this._selected = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
     }
   }
-  private _selected: DateRange<D> | D | null;
+  private _selected: DateRange<D> | D | null = null;
 
   /** The minimum selectable date. */
   @Input()
@@ -115,7 +116,7 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
   set minDate(value: D | null) {
     this._minDate = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
   }
-  private _minDate: D | null;
+  private _minDate: D | null = null;
 
   /** The maximum selectable date. */
   @Input()
@@ -125,13 +126,13 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
   set maxDate(value: D | null) {
     this._maxDate = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
   }
-  private _maxDate: D | null;
+  private _maxDate: D | null = null;
 
   /** Function used to filter which dates are selectable. */
-  @Input() dateFilter: (date: D) => boolean;
+  @Input() dateFilter?: ((date: D) => boolean) | null;
 
   /** Function that can be used to add custom CSS classes to dates. */
-  @Input() dateClass: CalendarCellClassFunction<D>;
+  @Input() dateClass!: CalendarCellClassFunction<D>;
 
   /** Whether to show the Vietnamese lunar date in the month view. */
   @Input() showLunar = false;
@@ -143,16 +144,16 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
   @Input() dayExtra: TemplateRef<any> | null = null;
 
   /** Start of the comparison range. */
-  @Input() comparisonStart: D | null;
+  @Input() comparisonStart: D | null = null;
 
   /** End of the comparison range. */
-  @Input() comparisonEnd: D | null;
+  @Input() comparisonEnd: D | null = null;
 
   /** ARIA Accessible name of the `<input startDate/>` */
-  @Input() startDateAccessibleName: string | null;
+  @Input() startDateAccessibleName: string | null = null;
 
   /** ARIA Accessible name of the `<input endDate/>` */
-  @Input() endDateAccessibleName: string | null;
+  @Input() endDateAccessibleName: string | null = null;
 
   /** Emits when the currently selected date changes. */
   @Output() readonly selectedChange: EventEmitter<D | null> = new EventEmitter<D | null>();
@@ -183,13 +184,13 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
   @Output() readonly _userDragDrop = new EventEmitter<CalendarUserEvent<DateRange<D>>>();
 
   /** Reference to the current month view component. */
-  @ViewChild(MonthView) monthView: MonthView<D>;
+  @ViewChild(MonthView) monthView!: MonthView<D>;
 
   /** Reference to the current year view component. */
-  @ViewChild(YearView) yearView: YearView<D>;
+  @ViewChild(YearView) yearView!: YearView<D>;
 
   /** Reference to the current multi-year view component. */
-  @ViewChild(MultiYearView) multiYearView: MultiYearView<D>;
+  @ViewChild(MultiYearView) multiYearView!: MultiYearView<D>;
 
   /**
    * The current active date. This determines which time period is shown and which date is
@@ -203,7 +204,7 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
     this.stateChanges.next();
     this._changeDetectorRef.markForCheck();
   }
-  private _clampedActiveDate: D;
+  private _clampedActiveDate!: D;
 
   /** Whether the calendar is in month view. */
   get currentView(): CalendarView {
@@ -218,10 +219,11 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
     this._moveFocusOnNextTick = true;
     this._changeDetectorRef.markForCheck();
     if (viewChangedResult) {
+      this.stateChanges.next();
       this.viewChanged.emit(viewChangedResult);
     }
   }
-  private _currentView: CalendarView;
+  private _currentView!: CalendarView;
 
   /**
    * Set when the header's month / year label opened a grid from the days: picking a year then
@@ -265,21 +267,34 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
     // (#24435).
     const minDateChange: SimpleChange | undefined =
       changes['minDate'] &&
-      !this._dateAdapter.sameDate(changes['minDate'].previousValue, changes['minDate'].currentValue)
+      !this._dateAdapter.sameDate(
+        changes['minDate'].previousValue as D | null,
+        changes['minDate'].currentValue as D | null
+      )
         ? changes['minDate']
         : undefined;
     const maxDateChange: SimpleChange | undefined =
       changes['maxDate'] &&
-      !this._dateAdapter.sameDate(changes['maxDate'].previousValue, changes['maxDate'].currentValue)
+      !this._dateAdapter.sameDate(
+        changes['maxDate'].previousValue as D | null,
+        changes['maxDate'].currentValue as D | null
+      )
         ? changes['maxDate']
         : undefined;
 
-    const change = minDateChange || maxDateChange || changes['dateFilter'];
+    const changeRequiringRerender = minDateChange || maxDateChange || changes['dateFilter'];
 
-    if (change && !change.firstChange) {
+    if (changeRequiringRerender && !changeRequiringRerender.firstChange) {
       const view = this._getCurrentViewComponent();
 
       if (view) {
+        // Schedule focus to be moved to the active date since re-rendering can blur the active
+        // cell (see #29265), however don't do so if focus is outside of the calendar, because it
+        // can steal away the user's attention (see #30635).
+        if (this._elementRef.nativeElement.contains(_getFocusedElementPierceShadowDom())) {
+          this._moveFocusOnNextTick = true;
+        }
+
         // We need to `detectChanges` manually here, because the `minDate`, `maxDate` etc. are
         // passed down to the view via data bindings which won't be up-to-date when we call `_init`.
         this._changeDetectorRef.detectChanges();
@@ -311,12 +326,12 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
 
   /** Focuses the active date. */
   focusActiveCell() {
-    this._getCurrentViewComponent()._focusActiveCell(false);
+    this._getCurrentViewComponent()?._focusActiveCell(false);
   }
 
   /** Updates today's date after an update of the active date */
   updateTodaysDate() {
-    this._getCurrentViewComponent()._init();
+    this._getCurrentViewComponent()?._init();
   }
 
   /** Handles date selection in the month view. */
@@ -369,7 +384,7 @@ export class Calendar<D> implements AfterContentInit, AfterViewChecked, OnDestro
   }
 
   /** Returns the component instance that corresponds to the current calendar view. */
-  private _getCurrentViewComponent(): MonthView<D> | YearView<D> | MultiYearView<D> {
+  private _getCurrentViewComponent(): MonthView<D> | YearView<D> | MultiYearView<D> | undefined {
     // The return type is explicitly written as a union to ensure that the Closure compiler does
     // not optimize calls to _init(). Without the explicit return type, TypeScript narrows it to
     // only the first component type. See https://github.com/angular/components/issues/22996.

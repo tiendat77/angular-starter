@@ -1,5 +1,10 @@
 <button
+  type="button"
   class="btn btn-circle btn-ghost btn-sm"
+  [attr.aria-haspopup]="datepicker ? 'dialog' : null"
+  [attr.aria-label]="ariaLabel || _intl.openCalendarLabel"
+  [attr.aria-expanded]="datepicker ? datepicker.opened : null"
+  [tabIndex]="disabled ? -1 : tabIndex"
   [disabled]="disabled"
 >
   <svg

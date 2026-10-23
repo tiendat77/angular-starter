@@ -54,54 +54,58 @@
 </div>
 
 @if (!isCollapsed) {
+  <!-- Grid wrapper whose row track goes between 0fr and 1fr (see vertical.component.scss) -->
   <div
-    @expandCollapse
-    class="vertical-navigation-item-children"
+    class="vertical-navigation-item-collapse"
+    animate.leave="vertical-navigation-collapsable-collapse"
+    [animate.enter]="_enterClass"
   >
-    @for (item of item.children; track item.id) {
-      <!-- Skip the hidden items -->
-      @if ((item.hidden && !item.hidden(item)) || !item.hidden) {
-        <!-- Basic -->
-        @if (item.type === 'basic') {
-          <vertical-navigation-basic-item
-            [item]="item"
-            [name]="name"
-          />
-        }
+    <div class="vertical-navigation-item-children">
+      @for (item of item.children; track item.id) {
+        <!-- Skip the hidden items -->
+        @if ((item.hidden && !item.hidden(item)) || !item.hidden) {
+          <!-- Basic -->
+          @if (item.type === 'basic') {
+            <vertical-navigation-basic-item
+              [item]="item"
+              [name]="name"
+            />
+          }
 
-        <!-- Collapsable -->
-        @if (item.type === 'collapsable') {
-          <vertical-navigation-collapsable-item
-            [item]="item"
-            [name]="name"
-            [autoCollapse]="autoCollapse"
-          />
-        }
+          <!-- Collapsable -->
+          @if (item.type === 'collapsable') {
+            <vertical-navigation-collapsable-item
+              [item]="item"
+              [name]="name"
+              [autoCollapse]="autoCollapse"
+            />
+          }
 
-        <!-- Divider -->
-        @if (item.type === 'divider') {
-          <vertical-navigation-divider-item
-            [item]="item"
-            [name]="name"
-          />
-        }
+          <!-- Divider -->
+          @if (item.type === 'divider') {
+            <vertical-navigation-divider-item
+              [item]="item"
+              [name]="name"
+            />
+          }
 
-        <!-- Group -->
-        @if (item.type === 'group') {
-          <vertical-navigation-group-item
-            [item]="item"
-            [name]="name"
-          />
-        }
+          <!-- Group -->
+          @if (item.type === 'group') {
+            <vertical-navigation-group-item
+              [item]="item"
+              [name]="name"
+            />
+          }
 
-        <!-- Spacer -->
-        @if (item.type === 'spacer') {
-          <vertical-navigation-spacer-item
-            [item]="item"
-            [name]="name"
-          />
+          <!-- Spacer -->
+          @if (item.type === 'spacer') {
+            <vertical-navigation-spacer-item
+              [item]="item"
+              [name]="name"
+            />
+          }
         }
       }
-    }
+    </div>
   </div>
 }

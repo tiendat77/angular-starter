@@ -14,7 +14,6 @@ import {
 
 import { DateAdapter } from '../adapter';
 import { MonthView } from '../calendar/month-view';
-import { animations } from '../utils/animations';
 import { DateRange, ExtractDateTypeFromSelection } from './date-selection-model';
 import { DatepickerContent } from './datepicker-content';
 import { formatMonthYear } from './datepicker-intl';
@@ -48,11 +47,7 @@ interface MonthEntry<D> {
   styleUrl: './datepicker-mobile-content.scss',
   host: {
     class: 'datepicker-content datepicker-mobile-content',
-    '[@transformPanel]': '_animationState',
-    '(@transformPanel.start)': '_handleAnimationEvent($event)',
-    '(@transformPanel.done)': '_handleAnimationEvent($event)',
   },
-  animations: [animations.transformPanel],
   exportAs: 'datepickerMobileContent',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,7 +3,7 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
 import { Directionality } from '@angular/cdk/bidi';
@@ -22,7 +22,6 @@ import {
 
 import {
   AfterContentInit,
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -32,6 +31,7 @@ import {
   ViewChild,
   ViewEncapsulation,
   inject,
+  signal,
 } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -60,18 +60,16 @@ export const yearsPerRow = 4;
   templateUrl: './multi-year-view.html',
   exportAs: 'multiYearView',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CalendarBody],
 })
 export class MultiYearView<D> implements AfterContentInit, OnDestroy {
   private _changeDetectorRef = inject(ChangeDetectorRef);
-  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true })!;
   private _dir = inject(Directionality, { optional: true });
-
   private _rerenderSubscription = Subscription.EMPTY;
 
   /** Flag used to filter out space/enter keyup events that originated outside of the view. */
-  private _selectionKeyPressed: boolean;
+  private _selectionKeyPressed: boolean = false;
 
   /** The date to display in this multi-year view (everything other than the year is ignored). */
   @Input()
@@ -97,7 +95,7 @@ export class MultiYearView<D> implements AfterContentInit, OnDestroy {
       this._init();
     }
   }
-  private _activeDate: D;
+  private _activeDate!: D;
 
   /** The currently selected date. */
   @Input()
@@ -113,7 +111,7 @@ export class MultiYearView<D> implements AfterContentInit, OnDestroy {
 
     this._setSelectedYear(value);
   }
-  private _selected: DateRange<D> | D | null;
+  private _selected: DateRange<D> | D | null = null;
 
   /** The minimum selectable date. */
   @Input()
@@ -123,7 +121,7 @@ export class MultiYearView<D> implements AfterContentInit, OnDestroy {
   set minDate(value: D | null) {
     this._minDate = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
   }
-  private _minDate: D | null;
+  private _minDate: D | null = null;
 
   /** The maximum selectable date. */
   @Input()
@@ -133,13 +131,13 @@ export class MultiYearView<D> implements AfterContentInit, OnDestroy {
   set maxDate(value: D | null) {
     this._maxDate = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
   }
-  private _maxDate: D | null;
+  private _maxDate: D | null = null;
 
   /** A function used to filter which dates are selectable. */
-  @Input() dateFilter: (date: D) => boolean;
+  @Input() dateFilter: ((date: D) => boolean) | null | undefined;
 
   /** Function that can be used to add custom CSS classes to date cells. */
-  @Input() dateClass: CalendarCellClassFunction<D>;
+  @Input() dateClass!: CalendarCellClassFunction<D>;
 
   /** Emits when a new year is selected. */
   @Output() readonly selectedChange: EventEmitter<D> = new EventEmitter<D>();
@@ -151,19 +149,19 @@ export class MultiYearView<D> implements AfterContentInit, OnDestroy {
   @Output() readonly activeDateChange: EventEmitter<D> = new EventEmitter<D>();
 
   /** The body of calendar table */
-  @ViewChild(CalendarBody) _calendarBody: CalendarBody;
+  @ViewChild(CalendarBody) _calendarBody!: CalendarBody;
 
   /** Grid of calendar cells representing the currently displayed years. */
-  _years: CalendarCell[][];
+  _years = signal<CalendarCell[][]>([]);
 
   /** The year that today falls on. */
-  _todayYear: number;
+  _todayYear = signal(0);
 
   /** The year of the selected date. Null if the selected date is null. */
-  _selectedYear: number | null;
+  _selectedYear = signal<number | null>(null);
 
   constructor() {
-    if (!this._dateAdapter) {
+    if (!this._dateAdapter && (typeof ngDevMode === 'undefined' || ngDevMode)) {
       throw createMissingDateImplError('DateAdapter');
     }
 
@@ -182,7 +180,7 @@ export class MultiYearView<D> implements AfterContentInit, OnDestroy {
 
   /** Initializes this multi-year view. */
   _init() {
-    this._todayYear = this._dateAdapter.getYear(this._dateAdapter.today());
+    this._todayYear.set(this._dateAdapter.getYear(this._dateAdapter.today()));
 
     // We want a range years such that we maximize the number of
     // enabled dates visible at once. This prevents issues where the minimum year
@@ -194,14 +192,15 @@ export class MultiYearView<D> implements AfterContentInit, OnDestroy {
     const minYearOfPage =
       activeYear - getActiveOffset(this._dateAdapter, this.activeDate, this.minDate, this.maxDate);
 
-    this._years = [];
+    const years: CalendarCell[][] = [];
     for (let i = 0, row: number[] = []; i < yearsPerPage; i++) {
       row.push(minYearOfPage + i);
       if (row.length == yearsPerRow) {
-        this._years.push(row.map((year) => this._createCellForYear(year)));
+        years.push(row.map((year) => this._createCellForYear(year)));
         row = [];
       }
     }
+    this._years.set(years);
     this._changeDetectorRef.markForCheck();
   }
 
@@ -391,16 +390,16 @@ export class MultiYearView<D> implements AfterContentInit, OnDestroy {
 
   /** Sets the currently-highlighted year based on a model value. */
   private _setSelectedYear(value: DateRange<D> | D | null) {
-    this._selectedYear = null;
+    this._selectedYear.set(null);
 
     if (value instanceof DateRange) {
       const displayValue = value.start || value.end;
 
       if (displayValue) {
-        this._selectedYear = this._dateAdapter.getYear(displayValue);
+        this._selectedYear.set(this._dateAdapter.getYear(displayValue));
       }
     } else if (value) {
-      this._selectedYear = this._dateAdapter.getYear(value);
+      this._selectedYear.set(this._dateAdapter.getYear(value));
     }
   }
 }

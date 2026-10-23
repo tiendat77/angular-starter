@@ -4,9 +4,8 @@ import {
   importProvidersFrom,
   inject,
   provideEnvironmentInitializer,
-  provideZoneChangeDetection,
+  provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 import { provideIcons } from '@libs/ui/svg-icon';
 
@@ -18,9 +17,8 @@ import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideAnimationsAsync(),
     provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
     provideIcons([
       // See more at https://heroicons.com/

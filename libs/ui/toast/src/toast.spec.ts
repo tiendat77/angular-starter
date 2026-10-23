@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { firstValueFrom } from 'rxjs';
 import { describe, expect, it } from 'vitest';
 import { ToastService } from './public-api';
@@ -8,7 +7,6 @@ describe('ToastService', () => {
   let service: ToastService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideNoopAnimations()] });
     service = TestBed.inject(ToastService);
   });
 

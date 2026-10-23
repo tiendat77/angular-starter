@@ -3,16 +3,10 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewEncapsulation,
-  inject,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ViewEncapsulation, inject } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DateAdapter } from '../adapter';
@@ -25,7 +19,6 @@ import { isSameMultiYearView, yearsPerPage } from './multi-year-view';
   selector: 'calendar-header',
   templateUrl: './calendar-header.html',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'calendarHeader',
 })
 export class CalendarHeader<D> {
@@ -86,24 +79,28 @@ export class CalendarHeader<D> {
 
   /** Handles user clicks on the previous button. */
   previousClicked(): void {
-    this.calendar.activeDate =
-      this.calendar.currentView == 'month'
-        ? this._dateAdapter.addCalendarMonths(this.calendar.activeDate, -1)
-        : this._dateAdapter.addCalendarYears(
-            this.calendar.activeDate,
-            this.calendar.currentView == 'year' ? -1 : -yearsPerPage
-          );
+    if (this.previousEnabled()) {
+      this.calendar.activeDate =
+        this.calendar.currentView == 'month'
+          ? this._dateAdapter.addCalendarMonths(this.calendar.activeDate, -1)
+          : this._dateAdapter.addCalendarYears(
+              this.calendar.activeDate,
+              this.calendar.currentView == 'year' ? -1 : -yearsPerPage
+            );
+    }
   }
 
   /** Handles user clicks on the next button. */
   nextClicked(): void {
-    this.calendar.activeDate =
-      this.calendar.currentView == 'month'
-        ? this._dateAdapter.addCalendarMonths(this.calendar.activeDate, 1)
-        : this._dateAdapter.addCalendarYears(
-            this.calendar.activeDate,
-            this.calendar.currentView == 'year' ? 1 : yearsPerPage
-          );
+    if (this.nextEnabled()) {
+      this.calendar.activeDate =
+        this.calendar.currentView == 'month'
+          ? this._dateAdapter.addCalendarMonths(this.calendar.activeDate, 1)
+          : this._dateAdapter.addCalendarYears(
+              this.calendar.activeDate,
+              this.calendar.currentView == 'year' ? 1 : yearsPerPage
+            );
+    }
   }
 
   /** Whether the previous period button is enabled. */

@@ -3,10 +3,10 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
-import { FactoryProvider, Injectable, OnDestroy, Optional, SkipSelf, inject } from '@angular/core';
+import { FactoryProvider, Injectable, OnDestroy, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { DateAdapter } from '../adapter/date-adapter';
 
@@ -16,7 +16,7 @@ export class DateRange<D> {
    * Ensures that objects with a `start` and `end` property can't be assigned to a variable that
    * expects a `DateRange`
    */
-  private _disableStructuralEquivalency: never;
+  private _disableStructuralEquivalency!: never;
 
   constructor(
     /** The start date of the range. */
@@ -144,22 +144,16 @@ export class SingleDateSelectionModel<D> extends DateSelectionModel<D | null, D>
   }
 }
 
-/** @docs-private */
-export function SINGLE_DATE_SELECTION_MODEL_FACTORY(
-  parent: SingleDateSelectionModel<unknown>,
-  adapter: DateAdapter<unknown>
-) {
-  return parent || new SingleDateSelectionModel(adapter);
-}
-
 /**
  * Used to provide a single selection model to a component.
  * @docs-private
  */
 export const SINGLE_DATE_SELECTION_MODEL_PROVIDER: FactoryProvider = {
   provide: DateSelectionModel,
-  deps: [[new Optional(), new SkipSelf(), DateSelectionModel], DateAdapter],
-  useFactory: SINGLE_DATE_SELECTION_MODEL_FACTORY,
+  useFactory: () => {
+    const parent = inject(DateSelectionModel, { optional: true, skipSelf: true });
+    return parent || new SingleDateSelectionModel(inject(DateAdapter));
+  },
 };
 
 /**
@@ -231,20 +225,14 @@ export class RangeDateSelectionModel<D> extends DateSelectionModel<DateRange<D>,
   }
 }
 
-/** @docs-private */
-export function RANGE_DATE_SELECTION_MODEL_FACTORY(
-  parent: RangeDateSelectionModel<unknown>,
-  adapter: DateAdapter<unknown>
-) {
-  return parent || new RangeDateSelectionModel(adapter);
-}
-
 /**
  * Used to provide a range selection model to a component.
  * @docs-private
  */
 export const RANGE_DATE_SELECTION_MODEL_PROVIDER: FactoryProvider = {
   provide: DateSelectionModel,
-  deps: [[new Optional(), new SkipSelf(), DateSelectionModel], DateAdapter],
-  useFactory: RANGE_DATE_SELECTION_MODEL_FACTORY,
+  useFactory: () => {
+    const parent = inject(DateSelectionModel, { optional: true, skipSelf: true });
+    return parent || new RangeDateSelectionModel(inject(DateAdapter));
+  },
 };

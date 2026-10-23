@@ -321,6 +321,8 @@ export class DatePickerDocComponent {
         ? {
             monthYearFormat: '{month}, {year}',
             closeLabel: 'Đóng',
+            openCalendarLabel: 'Mở lịch',
+            comparisonDateLabel: 'Khoảng so sánh',
             switchToMultiYearViewLabel: 'Chọn tháng và năm',
             switchToMonthViewLabel: 'Chọn ngày',
             holidayLanguage: 'vi',

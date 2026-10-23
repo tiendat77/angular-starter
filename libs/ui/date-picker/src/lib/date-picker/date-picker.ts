@@ -3,10 +3,10 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { SINGLE_DATE_SELECTION_MODEL_PROVIDER } from './date-selection-model';
 import { DatepickerBase, DatepickerControl } from './datepicker-base';
 
@@ -14,7 +14,6 @@ import { DatepickerBase, DatepickerControl } from './datepicker-base';
   selector: 'date-picker',
   template: '',
   exportAs: 'datepicker',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   providers: [
     SINGLE_DATE_SELECTION_MODEL_PROVIDER,

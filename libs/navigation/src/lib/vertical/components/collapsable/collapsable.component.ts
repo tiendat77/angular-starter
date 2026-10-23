@@ -1,6 +1,7 @@
 import { BooleanInput } from '@angular/cdk/coercion';
 import { NgClass } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -16,7 +17,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { SvgIconModule } from '@libs/ui/svg-icon';
 
 import { filter, Subject, takeUntil } from 'rxjs';
-import { expandCollapse } from '../../../animations/expand-collapse';
 import { NavigationItem } from '../../../navigation.types';
 
 import { NavigationService } from '../../../navigation.service';
@@ -29,7 +29,6 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
 @Component({
   selector: 'vertical-navigation-collapsable-item',
   templateUrl: './collapsable.component.html',
-  animations: [expandCollapse],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NgClass,
@@ -41,7 +40,9 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
     forwardRef(() => VerticalNavigationCollapsableItemComponent),
   ],
 })
-export class VerticalNavigationCollapsableItemComponent implements OnInit, OnDestroy {
+export class VerticalNavigationCollapsableItemComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   static ngAcceptInputType_autoCollapse: BooleanInput;
 
   @Input() autoCollapse: boolean;
@@ -50,6 +51,12 @@ export class VerticalNavigationCollapsableItemComponent implements OnInit, OnDes
 
   isCollapsed = true;
   isExpanded = false;
+
+  /** Whether the first render is over; before that the children appear without an enter animation. */
+  private _viewReady = false;
+
+  /** Class played when the children enter; empty for the initial render. Fixed when expanding. */
+  _enterClass = '';
 
   private _verticalNavigationComponent: VerticalNavigationComponent;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -163,6 +170,10 @@ export class VerticalNavigationCollapsableItemComponent implements OnInit, OnDes
       });
   }
 
+  ngAfterViewInit(): void {
+    this._viewReady = true;
+  }
+
   ngOnDestroy(): void {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
@@ -207,6 +218,7 @@ export class VerticalNavigationCollapsableItemComponent implements OnInit, OnDes
     }
 
     // Expand it
+    this._enterClass = this._viewReady ? 'vertical-navigation-collapsable-expand' : '';
     this.isCollapsed = false;
     this.isExpanded = !this.isCollapsed;
 

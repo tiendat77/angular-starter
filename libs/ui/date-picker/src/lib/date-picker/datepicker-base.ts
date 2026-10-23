@@ -4,9 +4,10 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
+import { _IdGenerator } from '@angular/cdk/a11y';
 import { Directionality } from '@angular/cdk/bidi';
 import { coerceStringArray } from '@angular/cdk/coercion';
 import { _getFocusedElementPierceShadowDom } from '@angular/cdk/platform';
@@ -23,8 +24,12 @@ import {
   UP_ARROW,
 } from '@angular/cdk/keycodes';
 import {
+  createBlockScrollStrategy,
+  createFlexibleConnectedPositionStrategy,
+  createGlobalPositionStrategy,
+  createOverlayRef,
+  createRepositionScrollStrategy,
   FlexibleConnectedPositionStrategy,
-  Overlay,
   OverlayConfig,
   OverlayRef,
   ScrollStrategy,
@@ -32,7 +37,9 @@ import {
 import { ComponentPortal, ComponentType } from '@angular/cdk/portal';
 
 import {
+  afterNextRender,
   booleanAttribute,
+  ChangeDetectorRef,
   ComponentRef,
   ContentChild,
   Directive,
@@ -41,8 +48,8 @@ import {
   EventEmitter,
   inject,
   InjectionToken,
+  Injector,
   Input,
-  NgZone,
   OnChanges,
   OnDestroy,
   Output,
@@ -64,25 +71,17 @@ import { DatepickerDayExtra } from './datepicker-day-extra';
 import { DateFilterFn } from './datepicker-input-base';
 import { DatepickerMobileContent } from './datepicker-mobile-content';
 
-/** Used to generate a unique ID for each datepicker instance. */
-let datepickerUid = 0;
-
 /** Injection token that determines the scroll handling while the calendar is open. */
 export const DATEPICKER_SCROLL_STRATEGY = new InjectionToken<() => ScrollStrategy>(
   'datepicker-scroll-strategy',
   {
     providedIn: 'root',
     factory: () => {
-      const overlay = inject(Overlay);
-      return () => overlay.scrollStrategies.reposition();
+      const injector = inject(Injector);
+      return () => createRepositionScrollStrategy(injector);
     },
   }
 );
-
-/** @docs-private */
-export function DATEPICKER_SCROLL_STRATEGY_FACTORY(overlay: Overlay): () => ScrollStrategy {
-  return () => overlay.scrollStrategies.reposition();
-}
 
 /** Possible positions for the datepicker dropdown along the X axis. */
 export type DatepickerDropdownPositionX = 'start' | 'end';
@@ -90,26 +89,19 @@ export type DatepickerDropdownPositionX = 'start' | 'end';
 /** Possible positions for the datepicker dropdown along the Y axis. */
 export type DatepickerDropdownPositionY = 'above' | 'below';
 
-/** @docs-private */
-export const DATEPICKER_SCROLL_STRATEGY_FACTORY_PROVIDER = {
-  provide: DATEPICKER_SCROLL_STRATEGY,
-  deps: [Overlay],
-  useFactory: DATEPICKER_SCROLL_STRATEGY_FACTORY,
-};
-
 /** Form control that can be associated with a datepicker. */
 export interface DatepickerControl<D> {
   getStartValue(): D | null;
   min: D | null;
   max: D | null;
   disabled: boolean;
-  dateFilter: DateFilterFn<D>;
+  dateFilter: DateFilterFn<D> | null | undefined;
   getConnectedOverlayOrigin(): ElementRef;
   getOverlayLabelId(): string | null;
   stateChanges: Observable<void>;
 }
 
-/** A datepicker that can be attached to a {@link DatepickerControl}. */
+/** A datepicker that can be attached to a `DatepickerControl`. */
 export interface DatepickerPanel<
   C extends DatepickerControl<D>,
   S,
@@ -144,19 +136,18 @@ export abstract class DatepickerBase<
 >
   implements DatepickerPanel<C, S, D>, OnDestroy, OnChanges
 {
-  private _overlay = inject(Overlay);
-  private _ngZone = inject(NgZone);
+  private _injector = inject(Injector);
   private _viewContainerRef = inject(ViewContainerRef);
-  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true })!;
   private _dir = inject(Directionality, { optional: true });
   private _model = inject<DateSelectionModel<S, D>>(DateSelectionModel);
 
-  private _scrollStrategy: () => ScrollStrategy;
+  private _scrollStrategy = inject(DATEPICKER_SCROLL_STRATEGY);
   private _inputStateChanges = Subscription.EMPTY;
   private _document = inject(DOCUMENT);
 
   /** An input indicating the type of the custom header component for the calendar, if set. */
-  @Input() calendarHeaderComponent: ComponentType<any>;
+  @Input() calendarHeaderComponent!: ComponentType<any>;
 
   /** The date to open the calendar to initially. */
   @Input()
@@ -168,7 +159,7 @@ export abstract class DatepickerBase<
   set startAt(value: D | null) {
     this._startAt = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
   }
-  private _startAt: D | null;
+  private _startAt: D | null = null;
 
   /** The view that the calendar should start in. */
   @Input() startView: 'month' | 'year' | 'multi-year' = 'month';
@@ -198,7 +189,7 @@ export abstract class DatepickerBase<
       this.stateChanges.next(undefined);
     }
   }
-  private _disabled: boolean;
+  private _disabled: boolean | undefined;
 
   /** Preferred position of the datepicker in the X axis. */
   @Input() xPosition: DatepickerDropdownPositionX = 'start';
@@ -231,7 +222,7 @@ export abstract class DatepickerBase<
   @Output() readonly viewChanged: EventEmitter<CalendarView> = new EventEmitter<CalendarView>(true);
 
   /** Function that can be used to add custom CSS classes to dates. */
-  @Input() dateClass: CalendarCellClassFunction<D>;
+  @Input() dateClass!: CalendarCellClassFunction<D>;
 
   /** Whether to show the Vietnamese lunar date (Âm lịch) below each day number. */
   @Input({ transform: booleanAttribute }) showLunar = false;
@@ -251,10 +242,7 @@ export abstract class DatepickerBase<
   /** Emits when the datepicker has been closed. */
   @Output('closed') readonly closedStream = new EventEmitter<void>();
 
-  /**
-   * Classes to be passed to the date picker panel.
-   * Supports string and string array values, similar to `ngClass`.
-   */
+  /** Classes to be passed to the date picker panel. */
   @Input()
   get panelClass(): string | string[] {
     return this._panelClass;
@@ -262,7 +250,7 @@ export abstract class DatepickerBase<
   set panelClass(value: string | string[]) {
     this._panelClass = coerceStringArray(value);
   }
-  private _panelClass: string[];
+  private _panelClass!: string[];
 
   /** Whether the calendar is open. */
   @Input({ transform: booleanAttribute })
@@ -279,7 +267,7 @@ export abstract class DatepickerBase<
   private _opened = false;
 
   /** The id for the datepicker calendar. */
-  id = `datepicker-${datepickerUid++}`;
+  id: string = inject(_IdGenerator).getId('datepicker-');
 
   /** The minimum selectable date. */
   _getMinDate(): D | null {
@@ -291,15 +279,15 @@ export abstract class DatepickerBase<
     return this.datepickerInput && this.datepickerInput.max;
   }
 
-  _getDateFilter(): DateFilterFn<D> {
+  _getDateFilter(): DateFilterFn<D> | null | undefined {
     return this.datepickerInput && this.datepickerInput.dateFilter;
   }
 
   /** A reference to the overlay into which we've rendered the calendar. */
-  private _overlayRef: OverlayRef | null;
+  private _overlayRef: OverlayRef | null = null;
 
   /** Reference to the component instance rendered in the overlay. */
-  private _componentRef: ComponentRef<DatepickerContent<S, D>> | null;
+  private _componentRef: ComponentRef<DatepickerContent<S, D>> | null = null;
 
   /** The element that was focused before the datepicker was opened. */
   private _focusedElementBeforeOpen: HTMLElement | null = null;
@@ -308,22 +296,24 @@ export abstract class DatepickerBase<
   private _backdropHarnessClass = `${this.id}-backdrop`;
 
   /** The input element this datepicker is associated with. */
-  datepickerInput: C;
+  datepickerInput!: C;
 
   /** Emits when the datepicker's state changes. */
   readonly stateChanges = new Subject<void>();
 
-  constructor() {
-    const scrollStrategy = inject(DATEPICKER_SCROLL_STRATEGY);
+  private readonly _changeDetectorRef = inject(ChangeDetectorRef);
 
-    if (!this._dateAdapter) {
+  constructor() {
+    if (!this._dateAdapter && (typeof ngDevMode === 'undefined' || ngDevMode)) {
       throw createMissingDateImplError('DateAdapter');
     }
 
-    this._scrollStrategy = scrollStrategy;
+    this._model.selectionChanged.subscribe(() => {
+      this._changeDetectorRef.markForCheck();
+    });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges<this>) {
     const positionChange = changes['xPosition'] || changes['yPosition'];
 
     if (positionChange && !positionChange.firstChange && this._overlayRef) {
@@ -425,7 +415,6 @@ export abstract class DatepickerBase<
 
     if (this._componentRef) {
       const { instance, location } = this._componentRef;
-      instance._startExitAnimation();
       instance._animationDone.pipe(take(1)).subscribe(() => {
         const activeElement = this._document.activeElement;
 
@@ -443,6 +432,7 @@ export abstract class DatepickerBase<
         this._focusedElementBeforeOpen = null;
         this._destroyOverlay();
       });
+      instance._startExitAnimation();
     }
 
     if (canRestoreFocus) {
@@ -503,10 +493,11 @@ export abstract class DatepickerBase<
       this._getContentComponent(),
       this._viewContainerRef
     );
-    const overlayRef = (this._overlayRef = this._overlay.create(
+    const overlayRef = (this._overlayRef = createOverlayRef(
+      this._injector,
       new OverlayConfig({
         positionStrategy: fullscreen
-          ? this._overlay.position().global().top('0').left('0')
+          ? createGlobalPositionStrategy(this._injector).top('0').left('0')
           : isDialog
             ? this._getDialogStrategy()
             : this._getDropdownStrategy(),
@@ -516,9 +507,11 @@ export abstract class DatepickerBase<
           isDialog ? 'cdk-overlay-dark-backdrop' : 'overlay-transparent-backdrop',
           this._backdropHarnessClass,
         ],
-        direction: this._dir || undefined,
+        direction: this._dir || 'ltr',
         scrollStrategy:
-          isDialog || fullscreen ? this._overlay.scrollStrategies.block() : this._scrollStrategy(),
+          isDialog || fullscreen
+            ? createBlockScrollStrategy(this._injector)
+            : this._scrollStrategy(),
         panelClass: `datepicker-${fullscreen ? 'fullscreen' : isDialog ? 'dialog' : 'popup'}`,
       })
     ));
@@ -554,7 +547,7 @@ export abstract class DatepickerBase<
 
     // Update the position once the calendar has rendered. Only relevant in dropdown mode.
     if (!isDialog) {
-      this._ngZone.onStable.pipe(take(1)).subscribe(() => overlayRef.updatePosition());
+      afterNextRender(() => overlayRef.updatePosition(), { injector: this._injector });
     }
   }
 
@@ -568,14 +561,15 @@ export abstract class DatepickerBase<
 
   /** Gets a position strategy that will open the calendar as a dropdown. */
   private _getDialogStrategy() {
-    return this._overlay.position().global().centerHorizontally().centerVertically();
+    return createGlobalPositionStrategy(this._injector).centerHorizontally().centerVertically();
   }
 
   /** Gets a position strategy that will open the calendar as a dropdown. */
   private _getDropdownStrategy() {
-    const strategy = this._overlay
-      .position()
-      .flexibleConnectedTo(this.datepickerInput.getConnectedOverlayOrigin())
+    const strategy = createFlexibleConnectedPositionStrategy(
+      this._injector,
+      this.datepickerInput.getConnectedOverlayOrigin()
+    )
       .withTransformOriginOn('.datepicker-content')
       .withFlexibleDimensions(false)
       .withViewportMargin(8)

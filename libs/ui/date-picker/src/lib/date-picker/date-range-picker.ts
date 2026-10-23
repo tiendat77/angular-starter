@@ -1,5 +1,5 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { DateRangePickerContent } from './date-range-picker-content';
 import { DateRange, RANGE_DATE_SELECTION_MODEL_PROVIDER } from './date-selection-model';
 import { DatepickerBase, DatepickerControl } from './datepicker-base';
@@ -13,7 +13,6 @@ import { DatepickerContent } from './datepicker-content';
   selector: 'date-range-picker',
   template: '',
   exportAs: 'dateRangePicker',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   providers: [
     RANGE_DATE_SELECTION_MODEL_PROVIDER,

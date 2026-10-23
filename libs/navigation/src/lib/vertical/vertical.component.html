@@ -99,10 +99,8 @@
 @if (activeAsideItemId) {
   <div
     class="vertical-navigation-aside-wrapper"
-    [@fadeInLeft]="position === 'left'"
-    [@fadeInRight]="position === 'right'"
-    [@fadeOutLeft]="position === 'left'"
-    [@fadeOutRight]="position === 'right'"
+    [animate.enter]="'vertical-navigation-aside-enter-' + position"
+    [animate.leave]="'vertical-navigation-aside-leave-' + position"
   >
     @for (item of navigation; track item.id) {
       @if ((item.hidden && !item.hidden(item)) || !item.hidden) {

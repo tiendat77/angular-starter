@@ -18,7 +18,6 @@ import { Datepicker } from './date-picker';
 import { DateRangeInput } from './date-range-input';
 import { DateRangeEndInput, DateRangeStartInput } from './date-range-input-parts';
 import { DateRangePicker } from './date-range-picker';
-import { DATEPICKER_SCROLL_STRATEGY_FACTORY_PROVIDER } from './datepicker-base';
 import { DatepickerContent } from './datepicker-content';
 import { DatepickerDayExtra } from './datepicker-day-extra';
 import { DatepickerInput } from './datepicker-input';
@@ -56,6 +55,5 @@ import { DatepickerToggle } from './datepicker-toggle';
     DateRangeEndInput,
     DatepickerToggle,
   ],
-  providers: [DATEPICKER_SCROLL_STRATEGY_FACTORY_PROVIDER],
 })
 export class DatepickerInputModule {}

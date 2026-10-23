@@ -56,7 +56,7 @@ export class DateRangeCalendar<D> implements OnInit {
 
   @Input() minDate: D | null = null;
   @Input() maxDate: D | null = null;
-  @Input() dateFilter: (date: D) => boolean;
+  @Input() dateFilter: ((date: D) => boolean) | null | undefined;
   @Input() showLunar = false;
   @Input() showHolidays = true;
   @Input() dayExtra: TemplateRef<any> | null = null;

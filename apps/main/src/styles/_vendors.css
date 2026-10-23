@@ -3,8 +3,9 @@
 /* ----------------------------------------------------------------------------------------------------- */
 
 :root {
-  --navigation-item-active-bg-rgb: var(--primary-rgb);
-  --navigation-item-active-bg-opacity: 0.08;
+  --navigation-item-active-bg: color-mix(in oklab, var(--color-primary) 8%, transparent);
+  --navigation-item-active-color: var(--color-primary);
+  --navigation-item-hover-bg: color-mix(in oklab, var(--color-primary) 7%, transparent);
 }
 
 /* ----------------------------------------------------------------------------------------------------- */

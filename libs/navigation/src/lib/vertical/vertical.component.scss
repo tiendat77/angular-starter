@@ -2,3 +2,88 @@
 @use 'styles/appearances/dense';
 // @use 'styles/appearances/compact';
 // @use 'styles/appearances/thin';
+
+// Aside panel enter / leave (used through `animate.enter` / `animate.leave` in the template).
+@mixin aside-motion($side, $offset) {
+  @keyframes vertical-navigation-aside-in-#{$side} {
+    from {
+      opacity: 0;
+      transform: translate3d($offset, 0, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes vertical-navigation-aside-out-#{$side} {
+    from {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      opacity: 0;
+      transform: translate3d($offset, 0, 0);
+    }
+  }
+
+  .vertical-navigation-aside-enter-#{$side} {
+    animation: vertical-navigation-aside-in-#{$side} 225ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .vertical-navigation-aside-leave-#{$side} {
+    animation: vertical-navigation-aside-out-#{$side} 195ms cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+}
+
+@include aside-motion(left, -100%);
+@include aside-motion(right, 100%);
+
+// Collapsable children expand / collapse (used through `animate.enter` / `animate.leave`).
+// The wrapper is a one-row grid, and animating that row between 0fr and 1fr animates the height
+// without having to measure it.
+.vertical-navigation-item-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+
+  > .vertical-navigation-item-children {
+    min-height: 0;
+  }
+}
+
+@keyframes vertical-navigation-collapsable-in {
+  from {
+    grid-template-rows: 0fr;
+  }
+  to {
+    grid-template-rows: 1fr;
+  }
+}
+
+@keyframes vertical-navigation-collapsable-out {
+  from {
+    grid-template-rows: 1fr;
+  }
+  to {
+    grid-template-rows: 0fr;
+  }
+}
+
+.vertical-navigation-collapsable-expand {
+  animation: vertical-navigation-collapsable-in 225ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.vertical-navigation-collapsable-collapse {
+  animation: vertical-navigation-collapsable-out 225ms cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vertical-navigation-collapsable-expand,
+  .vertical-navigation-collapsable-collapse,
+  .vertical-navigation-aside-enter-left,
+  .vertical-navigation-aside-enter-right,
+  .vertical-navigation-aside-leave-left,
+  .vertical-navigation-aside-leave-right {
+    animation: none;
+  }
+}

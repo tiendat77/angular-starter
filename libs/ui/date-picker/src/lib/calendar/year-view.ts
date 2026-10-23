@@ -3,7 +3,7 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
 import { Directionality } from '@angular/cdk/bidi';
@@ -22,7 +22,6 @@ import {
 
 import {
   AfterContentInit,
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -32,6 +31,7 @@ import {
   ViewChild,
   ViewEncapsulation,
   inject,
+  signal,
 } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -56,19 +56,18 @@ import {
   templateUrl: './year-view.html',
   exportAs: 'yearView',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CalendarBody],
 })
 export class YearView<D> implements AfterContentInit, OnDestroy {
   readonly _changeDetectorRef = inject(ChangeDetectorRef);
-  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
-  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
+  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true })!;
+  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true })!;
   private _dir = inject(Directionality, { optional: true });
 
   private _rerenderSubscription = Subscription.EMPTY;
 
   /** Flag used to filter out space/enter keyup events that originated outside of the view. */
-  private _selectionKeyPressed: boolean;
+  private _selectionKeyPressed: boolean = false;
 
   /** The date to display in this year view (everything other than the year is ignored). */
   @Input()
@@ -85,7 +84,7 @@ export class YearView<D> implements AfterContentInit, OnDestroy {
       this._init();
     }
   }
-  private _activeDate: D;
+  private _activeDate!: D;
 
   /** The currently selected date. */
   @Input()
@@ -101,7 +100,7 @@ export class YearView<D> implements AfterContentInit, OnDestroy {
 
     this._setSelectedMonth(value);
   }
-  private _selected: DateRange<D> | D | null;
+  private _selected: DateRange<D> | D | null = null;
 
   /** The minimum selectable date. */
   @Input()
@@ -111,7 +110,7 @@ export class YearView<D> implements AfterContentInit, OnDestroy {
   set minDate(value: D | null) {
     this._minDate = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
   }
-  private _minDate: D | null;
+  private _minDate: D | null = null;
 
   /** The maximum selectable date. */
   @Input()
@@ -121,13 +120,13 @@ export class YearView<D> implements AfterContentInit, OnDestroy {
   set maxDate(value: D | null) {
     this._maxDate = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
   }
-  private _maxDate: D | null;
+  private _maxDate: D | null = null;
 
   /** A function used to filter which dates are selectable. */
-  @Input() dateFilter: (date: D) => boolean;
+  @Input() dateFilter: ((date: D) => boolean) | null | undefined;
 
   /** Function that can be used to add custom CSS classes to date cells. */
-  @Input() dateClass: CalendarCellClassFunction<D>;
+  @Input() dateClass!: CalendarCellClassFunction<D>;
 
   /** Emits when a new month is selected. */
   @Output() readonly selectedChange: EventEmitter<D> = new EventEmitter<D>();
@@ -139,29 +138,31 @@ export class YearView<D> implements AfterContentInit, OnDestroy {
   @Output() readonly activeDateChange: EventEmitter<D> = new EventEmitter<D>();
 
   /** The body of calendar table */
-  @ViewChild(CalendarBody) _calendarBody: CalendarBody;
+  @ViewChild(CalendarBody) _calendarBody!: CalendarBody;
 
   /** Grid of calendar cells representing the months of the year. */
-  _months: CalendarCell[][];
+  _months = signal<CalendarCell[][]>([]);
 
   /** The label for this year (e.g. "2017"). */
-  _yearLabel: string;
+  _yearLabel = signal('');
 
   /** The month in this year that today falls on. Null if today is in a different year. */
-  _todayMonth: number | null;
+  _todayMonth = signal<number | null>(null);
 
   /**
    * The month in this year that the selected Date falls on.
    * Null if the selected Date is in a different year.
    */
-  _selectedMonth: number | null;
+  _selectedMonth = signal<number | null>(null);
 
   constructor() {
-    if (!this._dateAdapter) {
-      throw createMissingDateImplError('DateAdapter');
-    }
-    if (!this._dateFormats) {
-      throw createMissingDateImplError('DATE_FORMATS');
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (!this._dateAdapter) {
+        throw createMissingDateImplError('DateAdapter');
+      }
+      if (!this._dateFormats) {
+        throw createMissingDateImplError('DATE_FORMATS');
+      }
     }
 
     this._activeDate = this._dateAdapter.today();
@@ -295,16 +296,18 @@ export class YearView<D> implements AfterContentInit, OnDestroy {
   /** Initializes this year view. */
   _init() {
     this._setSelectedMonth(this.selected);
-    this._todayMonth = this._getMonthInCurrentYear(this._dateAdapter.today());
-    this._yearLabel = this._dateAdapter.getYearName(this.activeDate);
+    this._todayMonth.set(this._getMonthInCurrentYear(this._dateAdapter.today()));
+    this._yearLabel.set(this._dateAdapter.getYearName(this.activeDate));
 
     const monthNames = this._dateAdapter.getMonthNames('short');
     // First row of months only contains 5 elements so we can fit the year label on the same row.
-    this._months = [
-      [0, 1, 2, 3],
-      [4, 5, 6, 7],
-      [8, 9, 10, 11],
-    ].map((row) => row.map((month) => this._createCellForMonth(month, monthNames[month])));
+    this._months.set(
+      [
+        [0, 1, 2, 3],
+        [4, 5, 6, 7],
+        [8, 9, 10, 11],
+      ].map((row) => row.map((month) => this._createCellForMonth(month, monthNames[month])))
+    );
     this._changeDetectorRef.markForCheck();
   }
 
@@ -434,10 +437,11 @@ export class YearView<D> implements AfterContentInit, OnDestroy {
   /** Sets the currently-selected month based on a model value. */
   private _setSelectedMonth(value: DateRange<D> | D | null) {
     if (value instanceof DateRange) {
-      this._selectedMonth =
-        this._getMonthInCurrentYear(value.start) || this._getMonthInCurrentYear(value.end);
+      this._selectedMonth.set(
+        this._getMonthInCurrentYear(value.start) || this._getMonthInCurrentYear(value.end)
+      );
     } else {
-      this._selectedMonth = this._getMonthInCurrentYear(value);
+      this._selectedMonth.set(this._getMonthInCurrentYear(value));
     }
   }
 }

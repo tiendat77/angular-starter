@@ -255,6 +255,8 @@ vertical-navigation {
         display: flex;
         align-items: center;
         justify-content: flex-start;
+        width: 100%; /* <button> items shrink-to-fit otherwise, leaving the arrow next to the title */
+        text-align: left;
         padding: 10px 16px;
         font-size: 13px;
         font-weight: 500;
@@ -286,10 +288,13 @@ vertical-navigation {
             display: flex;
             align-items: center;
             justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 9999px;
             font-size: 10px;
             font-weight: 600;
             white-space: nowrap;
-            height: 20px;
           }
         }
       }
@@ -356,7 +361,7 @@ vertical-navigation {
       }
     }
 
-    > .vertical-navigation-item-children {
+    > .vertical-navigation-item-collapse > .vertical-navigation-item-children {
       > *:first-child {
         margin-top: 6px;
       }
@@ -364,7 +369,7 @@ vertical-navigation {
       > *:last-child {
         padding-bottom: 6px;
 
-        > .vertical-navigation-item-children {
+        > .vertical-navigation-item-collapse > .vertical-navigation-item-children {
           > *:last-child {
             padding-bottom: 0;
           }
@@ -455,6 +460,11 @@ vertical-navigation {
   z-index: 50;
   opacity: 0;
   background-color: rgba(0, 0, 0, 0.6);
+  transition: opacity 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &.vertical-navigation-overlay-visible {
+    opacity: 1;
+  }
 
   + .vertical-navigation-aside-overlay {
     background-color: transparent;
@@ -473,6 +483,18 @@ vertical-navigation {
   z-index: 169;
   opacity: 0;
   background-color: rgba(0, 0, 0, 0.3);
+  transition: opacity 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &.vertical-navigation-overlay-visible {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vertical-navigation-overlay,
+  .vertical-navigation-aside-overlay {
+    transition: none;
+  }
 }
 
 /* ----------------------------------------------------------------------------------------------------- */
@@ -518,9 +540,9 @@ vertical-navigation-collapsable-item {
       &:not(.vertical-navigation-item-disabled) {
         &.vertical-navigation-item-active,
         &.vertical-navigation-item-active-forced {
-          background-color: rgba(
-            var(--navigation-item-active-bg-rgb),
-            var(--navigation-item-active-bg-opacity)
+          background-color: var(
+            --navigation-item-active-bg,
+            color-mix(in srgb, currentColor 10%, transparent)
           );
 
           .vertical-navigation-item-icon {
@@ -542,8 +564,9 @@ vertical-navigation-collapsable-item {
           .vertical-navigation-item-disabled
         ) {
         &:hover {
-          background-color: rgba(
-            var(--navigation-item-active-bg-rgb) / var(--navigation-item-active-bg-opacity)
+          background-color: var(
+            --navigation-item-hover-bg,
+            color-mix(in srgb, currentColor 6%, transparent)
           );
 
           .vertical-navigation-item-icon {

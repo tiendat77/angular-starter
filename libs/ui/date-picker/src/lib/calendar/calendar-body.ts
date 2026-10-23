@@ -3,30 +3,32 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
-import { Platform, normalizePassiveListenerOptions } from '@angular/cdk/platform';
+import { _IdGenerator } from '@angular/cdk/a11y';
+import { Platform } from '@angular/cdk/platform';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
+  afterNextRender,
   AfterViewChecked,
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
+  inject,
+  Injector,
   Input,
   NgZone,
   OnChanges,
   OnDestroy,
   Output,
+  Renderer2,
   SimpleChanges,
   TemplateRef,
   ViewEncapsulation,
-  inject,
 } from '@angular/core';
 import { UiTooltipDirective } from '@libs/ui/tooltip';
-
-import { take } from 'rxjs/operators';
+import { DatepickerIntl } from '../date-picker/datepicker-intl';
 
 /** Extra CSS classes that can be associated with a calendar cell. */
 export type CalendarCellCssClasses = string | string[] | Set<string> | Record<string, any>;
@@ -37,22 +39,29 @@ export type CalendarCellClassFunction<D> = (
   view: 'month' | 'year' | 'multi-year'
 ) => CalendarCellCssClasses;
 
+let uniqueIdCounter = 0;
+
 /**
  * An internal class that represents the data corresponding to a single calendar cell.
  * @docs-private
  */
 export class CalendarCell<D = any> {
+  readonly id = uniqueIdCounter++;
+  readonly cssClasses: string | string[] | Record<string, any> | undefined;
+
   constructor(
     public value: number,
     public displayValue: string,
     public ariaLabel: string,
     public enabled: boolean,
-    public cssClasses: CalendarCellCssClasses = {},
+    cssClasses?: CalendarCellCssClasses,
     public compareValue = value,
     public rawValue?: D,
     public topText: string | null = null,
     public tooltip: string | null = null
-  ) {}
+  ) {
+    this.cssClasses = cssClasses instanceof Set ? Array.from(cssClasses) : cssClasses;
+  }
 }
 
 /** Event emitted when a date inside the calendar is triggered as a result of a user action. */
@@ -61,22 +70,20 @@ export interface CalendarUserEvent<D> {
   event: Event;
 }
 
-let calendarBodyId = 1;
-
 /** Event options that can be used to bind an active, capturing event. */
-const activeCapturingEventOptions = normalizePassiveListenerOptions({
+const activeCapturingEventOptions = {
   passive: false,
   capture: true,
-});
+};
 
 /** Event options that can be used to bind a passive, capturing event. */
-const passiveCapturingEventOptions = normalizePassiveListenerOptions({
+const passiveCapturingEventOptions = {
   passive: true,
   capture: true,
-});
+};
 
 /** Event options that can be used to bind a passive, non-capturing event. */
-const passiveEventOptions = normalizePassiveListenerOptions({ passive: true });
+const passiveEventOptions = { passive: true };
 
 /**
  * An internal component used to display calendar data in a table.
@@ -91,20 +98,20 @@ const passiveEventOptions = normalizePassiveListenerOptions({ passive: true });
   },
   exportAs: 'calendarBody',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgClass, NgTemplateOutlet, UiTooltipDirective],
 })
 export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChecked {
   private _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private _ngZone = inject(NgZone);
-
   private _platform = inject(Platform);
+  private _intl = inject(DatepickerIntl);
+  private _eventCleanups!: (() => void)[];
 
   /**
    * Used to skip the next focus event when rendering the preview range.
    * We need a flag like this, because some browsers fire focus events asynchronously.
    */
-  private _skipNextFocus: boolean;
+  private _skipNextFocus: boolean = false;
 
   /**
    * Used to focus the active cell after change detection has run.
@@ -112,22 +119,22 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
   private _focusActiveCellAfterViewChecked = false;
 
   /** The label for the table. (e.g. "Jan 2017"). */
-  @Input() label: string;
+  @Input() label!: string;
 
   /** The cells to display in the table. */
-  @Input() rows: CalendarCell[][];
+  @Input() rows!: CalendarCell[][];
 
   /** The value in the table that corresponds to today. */
-  @Input() todayValue: number;
+  @Input() todayValue!: number;
 
   /** Start value of the selected date range. */
-  @Input() startValue: number;
+  @Input() startValue!: number;
 
   /** End value of the selected date range. */
-  @Input() endValue: number;
+  @Input() endValue!: number;
 
   /** The minimum number of free cells needed to fit the label in the first row. */
-  @Input() labelMinRequiredCells: number;
+  @Input() labelMinRequiredCells!: number;
 
   /** Template rendered below the day number of every cell; receives the cell's date. */
   @Input() dayExtra: TemplateRef<any> | null = null;
@@ -138,7 +145,7 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
   /** The cell number of the active cell in the table. */
   @Input() activeCell = 0;
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges<this>) {
     const columnChanges = changes['numCols'];
     const { rows, numCols } = this;
 
@@ -172,10 +179,10 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
   @Input() cellAspectRatio = 1;
 
   /** Start of the comparison range. */
-  @Input() comparisonStart: number | null;
+  @Input() comparisonStart: number | null = null;
 
   /** End of the comparison range. */
-  @Input() comparisonEnd: number | null;
+  @Input() comparisonEnd: number | null = null;
 
   /** Start of the preview range. */
   @Input() previewStart: number | null = null;
@@ -184,10 +191,10 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
   @Input() previewEnd: number | null = null;
 
   /** ARIA Accessible name of the `<input startDate/>` */
-  @Input() startDateAccessibleName: string | null;
+  @Input() startDateAccessibleName: string | null = null;
 
   /** ARIA Accessible name of the `<input endDate/>` */
-  @Input() endDateAccessibleName: string | null;
+  @Input() endDateAccessibleName: string | null = null;
 
   /** Emits when a new value is selected. */
   @Output() readonly selectedValueChange = new EventEmitter<CalendarUserEvent<number>>();
@@ -204,38 +211,68 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
   @Output() readonly dragEnded = new EventEmitter<CalendarUserEvent<D | null>>();
 
   /** The number of blank cells to put at the beginning for the first row. */
-  _firstRowOffset: number;
+  _firstRowOffset!: number;
 
   /** Padding for the individual date cells. */
-  _cellPadding: string;
+  _cellPadding!: string;
 
   /** Width of an individual cell. */
-  _cellWidth: string;
+  _cellWidth!: string;
+
+  /** ID for the start date label. */
+  _startDateLabelId: string;
+
+  /** ID for the end date label. */
+  _endDateLabelId: string;
+
+  /** ID for the comparison start date label. */
+  _comparisonStartDateLabelId: string;
+
+  /** ID for the comparison end date label. */
+  _comparisonEndDateLabelId: string;
 
   private _didDragSinceMouseDown = false;
 
+  private _injector = inject(Injector);
+
+  comparisonDateAccessibleName = this._intl.comparisonDateLabel;
+
+  /**
+   * Tracking function for rows based on their identity. Ideally we would use some sort of
+   * key on the row, but that would require a breaking change for the `rows` input. We don't
+   * use the built-in identity tracking, because it logs warnings.
+   */
+  _trackRow = (row: CalendarCell[]) => row;
+
   constructor() {
-    const _elementRef = this._elementRef;
-    const _ngZone = this._ngZone;
+    const renderer = inject(Renderer2);
+    const idGenerator = inject(_IdGenerator);
+    this._startDateLabelId = idGenerator.getId('calendar-body-start-');
+    this._endDateLabelId = idGenerator.getId('calendar-body-end-');
+    this._comparisonStartDateLabelId = idGenerator.getId('calendar-body-comparison-start-');
+    this._comparisonEndDateLabelId = idGenerator.getId('calendar-body-comparison-end-');
 
-    _ngZone.runOutsideAngular(() => {
-      const element = _elementRef.nativeElement;
-
-      // `touchmove` is active since we need to call `preventDefault`.
-      element.addEventListener('touchmove', this._touchmoveHandler, activeCapturingEventOptions);
-
-      element.addEventListener('mouseenter', this._enterHandler, passiveCapturingEventOptions);
-      element.addEventListener('focus', this._enterHandler, passiveCapturingEventOptions);
-      element.addEventListener('mouseleave', this._leaveHandler, passiveCapturingEventOptions);
-      element.addEventListener('blur', this._leaveHandler, passiveCapturingEventOptions);
-
-      element.addEventListener('mousedown', this._mousedownHandler, passiveEventOptions);
-      element.addEventListener('touchstart', this._mousedownHandler, passiveEventOptions);
+    this._ngZone.runOutsideAngular(() => {
+      const element = this._elementRef.nativeElement;
+      const cleanups = [
+        // `touchmove` is active since we need to call `preventDefault`.
+        renderer.listen(element, 'touchmove', this._touchmoveHandler, activeCapturingEventOptions),
+        renderer.listen(element, 'mouseenter', this._enterHandler, passiveCapturingEventOptions),
+        renderer.listen(element, 'focus', this._enterHandler, passiveCapturingEventOptions),
+        renderer.listen(element, 'mouseleave', this._leaveHandler, passiveCapturingEventOptions),
+        renderer.listen(element, 'blur', this._leaveHandler, passiveCapturingEventOptions),
+        renderer.listen(element, 'mousedown', this._mousedownHandler, passiveEventOptions),
+        renderer.listen(element, 'touchstart', this._mousedownHandler, passiveEventOptions),
+      ];
 
       if (this._platform.isBrowser) {
-        window.addEventListener('mouseup', this._mouseupHandler);
-        window.addEventListener('touchend', this._touchendHandler);
+        cleanups.push(
+          renderer.listen('window', 'mouseup', this._mouseupHandler),
+          renderer.listen('window', 'touchend', this._touchendHandler)
+        );
       }
+
+      this._eventCleanups = cleanups;
     });
   }
 
@@ -264,22 +301,7 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
   }
 
   ngOnDestroy() {
-    const element = this._elementRef.nativeElement;
-
-    element.removeEventListener('touchmove', this._touchmoveHandler, activeCapturingEventOptions);
-
-    element.removeEventListener('mouseenter', this._enterHandler, passiveCapturingEventOptions);
-    element.removeEventListener('focus', this._enterHandler, passiveCapturingEventOptions);
-    element.removeEventListener('mouseleave', this._leaveHandler, passiveCapturingEventOptions);
-    element.removeEventListener('blur', this._leaveHandler, passiveCapturingEventOptions);
-
-    element.removeEventListener('mousedown', this._mousedownHandler, passiveEventOptions);
-    element.removeEventListener('touchstart', this._mousedownHandler, passiveEventOptions);
-
-    if (this._platform.isBrowser) {
-      window.removeEventListener('mouseup', this._mouseupHandler);
-      window.removeEventListener('touchend', this._touchendHandler);
-    }
+    this._eventCleanups.forEach((cleanup) => cleanup());
   }
 
   /** Returns whether a cell is active. */
@@ -317,8 +339,8 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
    * Adding delay also complicates writing tests.
    */
   _focusActiveCell(movePreview = true) {
-    this._ngZone.runOutsideAngular(() => {
-      this._ngZone.onStable.pipe(take(1)).subscribe(() => {
+    afterNextRender(
+      () => {
         setTimeout(() => {
           const activeCell: HTMLElement | null =
             this._elementRef.nativeElement.querySelector('.calendar-body-active');
@@ -331,8 +353,9 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
             activeCell.focus();
           }
         });
-      });
-    });
+      },
+      { injector: this._injector }
+    );
   }
 
   /** Focuses the active cell after change detection has run and the microtask queue is empty. */
@@ -446,6 +469,17 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
     } else if (this.endValue === value) {
       return this._endDateLabelId;
     }
+
+    if (this.comparisonStart !== null && this.comparisonEnd !== null) {
+      if (value === this.comparisonStart && value === this.comparisonEnd) {
+        return `${this._comparisonStartDateLabelId} ${this._comparisonEndDateLabelId}`;
+      } else if (value === this.comparisonStart) {
+        return this._comparisonStartDateLabelId;
+      } else if (value === this.comparisonEnd) {
+        return this._comparisonEndDateLabelId;
+      }
+    }
+
     return null;
   }
 
@@ -582,18 +616,14 @@ export class CalendarBody<D = any> implements OnChanges, OnDestroy, AfterViewChe
       const col = cell.getAttribute('data-col');
 
       if (row && col) {
-        return this.rows[parseInt(row)][parseInt(col)];
+        // We need the optional read here, because this can
+        // fire too late when the user is navigating quickly.
+        return this.rows[parseInt(row)]?.[parseInt(col)] || null;
       }
     }
 
     return null;
   }
-
-  private _id = `calendar-body-${calendarBodyId++}`;
-
-  _startDateLabelId = `${this._id}-start-date`;
-
-  _endDateLabelId = `${this._id}-end-date`;
 }
 
 /** Checks whether a node is a table cell element. */

@@ -12,13 +12,8 @@ import { Observable, Subject } from 'rxjs';
 /** InjectionToken for datepicker that can be used to override default locale code. */
 export const DATE_LOCALE = new InjectionToken<any>('DATE_LOCALE', {
   providedIn: 'root',
-  factory: DATE_LOCALE_FACTORY,
+  factory: () => inject(LOCALE_ID),
 });
-
-/** @docs-private */
-export function DATE_LOCALE_FACTORY(): any {
-  return inject(LOCALE_ID);
-}
 
 /** Adapts type `D` to be usable as a date by cdk-based components that work with dates. */
 export abstract class DateAdapter<D, L = any> {

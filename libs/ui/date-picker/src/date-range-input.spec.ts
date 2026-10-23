@@ -1,7 +1,6 @@
 import { Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { DateRangePicker, DatepickerModule, provideNativeDateAdapter } from './public-api';
 
@@ -69,7 +68,6 @@ describe('DateRangeInput (two inputs)', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HostComponent],
-      providers: [provideNoopAnimations()],
     });
     fixture = TestBed.createComponent(HostComponent);
     host = fixture.componentInstance;

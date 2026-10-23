@@ -1,4 +1,4 @@
-import { Injectable, Provider } from '@angular/core';
+import { Provider, Service } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DateAdapter } from '../adapter';
 import { HolidayLanguage } from '../holidays/vietnamese-holidays';
@@ -25,6 +25,10 @@ export interface DatepickerLabels {
   nextMultiYearLabel: string;
   /** Language of the holiday names shown when hovering a day: `en` (default) or `vi`. */
   holidayLanguage: HolidayLanguage;
+  /** Hidden label of the comparison range (read by screen readers). */
+  comparisonDateLabel: string;
+  /** `aria-label` of the toggle button that opens the picker. */
+  openCalendarLabel: string;
 }
 
 /**
@@ -35,7 +39,7 @@ export interface DatepickerLabels {
  * `DatepickerIntl`. Call `changes.next()` after mutating the labels at runtime (e.g. on a language
  * switch) so open pickers re-render.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DatepickerIntl implements DatepickerLabels {
   /** Emits when a label changed. */
   readonly changes = new Subject<void>();
@@ -53,6 +57,8 @@ export class DatepickerIntl implements DatepickerLabels {
   nextYearLabel = 'Next year';
   nextMultiYearLabel = 'Next 24 years';
   holidayLanguage: HolidayLanguage = 'en';
+  comparisonDateLabel = 'Comparison range';
+  openCalendarLabel = 'Open calendar';
 }
 
 /**

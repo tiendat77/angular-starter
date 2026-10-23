@@ -3,13 +3,20 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
-import { Directive, ElementRef, forwardRef, InjectionToken, Input, OnDestroy } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  forwardRef,
+  InjectionToken,
+  Input,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidatorFn, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-
 import { DateSelectionModelChange } from './date-selection-model';
 import { DatepickerControl, DatepickerPanel } from './datepicker-base';
 import { DateFilterFn, DatepickerInputBase } from './datepicker-input-base';
@@ -38,11 +45,13 @@ export const INPUT_VALUE_ACCESSOR: any = {
   selector: 'input[datepicker]',
   providers: [DATEPICKER_VALUE_ACCESSOR, DATEPICKER_VALIDATORS, INPUT_VALUE_ACCESSOR],
   host: {
-    '[attr.aria-owns]': '(_datepicker?.opened && _datepicker.id) || null',
+    class: 'datepicker-input',
+    '[attr.aria-haspopup]': '_datepicker ? "dialog" : null',
+    '[attr.aria-owns]': '_ariaOwns()',
     '[attr.min]': 'min ? _dateAdapter.toIso8601(min) : null',
     '[attr.max]': 'max ? _dateAdapter.toIso8601(max) : null',
     '[disabled]': 'disabled',
-    '(input)': '_onInput($any($event.target).value)',
+    '(input)': '_onInput($event)',
     '(change)': '_onChange()',
     '(blur)': '_onBlur()',
     '(keydown)': '_onKeydown($event)',
@@ -54,17 +63,28 @@ export class DatepickerInput<D>
   implements DatepickerControl<D | null>, OnDestroy
 {
   private _closedSubscription = Subscription.EMPTY;
+  private _openedSubscription = Subscription.EMPTY;
 
   /** The datepicker that this input is associated with. */
   @Input()
   set datepicker(datepicker: DatepickerPanel<DatepickerControl<D>, D | null, D>) {
     if (datepicker) {
       this._datepicker = datepicker;
-      this._closedSubscription = datepicker.closedStream.subscribe(() => this._onTouched());
+      this._ariaOwns.set(datepicker.opened ? datepicker.id : null);
+      this._closedSubscription = datepicker.closedStream.subscribe(() => {
+        this._onTouched();
+        this._ariaOwns.set(null);
+      });
+      this._openedSubscription = datepicker.openedStream.subscribe(() => {
+        this._ariaOwns.set(datepicker.id);
+      });
       this._registerModel(datepicker.registerInput(this));
     }
   }
-  _datepicker: DatepickerPanel<DatepickerControl<D>, D | null, D>;
+  _datepicker!: DatepickerPanel<DatepickerControl<D>, D | null, D>;
+
+  /** The id of the panel owned by this input. */
+  protected _ariaOwns = signal<string | null>(null);
 
   /** The minimum valid date. */
   @Input()
@@ -79,7 +99,7 @@ export class DatepickerInput<D>
       this._validatorOnChange();
     }
   }
-  private _min: D | null;
+  private _min: D | null = null;
 
   /** The maximum valid date. */
   @Input()
@@ -94,14 +114,14 @@ export class DatepickerInput<D>
       this._validatorOnChange();
     }
   }
-  private _max: D | null;
+  private _max: D | null = null;
 
   /** Function that can be used to filter out dates within the datepicker. */
   @Input('datepickerFilter')
   get dateFilter() {
     return this._dateFilter;
   }
-  set dateFilter(value: DateFilterFn<D | null>) {
+  set dateFilter(value: DateFilterFn<D | null> | null | undefined) {
     const wasMatchingValue = this._matchesFilter(this.value);
     this._dateFilter = value;
 
@@ -109,10 +129,10 @@ export class DatepickerInput<D>
       this._validatorOnChange();
     }
   }
-  private _dateFilter: DateFilterFn<D | null>;
+  private _dateFilter: DateFilterFn<D | null> | null | undefined;
 
   /** The combined form control validator for this input. */
-  protected _validator: ValidatorFn | null;
+  protected _validator: ValidatorFn | null = null;
 
   constructor() {
     super();
@@ -140,6 +160,7 @@ export class DatepickerInput<D>
   override ngOnDestroy() {
     super.ngOnDestroy();
     this._closedSubscription.unsubscribe();
+    this._openedSubscription.unsubscribe();
   }
 
   /** Opens the associated datepicker. */

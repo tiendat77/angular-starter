@@ -5,9 +5,9 @@
 >
   <thead class="calendar-table-header">
     <tr>
-      @for (day of _weekdays; track day) {
+      @for (day of _weekdays(); track day.id) {
         <th scope="col">
-          <span class="cdk-visually-hidden hidden">{{ day.long }}</span>
+          <span class="cdk-visually-hidden">{{ day.long }}</span>
           <span aria-hidden="true">{{ day.narrow }}</span>
         </th>
       }
@@ -21,16 +21,16 @@
   </thead>
   <tbody
     calendar-body
-    [label]="_monthLabel"
-    [rows]="_weeks"
-    [todayValue]="_todayDate!"
-    [startValue]="_rangeStart!"
-    [endValue]="_rangeEnd!"
-    [comparisonStart]="_comparisonRangeStart"
-    [comparisonEnd]="_comparisonRangeEnd"
-    [previewStart]="_previewStart"
-    [previewEnd]="_previewEnd"
-    [isRange]="_isRange"
+    [label]="_monthLabel()"
+    [rows]="_weeks()"
+    [todayValue]="_todayDate()!"
+    [startValue]="_rangeStart()!"
+    [endValue]="_rangeEnd()!"
+    [comparisonStart]="_comparisonRangeStart()"
+    [comparisonEnd]="_comparisonRangeEnd()"
+    [previewStart]="_previewStart()"
+    [previewEnd]="_previewEnd()"
+    [isRange]="_isRange()"
     [class.calendar-body-tall]="showLunar || !!dayExtra"
     [dayExtra]="dayExtra"
     [cellAspectRatio]="showLunar || dayExtra ? 1.2 : 1"

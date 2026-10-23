@@ -20,7 +20,7 @@ import { DateFilterFn, DatepickerInputBase } from './datepicker-input-base';
 @Directive({
   host: {
     '[attr.disabled]': 'disabled ? "" : null',
-    '(input)': '_onInput($any($event.target).value)',
+    '(input)': '_onInput($event)',
     '(change)': '_onChange()',
     '(blur)': '_onBlur()',
     '(keydown)': '_onKeydown($event)',

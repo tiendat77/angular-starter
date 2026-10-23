@@ -1,7 +1,6 @@
 import { Component, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { describe, expect, it } from 'vitest';
 import { Datepicker, DatepickerModule, provideNativeDateAdapter } from './public-api';
 
@@ -32,7 +31,6 @@ describe('Datepicker', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [DatepickerHostComponent],
-      providers: [provideNoopAnimations()],
     });
     fixture = TestBed.createComponent(DatepickerHostComponent);
     fixture.detectChanges();

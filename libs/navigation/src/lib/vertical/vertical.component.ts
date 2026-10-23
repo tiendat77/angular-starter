@@ -1,4 +1,3 @@
-import { animate, AnimationBuilder, AnimationPlayer, style } from '@angular/animations';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import {
@@ -24,7 +23,7 @@ import {
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
-import { fadeInLeft, fadeInRight, fadeOutLeft, fadeOutRight } from '../animations/fade';
+import { prefersReducedMotion } from '@libs/ui/core';
 import { NavigationService } from '../navigation.service';
 import { UtilsHelper } from '../utils.helper';
 
@@ -51,7 +50,6 @@ import {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'verticalNavigation',
-  animations: [fadeInLeft, fadeInRight, fadeOutLeft, fadeOutRight],
   imports: [
     VerticalNavigationBasicItemComponent,
     VerticalNavigationGroupItemComponent,
@@ -97,12 +95,10 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
   private _hovered = false;
   private _mutationObserver: MutationObserver;
   private _overlay: HTMLElement;
-  private _player: AnimationPlayer;
   private _scrollStrategy: ScrollStrategy;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   private _document = inject(DOCUMENT);
-  private _animationBuilder = inject(AnimationBuilder);
   private _changeDetectorRef = inject(ChangeDetectorRef);
   private _elementRef = inject(ElementRef);
   private _renderer2 = inject(Renderer2);
@@ -422,6 +418,36 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
     this._animationsEnabled = false;
   }
 
+  /** Fades an overlay in: flushes its hidden state first so the class change is transitioned. */
+  private _fadeIn(overlay: HTMLElement): void {
+    void overlay.offsetWidth;
+    overlay.classList.add('vertical-navigation-overlay-visible');
+  }
+
+  /** Fades an overlay out and resolves once the transition has finished. */
+  private _fadeOut(overlay: HTMLElement): Promise<void> {
+    overlay.classList.remove('vertical-navigation-overlay-visible');
+
+    return new Promise((resolve) => {
+      const done = () => {
+        clearTimeout(fallback);
+        overlay.removeEventListener('transitionrun', started);
+        overlay.removeEventListener('transitionend', onEnd);
+        overlay.removeEventListener('transitioncancel', onEnd);
+        resolve();
+      };
+      const started = (event: Event) => event.target === overlay && clearTimeout(fallback);
+      const onEnd = (event: Event) => event.target === overlay && done();
+
+      // A transition that never runs (reduced motion, overlay not shown yet) sends no events.
+      const fallback = setTimeout(done, prefersReducedMotion() ? 0 : 100);
+
+      overlay.addEventListener('transitionrun', started);
+      overlay.addEventListener('transitionend', onEnd);
+      overlay.addEventListener('transitioncancel', onEnd);
+    });
+  }
+
   private _showOverlay(): void {
     // Return if there is already an overlay
     if (this._asideOverlay) {
@@ -445,13 +471,8 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
     // Enable block scroll strategy
     this._scrollStrategy.enable();
 
-    // Create the enter animation and attach it to the player
-    this._player = this._animationBuilder
-      .build([animate('300ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ opacity: 1 }))])
-      .create(this._overlay);
-
-    // Play the animation
-    this._player.play();
+    // Fade the overlay in (the transition is defined in the stylesheet)
+    this._fadeIn(this._overlay);
 
     // Add an event listener to the overlay
     this._overlay.addEventListener('click', this._handleOverlayClick);
@@ -462,16 +483,8 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
       return;
     }
 
-    // Create the leave animation and attach it to the player
-    this._player = this._animationBuilder
-      .build([animate('300ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ opacity: 0 }))])
-      .create(this._overlay);
-
-    // Play the animation
-    this._player.play();
-
-    // Once the animation is done...
-    this._player.onDone(() => {
+    // Fade the overlay out and, once that is done...
+    this._fadeOut(this._overlay).then(() => {
       // If the overlay still exists...
       if (this._overlay) {
         // Remove the event listener
@@ -502,13 +515,8 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
     // Append the aside overlay to the parent of the navigation
     this._renderer2.appendChild(this._elementRef.nativeElement.parentElement, this._asideOverlay);
 
-    // Create the enter animation and attach it to the player
-    this._player = this._animationBuilder
-      .build([animate('300ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ opacity: 1 }))])
-      .create(this._asideOverlay);
-
-    // Play the animation
-    this._player.play();
+    // Fade the aside overlay in
+    this._fadeIn(this._asideOverlay);
 
     // Add an event listener to the aside overlay
     this._asideOverlay.addEventListener('click', this._handleAsideOverlayClick);
@@ -519,16 +527,8 @@ export class VerticalNavigationComponent implements OnChanges, OnInit, AfterView
       return;
     }
 
-    // Create the leave animation and attach it to the player
-    this._player = this._animationBuilder
-      .build([animate('300ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ opacity: 0 }))])
-      .create(this._asideOverlay);
-
-    // Play the animation
-    this._player.play();
-
-    // Once the animation is done...
-    this._player.onDone(() => {
+    // Fade the aside overlay out and, once that is done...
+    this._fadeOut(this._asideOverlay).then(() => {
       // If the aside overlay still exists...
       if (this._asideOverlay) {
         // Remove the event listener

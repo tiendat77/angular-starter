@@ -13,11 +13,7 @@ export * from './lib/date-picker/date-picker';
 export * from './lib/date-picker/date-picker-input.module';
 export * from './lib/date-picker/datepicker-toggle';
 
-export {
-  DATEPICKER_SCROLL_STRATEGY,
-  DATEPICKER_SCROLL_STRATEGY_FACTORY,
-  DATEPICKER_SCROLL_STRATEGY_FACTORY_PROVIDER,
-} from './lib/date-picker/datepicker-base';
+export { DATEPICKER_SCROLL_STRATEGY } from './lib/date-picker/datepicker-base';
 export { DatepickerContent } from './lib/date-picker/datepicker-content';
 export {
   DATEPICKER_VALIDATORS,

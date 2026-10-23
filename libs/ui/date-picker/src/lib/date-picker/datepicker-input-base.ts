@@ -3,7 +3,7 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
 import { DOWN_ARROW, hasModifierKey, ModifierKey } from '@angular/cdk/keycodes';
@@ -29,9 +29,7 @@ import {
   Validator,
   ValidatorFn,
 } from '@angular/forms';
-
 import { Subject, Subscription } from 'rxjs';
-
 import { DATE_FORMATS, DateAdapter, DateFormats } from '../adapter';
 import { createMissingDateImplError } from '../utils/errors';
 import {
@@ -47,7 +45,7 @@ import {
  */
 export class DatepickerInputEvent<D, S = unknown> {
   /** The new value for the target datepicker input. */
-  value: D | null;
+  value: D | null = null;
 
   constructor(
     /** Reference to the datepicker input component that emitted the event. */
@@ -59,7 +57,11 @@ export class DatepickerInputEvent<D, S = unknown> {
   }
 }
 
-/** Function that can be used to filter out dates from a calendar. */
+/**
+ * Function that can be used to filter out dates from a calendar.
+ * Datepicker can sometimes receive a null value as input for the date argument.
+ * This doesn't represent a "null date" but rather signifies that no date has been selected yet in the calendar.
+ */
 export type DateFilterFn<D> = (date: D | null) => boolean;
 
 /** Base class for datepicker inputs. */
@@ -68,12 +70,11 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
   implements ControlValueAccessor, AfterViewInit, OnChanges, OnDestroy, Validator
 {
   protected _elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
-  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true }) as DateAdapter<D>;
-  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true }) as DateFormats;
-  // @Optional() private _transloco: TranslocoService
+  _dateAdapter = inject<DateAdapter<D>>(DateAdapter, { optional: true })!;
+  private _dateFormats = inject<DateFormats>(DATE_FORMATS, { optional: true })!;
 
   /** Whether the component has been initialized. */
-  private _isInitialized: boolean;
+  private _isInitialized: boolean = false;
 
   /** The value of the input. */
   @Input()
@@ -81,7 +82,7 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
     return this._model ? this._getValueFromModel(this._model.selection as S) : this._pendingValue;
   }
   set value(value: any) {
-    this._assignValueProgrammatically(value);
+    this._assignValueProgrammatically(value, true);
   }
   protected _model: DateSelectionModel<S, D> | undefined;
 
@@ -110,7 +111,7 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
       element.blur();
     }
   }
-  private _disabled: boolean;
+  private _disabled: boolean | undefined;
 
   /** Emits when a `change` event is fired on this `<input>`. */
   @Output() readonly dateChange: EventEmitter<DatepickerInputEvent<D, S>> = new EventEmitter<
@@ -144,7 +145,7 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
    * we might get a value before we have a model. This property keeps track
    * of the value until we have somewhere to assign it.
    */
-  private _pendingValue: D | null;
+  private _pendingValue: D | null = null;
 
   /** The form control validator for whether the input parses. */
   private _parseValidator: ValidatorFn = (): ValidationErrors | null => {
@@ -195,7 +196,7 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
   abstract _getMaxDate(): D | null;
 
   /** Gets the date filter function. Used for validation. */
-  protected abstract _getDateFilter(): DateFilterFn<D> | undefined;
+  protected abstract _getDateFilter(): DateFilterFn<D> | null | undefined;
 
   /** Registers a date selection model with the input. */
   _registerModel(model: DateSelectionModel<S, D>): void {
@@ -238,18 +239,18 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
   protected _lastValueValid = false;
 
   constructor() {
-    const _dateAdapter = this._dateAdapter;
-
-    if (!this._dateAdapter) {
-      throw createMissingDateImplError('DateAdapter');
-    }
-    if (!this._dateFormats) {
-      throw createMissingDateImplError('DATE_FORMATS');
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (!this._dateAdapter) {
+        throw createMissingDateImplError('DateAdapter');
+      }
+      if (!this._dateFormats) {
+        throw createMissingDateImplError('DATE_FORMATS');
+      }
     }
 
     // Update the displayed date when the locale changes.
-    this._localeSubscription = _dateAdapter.localeChanges.subscribe(() => {
-      this._assignValueProgrammatically(this.value);
+    this._localeSubscription = this._dateAdapter.localeChanges.subscribe(() => {
+      this._assignValueProgrammatically(this.value, true);
     });
 
     // this._translocoSubscription = this._transloco.langChanges$.subscribe((lang) => {
@@ -261,7 +262,7 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
     this._isInitialized = true;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges<this>) {
     if (dateInputsHaveChanged(changes, this._dateAdapter)) {
       this.stateChanges.next(undefined);
     }
@@ -284,22 +285,25 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
     return this._validator ? this._validator(c) : null;
   }
 
-  // Implemented as part of ControlValueAccessor.
+  /** Implemented as part of ControlValueAccessor. */
   writeValue(value: D): void {
-    this._assignValueProgrammatically(value);
+    // We produce a different date object on each keystroke which can cause signal forms'
+    // interop logic to keep calling `writeValue` with the same value as the user is typing.
+    // Skip such cases since they can prevent the user from typing (see #32442 and #32475).
+    this._assignValueProgrammatically(value, value !== this.value);
   }
 
-  // Implemented as part of ControlValueAccessor.
+  /** Implemented as part of ControlValueAccessor. */
   registerOnChange(fn: (value: any) => void): void {
     this._cvaOnChange = fn;
   }
 
-  // Implemented as part of ControlValueAccessor.
+  /** Implemented as part of ControlValueAccessor. */
   registerOnTouched(fn: () => void): void {
     this._onTouched = fn;
   }
 
-  // Implemented as part of ControlValueAccessor.
+  /** Implemented as part of ControlValueAccessor. */
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
@@ -317,7 +321,8 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
     }
   }
 
-  _onInput(value: string) {
+  _onInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
     const lastValueWasValid = this._lastValueValid;
     let date = this._dateAdapter.parse(value, this._dateFormats.parse.dateInput);
     this._lastValueValid = this._isValidValue(date);
@@ -334,10 +339,13 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
       if (value && !this.value) {
         this._cvaOnChange(date);
       }
+    }
 
-      if (lastValueWasValid !== this._lastValueValid) {
-        this._validatorOnChange();
-      }
+    // Re-run the validators if the parse state changed while the value stayed the same.
+    // This also covers going from one null to another (e.g. clearing an unparseable value),
+    // because signal forms skip value writes that don't change the value.
+    if (!hasChanged && lastValueWasValid !== this._lastValueValid) {
+      this._validatorOnChange();
     }
 
     if (hasChanged) {
@@ -392,12 +400,15 @@ export abstract class DatepickerInputBase<S, D = ExtractDateTypeFromSelection<S>
   }
 
   /** Programmatically assigns a value to the input. */
-  protected _assignValueProgrammatically(value: D | null) {
+  protected _assignValueProgrammatically(value: D | null, reformat: boolean) {
     value = this._dateAdapter.deserialize(value);
     this._lastValueValid = this._isValidValue(value);
     value = this._dateAdapter.getValidDateOrNull(value);
     this._assignValue(value);
-    this._formatValue(value);
+
+    if (reformat) {
+      this._formatValue(value);
+    }
   }
 
   /** Gets whether a value matches the current date filter. */

@@ -81,6 +81,7 @@ providers: [
   provideNativeDateAdapter(),
   provideDatepickerLabels({
     closeLabel: 'Đóng',
+    openCalendarLabel: 'Mở lịch',
     prevMonthLabel: 'Tháng trước',
     nextMonthLabel: 'Tháng sau',
     monthYearFormat: '{month}, {year}',

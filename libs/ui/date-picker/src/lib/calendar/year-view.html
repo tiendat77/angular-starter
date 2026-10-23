@@ -16,11 +16,11 @@
   </thead>
   <tbody
     calendar-body
-    [label]="_yearLabel"
-    [rows]="_months"
-    [todayValue]="_todayMonth!"
-    [startValue]="_selectedMonth!"
-    [endValue]="_selectedMonth!"
+    [label]="_yearLabel()"
+    [rows]="_months()"
+    [todayValue]="_todayMonth()!"
+    [startValue]="_selectedMonth()!"
+    [endValue]="_selectedMonth()!"
     [labelMinRequiredCells]="2"
     [numCols]="4"
     [cellAspectRatio]="4 / 7"

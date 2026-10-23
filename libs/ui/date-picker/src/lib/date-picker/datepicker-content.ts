@@ -19,15 +19,14 @@ import {
   inject,
 } from '@angular/core';
 
-import { AnimationEvent } from '@angular/animations';
 import { NgClass } from '@angular/common';
+import { prefersReducedMotion } from '@libs/ui/core';
 
 import { Subject, Subscription } from 'rxjs';
 
 import { DateAdapter } from '../adapter/date-adapter';
 import { Calendar } from '../calendar/calendar';
 import { CalendarUserEvent } from '../calendar/calendar-body';
-import { animations } from '../utils/animations';
 
 import {
   DateRange,
@@ -50,12 +49,15 @@ import { DatepickerIntl } from './datepicker-intl';
   styleUrl: './datepicker-content.scss',
   host: {
     class: 'datepicker-content',
-    '[@transformPanel]': '_animationState',
-    '(@transformPanel.start)': '_handleAnimationEvent($event)',
-    '(@transformPanel.done)': '_handleAnimationEvent($event)',
     '[class.datepicker-content-touch]': 'datepicker.touchUi',
+    // Motion lives in _panel-motion.scss; the exit class is added by `_startExitAnimation`.
+    '[class.datepicker-motion-enter-dropdown]': '_animationState === "enter-dropdown"',
+    '[class.datepicker-motion-enter-dialog]': '_animationState === "enter-dialog"',
+    '[class.datepicker-motion-enter-fullscreen]': '_animationState === "enter-fullscreen"',
+    '(animationstart)': '_handleAnimationEvent($event)',
+    '(animationend)': '_handleAnimationEvent($event)',
+    '(animationcancel)': '_handleAnimationEvent($event)',
   },
-  animations: [animations.transformPanel, animations.fadeInCalendar],
   exportAs: 'datepickerContent',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,6 +105,9 @@ export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
   /** Whether there is an in-progress animation. */
   _isAnimating = false;
 
+  /** Reports the end of the exit when no animation events come (reduced motion, tests, ...). */
+  private _animationFallback: ReturnType<typeof setTimeout> | undefined;
+
   /** Whether the close button currently has focus. */
   _closeButtonFocused: boolean;
 
@@ -126,6 +131,7 @@ export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
   }
 
   ngOnDestroy() {
+    clearTimeout(this._animationFallback);
     this._subscriptions.unsubscribe();
     this._animationDone.complete();
   }
@@ -149,14 +155,44 @@ export class DatepickerContent<S, D = ExtractDateTypeFromSelection<S>>
   }
 
   _startExitAnimation() {
+    const wasFullscreen = this._animationState === 'enter-fullscreen';
+
     this._animationState = 'void';
     this._changeDetectorRef.markForCheck();
+    this._elementRef.nativeElement.classList.add(
+      wasFullscreen ? 'datepicker-motion-exit-fullscreen' : 'datepicker-motion-exit'
+    );
+
+    // An animation that never starts sends no events, so give up waiting if none starts. The
+    // completion stays asynchronous: callers subscribe to `_animationDone` right after this.
+    clearTimeout(this._animationFallback);
+    this._animationFallback = setTimeout(
+      () => {
+        if (!this._isAnimating) {
+          this._animationDone.next();
+        }
+      },
+      prefersReducedMotion() ? 0 : 200
+    );
   }
 
   _handleAnimationEvent(event: AnimationEvent) {
-    this._isAnimating = event.phaseName === 'start';
+    const exiting = this._animationState === 'void';
 
-    if (!this._isAnimating) {
+    // Only the panel's own animation of the current phase counts (e.g. not the enter that the
+    // exit cancelled).
+    if (
+      event.target !== this._elementRef.nativeElement ||
+      !event.animationName.startsWith('datepicker-') ||
+      event.animationName.includes('exit') !== exiting
+    ) {
+      return;
+    }
+
+    clearTimeout(this._animationFallback);
+    this._isAnimating = event.type === 'animationstart';
+
+    if (exiting && !this._isAnimating) {
       this._animationDone.next();
     }
   }

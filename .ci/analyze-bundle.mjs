@@ -13,7 +13,7 @@ import path from 'node:path';
 import zlib from 'node:zlib';
 
 const args = process.argv.slice(2);
-const statsPath = args.find((a) => !a.startsWith('--')) ?? 'dist/main/stats.json';
+const statsPath = args.find((a) => !a.startsWith('--')) ?? 'dist/main/browser-stats.json';
 const top = Number(args.find((a) => a.startsWith('--top='))?.split('=')[1] ?? 15);
 
 if (!fs.existsSync(statsPath)) {
