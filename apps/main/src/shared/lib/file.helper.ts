@@ -29,4 +29,19 @@ export class FileHelper {
 
     return new File([uint8Array], filename, { type: mime });
   }
+
+  /** Saves the blob as a file through a temporary link. */
+  static download(blob: Blob, fileName: string) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = fileName;
+    link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      link.remove();
+    }, 100);
+  }
 }

@@ -1,4 +1,5 @@
 import type { Cell, Row, Workbook, Worksheet } from 'exceljs';
+import { FileHelper } from '../file.helper';
 import { ExcelDatasetModel } from './excel-dataset.model';
 import { ExcelLabelModel } from './excel-label.model';
 
@@ -129,9 +130,17 @@ export class ExcelHelper {
       let value: any = dataset[labels[i].key];
 
       /**
-       * Header alignment
+       * Cell alignment and font
        */
       cell.alignment = Object.assign(cell.alignment || {}, { vertical: 'top' });
+
+      if (labels[i].wrapText) {
+        cell.alignment = Object.assign(cell.alignment, { wrapText: true });
+      }
+
+      if (labels[i].bold) {
+        cell.font = Object.assign(cell.font || {}, { bold: true });
+      }
 
       if (
         typeof value === 'string' &&
@@ -163,13 +172,13 @@ export class ExcelHelper {
         cell.numFmt = labels[i].format ?? 'mm/dd/yyyy HH:mm';
 
         /**
-         * ExcelJS doesn't support timezone, so we need to cheat
-         * by converting the date to UTC and then back to local
+         * ExcelJS has no time zone support: Excel shows the UTC clock of the Date it is given.
+         * Shift the date so that the UTC clock is the local clock, i.e. what the user sees on screen.
          */
         if (value) {
           const date = new Date(value);
           const isValid = !isNaN(date.getTime()) && date.getFullYear() > 1900;
-          value = isValid ? new Date(date.toISOString().slice(0, -1) /** Remove 'Z' */) : null;
+          value = isValid ? ExcelHelper._toExcelDate(date) : null;
         }
       }
 
@@ -242,33 +251,14 @@ export class ExcelHelper {
     return workbook;
   }
 
-  static download(workbook: Workbook, options: { title: string }): void {
-    workbook.xlsx.writeBuffer().then((buffer) => {
-      const blob = new Blob([buffer], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
-
-      const name = `${ExcelHelper._toPascalCase(options.title)} ${ExcelHelper._exportDate()}.xlsx`;
-
-      const data = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-
-      link.href = data;
-      link.download = name;
-
-      link.dispatchEvent(
-        new MouseEvent('click', {
-          bubbles: true,
-          cancelable: true,
-          view: window,
-        })
-      );
-
-      setTimeout(() => {
-        window.URL.revokeObjectURL(data);
-        link.remove();
-      }, 100);
+  static async download(workbook: Workbook, options: { title: string }): Promise<void> {
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
+    const name = `${ExcelHelper._toPascalCase(options.title)} ${ExcelHelper._exportDate()}.xlsx`;
+
+    FileHelper.download(blob, name);
   }
 
   static isValidExcelFile(file: File | null | undefined): boolean {
@@ -314,7 +304,7 @@ export class ExcelHelper {
         Object.prototype.hasOwnProperty.call(obj, field) &&
         obj[field] !== null &&
         obj[field] !== undefined &&
-        typeof obj[field] !== 'object' // Ignore objects and arrays
+        (typeof obj[field] !== 'object' || obj[field] instanceof Date) // Ignore objects and arrays
       ) {
         result[field] = obj[field];
       }
@@ -327,13 +317,17 @@ export class ExcelHelper {
    * Parse Excel worksheet data into an array of objects based on labels
    * @param worksheet - The Excel worksheet to parse
    * @param labels - Array of label definitions that map column names to keys
+   * @param options.headerRow - Row number of the header (1-based). Use it for a sheet exported with
+   * `meta()`, which has a title above the header. Default 1.
    * @returns Array of parsed data objects
    */
   static parse<T extends Record<string, any> = Record<string, any>>(
     worksheet: Worksheet,
-    labels: ExcelLabelModel[]
+    labels: ExcelLabelModel[],
+    options: { headerRow?: number } = {}
   ): T[] {
-    const rows = worksheet.getRows(1, worksheet.rowCount);
+    const headerRowNumber = options.headerRow ?? 1;
+    const rows = worksheet.getRows(headerRowNumber, worksheet.rowCount - headerRowNumber + 1);
 
     if (!rows || rows.length < 2) {
       throw new Error('File Excel phải có ít nhất 1 dòng dữ liệu (không tính dòng tiêu đề)');
@@ -415,7 +409,7 @@ export class ExcelHelper {
             return null;
           }
           if (value instanceof Date) {
-            return value;
+            return ExcelHelper._fromExcelDate(value);
           }
           const date = new Date(value);
           return isNaN(date.getTime()) ? null : date;
@@ -445,7 +439,7 @@ export class ExcelHelper {
 
         // Add rowIndex if not already present
         if (result.rowIndex === undefined || result.rowIndex === null) {
-          result.rowIndex = rowIndex + 2; // Excel row number (1-indexed, exclude header row)
+          result.rowIndex = headerRowNumber + 1 + rowIndex; // Excel row number (1-indexed)
         }
 
         return result as T;
@@ -473,8 +467,7 @@ export class ExcelHelper {
       return;
     }
 
-    const columnLetter = String.fromCharCode(65 + columnIndex);
-    const column = worksheet.getColumn(columnLetter);
+    const column = worksheet.getColumn(columnIndex + 1);
 
     if (!column) {
       return;
@@ -492,14 +485,41 @@ export class ExcelHelper {
       return;
     }
 
-    const columnLetter = String.fromCharCode(65 + columnIndex);
-    const column = worksheet.getColumn(columnLetter);
+    const column = worksheet.getColumn(columnIndex + 1);
 
     if (!column) {
       return;
     }
 
     column.hidden = true;
+  }
+
+  /** A Date whose UTC clock is the local clock of `date` (what Excel shows). */
+  private static _toExcelDate(date: Date): Date {
+    return new Date(
+      Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds(),
+        date.getMilliseconds()
+      )
+    );
+  }
+
+  /** The inverse of `_toExcelDate`: the real local date of the clock that Excel shows. */
+  private static _fromExcelDate(date: Date): Date {
+    return new Date(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds(),
+      date.getUTCMilliseconds()
+    );
   }
 
   private static _toPascalCase(text: string): string {
