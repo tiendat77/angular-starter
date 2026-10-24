@@ -6,8 +6,6 @@
  * found in the LICENSE file at https://angular.dev/license
  */
 
-/* eslint-disable @angular-eslint/no-input-rename */
-
 import {
   AfterContentInit,
   booleanAttribute,

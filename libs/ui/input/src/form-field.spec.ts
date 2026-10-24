@@ -10,6 +10,7 @@ import {
   UiLabelDirective,
   UiPrefixDirective,
   UiSuffixDirective,
+  UiTextareaDirective,
 } from './public-api';
 
 @Component({
@@ -107,5 +108,78 @@ describe('UiFormFieldComponent (prefix/suffix)', () => {
     const inputEl: HTMLInputElement = fixture.nativeElement.querySelector('input');
     expect(fixture.nativeElement.querySelector('[uiPrefix]')).toBeNull();
     expect(inputEl.parentElement?.classList).toContain('input');
+  });
+});
+
+@Component({
+  standalone: true,
+  imports: [UiFormFieldComponent, UiInputDirective, UiLabelDirective, UiTextareaDirective],
+  template: `
+    <ui-form-field>
+      <label uiLabel>Static</label>
+      <input
+        uiInput
+        id="static-id"
+      />
+    </ui-form-field>
+    <ui-form-field>
+      <label uiLabel>Bound</label>
+      <input
+        uiInput
+        [id]="inputId()"
+      />
+    </ui-form-field>
+    <ui-form-field>
+      <label uiLabel>Notes</label>
+      <textarea
+        uiTextarea
+        id="notes-id"
+      ></textarea>
+    </ui-form-field>
+    <ui-form-field>
+      <label uiLabel>Generated</label>
+      <input uiInput />
+    </ui-form-field>
+  `,
+})
+class IdHostComponent {
+  readonly inputId = signal('first');
+}
+
+describe('control id', () => {
+  let fixture: ComponentFixture<IdHostComponent>;
+  const controls = () =>
+    Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('input, textarea'));
+  const labels = () => Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('label'));
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [IdHostComponent] });
+    fixture = TestBed.createComponent(IdHostComponent);
+    fixture.detectChanges();
+  });
+
+  it('keeps the id set in the template, and the label points at it', () => {
+    expect(controls()[0].id).toBe('static-id');
+    expect(labels()[0].getAttribute('for')).toBe('static-id');
+    expect(controls()[2].id).toBe('notes-id');
+    expect(labels()[2].getAttribute('for')).toBe('notes-id');
+  });
+
+  it('follows a bound id', () => {
+    expect(controls()[1].id).toBe('first');
+    expect(labels()[1].getAttribute('for')).toBe('first');
+
+    fixture.componentInstance.inputId.set('second');
+    fixture.detectChanges();
+
+    expect(controls()[1].id).toBe('second');
+    expect(labels()[1].getAttribute('for')).toBe('second');
+  });
+
+  it('generates a unique id when the template sets none', () => {
+    const id = controls()[3].id;
+
+    expect(id).toMatch(/^ui-input-\d+$/);
+    expect(labels()[3].getAttribute('for')).toBe(id);
   });
 });

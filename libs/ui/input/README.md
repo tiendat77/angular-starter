@@ -50,6 +50,7 @@ The error text is yours: `uiError` is shown by the `@if`, so you decide when (us
 | ------------ | -------------------------------------- | ---------------------------------------------------------- | ------------------ |
 | `appearance` | `'outline' \| 'filled'`                | `provideUiConfig` `formField.appearance`, else `'outline'` | Look of the field. |
 | `size`       | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `provideUiConfig` `defaultSize`, else `'md'`               | Size.              |
+| `id`         | `string`                               | a generated `ui-input-N` / `ui-textarea-N`                 | The element's id. The label inside `ui-form-field` points at it, so it can be set or bound like on a native element. |
 
 Both are form controls (`formControl`, `formControlName`, `ngModel`). Everything else is the native element: `type`, `placeholder`, `rows`, `disabled`, …
 

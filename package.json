@@ -21,6 +21,8 @@
     "new:page": "node tools/new-slice.mjs page",
     "new:feature": "node tools/new-slice.mjs feature",
     "new:entity": "node tools/new-slice.mjs entity",
+    "e2e:build": "ng build main && ng build docs",
+    "e2e": "playwright test -c e2e",
     "verify": "node .ci/verify.mjs",
     "prepare": "husky",
     "lint-staged": "lint-staged",
@@ -55,8 +57,7 @@
     "modern-screenshot": "^4.7.0",
     "ngx-permissions": "^19.0.0",
     "rxjs": "~7.8.0",
-    "zod": "^4.4.1",
-    "zone.js": "^0.16.2"
+    "zod": "^4.4.1"
   },
   "devDependencies": {
     "@angular-eslint/builder": "^22.0.0",
@@ -70,6 +71,7 @@
     "@commitlint/cli": "^20.5.2",
     "@commitlint/config-conventional": "^20.5.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4.2.4",
     "@tailwindcss/typography": "^0.5.19",
     "@typescript-eslint/eslint-plugin": "^8.59.1",

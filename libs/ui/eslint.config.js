@@ -46,6 +46,7 @@ module.exports = tseslint.config(
       '@angular-eslint/component-class-suffix': 'off',
       '@angular-eslint/directive-selector': 'off',
       '@angular-eslint/component-selector': 'off',
+      '@angular-eslint/no-input-rename': 'off',
     },
   },
   {

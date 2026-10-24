@@ -60,7 +60,17 @@ export class UiInputDirective
    */
   private _ngControl: NgControl | null = null;
 
-  readonly id = `ui-input-${nextInputId++}`;
+  /**
+   * The `id` set on the element, which labels (`for`) and `ui-form-field` keep pointing at. The alias
+   * is the point: `id` must stay the native attribute, and `UiFormFieldControl.id` is a plain string.
+   */
+  readonly userId = input<string | undefined>(undefined, { alias: 'id' });
+  private readonly _generatedId = `ui-input-${nextInputId++}`;
+
+  /** The `id` of the element: the one the template sets, else a generated one. */
+  get id(): string {
+    return this.userId() || this._generatedId;
+  }
 
   readonly appearance = input<UiFormFieldAppearance>(
     this._uiConfig?.formField?.appearance ?? 'outline'

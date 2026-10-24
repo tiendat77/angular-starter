@@ -84,7 +84,6 @@ export class DatepickerRangeInput<D>
 
   /** Function that can be used to filter out dates within the picker. */
   // Same public name as on `input[datepicker]`
-  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('datepickerFilter') dateFilter: DateFilterFn<D | null> = () => true;
 
   @Input({ transform: booleanAttribute }) disabled = false;
