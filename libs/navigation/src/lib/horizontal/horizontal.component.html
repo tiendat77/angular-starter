@@ -1,5 +1,5 @@
 <div class="horizontal-navigation-wrapper">
-  @for (item of navigation; track item.id) {
+  @for (item of navigation(); track item.id) {
     <!-- Skip the hidden items -->
     @if ((item.hidden && !item.hidden(item)) || !item.hidden) {
       <!-- Basic -->
@@ -7,7 +7,7 @@
         <horizontal-navigation-basic-item
           class="horizontal-navigation-menu-item"
           [item]="item"
-          [name]="name"
+          [name]="$name()"
         />
       }
 
@@ -16,7 +16,7 @@
         <horizontal-navigation-branch-item
           class="horizontal-navigation-menu-item"
           [item]="item"
-          [name]="name"
+          [name]="$name()"
         />
       }
 
@@ -25,7 +25,7 @@
         <horizontal-navigation-spacer-item
           class="horizontal-navigation-menu-item"
           [item]="item"
-          [name]="name"
+          [name]="$name()"
         />
       }
     }

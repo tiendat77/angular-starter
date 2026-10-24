@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -21,11 +21,12 @@ export class EnterEmailComponent extends BaseComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
   });
 
-  message: string | null = null;
+  readonly $message = signal<string | null>(null);
+  /** The request is in flight: the form is locked and the submit button disabled. */
+  readonly $submitting = signal(false);
 
   private _httpClient = inject(HttpClient);
   private _router = inject(Router);
-  private _cdr = inject(ChangeDetectorRef);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
@@ -36,19 +37,21 @@ export class EnterEmailComponent extends BaseComponent {
       return;
     }
 
-    this.message = null;
+    this.$message.set(null);
 
     let { email } = this.form.value;
     email = (email ?? '').trim();
 
     if (!email) {
-      this.message = 'Please enter your email address. Let us rescue you!';
+      this.$message.set('Please enter your email address. Let us rescue you!');
       this.form.enable();
-      this._cdr.markForCheck();
+      this.$submitting.set(false);
       return;
     }
 
     this.form.disable();
+
+    this.$submitting.set(true);
 
     return this._httpClient
       .post<ResponseModel>(`${environment.apiUrl}/authentication/forgot-password`, { email })
@@ -72,15 +75,15 @@ export class EnterEmailComponent extends BaseComponent {
           console.error(error);
 
           if (error && error?.status === 404) {
-            this.message = "We could't find an account with that email address!";
-            this._cdr.markForCheck();
+            this.$message.set("We could't find an account with that email address!");
             this.form.enable();
+            this.$submitting.set(false);
             return;
           }
 
-          this.message = 'An error occurred. Please try again later.';
-          this._cdr.markForCheck();
+          this.$message.set('An error occurred. Please try again later.');
           this.form.enable();
+          this.$submitting.set(false);
         },
       });
   }

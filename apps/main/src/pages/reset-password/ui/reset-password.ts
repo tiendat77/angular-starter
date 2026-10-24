@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -55,12 +49,13 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
 
   email: string | null = null;
   token: string | null = null;
-  message: string | null = null;
+  readonly $message = signal<string | null>(null);
+  /** The request is in flight: the form is locked and the submit button disabled. */
+  readonly $submitting = signal(false);
 
   private _httpClient = inject(HttpClient);
   private _route = inject(ActivatedRoute);
   private _router = inject(Router);
-  private _cdr = inject(ChangeDetectorRef);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -92,20 +87,18 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
      */
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.message = 'Please fix the errors on the form';
-      this._cdr.markForCheck();
+      this.$message.set('Please fix the errors on the form');
       return;
     }
 
-    this.message = null;
+    this.$message.set(null);
 
     let { newPassword, confirmPassword } = this.form.value;
     newPassword = (newPassword ?? '').trim();
     confirmPassword = (confirmPassword ?? '').trim();
 
     if (!newPassword || !confirmPassword || newPassword !== confirmPassword) {
-      this.message = 'Invalid form';
-      this._cdr.markForCheck();
+      this.$message.set('Invalid form');
       return;
     }
 
@@ -113,6 +106,7 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
      * Call the API to reset the password
      */
     this.form.disable();
+    this.$submitting.set(true);
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.token}`,
@@ -142,15 +136,15 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
           console.error(error);
 
           if (error && error?.status === 401) {
-            this.message = 'Your reset password link has expired. Please start over.';
-            this._cdr.markForCheck();
+            this.$message.set('Your reset password link has expired. Please start over.');
             this.form.enable();
+            this.$submitting.set(false);
             return;
           }
 
-          this.message = 'An error occurred. Please try again later.';
-          this._cdr.markForCheck();
+          this.$message.set('An error occurred. Please try again later.');
           this.form.enable();
+          this.$submitting.set(false);
         },
       });
   }

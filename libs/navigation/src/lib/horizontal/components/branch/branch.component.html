@@ -1,59 +1,60 @@
-@if (!child) {
+@let it = item();
+@if (!child()) {
   <div class="dropdown dropdown-bottom">
     <div
       tabindex="0"
       [ngClass]="{
-        'horizontal-navigation-menu-active-forced': item.active,
+        'horizontal-navigation-menu-active-forced': it.active,
       }"
     >
-      <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+      <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: it }" />
     </div>
 
     <div
       tabindex="0"
       class="menu dropdown-content bg-background z-[1] min-w-52 rounded-2xl p-2 shadow"
     >
-      @for (item of item.children; track item.id) {
+      @for (entry of it.children; track entry.id) {
         <!-- Skip the hidden items -->
-        @if ((item.hidden && !item.hidden(item)) || !item.hidden) {
+        @if ((entry.hidden && !entry.hidden(entry)) || !entry.hidden) {
           <!-- Basic -->
-          @if (item.type === 'basic') {
+          @if (entry.type === 'basic') {
             <div
               class="horizontal-navigation-menu-item"
               mat-menu-item
             >
               <horizontal-navigation-basic-item
-                [item]="item"
-                [name]="name"
+                [item]="entry"
+                [name]="name()"
               />
             </div>
           }
 
           <!-- Branch: aside, collapsable, group -->
-          <!-- @if (item.type === 'aside' || item.type === 'collapsable' || item.type === 'group') {
+          <!-- @if (entry.type === 'aside' || entry.type === 'collapsable' || entry.type === 'group') {
             <div
               class="horizontal-navigation-menu-item"
-              [disabled]="item.disabled"
+              [disabled]="entry.disabled"
               [matMenuTriggerFor]="branch.matMenu"
               mat-menu-item>
-              <ng-container *ngTemplateOutlet="itemTemplate; context: {$implicit: item}">}
+              <ng-container *ngTemplateOutlet="itemTemplate; context: {$implicit: entry}">}
               <horizontal-navigation-branch-item
                 [child]="true"
-                [item]="item"
-                [name]="name"
+                [item]="entry"
+                [name]="name()"
                 #branch></horizontal-navigation-branch-item>
             </div>
           } -->
 
           <!-- Divider -->
-          @if (item.type === 'divider') {
+          @if (entry.type === 'divider') {
             <div
               class="horizontal-navigation-menu-item"
               mat-menu-item
             >
               <horizontal-navigation-divider-item
-                [item]="item"
-                [name]="name"
+                [item]="entry"
+                [name]="name()"
               />
             </div>
           }

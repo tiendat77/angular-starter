@@ -1,21 +1,8 @@
-import { BooleanInput } from '@angular/cdk/coercion';
 import { NgClass } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  forwardRef,
-  inject,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
 import { SvgIconModule } from '@libs/ui/svg-icon';
 
-import { Subject, takeUntil } from 'rxjs';
-import { NavigationService } from '../../../navigation.service';
-import { NavigationItem } from '../../../navigation.types';
-
+import { NavigationItemBase } from '../../../navigation-item.base';
 import { VerticalNavigationComponent } from '../../vertical.component';
 import { VerticalNavigationBasicItemComponent } from '../basic/basic.component';
 import { VerticalNavigationCollapsableItemComponent } from '../collapsable/collapsable.component';
@@ -36,38 +23,6 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
     forwardRef(() => VerticalNavigationGroupItemComponent),
   ],
 })
-export class VerticalNavigationGroupItemComponent implements OnInit, OnDestroy {
-  private _changeDetectorRef = inject(ChangeDetectorRef);
-  private _navigationService = inject(NavigationService);
-
-  static ngAcceptInputType_autoCollapse: BooleanInput;
-
-  @Input() autoCollapse: boolean;
-  @Input() item: NavigationItem;
-  @Input() name: string;
-
-  private _verticalNavigationComponent: VerticalNavigationComponent;
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-  // -----------------------------------------------------------------------------------------------------
-  // @ Lifecycle hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  ngOnInit(): void {
-    // Get the parent navigation component
-    this._verticalNavigationComponent = this._navigationService.getComponent(this.name);
-
-    // Subscribe to onRefreshed on the navigation component
-    this._verticalNavigationComponent.onRefreshed
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(() => {
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-      });
-  }
-
-  ngOnDestroy(): void {
-    this._unsubscribeAll.next(null);
-    this._unsubscribeAll.complete();
-  }
+export class VerticalNavigationGroupItemComponent extends NavigationItemBase<VerticalNavigationComponent> {
+  readonly autoCollapse = input(false);
 }

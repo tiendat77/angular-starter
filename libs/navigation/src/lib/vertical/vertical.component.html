@@ -15,16 +15,16 @@
     </div>
 
     <!-- Items -->
-    @for (item of navigation; track item.id) {
+    @for (item of navigation(); track item.id) {
       <!-- Skip the hidden items -->
       @if ((item.hidden && !item.hidden(item)) || !item.hidden) {
         <!-- Aside -->
         @if (item.type === 'aside') {
           <vertical-navigation-aside-item
             [item]="item"
-            [name]="name"
-            [activeItemId]="activeAsideItemId"
-            [autoCollapse]="autoCollapse"
+            [name]="$name()"
+            [activeItemId]="activeAsideItemId()"
+            [autoCollapse]="autoCollapse()"
             [skipChildren]="true"
             (click)="toggleAside(item)"
           />
@@ -34,7 +34,7 @@
         @if (item.type === 'basic') {
           <vertical-navigation-basic-item
             [item]="item"
-            [name]="name"
+            [name]="$name()"
           />
         }
 
@@ -42,8 +42,8 @@
         @if (item.type === 'collapsable') {
           <vertical-navigation-collapsable-item
             [item]="item"
-            [name]="name"
-            [autoCollapse]="autoCollapse"
+            [name]="$name()"
+            [autoCollapse]="autoCollapse()"
           />
         }
 
@@ -51,7 +51,7 @@
         @if (item.type === 'divider') {
           <vertical-navigation-divider-item
             [item]="item"
-            [name]="name"
+            [name]="$name()"
           />
         }
 
@@ -59,8 +59,8 @@
         @if (item.type === 'group') {
           <vertical-navigation-group-item
             [item]="item"
-            [name]="name"
-            [autoCollapse]="autoCollapse"
+            [name]="$name()"
+            [autoCollapse]="autoCollapse()"
           />
         }
 
@@ -68,7 +68,7 @@
         @if (item.type === 'spacer') {
           <vertical-navigation-spacer-item
             [item]="item"
-            [name]="name"
+            [name]="$name()"
           />
         }
       }
@@ -96,19 +96,19 @@
 </div>
 
 <!-- Aside -->
-@if (activeAsideItemId) {
+@if (activeAsideItemId()) {
   <div
     class="vertical-navigation-aside-wrapper"
-    [animate.enter]="'vertical-navigation-aside-enter-' + position"
-    [animate.leave]="'vertical-navigation-aside-leave-' + position"
+    [animate.enter]="'vertical-navigation-aside-enter-' + position()"
+    [animate.leave]="'vertical-navigation-aside-leave-' + position()"
   >
-    @for (item of navigation; track item.id) {
+    @for (item of navigation(); track item.id) {
       @if ((item.hidden && !item.hidden(item)) || !item.hidden) {
-        @if (item.type === 'aside' && item.id === activeAsideItemId) {
+        @if (item.type === 'aside' && item.id === activeAsideItemId()) {
           <vertical-navigation-aside-item
             [item]="item"
-            [name]="name"
-            [autoCollapse]="autoCollapse"
+            [name]="$name()"
+            [autoCollapse]="autoCollapse()"
           />
         }
       }

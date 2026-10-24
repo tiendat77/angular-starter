@@ -2,15 +2,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   inject,
-  Input,
-  OnChanges,
+  input,
   OnDestroy,
   OnInit,
-  SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
-import { ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 
 import { NavigationService } from '../navigation.service';
 import { NavigationItem } from '../navigation.types';
@@ -33,12 +32,17 @@ import { HorizontalNavigationSpacerItemComponent } from './components/spacer/spa
     HorizontalNavigationSpacerItemComponent,
   ],
 })
-export class HorizontalNavigationComponent implements OnChanges, OnInit, OnDestroy {
-  @Input() name: string = UtilsHelper.randomId();
-  @Input() navigation: NavigationItem[];
+export class HorizontalNavigationComponent implements OnInit, OnDestroy {
+  readonly name = input<string>(UtilsHelper.randomId());
+  readonly navigation = input<NavigationItem[]>([]);
+
+  /** The `name` the items look this navigation up by; a random one when `name` is empty. */
+  readonly $name = computed(() => this.name() || this._fallbackName);
 
   onRefreshed: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
+
+  private readonly _fallbackName = UtilsHelper.randomId();
+  private _registeredName: string;
 
   private _changeDetectorRef = inject(ChangeDetectorRef);
   private _navigationService = inject(NavigationService);
@@ -47,37 +51,22 @@ export class HorizontalNavigationComponent implements OnChanges, OnInit, OnDestr
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // Navigation
-    if ('navigation' in changes) {
-      // Mark for check
-      this._changeDetectorRef.markForCheck();
-    }
-  }
-
   ngOnInit(): void {
-    // Make sure the name input is not an empty string
-    if (this.name === '') {
-      this.name = UtilsHelper.randomId();
-    }
-
     // Register the navigation component
-    this._navigationService.registerComponent(this.name, this);
+    this._registeredName = this.$name();
+    this._navigationService.registerComponent(this._registeredName, this);
   }
 
   ngOnDestroy(): void {
     // Deregister the navigation component from the registry
-    this._navigationService.deregisterComponent(this.name);
-
-    // Unsubscribe from all subscriptions
-    this._unsubscribeAll.next(null);
-    this._unsubscribeAll.complete();
+    this._navigationService.deregisterComponent(this._registeredName);
   }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
 
+  /** Re-renders the items after the app changed some of them in place (a badge, a title). */
   refresh(): void {
     this._changeDetectorRef.markForCheck();
     this.onRefreshed.next(true);

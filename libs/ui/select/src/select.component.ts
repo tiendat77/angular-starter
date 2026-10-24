@@ -136,6 +136,7 @@ export class UiSelectComponent<T = unknown>
   protected readonly options = contentChildren<UiOptionComponent<T>>(UiOptionComponent);
   protected readonly emptyTemplate = contentChild(UiSelectEmptyDirective);
   private readonly _input = viewChild<ElementRef<HTMLInputElement>>('trigger');
+  private readonly _combobox = viewChild(Combobox);
   private readonly _panel = viewChild<ElementRef<HTMLElement>>('panel');
 
   // -----------------------------------------------------------------------------------------------------
@@ -552,5 +553,9 @@ export class UiSelectComponent<T = unknown>
 
   private _resetSearch(): void {
     this.searchTerm.set('');
+    // The combobox keeps its own `value` and paints it on the input after every render. A reset that
+    // happens in the same change detection run as the typing never reaches it through the
+    // `[(value)]` binding (it sees '' twice), so the typed text would come back.
+    this._combobox()?.value.set('');
   }
 }

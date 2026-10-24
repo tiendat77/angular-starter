@@ -1,90 +1,91 @@
+@let it = item();
 <!-- Item wrapper -->
 <div
   class="horizontal-navigation-item-wrapper"
-  [class.horizontal-navigation-item-has-subtitle]="!!item.subtitle"
-  [ngClass]="$safeNavigationMigration(item.classes?.wrapper)"
+  [class.horizontal-navigation-item-has-subtitle]="!!it.subtitle"
+  [ngClass]="$safeNavigationMigration(it.classes?.wrapper)"
 >
   <!-- Item with an internal link -->
-  @if (item.link && !item.externalLink && !item.function && !item.disabled) {
+  @if (it.link && !it.externalLink && !it.function && !it.disabled) {
     <div
       class="horizontal-navigation-item"
-      [ngClass]="{ 'horizontal-navigation-item-active-forced': item.active }"
-      [routerLink]="[item.link]"
-      [fragment]="item.fragment"
-      [preserveFragment]="item.preserveFragment ?? false"
-      [queryParams]="item.queryParams"
-      [queryParamsHandling]="item.queryParamsHandling"
+      [ngClass]="{ 'horizontal-navigation-item-active-forced': it.active }"
+      [routerLink]="[it.link]"
+      [fragment]="it.fragment"
+      [preserveFragment]="it.preserveFragment ?? false"
+      [queryParams]="it.queryParams"
+      [queryParamsHandling]="it.queryParamsHandling"
       [routerLinkActive]="'horizontal-navigation-item-active'"
-      [routerLinkActiveOptions]="isActiveMatchOptions"
+      [routerLinkActiveOptions]="$isActiveMatchOptions()"
     >
       <ng-container *ngTemplateOutlet="itemTemplate" />
     </div>
   }
 
   <!-- Item with an external link -->
-  @if (item.link && item.externalLink && !item.function && !item.disabled) {
+  @if (it.link && it.externalLink && !it.function && !it.disabled) {
     <a
       class="horizontal-navigation-item"
-      [href]="item.link"
-      [target]="item.target || '_self'"
+      [href]="it.link"
+      [target]="it.target || '_self'"
     >
       <ng-container *ngTemplateOutlet="itemTemplate" />
     </a>
   }
 
   <!-- Item with a function -->
-  @if (!item.link && item.function && !item.disabled) {
+  @if (!it.link && it.function && !it.disabled) {
     <button
       class="horizontal-navigation-item"
-      [ngClass]="{ 'horizontal-navigation-item-active-forced': item.active }"
-      (click)="item.function(item)"
+      [ngClass]="{ 'horizontal-navigation-item-active-forced': it.active }"
+      (click)="it.function(it)"
     >
       <ng-container *ngTemplateOutlet="itemTemplate" />
     </button>
   }
 
   <!-- Item with an internal link and function -->
-  @if (item.link && !item.externalLink && item.function && !item.disabled) {
+  @if (it.link && !it.externalLink && it.function && !it.disabled) {
     <button
       class="horizontal-navigation-item"
-      [ngClass]="{ 'horizontal-navigation-item-active-forced': item.active }"
-      [routerLink]="[item.link]"
-      [fragment]="item.fragment"
-      [preserveFragment]="item.preserveFragment ?? false"
-      [queryParams]="item.queryParams"
-      [queryParamsHandling]="item.queryParamsHandling"
+      [ngClass]="{ 'horizontal-navigation-item-active-forced': it.active }"
+      [routerLink]="[it.link]"
+      [fragment]="it.fragment"
+      [preserveFragment]="it.preserveFragment ?? false"
+      [queryParams]="it.queryParams"
+      [queryParamsHandling]="it.queryParamsHandling"
       [routerLinkActive]="'horizontal-navigation-item-active'"
-      [routerLinkActiveOptions]="isActiveMatchOptions"
-      (click)="item.function(item)"
+      [routerLinkActiveOptions]="$isActiveMatchOptions()"
+      (click)="it.function(it)"
     >
       <ng-container *ngTemplateOutlet="itemTemplate" />
     </button>
   }
 
   <!-- Item with an external link and function -->
-  @if (item.link && item.externalLink && item.function && !item.disabled) {
+  @if (it.link && it.externalLink && it.function && !it.disabled) {
     <a
       class="horizontal-navigation-item"
-      [href]="item.link"
-      [target]="item.target || '_self'"
-      (click)="item.function(item)"
+      [href]="it.link"
+      [target]="it.target || '_self'"
+      (click)="it.function(it)"
     >
       <ng-container *ngTemplateOutlet="itemTemplate" />
     </a>
   }
 
   <!-- Item with a no link and no function -->
-  @if (!item.link && !item.function && !item.disabled) {
+  @if (!it.link && !it.function && !it.disabled) {
     <div
       class="horizontal-navigation-item"
-      [ngClass]="{ 'horizontal-navigation-item-active-forced': item.active }"
+      [ngClass]="{ 'horizontal-navigation-item-active-forced': it.active }"
     >
       <ng-container *ngTemplateOutlet="itemTemplate" />
     </div>
   }
 
   <!-- Item is disabled -->
-  @if (item.disabled) {
+  @if (it.disabled) {
     <div class="horizontal-navigation-item horizontal-navigation-item-disabled">
       <ng-container *ngTemplateOutlet="itemTemplate" />
     </div>
@@ -94,38 +95,38 @@
 <!-- Item template -->
 <ng-template #itemTemplate>
   <!-- Icon -->
-  @if (item.icon) {
+  @if (it.icon) {
     <svg-icon
       class="horizontal-navigation-item-icon"
-      [ngClass]="$safeNavigationMigration(item.classes?.icon)"
-      [name]="item.icon"
+      [ngClass]="$safeNavigationMigration(it.classes?.icon)"
+      [name]="it.icon"
     />
   }
 
   <!-- Title & Subtitle -->
   <div class="horizontal-navigation-item-title-wrapper">
     <div class="horizontal-navigation-item-title">
-      <span [ngClass]="$safeNavigationMigration(item.classes?.title)">
-        {{ item.title }}
+      <span [ngClass]="$safeNavigationMigration(it.classes?.title)">
+        {{ it.title }}
       </span>
     </div>
-    @if (item.subtitle) {
+    @if (it.subtitle) {
       <div class="horizontal-navigation-item-subtitle text-hint">
-        <span [ngClass]="$safeNavigationMigration(item.classes?.subtitle)">
-          {{ item.subtitle }}
+        <span [ngClass]="$safeNavigationMigration(it.classes?.subtitle)">
+          {{ it.subtitle }}
         </span>
       </div>
     }
   </div>
 
   <!-- Badge -->
-  @if (item.badge) {
+  @if (it.badge) {
     <div class="horizontal-navigation-item-badge">
       <div
         class="horizontal-navigation-item-badge-content"
-        [ngClass]="item.badge.classes"
+        [ngClass]="it.badge.classes"
       >
-        {{ item.badge.title }}
+        {{ it.badge.title }}
       </div>
     </div>
   }

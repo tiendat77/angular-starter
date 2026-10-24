@@ -41,6 +41,13 @@ vertical-navigation {
     position: fixed;
     top: 0;
     bottom: 0;
+
+    /* Phones: the drawer covers the whole screen (below Tailwind's sm breakpoint, 640px) */
+    @media (max-width: 639.98px) {
+      width: 100vw;
+      min-width: 100vw;
+      max-width: 100vw;
+    }
   }
 
   /* Left position */

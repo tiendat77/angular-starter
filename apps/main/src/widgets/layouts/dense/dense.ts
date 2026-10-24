@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   computed,
   inject,
@@ -36,7 +35,6 @@ import { SvgIcon } from '@libs/ui/svg-icon';
 export class DenseLayoutComponent {
   $navigationAppearance = signal<'default' | 'dense'>('default');
 
-  private _cdRef = inject(ChangeDetectorRef);
   private _layoutService = inject(LayoutService);
   private _navigationService = inject(NavigationService);
 
@@ -59,7 +57,6 @@ export class DenseLayoutComponent {
         this.$navigationAppearance.set('default');
       }
 
-      this._cdRef.markForCheck();
       return;
     }
 

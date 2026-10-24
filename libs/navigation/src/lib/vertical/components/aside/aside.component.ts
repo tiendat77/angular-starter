@@ -1,21 +1,20 @@
-import { BooleanInput } from '@angular/cdk/coercion';
 import { NgClass } from '@angular/common';
 import {
+  booleanAttribute,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  computed,
   inject,
-  Input,
-  OnChanges,
-  OnDestroy,
+  input,
   OnInit,
-  SimpleChanges,
+  signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { SvgIconModule } from '@libs/ui/svg-icon';
 
-import { filter, Subject, takeUntil } from 'rxjs';
-import { NavigationService } from '../../../navigation.service';
+import { filter } from 'rxjs';
+import { NavigationItemBase } from '../../../navigation-item.base';
 import { NavigationItem } from '../../../navigation.types';
 
 import { VerticalNavigationComponent } from '../../vertical.component';
@@ -39,76 +38,39 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
     VerticalNavigationSpacerItemComponent,
   ],
 })
-export class VerticalNavigationAsideItemComponent implements OnChanges, OnInit, OnDestroy {
-  static ngAcceptInputType_autoCollapse: BooleanInput;
-  static ngAcceptInputType_skipChildren: BooleanInput;
-
-  @Input() activeItemId: string;
-  @Input() autoCollapse: boolean;
-  @Input() item: NavigationItem;
-  @Input() name: string;
-  @Input() skipChildren: boolean;
-
-  active = false;
-
-  private _VerticalNavigationComponent: VerticalNavigationComponent;
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
+export class VerticalNavigationAsideItemComponent
+  extends NavigationItemBase<VerticalNavigationComponent>
+  implements OnInit
+{
+  readonly activeItemId = input<string | null>(null);
+  readonly autoCollapse = input(false);
+  readonly skipChildren = input(false, { transform: booleanAttribute });
 
   private _router = inject(Router);
-  private _changeDetectorRef = inject(ChangeDetectorRef);
-  private _NavigationService = inject(NavigationService);
+
+  /** The url the active state is worked out for. */
+  private readonly _url = signal(this._router.url);
+
+  /** The aside is open, or one of its children is the current page. */
+  protected readonly $active = computed(() => {
+    const item = this.item();
+
+    return this.activeItemId() === item.id || this._hasActiveChild(item, this._url());
+  });
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // Active item id
-    if ('activeItemId' in changes) {
-      // Mark if active
-      this._markIfActive(this._router.url);
-    }
-  }
+  override ngOnInit(): void {
+    super.ngOnInit();
 
-  ngOnInit(): void {
-    // Mark if active
-    this._markIfActive(this._router.url);
-
-    // Attach a listener to the NavigationEnd event
     this._router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntil(this._unsubscribeAll)
+        takeUntilDestroyed(this._destroyRef)
       )
-      .subscribe((event: NavigationEnd) => {
-        // Mark if active
-        this._markIfActive(event.urlAfterRedirects);
-      });
-
-    // Get the parent navigation component
-    this._VerticalNavigationComponent = this._NavigationService.getComponent(this.name);
-
-    // Subscribe to onRefreshed on the navigation component
-    this._VerticalNavigationComponent.onRefreshed
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(() => {
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-      });
-  }
-
-  ngOnDestroy(): void {
-    // Unsubscribe from all subscriptions
-    this._unsubscribeAll.next(null);
-    this._unsubscribeAll.complete();
-  }
-
-  // -----------------------------------------------------------------------------------------------------
-  // @ Public methods
-  // -----------------------------------------------------------------------------------------------------
-
-  trackByFn(index: number, item: any): any {
-    return item.id || index;
+      .subscribe((event) => this._url.set(event.urlAfterRedirects));
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -141,19 +103,5 @@ export class VerticalNavigationAsideItemComponent implements OnChanges, OnInit, 
     }
 
     return false;
-  }
-
-  private _markIfActive(currentUrl: string): void {
-    // Check if the activeItemId is equals to this item id
-    this.active = this.activeItemId === this.item.id;
-
-    // If the aside has a children that is active,
-    // always mark it as active
-    if (this._hasActiveChild(this.item, currentUrl)) {
-      this.active = true;
-    }
-
-    // Mark for check
-    this._changeDetectorRef.markForCheck();
   }
 }

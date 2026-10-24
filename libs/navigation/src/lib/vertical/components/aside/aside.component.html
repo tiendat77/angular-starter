@@ -1,98 +1,99 @@
+@let it = item();
 <div
   class="vertical-navigation-item-wrapper"
-  [class.vertical-navigation-item-has-subtitle]="!!item.subtitle"
-  [ngClass]="$safeNavigationMigration(item.classes?.wrapper)"
+  [class.vertical-navigation-item-has-subtitle]="!!it.subtitle"
+  [ngClass]="$safeNavigationMigration(it.classes?.wrapper)"
 >
   <div
     class="vertical-navigation-item"
     [ngClass]="{
-      'vertical-navigation-item-active': active,
-      'vertical-navigation-item-disabled': item.disabled,
-      'vertical-navigation-item-active-forced': item.active,
+      'vertical-navigation-item-active': $active(),
+      'vertical-navigation-item-disabled': it.disabled,
+      'vertical-navigation-item-active-forced': it.active,
     }"
   >
     <!-- Icon -->
-    @if (item.icon) {
+    @if (it.icon) {
       <svg-icon
         class="vertical-navigation-item-icon"
-        [ngClass]="$safeNavigationMigration(item.classes?.icon)"
-        [name]="item.icon"
+        [ngClass]="$safeNavigationMigration(it.classes?.icon)"
+        [name]="it.icon"
       />
     }
 
     <!-- Title & Subtitle -->
     <div class="vertical-navigation-item-title-wrapper">
       <div class="vertical-navigation-item-title">
-        <span [ngClass]="$safeNavigationMigration(item.classes?.title)">
-          {{ item.title }}
+        <span [ngClass]="$safeNavigationMigration(it.classes?.title)">
+          {{ it.title }}
         </span>
       </div>
-      @if (item.subtitle) {
+      @if (it.subtitle) {
         <div class="vertical-navigation-item-subtitle">
-          <span [ngClass]="$safeNavigationMigration(item.classes?.subtitle)">
-            {{ item.subtitle }}
+          <span [ngClass]="$safeNavigationMigration(it.classes?.subtitle)">
+            {{ it.subtitle }}
           </span>
         </div>
       }
     </div>
 
     <!-- Badge -->
-    @if (item.badge) {
+    @if (it.badge) {
       <div class="vertical-navigation-item-badge">
         <div
           class="vertical-navigation-item-badge-content"
-          [ngClass]="item.badge.classes"
+          [ngClass]="it.badge.classes"
         >
-          {{ item.badge.title }}
+          {{ it.badge.title }}
         </div>
       </div>
     }
   </div>
 </div>
 
-@if (!skipChildren) {
+@if (!skipChildren()) {
   <div class="vertical-navigation-item-children">
-    @for (item of item.children; track item.id) {
+    @for (entry of it.children; track entry.id) {
       <!-- Skip the hidden items -->
-      @if ((item.hidden && !item.hidden(item)) || !item.hidden) {
+      @if ((entry.hidden && !entry.hidden(entry)) || !entry.hidden) {
         <!-- Basic -->
-        @if (item.type === 'basic') {
+        @if (entry.type === 'basic') {
           <vertical-navigation-basic-item
-            [item]="item"
-            [name]="name"
+            [item]="entry"
+            [name]="name()"
           />
         }
 
         <!-- Collapsable -->
-        @if (item.type === 'collapsable') {
+        @if (entry.type === 'collapsable') {
           <vertical-navigation-collapsable-item
-            [item]="item"
-            [name]="name"
-            [autoCollapse]="autoCollapse"
+            [item]="entry"
+            [name]="name()"
+            [autoCollapse]="autoCollapse()"
           />
         }
 
         <!-- Divider -->
-        @if (item.type === 'divider') {
+        @if (entry.type === 'divider') {
           <vertical-navigation-divider-item
-            [item]="item"
-            [name]="name"
+            [item]="entry"
+            [name]="name()"
           />
         }
 
         <!-- Group -->
-        @if (item.type === 'group') {
+        @if (entry.type === 'group') {
           <vertical-navigation-group-item
-            [item]="item"
-            [name]="name"
+            [item]="entry"
+            [name]="name()"
           />
         }
 
         <!-- Spacer -->
-        @if (item.type === 'spacer') {
+        @if (entry.type === 'spacer') {
           <vertical-navigation-spacer-item
-            [item]="item"
-            [name]="name"
+            [item]="entry"
+            [name]="name()"
           />
         }
       }

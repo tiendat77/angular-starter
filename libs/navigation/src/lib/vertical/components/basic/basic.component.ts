@@ -1,20 +1,10 @@
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import { IsActiveMatchOptions, RouterLink, RouterLinkActive } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { SvgIconModule } from '@libs/ui/svg-icon';
 
-import { Subject, takeUntil } from 'rxjs';
-import { NavigationService } from '../../../navigation.service';
-import { NavigationItem } from '../../../navigation.types';
+import { NavigationItemBase } from '../../../navigation-item.base';
 import { UtilsHelper } from '../../../utils.helper';
 import { VerticalNavigationComponent } from '../../vertical.component';
 
@@ -24,52 +14,17 @@ import { VerticalNavigationComponent } from '../../vertical.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgClass, NgTemplateOutlet, RouterLink, RouterLinkActive, SvgIconModule],
 })
-export class VerticalNavigationBasicItemComponent implements OnInit, OnDestroy {
-  @Input() item: NavigationItem;
-  @Input() name: string;
+export class VerticalNavigationBasicItemComponent extends NavigationItemBase<VerticalNavigationComponent> {
+  /**
+   * The match options either from the item's `isActiveMatchOptions` or the equivalent form of its
+   * `exactMatch`. They are never `undefined`: the router throws (and stops working) when
+   * `[routerLinkActiveOptions]` is.
+   */
+  protected readonly $isActiveMatchOptions = computed(() => {
+    const item = this.item();
 
-  isActiveMatchOptions: IsActiveMatchOptions;
-
-  private _verticalNavigationComponent: VerticalNavigationComponent;
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-  private _changeDetectorRef = inject(ChangeDetectorRef);
-  private _navigationService = inject(NavigationService);
-
-  constructor() {
-    this.isActiveMatchOptions = UtilsHelper.subsetMatchOptions;
-  }
-
-  // -----------------------------------------------------------------------------------------------------
-  // @ Lifecycle hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  ngOnInit(): void {
-    // Set the "isActiveMatchOptions" either from item's
-    // "isActiveMatchOptions" or the equivalent form of
-    // item's "exactMatch" option
-    this.isActiveMatchOptions =
-      (this.item.isActiveMatchOptions ?? this.item.exactMatch)
-        ? UtilsHelper.exactMatchOptions
-        : UtilsHelper.subsetMatchOptions;
-
-    // Get the parent navigation component
-    this._verticalNavigationComponent = this._navigationService.getComponent(this.name);
-
-    // Mark for check
-    this._changeDetectorRef.markForCheck();
-
-    // Subscribe to onRefreshed on the navigation component
-    this._verticalNavigationComponent.onRefreshed
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(() => {
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-      });
-  }
-
-  ngOnDestroy(): void {
-    this._unsubscribeAll.next(null);
-    this._unsubscribeAll.complete();
-  }
+    return (item.isActiveMatchOptions ?? item.exactMatch)
+      ? UtilsHelper.exactMatchOptions
+      : UtilsHelper.subsetMatchOptions;
+  });
 }

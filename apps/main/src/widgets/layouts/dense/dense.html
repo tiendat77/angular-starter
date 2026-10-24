@@ -1,4 +1,5 @@
 <vertical-navigation
+  #nav="verticalNavigation"
   class="bg-background print:hidden"
   [appearance]="$navigationAppearance()"
   [mode]="$isScreenSmall() ? 'over' : 'side'"
@@ -7,11 +8,20 @@
   [opened]="!$isScreenSmall()"
 >
   <ng-container verticalNavigationContentHeader>
-    <div class="flex h-20 items-center justify-center">
+    <div class="relative flex h-20 items-center justify-center">
       <logo
         routerLink="/"
         class="w-12 cursor-pointer"
       />
+
+      <button
+        type="button"
+        class="btn btn-circle btn-ghost absolute right-3 sm:hidden"
+        aria-label="Close navigation"
+        (click)="nav.close()"
+      >
+        <svg-icon name="heroicons_outline:x-mark" />
+      </button>
     </div>
   </ng-container>
 </vertical-navigation>
@@ -23,6 +33,7 @@
       <div class="flex-1">
         <button
           class="btn btn-circle btn-ghost"
+          aria-label="Toggle navigation"
           (click)="toggle()"
         >
           <svg-icon name="heroicons_outline:bars-3-bottom-left" />

@@ -1,25 +1,23 @@
-import { BooleanInput } from '@angular/cdk/coercion';
 import { NgClass } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  computed,
   forwardRef,
-  HostBinding,
   inject,
-  Input,
-  OnDestroy,
+  input,
   OnInit,
+  signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 
 import { SvgIconModule } from '@libs/ui/svg-icon';
 
-import { filter, Subject, takeUntil } from 'rxjs';
+import { filter } from 'rxjs';
+import { NavigationItemBase } from '../../../navigation-item.base';
 import { NavigationItem } from '../../../navigation.types';
-
-import { NavigationService } from '../../../navigation.service';
 import { VerticalNavigationComponent } from '../../vertical.component';
 import { VerticalNavigationBasicItemComponent } from '../basic/basic.component';
 import { VerticalNavigationDividerItemComponent } from '../divider/divider.component';
@@ -39,145 +37,93 @@ import { VerticalNavigationSpacerItemComponent } from '../spacer/spacer.componen
     VerticalNavigationSpacerItemComponent,
     forwardRef(() => VerticalNavigationCollapsableItemComponent),
   ],
+  host: {
+    '[class.vertical-navigation-item-collapsed]': '$collapsed()',
+    '[class.vertical-navigation-item-expanded]': '$expanded()',
+  },
 })
 export class VerticalNavigationCollapsableItemComponent
-  implements OnInit, AfterViewInit, OnDestroy
+  extends NavigationItemBase<VerticalNavigationComponent>
+  implements OnInit, AfterViewInit
 {
-  static ngAcceptInputType_autoCollapse: BooleanInput;
+  readonly autoCollapse = input(false);
 
-  @Input() autoCollapse: boolean;
-  @Input() item: NavigationItem;
-  @Input() name: string;
+  protected readonly $collapsed = signal(true);
+  protected readonly $expanded = computed(() => !this.$collapsed());
 
-  isCollapsed = true;
-  isExpanded = false;
+  /** Class played when the children enter; empty for the initial render. Fixed when expanding. */
+  protected readonly $enterClass = signal('');
 
   /** Whether the first render is over; before that the children appear without an enter animation. */
   private _viewReady = false;
 
-  /** Class played when the children enter; empty for the initial render. Fixed when expanding. */
-  _enterClass = '';
-
-  private _verticalNavigationComponent: VerticalNavigationComponent;
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
-
   private _router = inject(Router);
-  private _changeDetectorRef = inject(ChangeDetectorRef);
-  private _navigationService = inject(NavigationService);
-
-  // -----------------------------------------------------------------------------------------------------
-  // @ Accessors
-  // -----------------------------------------------------------------------------------------------------
-
-  @HostBinding('class') get classList(): any {
-    return {
-      'vertical-navigation-item-collapsed': this.isCollapsed,
-      'vertical-navigation-item-expanded': this.isExpanded,
-    };
-  }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
 
-  ngOnInit(): void {
-    // Get the parent navigation component
-    this._verticalNavigationComponent = this._navigationService.getComponent(this.name);
+  override ngOnInit(): void {
+    super.ngOnInit();
+
+    const item = this.item();
 
     // If the item has a children that has a matching url with the current url, expand...
-    if (this._hasActiveChild(this.item, this._router.url)) {
+    if (this._hasActiveChild(item, this._router.url)) {
       this.expand();
     }
-    // Otherwise...
-    else {
-      // If the autoCollapse is on, collapse...
-      if (this.autoCollapse) {
-        this.collapse();
-      }
+    // Otherwise, if the autoCollapse is on, collapse...
+    else if (this.autoCollapse()) {
+      this.collapse();
     }
 
-    // Listen for the onCollapsableItemCollapsed from the service
-    this._verticalNavigationComponent.onCollapsableItemCollapsed
-      .pipe(takeUntil(this._unsubscribeAll))
+    // Collapse if this is a children of the collapsed item
+    this.navigation.onCollapsableItemCollapsed
+      .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe((collapsedItem) => {
-        // Check if the collapsed item is null
-        if (collapsedItem === null) {
-          return;
-        }
-
-        // Collapse if this is a children of the collapsed item
-        if (this._isChildrenOf(collapsedItem, this.item)) {
+        if (collapsedItem !== null && this._isChildrenOf(collapsedItem, item)) {
           this.collapse();
         }
       });
 
-    // Listen for the onCollapsableItemExpanded from the service if the autoCollapse is on
-    if (this.autoCollapse) {
-      this._verticalNavigationComponent.onCollapsableItemExpanded
-        .pipe(takeUntil(this._unsubscribeAll))
+    // Collapse when another item expands, if the autoCollapse is on
+    if (this.autoCollapse()) {
+      this.navigation.onCollapsableItemExpanded
+        .pipe(takeUntilDestroyed(this._destroyRef))
         .subscribe((expandedItem) => {
-          // Check if the expanded item is null
-          if (expandedItem === null) {
+          if (
+            expandedItem === null ||
+            // This is a parent of the expanded item
+            this._isChildrenOf(item, expandedItem) ||
+            // This has a children with a matching url with the current active url
+            this._hasActiveChild(item, this._router.url) ||
+            // This is the expanded item
+            item === expandedItem
+          ) {
             return;
           }
 
-          // Check if this is a parent of the expanded item
-          if (this._isChildrenOf(this.item, expandedItem)) {
-            return;
-          }
-
-          // Check if this has a children with a matching url with the current active url
-          if (this._hasActiveChild(this.item, this._router.url)) {
-            return;
-          }
-
-          // Check if this is the expanded item
-          if (this.item === expandedItem) {
-            return;
-          }
-
-          // If none of the above conditions are matched, collapse this item
           this.collapse();
         });
     }
 
-    // Attach a listener to the NavigationEnd event
+    // Expand or collapse after every navigation
     this._router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntil(this._unsubscribeAll)
+        takeUntilDestroyed(this._destroyRef)
       )
-      .subscribe((event: NavigationEnd) => {
-        // If the item has a children that has a matching url with the current url, expand...
-        if (this._hasActiveChild(this.item, event.urlAfterRedirects)) {
+      .subscribe((event) => {
+        if (this._hasActiveChild(item, event.urlAfterRedirects)) {
           this.expand();
+        } else if (this.autoCollapse()) {
+          this.collapse();
         }
-        // Otherwise...
-        else {
-          // If the autoCollapse is on, collapse...
-          if (this.autoCollapse) {
-            this.collapse();
-          }
-        }
-      });
-
-    // Subscribe to onRefreshed on the navigation component
-    this._verticalNavigationComponent.onRefreshed
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(() => {
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
       });
   }
 
   ngAfterViewInit(): void {
     this._viewReady = true;
-  }
-
-  ngOnDestroy(): void {
-    // Unsubscribe from all subscriptions
-    this._unsubscribeAll.next(null);
-    this._unsubscribeAll.complete();
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -186,60 +132,48 @@ export class VerticalNavigationCollapsableItemComponent
 
   collapse(): void {
     // Return if the item is disabled
-    if (this.item.disabled) {
+    if (this.item().disabled) {
       return;
     }
 
     // Return if the item is already collapsed
-    if (this.isCollapsed) {
+    if (this.$collapsed()) {
       return;
     }
 
     // Collapse it
-    this.isCollapsed = true;
-    this.isExpanded = !this.isCollapsed;
-
-    // Mark for check
-    this._changeDetectorRef.markForCheck();
+    this.$collapsed.set(true);
 
     // Execute the observable
-    this._verticalNavigationComponent.onCollapsableItemCollapsed.next(this.item);
+    this.navigation.onCollapsableItemCollapsed.next(this.item());
   }
 
   expand(): void {
     // Return if the item is disabled
-    if (this.item.disabled) {
+    if (this.item().disabled) {
       return;
     }
 
     // Return if the item is already expanded
-    if (!this.isCollapsed) {
+    if (!this.$collapsed()) {
       return;
     }
 
     // Expand it
-    this._enterClass = this._viewReady ? 'vertical-navigation-collapsable-expand' : '';
-    this.isCollapsed = false;
-    this.isExpanded = !this.isCollapsed;
-
-    // Mark for check
-    this._changeDetectorRef.markForCheck();
+    this.$enterClass.set(this._viewReady ? 'vertical-navigation-collapsable-expand' : '');
+    this.$collapsed.set(false);
 
     // Execute the observable
-    this._verticalNavigationComponent.onCollapsableItemExpanded.next(this.item);
+    this.navigation.onCollapsableItemExpanded.next(this.item());
   }
 
   toggleCollapsable(): void {
     // Toggle collapse/expand
-    if (this.isCollapsed) {
+    if (this.$collapsed()) {
       this.expand();
     } else {
       this.collapse();
     }
-  }
-
-  trackByFn(index: number, item: any): any {
-    return item.id || index;
   }
 
   // -----------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -30,12 +30,13 @@ export class SignUpComponent extends BaseComponent {
     ),
   });
 
-  message: string | null = null;
+  readonly $message = signal<string | null>(null);
+  /** The request is in flight: the form is locked and the submit button disabled. */
+  readonly $submitting = signal(false);
 
   private _auth = inject(AuthApiService);
   private _route = inject(ActivatedRoute);
   private _router = inject(Router);
-  private _cdr = inject(ChangeDetectorRef);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
@@ -43,7 +44,7 @@ export class SignUpComponent extends BaseComponent {
 
   submit() {
     if (this.form.invalid) {
-      this.message = 'Please fill in all the fields';
+      this.$message.set('Please fill in all the fields');
       return;
     }
 
@@ -54,13 +55,15 @@ export class SignUpComponent extends BaseComponent {
 
     if (!name || !email || !password) {
       this.form.enable();
-      this.message = 'Please fill in all the fields';
-      this._cdr.markForCheck();
+      this.$submitting.set(false);
+      this.$message.set('Please fill in all the fields');
       return;
     }
 
     this.form.disable();
-    this.message = null;
+
+    this.$submitting.set(true);
+    this.$message.set(null);
 
     this._auth
       .signUp({ name, email, password })
@@ -95,18 +98,18 @@ export class SignUpComponent extends BaseComponent {
   private _onSignUpError(message: string) {
     // Re-enable the form
     this.form.enable();
-    this._cdr.markForCheck();
+    this.$submitting.set(false);
 
     // Show the alert
-    this.message = message ?? 'Unknown error occurred';
+    this.$message.set(message ?? 'Unknown error occurred');
   }
 
   private _onServerError() {
     // Re-enable the form
     this.form.enable();
-    this._cdr.markForCheck();
+    this.$submitting.set(false);
 
     // Show alert
-    this.message = 'Server error';
+    this.$message.set('Server error');
   }
 }
